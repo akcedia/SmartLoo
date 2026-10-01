@@ -1,2 +1,2 @@
-# MovieMatch
-MovieMatch is a web platform that analyzes users' movie ratings collected via external APIs (OMDb/TMDb) to eliminate group decision fatigue by generating shared recommendations based on taste intersections. The system aims to deliver collaborative watchlists, temporal viewing analytics, and secure data export through a service-oriented backend.
+# SmartLoo
+A centralized web platform that aggregates public toilet locations, hygiene status, and accessibility features via external APIs. The system utilizes an integrated AI pipeline to summarize user reviews and provide smart routing recommendations, while delivering detailed temporal hygiene analytics and data export capabilities for administrators through a service-oriented backend..
