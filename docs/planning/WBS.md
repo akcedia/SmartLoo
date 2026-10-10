@@ -2,6 +2,51 @@
 
 Baseline revision: 10 October 2026. Schedule authority: [Project Charter, section 5](../CHARTER.MD). This is a deliverable-based plan, not evidence that future work has been completed. Owners follow the Charter; shared tasks are integrated by Özgür and checked by Yusuf. The calendar and activity estimates are in [Gantt](GANTT.md) and [PERT](PERT.md).
 
+## WBS diagram
+
+The diagram decomposes the same numbered work packages listed in the table. Branches represent work decomposition, not chronological dependencies; PERT and Gantt define those.
+
+```mermaid
+mindmap
+  root((SmartLoo))
+    n1["1. Project definition"]
+      n2["1.1 Purpose, scope and roles"]
+      n3["1.2 Technology and milestones"]
+    n4["2. Requirements definition"]
+      n5["2.1 Search, filters and map"]
+      n6["2.2 Reviews, data and authentication"]
+      n7["2.3 AI, data, dashboard and import/export"]
+      n8["2.4 Acceptance tests"]
+      n9["2.5 Diagrams, plans and review fixes"]
+      n10["2.6 Approval and PDF submission"]
+    n11["3. Requirement analysis"]
+      n12["3.1 Source validation and missing values"]
+      n13["3.2 Domain, data and behavior models"]
+      n14["3.3 Report and traceability review"]
+    n15["4. Software design"]
+      n16["4.1 Architecture, API, DB and security"]
+      n17["4.2 AI and UI component design"]
+      n18["4.3 Design report review"]
+    n19["5. Feature implementation"]
+      n20["5.1 Backend"]
+      n21["5.2 Persistence and authentication"]
+      n22["5.3 AI, fallback and cache"]
+      n23["5.4 Map and filters"]
+      n24["5.5 Dashboard and export"]
+      n25["5.6 CI and staging"]
+    n26["6. Integration and testing"]
+      n27["6.1 Integration and defect resolution"]
+      n28["6.2 NFR verification"]
+      n29["6.3 Testing report review"]
+    n30["7. Final codebase"]
+      n31["7.1 Final fixes and regression"]
+      n32["7.2 Setup, deployment and delivery"]
+    n33["8. Presentation"]
+      n34["8.1 Demo and rehearsal (date TBA)"]
+```
+
+## Work package details
+
 | WBS | Deliverable / work package | Lead / contributors | Completion evidence | Charter milestone |
 |---|---|---|---|---|
 | 1 | Project definition | Özgür / all | Reviewed Charter | 2 October 2026 |
