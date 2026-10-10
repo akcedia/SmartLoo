@@ -1,6 +1,8 @@
 # Requirements delivery plan
 
-Date: 8 October 2026. Integration owner: Özgür Kılıç.
+Date: 10 October 2026. Integration owner: Özgür Kılıç.
+
+The required planning artifacts are [WBS](../planning/WBS.md), [PERT](../planning/PERT.md) and [Gantt](../planning/GANTT.md), derived from the Charter milestones. This checklist complements those artifacts; it does not replace them.
 
 ## Roles and artifacts
 
@@ -40,5 +42,5 @@ its author to refer to #3 before merge. Do not close the core task through that 
 ## Current package status
 
 Requirements and NFR test specifications prepared; red-stage run result recorded in
-`docs/REQUIREMENTS.MD`. GitHub upload/commit, review request, approval and PDF
+[the requirements report](../REQUIREMENTS.MD). GitHub upload/commit, review request, approval and PDF
 submission must be checked independently; creating this file does not complete them.

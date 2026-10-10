@@ -1,7 +1,7 @@
 # SmartLoo — Requirements Definition Report
 
 > **Course:** CMPE 331 — Software Engineering Concepts  
-> **Version:** 1.1 — integrated review candidate, 8 October 2026  
+> **Version:** 1.2 — TA review corrections, 10 October 2026
 > **GitHub review PR deadline:** 08.10.2026 (announcement does not specify an hour)  
 > **Final PDF deadline:** 11.10.2026 23:59, following PR approval  
 > **Repository:** https://github.com/akcedia/SmartLoo  
@@ -35,7 +35,7 @@ Original contributions remain available through the GitHub issue, commit and PR 
 | Difference in sources | Integrated decision |
 |---|---|
 | FR numbering | Preserve original FR-01–07; append auth FR-08, map FR-09, integrity/privacy FR-10. |
-| Test numbering | Preserve Yusuf's TC-01–10. Original draft's TC-01 accessibility becomes TC-02; original nearby TC-02 becomes TC-01. Other draft tests map by behavior, not old number. Keep TS-DB and TS-SEC IDs. |
+| Test numbering | Preserve Yusuf's TC-01–10. Original draft's TC-01 accessibility becomes TC-02; original nearby TC-02 becomes TC-01. Other draft tests map by behavior, not old number. Normalize all functional IDs to TC-01–TC-48 across report, catalog and Python; database cases use TC-29–TC-36 and security cases TC-37–TC-48. |
 | JWT 15 vs 60 minutes | Adopt Fırat's 60-minute signed access token; remove refresh endpoint from this baseline. |
 | Review every 24 hours vs one per toilet | One review per user/toilet; user can update or delete it. |
 | HTTP 400 vs 422; guest 403 vs 401 | Invalid input 422, missing/invalid authentication 401, authenticated but forbidden 403. |
@@ -46,6 +46,12 @@ Original contributions remain available through the GitHub issue, commit and PR 
 | AI English/general schema vs Turkish research | Summary text is Turkish. `summary_tr → summary`, `positives → pros`, `negatives → cons`, `review_count → based_on_reviews`. Categories retained; confidence must not be presented as a calibrated probability. |
 | Mean vs p95 search latency | Measure both; mean <250 ms and p95 <250 ms under the defined load. These are team targets. |
 | Operational logs in dashboard | Preserve export columns; missing cleaning/complaint records are null/blank, never fabricated. This phase does not add a complete work-order system. |
+
+### 2.1 Use case diagram
+
+![SmartLoo UML use case diagram](requirements/use-cases.svg)
+
+[Editable PlantUML source](requirements/use-cases.puml). Guest, registered-user and administrator actors are permission roles. Registered users inherit guest browsing; administrators inherit registered-user actions. The AI provider is an external supporting actor. UC-01–UC-10 map to FR-01–FR-10 below; database and authentication sub-rules remain in their detailed specifications. UC-05 groups submission and administrator moderation, with each operation associated with its permitted actor. UC-10 groups self-account deletion and administrator facility closure. No external-provider availability is assumed for ordinary search.
 
 ## 3. Functional requirements
 
@@ -314,9 +320,9 @@ Feature: AI-powered review summarization and recommendation
     Then the response should be returned from the cache
     And the OpenAI API should not be called
 
-  Scenario: Regenerate summary after new reviews
+  Scenario: Regenerate summary after review changes
     Given a cached summary exists for toilet 1
-    When 5 new reviews are submitted for toilet 1
+    When its author edits a source review
     Then the cached summary for toilet 1 should be invalidated
     And the next summary request should generate a new summary
 
@@ -435,7 +441,7 @@ Feature: Import and export
 
 As a visitor, I want to register and log in securely so that I can contribute reviews. As an administrator, I want privileged operations restricted to administrators.
 
-The integrated [security specification](requirements/db-security.md) contains US-SEC-01–04, REQ-SEC-01–07 and TS-SEC-01–11. Passwords require 8 or more characters, a letter and a digit; hash with bcrypt cost ≥10 or Argon2. Valid registration returns 201, duplicate case-insensitive email 409 and invalid fields 422. Successful login returns a signed JWT with `sub,role,iat,exp`, token type Bearer and `expires_in=3600`. Wrong credentials return a generic 401. Missing, expired or tampered tokens return 401; a valid USER on an ADMIN operation returns 403. After five failed logins for one email within 15 minutes, subsequent attempts return 429 until expiry. Password hashes never appear in responses. Secrets remain server-side.
+The integrated [security specification](requirements/db-security.md) contains US-SEC-01–04, REQ-SEC-01–07 and TC-37–TC-48. Passwords require 8 or more characters, a letter and a digit; hash with bcrypt cost ≥10 or Argon2. Valid registration returns 201, duplicate case-insensitive email 409 and invalid fields 422. Successful login returns a signed JWT with `sub,role,iat,exp`, token type Bearer and `expires_in=3600`. Wrong credentials return a generic 401. Missing, expired or tampered tokens return 401; a valid USER on an ADMIN operation returns 403. After five failed logins for one email within 15 minutes, subsequent attempts return 429 until expiry. Password hashes never appear in responses. Secrets remain server-side.
 
 Authentication user stories, BDD examples and test specifications are in [db-security.md](requirements/db-security.md). Public registration always assigns USER; supplying ADMIN must not escalate privilege.
 
@@ -529,12 +535,12 @@ All numeric values are proposed team acceptance targets. None is an observed pro
 |---|---|---|
 | NFR-01 | Nearby search: mean and p95 <250 ms with 10,000 records and 50 concurrent clients | NFR-T01 |
 | NFR-02 | Cache-hit summary p95 <100 ms; healthy uncached generation target <8 s; timeout fallback by 10 s | NFR-T04 |
-| NFR-03 | Password hashing, 60-minute JWT, roles and login throttling per FR-08 | NFR-T02; TS-SEC-01–11 |
+| NFR-03 | Password hashing, 60-minute JWT, roles and login throttling per FR-08 | NFR-T02; TC-37–TC-48 |
 | NFR-04 | Production HTTPS; validate inputs, render comments as text; no secret/hash exposure | NFR-T03, NFR-T07 |
 | NFR-05 | Usable layouts at 360, 768 and 1920 px; initial map target <2 s under a recorded mobile network profile; ≥30 FPS with 500 visible markers | NFR-T05 |
 | NFR-06 | Keyboard access to search, filters and details; visible focus, labels and WCAG 2.1 AA target | NFR-T05; automated score alone is not conformance proof |
 | NFR-07 | 99% monthly public API availability target; AI outage must not disable search | NFR-T06 |
-| NFR-08 | No persistent user location without explicit consent; remove account personal data and redact PII before AI | NFR-T07; TS-DB-06 |
+| NFR-08 | No persistent user location without explicit consent; remove account personal data and redact PII before AI | NFR-T07; TC-34 |
 | NFR-09 | Backend automated coverage target ≥80% during implementation; lint/test/build gate before implementation merges | NFR-T08 |
 | NFR-10 | Turkish and English interface labels; AI summary text Turkish in this baseline | NFR-T09 |
 
@@ -552,11 +558,11 @@ All numeric values are proposed team acceptance targets. None is an observed pro
 
 ## 5. Functional test specifications and current execution status
 
-The [case catalog](../tests/requirements_cases.json) retains 47 acceptance specifications with requirement IDs, preconditions, actions and expected outcomes. Each entry identifies its automated function or manual UI procedure. [test_requirements.py](../tests/test_requirements.py) contains direct, readable HTTP tests, rather than a generic interpreter of expected results. The JSON is a specification catalog, not executable input. Fixture names A–D map to UUIDs in the Python tests; the executable fixtures determine actual coordinate/filter values.
+The [case catalog](../tests/requirements_cases.json) retains 48 acceptance specifications with requirement IDs, preconditions, actions and expected outcomes. Each entry identifies its automated function or manual UI procedure. [test_requirements.py](../tests/test_requirements.py) contains direct, readable HTTP tests, rather than a generic interpreter of expected results. The JSON is a specification catalog, not executable input. Fixture names A–D map to UUIDs in the Python tests; the executable fixtures determine actual coordinate/filter values. Named-city BDD examples in section 3 illustrate the same rules with different input data; they are not the A–D HTTP fixtures. Each catalog case and the acceptance table below use the executable fixture values. Labels, factual support of generated text and complete browser behavior still require the specified manual/NFR checks.
 
 The suite uses FastAPI TestClient against [src/app.py](../src/app.py). The application registers the intended routes and currently returns HTTP 501 for unimplemented features. Tests send actual in-process HTTP requests and assert the required status, response content, stored state, token signature or mocked provider calls. They never substitute fake successful responses. A fresh in-memory repository and deterministic AI mock are supplied for each test. These are test doubles, not PostgreSQL/MongoDB integration. JWTs are genuinely signed with a public test-only key, and password fixtures use bcrypt. No paid AI calls or external database services are used.
 
-**Verified red-stage run, 8 October 2026: 52 collected, 52 failed, 0 errors, 0 skipped; exit code 1.** This consists of 45 automated catalog cases (including a limited initial-page test), parameterized input variants and an additional registration role-escalation test. TC-22/23 are manual UI specifications, not counted as executed tests. All current failures are HTTP 501 mismatches against the required behavior. Assertions after the first failed assertion are present but are not yet reached; application correctness is not established by this run.
+**Verified red-stage run, 10 October 2026: 52 collected, 52 failed, 0 errors, 0 skipped; exit code 1.** This consists of 46 automated catalog cases (including a limited initial-page test and TC-48 registration-role protection) plus six parameterized variants. TC-22/23 are manual UI specifications, not counted as executed tests. All current failures are HTTP 501 mismatches against the required behavior. Assertions after the first failed assertion are present but are not yet reached; application correctness is not established by this run.
 
 From the repository root, using Python 3.12:
 
@@ -567,57 +573,58 @@ python -m pytest tests/test_requirements.py -q
 
 Expected current exit code: 1. Implement the route behaviors incrementally until tests pass. Preserve behavioral assertions; replace the test repository with production adapters during later integration work. The pinned dependency file records the versions used for the verified run. TestClient setup follows the [official FastAPI testing documentation](https://fastapi.tiangolo.com/tutorial/testing/).
 
-The table below retains the acceptance outcomes; some combined API/UI outcomes also require the manual checks in section 5.1. Test IDs map to `test_TC_01`, `test_TS_DB_01`, etc.; TC-21 maps to `test_TC_21_initial_map_shell`.
+The table below retains the acceptance outcomes; some combined API/UI outcomes also require the manual checks in section 5.1. Every automated TC-NN maps to `test_tc_NN`; TC-22/23 are manual procedures.
 
 | Test | Requirement | Behavior | Expected result |
 |---|---|---|---|
-| TC-01 | FR-01 | Nearby open toilets | status=200; ids=["A", "B"]; distance_m_approx=[111, 444]; absolute_tolerance_m=[3, 5] |
-| TC-02 | FR-02 | Accessibility filter | status=200; ids_unordered=["A", "C"] |
-| TC-03 | FR-02 | Baby changing filter | status=200; ids_unordered=["A", "B"] |
-| TC-04 | FR-08 | Successful login | status=200; token_signature_valid=true; expires_in=3600; claims_present=["sub", "role", "iat", "exp"] |
-| TC-05 | FR-03 | Reject guest review | status=401; review_count=0 |
-| TC-06 | FR-03 | Create review and aggregate | status=201; average_cleanliness=3.0; review_count=3; stored_score=3 |
-| TC-07 | FR-05 | Suggest location | status=202; moderation_status="pending"; publicly_visible=false |
-| TC-08 | FR-04 | Structured Turkish AI summary | status=200; schema_valid=true; language="tr"; based_on_reviews=3; label="AI-generated summary"; unsupported_claims=false |
-| TC-09 | FR-06 | Filtered dashboard | status=200; average_cleanliness=3.0; review_count=2; critical_alert=true |
-| TC-10 | FR-07 | CSV report export | status=200; content_type="text/csv; charset=utf-8"; utf8_bom=true; columns=["facility_id", "district", "hygiene_score", "open_issues_count", "last_cleaned_at"]; exported_rows=1 |
-| TC-11 | FR-01 | Reject invalid search | status=422; invalid_field="lat" |
+| TC-01 | FR-01 | Nearby open toilets | ids=["A", "B"]; distance_m_approx=[111, 444]; absolute_tolerance_m=[3, 5]; http_status=200 |
+| TC-02 | FR-02 | Accessibility filter | ids_unordered=["A", "C"]; http_status=200 |
+| TC-03 | FR-02 | Baby changing filter | ids_unordered=["A", "B"]; http_status=200 |
+| TC-04 | FR-08 | Successful login | token_signature_valid=true; expires_in=3600; claims_present=["sub", "role", "iat", "exp"]; http_status=200 |
+| TC-05 | FR-03 | Reject guest review | review_count=0; http_status=401 |
+| TC-06 | FR-03 | Create review and aggregate | average_cleanliness=3.0; review_count=3; stored_score=3; http_status=201 |
+| TC-07 | FR-05 | Suggest location | http_status=202; status="pending"; stored_in_suggestions=true; publicly_visible=false |
+| TC-08 | FR-04 | Structured Turkish AI summary | http_status=200; summary="Temiz, ancak sabun eksik."; based_on_reviews=3; maximum_summary_length=400; recommendation_in=["recommended", "acceptable", "avoid"]; odor_category="unknown"; provider_calls=1 |
+| TC-09 | FR-06 | Filtered dashboard | average_cleanliness=3.0; review_count=2; critical_alert=true; http_status=200 |
+| TC-10 | FR-07 | CSV report export | http_status=200; content_type="text/csv; charset=utf-8"; utf8_bom=true; columns=["facility_id", "district", "hygiene_score", "open_issues_count", "last_cleaned_at"]; results_nonempty=true; all_rows_district="Kadıköy" |
+| TC-11 | FR-01 | Reject invalid search | http_status=422; variants=[{"lat": 95}, {"lon": 200}, {"radius": -50}, {"radius": 50001}] |
 | TC-12 | FR-02 | Combined filters and clearing | filtered_ids=["A"]; cleared_ids=["A", "B", "C"] |
 | TC-13 | FR-02 | Pricing filter | ids_unordered=["B", "C"] |
-| TC-14 | FR-01 | Empty nearby results | status=200; results=[]; empty_message_visible=true |
-| TC-15 | FR-04 | AI outage and insufficient reviews | status=200; summary=null; fallback_stats_visible=true; calls_for_two_reviews=0; search_available=true |
+| TC-14 | FR-01 | Empty nearby results | http_status=200; results=[] |
+| TC-15 | FR-04 | AI outage and insufficient reviews | http_status=200; summary=null; timeout_review_count=3; provider_calls_for_two_reviews=0; search_http_status=200 |
 | TC-16 | FR-04 | Summary cache | provider_calls_after_two_reads=1; provider_calls_after_edit_and_read=2 |
-| TC-17 | FR-04 | Preference recommendations | ids=["A"]; reason_supported=true; maximum_results=3 |
-| TC-18 | FR-05 | Moderate suggestions | public_ids=["P"]; rejected_visible=false |
-| TC-19 | FR-07 | Idempotent CSV and JSON import | records_with_source_id=1; status=200; counts_reported=true |
-| TC-20 | FR-07 | Invalid import is atomic | status=422; existing_count=2; row_errors_present=true |
-| TC-21 | FR-09 | Map initial view and details | marker_ids=["A", "B"]; controls_visible=true; details_fields=["name", "distance", "accessibility", "baby_changing", "pricing", "hygiene"]; details_closed=true |
+| TC-17 | FR-04 | Preference recommendations | http_status=200; ids=["A"]; has_disabled_access=true; is_free=true; nonempty_reason=true; maximum_results=3 |
+| TC-18 | FR-05 | Moderate suggestions | http_status=200; public_facility_ids=["A"]; rejected_facility_B_visible=false |
+| TC-19 | FR-07 | Idempotent CSV and JSON import | http_status=200; first_inserted=1; second_inserted=0; second_updated=1; records_with_source_id=1; formats=["csv", "json"] |
+| TC-20 | FR-07 | Invalid import is atomic | http_status=422; existing_count=4; state_unchanged=true; row_errors_present=true |
+| TC-21 | FR-09 | Initial map HTML and manual marker details | http_status=200; content_type_contains="text/html"; element_ids=["map", "location-control", "search-radius", "filters"]; manual_marker_details_check="section 5.1" |
 | TC-22 | FR-09 | Map without geolocation | map_usable=true; permission_message_visible=true; fabricated_distance=false |
 | TC-23 | FR-09 | Filter markers remain consistent | marker_ids=["A"]; active_filter_visible=true |
-| TC-24 | FR-07 | JSON report export | status=200; all_exported_rows_district="Kadıköy"; results_nonempty=true |
-| TC-25 | FR-06 | Dashboard has no data | status=200; average_cleanliness=null; review_count=0; no_data_message=true |
-| TS-DB-01 | FR-10 | Invalid toilet coordinates | status=422; saved=false |
-| TS-DB-02 | FR-08 | Case insensitive email | status=409 |
-| TS-DB-03 | FR-03 | Invalid review rating | status=422; saved=false |
-| TS-DB-04 | FR-03 | Duplicate review | status=409; review_count=1 |
-| TS-DB-05 | FR-10 | Nonexistent toilet | status=404; saved=false |
-| TS-DB-06 | FR-10 | Account deletion | status=204; personal_data_removed=true; reviews=2; user_id=null; author="Anonymous" |
-| TS-DB-07 | FR-03 | Recalculate aggregate | average_cleanliness=3.0; review_count=3 |
-| TS-DB-08 | FR-07 | Stable source identity | records_with_source_id=1 |
-| TS-SEC-01 | FR-08 | Weak password | status=422; saved=false |
-| TS-SEC-02 | FR-08 | Password storage and response | status=201; password_hash_valid=true; password_hash_exposed=false; plaintext_stored=false |
-| TS-SEC-03 | FR-08 | JWT claims | status=200; token_type="Bearer"; expires_in=3600; signature_valid=true |
-| TS-SEC-04 | FR-08 | Generic login error | statuses=[401, 401]; messages=["Invalid email or password", "Invalid email or password"] |
-| TS-SEC-05 | FR-08 | Missing token | status=401; saved=false |
-| TS-SEC-06 | FR-08 | Tampered token | status=401; saved=false |
-| TS-SEC-07 | FR-08 | Expired token | status=401; saved=false |
-| TS-SEC-08 | FR-08 | User cannot access admin | status=403 |
-| TS-SEC-09 | FR-08 | Admin access | status=200 |
-| TS-SEC-10 | FR-03 | Review ownership | status=403; review_retained=true |
-| TS-SEC-11 | FR-08 | Login throttling | status=429 |
+| TC-24 | FR-07 | JSON report export | all_exported_rows_district="Kadıköy"; results_nonempty=true; http_status=200 |
+| TC-25 | FR-06 | Dashboard has no data | http_status=200; average_cleanliness=null; review_count=0 |
 | TC-26 | FR-03 | Edit and delete own review | edit_status=200; after_edit_average=3.5; delete_status=204; after_delete_average=2.0; after_delete_count=1 |
-| TC-27 | FR-10 | Close reviewed facility | status="CLOSED"; reviews=2; hard_deleted=false |
-| TC-28 | FR-04 | Untrusted review content | pii_sent=false; instructions_followed=false; fallback_used=true |
+| TC-27 | FR-10 | Close reviewed facility | reviews=2; hard_deleted=false; facility_status="CLOSED"; http_status=200 |
+| TC-28 | FR-04 | Untrusted review content | http_status=200; summary=null; review_count=3; provider_calls=1; email_absent_from_provider_arguments=true |
+| TC-29 | FR-10 | Invalid toilet coordinates | saved=false; http_status=422 |
+| TC-30 | FR-08 | Case insensitive email | http_status=409 |
+| TC-31 | FR-03 | Invalid review rating | saved=false; http_status=422 |
+| TC-32 | FR-03 | Duplicate review | review_count=1; http_status=409 |
+| TC-33 | FR-10 | Nonexistent toilet | saved=false; http_status=404 |
+| TC-34 | FR-10 | Account deletion | reviews=2; user_id=null; author="Anonymous"; http_status=204; user_record_removed=true |
+| TC-35 | FR-03 | Recalculate aggregate | average_cleanliness=3.0; review_count=3 |
+| TC-36 | FR-07 | Stable source identity | records_with_source_id=1 |
+| TC-37 | FR-08 | Weak password | saved=false; http_status=422 |
+| TC-38 | FR-08 | Password storage and response | password_hash_valid=true; password_hash_exposed=false; plaintext_stored=false; http_status=201 |
+| TC-39 | FR-08 | JWT claims | token_type="Bearer"; expires_in=3600; signature_valid=true; http_status=200 |
+| TC-40 | FR-08 | Generic login error | messages=["Invalid email or password", "Invalid email or password"]; http_statuses=[401, 401] |
+| TC-41 | FR-08 | Missing token | saved=false; http_status=401 |
+| TC-42 | FR-08 | Tampered token | http_status=401; saved=false |
+| TC-43 | FR-08 | Expired token | saved=false; http_status=401 |
+| TC-44 | FR-08 | User cannot access admin | http_status=403 |
+| TC-45 | FR-08 | Admin access | http_status=200 |
+| TC-46 | FR-03 | Review ownership | review_retained=true; http_status=403 |
+| TC-47 | FR-08 | Login throttling | http_statuses=[401, 401, 401, 401, 401, 429] |
+| TC-48 | FR-08 | Public registration cannot grant administrator privileges | http_status_in=[201, 422]; registered_admin=false |
 
 ### 5.1 Manual map interaction specifications
 
@@ -631,19 +638,19 @@ These procedures are defined now and will be run once the React/Leaflet interfac
 
 ### 5.2 User-story and detailed-specification coverage
 
-Each main story in sections 3.1–3.10 has at least one executable functional test through its FR mapping in section 7. The two FR-05 roles are covered separately: suggestion TC-07 and administrator decision TC-18; import/export roles under FR-07 are covered by TC-19 and TC-10/24. Additional DB/security stories are mapped below. Detailed REQ-DB-01–06 and REQ-SEC-01–07 each retain their executable TS mapping in db-security.md. This is requirement/story coverage, not a claim that every BDD sentence has already been automated.
+Each main story in sections 3.1–3.10 has at least one executable functional test through its FR mapping in section 7. The two FR-05 roles are covered separately: suggestion TC-07 and administrator decision TC-18; import/export roles under FR-07 are covered by TC-19 and TC-10/24. Additional DB/security stories are mapped below. Detailed REQ-DB-01–06 and REQ-SEC-01–07 each retain their executable TC mapping in db-security.md. This is requirement/story coverage, not a claim that every BDD sentence has already been automated.
 
 | Additional story | Executable tests |
 |---|---|
-| US-DB-01 Valid facility metadata | TS-DB-01, TC-01, TC-02 |
-| US-DB-02 Reliable single review and aggregates | TS-DB-03, TS-DB-04, TS-DB-07 |
-| US-DB-03 Account deletion | TS-DB-06 |
-| US-SEC-01 Registration | TS-SEC-01, TS-SEC-02, TS-DB-02 |
-| US-SEC-02 Login and authenticated actions | TS-SEC-03–07, TS-SEC-11 |
-| US-SEC-03 Administrator access | TS-SEC-08, TS-SEC-09 |
-| US-SEC-04 Review ownership | TS-SEC-10, TC-26 |
+| US-DB-01 Valid facility metadata | TC-29, TC-01, TC-02 |
+| US-DB-02 Reliable single review and aggregates | TC-31, TC-32, TC-35 |
+| US-DB-03 Account deletion | TC-34 |
+| US-SEC-01 Registration | TC-37, TC-38, TC-30 |
+| US-SEC-02 Login and authenticated actions | TC-39–TC-43, TC-47 |
+| US-SEC-03 Administrator access | TC-44, TC-45 |
+| US-SEC-04 Review ownership | TC-46, TC-26 |
 
-Supplemental test `test_AUTH_no_self_promotion` verifies that public registration cannot create an ADMIN account. TS-SEC-02 currently selects the permitted bcrypt option. Test repository field names are scaffolding choices and do not replace the later database design.
+Catalog case TC-48 (`test_tc_48`) verifies that public registration cannot create an ADMIN account. TC-38 currently selects the permitted bcrypt option. Test repository field names are scaffolding choices and do not replace the later database design.
 
 ## 6. API and external interfaces
 
@@ -686,28 +693,32 @@ Leaflet uses a compatible map-tile provider; provider selection and terms remain
 |---|---|---|
 | FR-01 | Section 3.1 | TC-01, TC-11, TC-14 |
 | FR-02 | Section 3.2 | TC-02, TC-03, TC-12, TC-13 |
-| FR-03 | Section 3.3 | TC-05, TC-06, TS-DB-03, TS-DB-04, TS-DB-07, TS-SEC-10, TC-26 |
+| FR-03 | Section 3.3 | TC-05, TC-06, TC-31, TC-32, TC-35, TC-46, TC-26 |
 | FR-04 | Section 3.4 | TC-08, TC-15, TC-16, TC-17, TC-28 |
 | FR-05 | Section 3.5 | TC-07, TC-18 |
 | FR-06 | Section 3.6 | TC-09, TC-25 |
-| FR-07 | Section 3.7 | TC-10, TC-19, TC-20, TC-24, TS-DB-08 |
-| FR-08 | Section 3.8 | TC-04, TS-DB-02, TS-SEC-01, TS-SEC-02, TS-SEC-03, TS-SEC-04, TS-SEC-05, TS-SEC-06, TS-SEC-07, TS-SEC-08, TS-SEC-09, TS-SEC-11 |
+| FR-07 | Section 3.7 | TC-10, TC-19, TC-20, TC-24, TC-36 |
+| FR-08 | Section 3.8 | TC-48, TC-04, TC-30, TC-37, TC-38, TC-39, TC-40, TC-41, TC-42, TC-43, TC-44, TC-45, TC-47 |
 | FR-09 | Section 3.9 | TC-21, TC-22, TC-23 |
-| FR-10 | Section 3.10 | TS-DB-01, TS-DB-05, TS-DB-06, TC-27 |
+| FR-10 | Section 3.10 | TC-29, TC-33, TC-34, TC-27 |
 
 REQ-DB and REQ-SEC mappings to their original user stories and TS tests are retained in the normalized security document. Non-functional mappings are in section 4. Original contributions are referenced by the GitHub links in section 2.
 
-Planning artifacts: [Charter](CHARTER.MD), [delivery plan](requirements/DELIVERY_PLAN.md), and the issue links in section 2. Requirement definitions: this report plus [security/data requirements](requirements/db-security.md). Tests: [runner](../tests/test_requirements.py), [case data](../tests/requirements_cases.json).
+Planning artifacts: [Charter](CHARTER.MD), [WBS](planning/WBS.md), [PERT](planning/PERT.md), [Gantt](planning/GANTT.md) and [delivery plan](requirements/DELIVERY_PLAN.md). The schedule is derived from the Charter milestones; estimated durations are team planning assumptions. Requirement definitions: this report plus [security/data requirements](requirements/db-security.md). Tests: [runner](../tests/test_requirements.py), [case data](../tests/requirements_cases.json).
 
 ### 7.1 Submission file guide
 
-The files below organize the deliverable types requested in the instructor's submission announcement. These exact filenames and this particular split are team choices, not individually mandated files. The report is the entry point for review.
+The files below organize the deliverable types requested in the instructor's submission announcement. These exact filenames and this particular split are team choices, not individually mandated files. The report is the entry point for review. Repository paths are rooted directly at `docs/`, `tests/` and `src/`, with `requirements-test.txt` at the repository root. The previous nested `SmartLoo-requirements-review/` upload directory and its duplicate Charter have been removed; the existing `docs/CHARTER.MD` is unchanged.
 
 | File | Purpose and reason for inclusion | Delivery role |
 |---|---|---|
 | [CHARTER.MD](CHARTER.MD) | Existing project purpose, scope, roles and technology constraints against which requirements can be reviewed. Retained unchanged; not a new charter submission. | Project context / planning reference |
 | [REQUIREMENTS.MD](REQUIREMENTS.MD) | Main report combining user stories, BDD scenarios, acceptance rules, non-functional requirements, test specifications and traceability. | Requirements specification report |
-| [DELIVERY_PLAN.md](requirements/DELIVERY_PLAN.md) | Records responsibilities, delivery steps and integration risks; supports the requested planning artifacts. | Supporting planning document |
+| [WBS.md](planning/WBS.md) | Deliverable-based decomposition, owners and Charter milestone links. | Work breakdown structure |
+| [PERT.md](planning/PERT.md) | Estimated activity durations, dependencies, critical path and schedule slack. | PERT planning analysis |
+| [GANTT.md](planning/GANTT.md) | Calendar schedule and fixed Charter deadlines. | Gantt schedule |
+| [use-cases.svg](requirements/use-cases.svg) / [source](requirements/use-cases.puml) | UML actors, system boundary and use cases traced to FR-01–FR-10; editable diagram source. | Use case diagram |
+| [DELIVERY_PLAN.md](requirements/DELIVERY_PLAN.md) | Records responsibilities, delivery steps and integration risks; complements the WBS, PERT and Gantt. It does not replace them. | Supporting planning document |
 | [db-security.md](requirements/db-security.md) | Detailed data-integrity and authentication requirements, user stories and test specifications contributed by the DB/security owner. Kept separate for readability and referenced by the main report. | Supporting requirement definitions |
 | [requirements_cases.json](../tests/requirements_cases.json) | Structured acceptance cases containing requirement IDs, illustrative fixture preconditions, actions and expected observations. Includes automated-function/manual-procedure mappings. The Python tests define executable fixture details. | Functional test specification catalog |
 | [test_requirements.py](../tests/test_requirements.py) | Sends actual FastAPI TestClient requests and checks HTTP responses, state, signed tokens and AI calls using isolated fixtures. | Executable functional tests |
@@ -734,3 +745,5 @@ BDD: behavior descriptions in Given–When–Then form. TDD: write a failing beh
 |---|---|---|
 | 0.1 | 03.10.2026 | Özgür's initial requirements skeleton and core scenarios |
 | 1.1 review candidate | 08.10.2026 | Team contributions integrated; direct HTTP behavior tests replace the generic adapter; 52 red tests verified; manual UI scope and story coverage recorded |
+
+| 1.2 review corrections | 10.10.2026 | Added Charter-based WBS/PERT/Gantt and UML use case diagram; removed nested upload folder; unified TC-01–TC-48 and aligned catalog, report and test expectations |

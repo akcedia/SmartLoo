@@ -39,7 +39,6 @@
       "open_now": true
     },
     "expected": {
-      "status": 200,
       "ids": [
         "A",
         "B"
@@ -51,11 +50,12 @@
       "absolute_tolerance_m": [
         3,
         5
-      ]
+      ],
+      "http_status": 200
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_01",
+      "function": "test_tc_01",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
   },
@@ -78,15 +78,15 @@
       "has_disabled_access": true
     },
     "expected": {
-      "status": 200,
       "ids_unordered": [
         "A",
         "C"
-      ]
+      ],
+      "http_status": 200
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_02",
+      "function": "test_tc_02",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
   },
@@ -110,15 +110,15 @@
       }
     },
     "expected": {
-      "status": 200,
       "ids_unordered": [
         "A",
         "B"
-      ]
+      ],
+      "http_status": 200
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_03",
+      "function": "test_tc_03",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
   },
@@ -128,7 +128,8 @@
     "title": "Successful login",
     "given": {
       "email": "ali@example.com",
-      "password": "Guvenli123"
+      "password": "Guvenli123",
+      "fixture": "env in test_requirements.py"
     },
     "action": {
       "method": "POST",
@@ -137,7 +138,6 @@
       "password": "Guvenli123"
     },
     "expected": {
-      "status": 200,
       "token_signature_valid": true,
       "expires_in": 3600,
       "claims_present": [
@@ -145,11 +145,12 @@
         "role",
         "iat",
         "exp"
-      ]
+      ],
+      "http_status": 200
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_04",
+      "function": "test_tc_04",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
   },
@@ -159,7 +160,8 @@
     "title": "Reject guest review",
     "given": {
       "toilet": "A",
-      "review_count": 0
+      "review_count": 0,
+      "fixture": "env in test_requirements.py"
     },
     "action": {
       "method": "POST",
@@ -168,12 +170,12 @@
       "cleanliness_score": 4
     },
     "expected": {
-      "status": 401,
-      "review_count": 0
+      "review_count": 0,
+      "http_status": 401
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_05",
+      "function": "test_tc_05",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
   },
@@ -187,7 +189,8 @@
         4,
         2
       ],
-      "user": "new-user"
+      "user": "new-user",
+      "fixture": "env in test_requirements.py"
     },
     "action": {
       "method": "POST",
@@ -196,14 +199,14 @@
       "cleanliness_score": 3
     },
     "expected": {
-      "status": 201,
       "average_cleanliness": 3.0,
       "review_count": 3,
-      "stored_score": 3
+      "stored_score": 3,
+      "http_status": 201
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_06",
+      "function": "test_tc_06",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
   },
@@ -212,7 +215,8 @@
     "requirement": "FR-05",
     "title": "Suggest location",
     "given": {
-      "user": "U"
+      "user": "U",
+      "fixture": "env in test_requirements.py"
     },
     "action": {
       "method": "POST",
@@ -224,13 +228,14 @@
       "district": "Kadıköy"
     },
     "expected": {
-      "status": 202,
-      "moderation_status": "pending",
+      "http_status": 202,
+      "status": "pending",
+      "stored_in_suggestions": true,
       "publicly_visible": false
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_07",
+      "function": "test_tc_07",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
   },
@@ -245,23 +250,29 @@
         "Sabun yok",
         "Temiz"
       ],
-      "ai": "deterministic mock"
+      "ai": "deterministic mock",
+      "fixture": "env in test_requirements.py"
     },
     "action": {
       "method": "GET",
       "path": "/api/v1/toilets/A/summary"
     },
     "expected": {
-      "status": 200,
-      "schema_valid": true,
-      "language": "tr",
+      "http_status": 200,
+      "summary": "Temiz, ancak sabun eksik.",
       "based_on_reviews": 3,
-      "label": "AI-generated summary",
-      "unsupported_claims": false
+      "maximum_summary_length": 400,
+      "recommendation_in": [
+        "recommended",
+        "acceptable",
+        "avoid"
+      ],
+      "odor_category": "unknown",
+      "provider_calls": 1
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_08",
+      "function": "test_tc_08",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
   },
@@ -291,7 +302,8 @@
           "date": "2026-10-03",
           "rating": 5
         }
-      ]
+      ],
+      "fixture": "env in test_requirements.py"
     },
     "action": {
       "method": "GET",
@@ -302,14 +314,14 @@
       "to": "2026-10-07"
     },
     "expected": {
-      "status": 200,
       "average_cleanliness": 3.0,
       "review_count": 2,
-      "critical_alert": true
+      "critical_alert": true,
+      "http_status": 200
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_09",
+      "function": "test_tc_09",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
   },
@@ -319,7 +331,8 @@
     "title": "CSV report export",
     "given": {
       "district": "Kadıköy",
-      "rows": 1
+      "rows": 1,
+      "fixture": "env in test_requirements.py"
     },
     "action": {
       "method": "GET",
@@ -329,7 +342,7 @@
       "district": "Kadıköy"
     },
     "expected": {
-      "status": 200,
+      "http_status": 200,
       "content_type": "text/csv; charset=utf-8",
       "utf8_bom": true,
       "columns": [
@@ -339,11 +352,12 @@
         "open_issues_count",
         "last_cleaned_at"
       ],
-      "exported_rows": 1
+      "results_nonempty": true,
+      "all_rows_district": "Kadıköy"
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_10",
+      "function": "test_tc_10",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
   },
@@ -351,19 +365,48 @@
     "id": "TC-11",
     "requirement": "FR-01",
     "title": "Reject invalid search",
-    "given": {},
+    "given": {
+      "fixture": "env in test_requirements.py",
+      "variants": [
+        {
+          "lat": 95
+        },
+        {
+          "lon": 200
+        },
+        {
+          "radius": -50
+        },
+        {
+          "radius": 50001
+        }
+      ]
+    },
     "action": {
       "lat": 95,
       "lon": 29,
       "radius": 1000
     },
     "expected": {
-      "status": 422,
-      "invalid_field": "lat"
+      "http_status": 422,
+      "variants": [
+        {
+          "lat": 95
+        },
+        {
+          "lon": 200
+        },
+        {
+          "radius": -50
+        },
+        {
+          "radius": 50001
+        }
+      ]
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_11",
+      "function": "test_tc_11",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
   },
@@ -388,7 +431,8 @@
           false,
           true
         ]
-      }
+      },
+      "fixture": "env in test_requirements.py"
     },
     "action": {
       "filters": [
@@ -409,7 +453,7 @@
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_12",
+      "function": "test_tc_12",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
   },
@@ -437,7 +481,7 @@
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_13",
+      "function": "test_tc_13",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
   },
@@ -446,19 +490,19 @@
     "requirement": "FR-01",
     "title": "Empty nearby results",
     "given": {
-      "facilities": []
+      "facilities": [],
+      "fixture": "env in test_requirements.py"
     },
     "action": {
       "radius": 200
     },
     "expected": {
-      "status": 200,
-      "results": [],
-      "empty_message_visible": true
+      "http_status": 200,
+      "results": []
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_14",
+      "function": "test_tc_14",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
   },
@@ -467,23 +511,32 @@
     "requirement": "FR-04",
     "title": "AI outage and insufficient reviews",
     "given": {
-      "ai": "timeout",
-      "review_count": 25
+      "fixture": "env in test_requirements.py",
+      "variants": [
+        {
+          "review_count": 3,
+          "provider_timeout": true
+        },
+        {
+          "review_count": 2,
+          "provider_timeout": false
+        }
+      ]
     },
     "action": {
       "request_summary": true,
       "then_repeat_with_review_count": 2
     },
     "expected": {
-      "status": 200,
+      "http_status": 200,
       "summary": null,
-      "fallback_stats_visible": true,
-      "calls_for_two_reviews": 0,
-      "search_available": true
+      "timeout_review_count": 3,
+      "provider_calls_for_two_reviews": 0,
+      "search_http_status": 200
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_15",
+      "function": "test_tc_15",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
   },
@@ -509,7 +562,7 @@
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_16",
+      "function": "test_tc_16",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
   },
@@ -527,7 +580,8 @@
           "accessible": false,
           "free": true
         }
-      }
+      },
+      "fixture": "env in test_requirements.py"
     },
     "action": {
       "preferences": {
@@ -536,15 +590,18 @@
       }
     },
     "expected": {
+      "http_status": 200,
       "ids": [
         "A"
       ],
-      "reason_supported": true,
+      "has_disabled_access": true,
+      "is_free": true,
+      "nonempty_reason": true,
       "maximum_results": 3
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_17",
+      "function": "test_tc_17",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
   },
@@ -557,21 +614,23 @@
         "P",
         "Q"
       ],
-      "role": "ADMIN"
+      "role": "ADMIN",
+      "fixture": "env in test_requirements.py"
     },
     "action": {
       "approve": "P",
       "reject": "Q"
     },
     "expected": {
-      "public_ids": [
-        "P"
+      "http_status": 200,
+      "public_facility_ids": [
+        "A"
       ],
-      "rejected_visible": false
+      "rejected_facility_B_visible": false
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_18",
+      "function": "test_tc_18",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
   },
@@ -580,7 +639,8 @@
     "requirement": "FR-07",
     "title": "Idempotent CSV and JSON import",
     "given": {
-      "source_id": "IBB-42"
+      "source_id": "IBB-42",
+      "fixture": "env in test_requirements.py"
     },
     "action": {
       "import_formats": [
@@ -590,13 +650,19 @@
       "repeat_each": 2
     },
     "expected": {
+      "http_status": 200,
+      "first_inserted": 1,
+      "second_inserted": 0,
+      "second_updated": 1,
       "records_with_source_id": 1,
-      "status": 200,
-      "counts_reported": true
+      "formats": [
+        "csv",
+        "json"
+      ]
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_19",
+      "function": "test_tc_19",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
   },
@@ -605,7 +671,8 @@
     "requirement": "FR-07",
     "title": "Invalid import is atomic",
     "given": {
-      "existing_count": 2
+      "existing_count": 4,
+      "fixture": "env in test_requirements.py"
     },
     "action": {
       "import": [
@@ -622,26 +689,28 @@
       ]
     },
     "expected": {
-      "status": 422,
-      "existing_count": 2,
+      "http_status": 422,
+      "existing_count": 4,
+      "state_unchanged": true,
       "row_errors_present": true
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_20",
+      "function": "test_tc_20",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
   },
   {
     "id": "TC-21",
     "requirement": "FR-09",
-    "title": "Map initial view and details",
+    "title": "Initial map HTML and manual marker details",
     "given": {
       "facilities": [
         "A",
         "B"
       ],
-      "location_allowed": true
+      "location_allowed": true,
+      "fixture": "env in test_requirements.py"
     },
     "action": {
       "open_page": true,
@@ -649,24 +718,19 @@
       "close_details": true
     },
     "expected": {
-      "marker_ids": [
-        "A",
-        "B"
+      "http_status": 200,
+      "content_type_contains": "text/html",
+      "element_ids": [
+        "map",
+        "location-control",
+        "search-radius",
+        "filters"
       ],
-      "controls_visible": true,
-      "details_fields": [
-        "name",
-        "distance",
-        "accessibility",
-        "baby_changing",
-        "pricing",
-        "hygiene"
-      ],
-      "details_closed": true
+      "manual_marker_details_check": "section 5.1"
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_21_initial_map_shell",
+      "function": "test_tc_21",
       "scope": "Initial HTML map shell only; marker interactions require the manual procedure in report section 5.1.",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
@@ -676,7 +740,8 @@
     "requirement": "FR-09",
     "title": "Map without geolocation",
     "given": {
-      "location_permission": "denied"
+      "location_permission": "denied",
+      "fixture": "env in test_requirements.py"
     },
     "action": {
       "open_page": true,
@@ -705,7 +770,8 @@
       ],
       "matching_ids": [
         "A"
-      ]
+      ],
+      "fixture": "env in test_requirements.py"
     },
     "action": {
       "apply_filter": true,
@@ -736,13 +802,13 @@
       "role": "ADMIN"
     },
     "expected": {
-      "status": 200,
       "all_exported_rows_district": "Kadıköy",
-      "results_nonempty": true
+      "results_nonempty": true,
+      "http_status": 200
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_24",
+      "function": "test_tc_24",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
   },
@@ -751,420 +817,21 @@
     "requirement": "FR-06",
     "title": "Dashboard has no data",
     "given": {
-      "reviews": []
+      "reviews": [],
+      "fixture": "env in test_requirements.py"
     },
     "action": {
       "role": "ADMIN",
       "request_stats": true
     },
     "expected": {
-      "status": 200,
+      "http_status": 200,
       "average_cleanliness": null,
-      "review_count": 0,
-      "no_data_message": true
+      "review_count": 0
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_25",
-      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
-    }
-  },
-  {
-    "id": "TS-DB-01",
-    "requirement": "FR-10",
-    "title": "Invalid toilet coordinates",
-    "given": {},
-    "action": {
-      "create_toilet": {
-        "latitude": 95,
-        "longitude": 29
-      }
-    },
-    "expected": {
-      "status": 422,
-      "saved": false
-    },
-    "verification": {
-      "mode": "automated_http",
-      "function": "test_TS_DB_01",
-      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
-    }
-  },
-  {
-    "id": "TS-DB-02",
-    "requirement": "FR-08",
-    "title": "Case insensitive email",
-    "given": {
-      "email": "ali@example.com"
-    },
-    "action": {
-      "register_email": "ALI@example.com"
-    },
-    "expected": {
-      "status": 409
-    },
-    "verification": {
-      "mode": "automated_http",
-      "function": "test_TS_DB_02",
-      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
-    }
-  },
-  {
-    "id": "TS-DB-03",
-    "requirement": "FR-03",
-    "title": "Invalid review rating",
-    "given": {
-      "user": "U",
-      "toilet": "A"
-    },
-    "action": {
-      "cleanliness_score": 6
-    },
-    "expected": {
-      "status": 422,
-      "saved": false
-    },
-    "verification": {
-      "mode": "automated_http",
-      "function": "test_TS_DB_03",
-      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
-    }
-  },
-  {
-    "id": "TS-DB-04",
-    "requirement": "FR-03",
-    "title": "Duplicate review",
-    "given": {
-      "user": "U",
-      "toilet": "A",
-      "review_count": 1,
-      "already_reviewed": true
-    },
-    "action": {
-      "submit_again": true
-    },
-    "expected": {
-      "status": 409,
-      "review_count": 1
-    },
-    "verification": {
-      "mode": "automated_http",
-      "function": "test_TS_DB_04",
-      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
-    }
-  },
-  {
-    "id": "TS-DB-05",
-    "requirement": "FR-10",
-    "title": "Nonexistent toilet",
-    "given": {
-      "user": "U"
-    },
-    "action": {
-      "review_toilet": "nonexistent"
-    },
-    "expected": {
-      "status": 404,
-      "saved": false
-    },
-    "verification": {
-      "mode": "automated_http",
-      "function": "test_TS_DB_05",
-      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
-    }
-  },
-  {
-    "id": "TS-DB-06",
-    "requirement": "FR-10",
-    "title": "Account deletion",
-    "given": {
-      "user": "U",
-      "reviews": 2,
-      "review_toilets": [
-        "A",
-        "B"
-      ]
-    },
-    "action": {
-      "delete_account": "U"
-    },
-    "expected": {
-      "status": 204,
-      "personal_data_removed": true,
-      "reviews": 2,
-      "user_id": null,
-      "author": "Anonymous"
-    },
-    "verification": {
-      "mode": "automated_http",
-      "function": "test_TS_DB_06",
-      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
-    }
-  },
-  {
-    "id": "TS-DB-07",
-    "requirement": "FR-03",
-    "title": "Recalculate aggregate",
-    "given": {
-      "ratings": [
-        4,
-        2
-      ]
-    },
-    "action": {
-      "add_rating": 3
-    },
-    "expected": {
-      "average_cleanliness": 3.0,
-      "review_count": 3
-    },
-    "verification": {
-      "mode": "automated_http",
-      "function": "test_TS_DB_07",
-      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
-    }
-  },
-  {
-    "id": "TS-DB-08",
-    "requirement": "FR-07",
-    "title": "Stable source identity",
-    "given": {
-      "source_id": "IBB-42"
-    },
-    "action": {
-      "import_twice": true
-    },
-    "expected": {
-      "records_with_source_id": 1
-    },
-    "verification": {
-      "mode": "automated_http",
-      "function": "test_TS_DB_08",
-      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
-    }
-  },
-  {
-    "id": "TS-SEC-01",
-    "requirement": "FR-08",
-    "title": "Weak password",
-    "given": {},
-    "action": {
-      "register_password": "abc"
-    },
-    "expected": {
-      "status": 422,
-      "saved": false
-    },
-    "verification": {
-      "mode": "automated_http",
-      "function": "test_TS_SEC_01",
-      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
-    }
-  },
-  {
-    "id": "TS-SEC-02",
-    "requirement": "FR-08",
-    "title": "Password storage and response",
-    "given": {},
-    "action": {
-      "register_password": "Guvenli123",
-      "email": "ali@example.com",
-      "display_name": "Ali"
-    },
-    "expected": {
-      "status": 201,
-      "password_hash_valid": true,
-      "password_hash_exposed": false,
-      "plaintext_stored": false
-    },
-    "verification": {
-      "mode": "automated_http",
-      "function": "test_TS_SEC_02",
-      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
-    }
-  },
-  {
-    "id": "TS-SEC-03",
-    "requirement": "FR-08",
-    "title": "JWT claims",
-    "given": {
-      "user": "U"
-    },
-    "action": {
-      "login_valid": true
-    },
-    "expected": {
-      "status": 200,
-      "token_type": "Bearer",
-      "expires_in": 3600,
-      "signature_valid": true
-    },
-    "verification": {
-      "mode": "automated_http",
-      "function": "test_TS_SEC_03",
-      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
-    }
-  },
-  {
-    "id": "TS-SEC-04",
-    "requirement": "FR-08",
-    "title": "Generic login error",
-    "given": {
-      "user": "U"
-    },
-    "action": {
-      "login_wrong_password": true,
-      "login_unknown_email": true
-    },
-    "expected": {
-      "statuses": [
-        401,
-        401
-      ],
-      "messages": [
-        "Invalid email or password",
-        "Invalid email or password"
-      ]
-    },
-    "verification": {
-      "mode": "automated_http",
-      "function": "test_TS_SEC_04",
-      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
-    }
-  },
-  {
-    "id": "TS-SEC-05",
-    "requirement": "FR-08",
-    "title": "Missing token",
-    "given": {},
-    "action": {
-      "write_review": true,
-      "token": null
-    },
-    "expected": {
-      "status": 401,
-      "saved": false
-    },
-    "verification": {
-      "mode": "automated_http",
-      "function": "test_TS_SEC_05",
-      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
-    }
-  },
-  {
-    "id": "TS-SEC-06",
-    "requirement": "FR-08",
-    "title": "Tampered token",
-    "given": {},
-    "action": {
-      "write_review": true,
-      "token": "tampered"
-    },
-    "expected": {
-      "status": 401,
-      "saved": false
-    },
-    "verification": {
-      "mode": "automated_http",
-      "function": "test_TS_SEC_06",
-      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
-    }
-  },
-  {
-    "id": "TS-SEC-07",
-    "requirement": "FR-08",
-    "title": "Expired token",
-    "given": {},
-    "action": {
-      "write_review": true,
-      "token": "expired"
-    },
-    "expected": {
-      "status": 401,
-      "saved": false
-    },
-    "verification": {
-      "mode": "automated_http",
-      "function": "test_TS_SEC_07",
-      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
-    }
-  },
-  {
-    "id": "TS-SEC-08",
-    "requirement": "FR-08",
-    "title": "User cannot access admin",
-    "given": {
-      "role": "USER"
-    },
-    "action": {
-      "path": "/api/v1/admin/metrics/summary"
-    },
-    "expected": {
-      "status": 403
-    },
-    "verification": {
-      "mode": "automated_http",
-      "function": "test_TS_SEC_08",
-      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
-    }
-  },
-  {
-    "id": "TS-SEC-09",
-    "requirement": "FR-08",
-    "title": "Admin access",
-    "given": {
-      "role": "ADMIN"
-    },
-    "action": {
-      "path": "/api/v1/admin/metrics/summary"
-    },
-    "expected": {
-      "status": 200
-    },
-    "verification": {
-      "mode": "automated_http",
-      "function": "test_TS_SEC_09",
-      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
-    }
-  },
-  {
-    "id": "TS-SEC-10",
-    "requirement": "FR-03",
-    "title": "Review ownership",
-    "given": {
-      "owner": "A",
-      "caller": "B"
-    },
-    "action": {
-      "delete_review": true
-    },
-    "expected": {
-      "status": 403,
-      "review_retained": true
-    },
-    "verification": {
-      "mode": "automated_http",
-      "function": "test_TS_SEC_10",
-      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
-    }
-  },
-  {
-    "id": "TS-SEC-11",
-    "requirement": "FR-08",
-    "title": "Login throttling",
-    "given": {
-      "failed_attempts": 5,
-      "window_minutes": 15
-    },
-    "action": {
-      "attempt_login": true
-    },
-    "expected": {
-      "status": 429
-    },
-    "verification": {
-      "mode": "automated_http",
-      "function": "test_TS_SEC_11",
+      "function": "test_tc_25",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
   },
@@ -1178,7 +845,8 @@
       "ratings": [
         4,
         2
-      ]
+      ],
+      "fixture": "env in test_requirements.py"
     },
     "action": {
       "edit_own_rating": 5,
@@ -1193,7 +861,7 @@
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_26",
+      "function": "test_tc_26",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
   },
@@ -1203,19 +871,21 @@
     "title": "Close reviewed facility",
     "given": {
       "toilet": "A",
-      "reviews": 2
+      "reviews": 2,
+      "fixture": "env in test_requirements.py"
     },
     "action": {
       "close_facility": true
     },
     "expected": {
-      "status": "CLOSED",
       "reviews": 2,
-      "hard_deleted": false
+      "hard_deleted": false,
+      "facility_status": "CLOSED",
+      "http_status": 200
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_27",
+      "function": "test_tc_27",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
   },
@@ -1230,20 +900,492 @@
         "No soap"
       ],
       "pii": "ali@example.com",
-      "ai": "invalid JSON"
+      "ai": "invalid JSON",
+      "fixture": "env in test_requirements.py"
     },
     "action": {
       "request_summary": true
     },
     "expected": {
-      "pii_sent": false,
-      "instructions_followed": false,
-      "fallback_used": true
+      "http_status": 200,
+      "summary": null,
+      "review_count": 3,
+      "provider_calls": 1,
+      "email_absent_from_provider_arguments": true
     },
     "verification": {
       "mode": "automated_http",
-      "function": "test_TC_28",
+      "function": "test_tc_28",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
+    }
+  },
+  {
+    "id": "TC-29",
+    "requirement": "FR-10",
+    "title": "Invalid toilet coordinates",
+    "given": {
+      "fixture": "env in test_requirements.py"
+    },
+    "action": {
+      "create_toilet": {
+        "latitude": 95,
+        "longitude": 29
+      }
+    },
+    "expected": {
+      "saved": false,
+      "http_status": 422
+    },
+    "verification": {
+      "mode": "automated_http",
+      "function": "test_tc_29",
+      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
+    }
+  },
+  {
+    "id": "TC-30",
+    "requirement": "FR-08",
+    "title": "Case insensitive email",
+    "given": {
+      "email": "ali@example.com",
+      "fixture": "env in test_requirements.py"
+    },
+    "action": {
+      "register_email": "ALI@example.com"
+    },
+    "expected": {
+      "http_status": 409
+    },
+    "verification": {
+      "mode": "automated_http",
+      "function": "test_tc_30",
+      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
+    }
+  },
+  {
+    "id": "TC-31",
+    "requirement": "FR-03",
+    "title": "Invalid review rating",
+    "given": {
+      "user": "U",
+      "toilet": "A",
+      "fixture": "env in test_requirements.py"
+    },
+    "action": {
+      "method": "POST",
+      "path": "/api/v1/toilets/{A}/reviews",
+      "score_variants": [
+        0,
+        6
+      ]
+    },
+    "expected": {
+      "saved": false,
+      "http_status": 422
+    },
+    "verification": {
+      "mode": "automated_http",
+      "function": "test_tc_31",
+      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
+    }
+  },
+  {
+    "id": "TC-32",
+    "requirement": "FR-03",
+    "title": "Duplicate review",
+    "given": {
+      "user": "U",
+      "toilet": "A",
+      "review_count": 1,
+      "already_reviewed": true,
+      "fixture": "env in test_requirements.py"
+    },
+    "action": {
+      "submit_again": true
+    },
+    "expected": {
+      "review_count": 1,
+      "http_status": 409
+    },
+    "verification": {
+      "mode": "automated_http",
+      "function": "test_tc_32",
+      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
+    }
+  },
+  {
+    "id": "TC-33",
+    "requirement": "FR-10",
+    "title": "Nonexistent toilet",
+    "given": {
+      "user": "U",
+      "fixture": "env in test_requirements.py"
+    },
+    "action": {
+      "review_toilet": "nonexistent"
+    },
+    "expected": {
+      "saved": false,
+      "http_status": 404
+    },
+    "verification": {
+      "mode": "automated_http",
+      "function": "test_tc_33",
+      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
+    }
+  },
+  {
+    "id": "TC-34",
+    "requirement": "FR-10",
+    "title": "Account deletion",
+    "given": {
+      "fixture": "env in test_requirements.py",
+      "user": "U",
+      "reviews": [
+        {
+          "toilet": "A",
+          "score": 4
+        },
+        {
+          "toilet": "B",
+          "score": 2
+        }
+      ]
+    },
+    "action": {
+      "delete_account": "U"
+    },
+    "expected": {
+      "reviews": 2,
+      "user_id": null,
+      "author": "Anonymous",
+      "http_status": 204,
+      "user_record_removed": true
+    },
+    "verification": {
+      "mode": "automated_http",
+      "function": "test_tc_34",
+      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
+    }
+  },
+  {
+    "id": "TC-35",
+    "requirement": "FR-03",
+    "title": "Recalculate aggregate",
+    "given": {
+      "ratings": [
+        4,
+        2
+      ],
+      "fixture": "env in test_requirements.py"
+    },
+    "action": {
+      "add_rating": 3
+    },
+    "expected": {
+      "average_cleanliness": 3.0,
+      "review_count": 3
+    },
+    "verification": {
+      "mode": "automated_http",
+      "function": "test_tc_35",
+      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
+    }
+  },
+  {
+    "id": "TC-36",
+    "requirement": "FR-07",
+    "title": "Stable source identity",
+    "given": {
+      "fixture": "env in test_requirements.py",
+      "source": "ibb",
+      "source_id": "IBB-42",
+      "record_initially_absent": true
+    },
+    "action": {
+      "import_twice": true
+    },
+    "expected": {
+      "records_with_source_id": 1
+    },
+    "verification": {
+      "mode": "automated_http",
+      "function": "test_tc_36",
+      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
+    }
+  },
+  {
+    "id": "TC-37",
+    "requirement": "FR-08",
+    "title": "Weak password",
+    "given": {
+      "fixture": "env in test_requirements.py"
+    },
+    "action": {
+      "register_password": "abc"
+    },
+    "expected": {
+      "saved": false,
+      "http_status": 422
+    },
+    "verification": {
+      "mode": "automated_http",
+      "function": "test_tc_37",
+      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
+    }
+  },
+  {
+    "id": "TC-38",
+    "requirement": "FR-08",
+    "title": "Password storage and response",
+    "given": {
+      "fixture": "env in test_requirements.py"
+    },
+    "action": {
+      "register_password": "Guvenli123",
+      "email": "ali@example.com",
+      "display_name": "Ali"
+    },
+    "expected": {
+      "password_hash_valid": true,
+      "password_hash_exposed": false,
+      "plaintext_stored": false,
+      "http_status": 201
+    },
+    "verification": {
+      "mode": "automated_http",
+      "function": "test_tc_38",
+      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
+    }
+  },
+  {
+    "id": "TC-39",
+    "requirement": "FR-08",
+    "title": "JWT claims",
+    "given": {
+      "user": "U",
+      "fixture": "env in test_requirements.py"
+    },
+    "action": {
+      "login_valid": true
+    },
+    "expected": {
+      "token_type": "Bearer",
+      "expires_in": 3600,
+      "signature_valid": true,
+      "http_status": 200
+    },
+    "verification": {
+      "mode": "automated_http",
+      "function": "test_tc_39",
+      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
+    }
+  },
+  {
+    "id": "TC-40",
+    "requirement": "FR-08",
+    "title": "Generic login error",
+    "given": {
+      "user": "U",
+      "fixture": "env in test_requirements.py"
+    },
+    "action": {
+      "login_wrong_password": true,
+      "login_unknown_email": true
+    },
+    "expected": {
+      "messages": [
+        "Invalid email or password",
+        "Invalid email or password"
+      ],
+      "http_statuses": [
+        401,
+        401
+      ]
+    },
+    "verification": {
+      "mode": "automated_http",
+      "function": "test_tc_40",
+      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
+    }
+  },
+  {
+    "id": "TC-41",
+    "requirement": "FR-08",
+    "title": "Missing token",
+    "given": {
+      "fixture": "env in test_requirements.py"
+    },
+    "action": {
+      "write_review": true,
+      "token": null
+    },
+    "expected": {
+      "saved": false,
+      "http_status": 401
+    },
+    "verification": {
+      "mode": "automated_http",
+      "function": "test_tc_41",
+      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
+    }
+  },
+  {
+    "id": "TC-42",
+    "requirement": "FR-08",
+    "title": "Tampered token",
+    "given": {
+      "fixture": "env in test_requirements.py"
+    },
+    "action": {
+      "method": "POST",
+      "path": "/api/v1/toilets/{A}/reviews",
+      "token": "JWT signed with a different test key"
+    },
+    "expected": {
+      "http_status": 401,
+      "saved": false
+    },
+    "verification": {
+      "mode": "automated_http",
+      "function": "test_tc_42",
+      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
+    }
+  },
+  {
+    "id": "TC-43",
+    "requirement": "FR-08",
+    "title": "Expired token",
+    "given": {
+      "fixture": "env in test_requirements.py"
+    },
+    "action": {
+      "write_review": true,
+      "token": "expired"
+    },
+    "expected": {
+      "saved": false,
+      "http_status": 401
+    },
+    "verification": {
+      "mode": "automated_http",
+      "function": "test_tc_43",
+      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
+    }
+  },
+  {
+    "id": "TC-44",
+    "requirement": "FR-08",
+    "title": "User cannot access admin",
+    "given": {
+      "role": "USER",
+      "fixture": "env in test_requirements.py"
+    },
+    "action": {
+      "path": "/api/v1/admin/metrics/summary"
+    },
+    "expected": {
+      "http_status": 403
+    },
+    "verification": {
+      "mode": "automated_http",
+      "function": "test_tc_44",
+      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
+    }
+  },
+  {
+    "id": "TC-45",
+    "requirement": "FR-08",
+    "title": "Admin access",
+    "given": {
+      "role": "ADMIN",
+      "fixture": "env in test_requirements.py"
+    },
+    "action": {
+      "path": "/api/v1/admin/metrics/summary"
+    },
+    "expected": {
+      "http_status": 200
+    },
+    "verification": {
+      "mode": "automated_http",
+      "function": "test_tc_45",
+      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
+    }
+  },
+  {
+    "id": "TC-46",
+    "requirement": "FR-03",
+    "title": "Review ownership",
+    "given": {
+      "fixture": "env in test_requirements.py",
+      "one_review": "R1 owned by V; requester U"
+    },
+    "action": {
+      "delete_review": true
+    },
+    "expected": {
+      "review_retained": true,
+      "http_status": 403
+    },
+    "verification": {
+      "mode": "automated_http",
+      "function": "test_tc_46",
+      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
+    }
+  },
+  {
+    "id": "TC-47",
+    "requirement": "FR-08",
+    "title": "Login throttling",
+    "given": {
+      "failed_attempts": 5,
+      "window_minutes": 15,
+      "fixture": "env in test_requirements.py"
+    },
+    "action": {
+      "attempt_login": true
+    },
+    "expected": {
+      "http_statuses": [
+        401,
+        401,
+        401,
+        401,
+        401,
+        429
+      ]
+    },
+    "verification": {
+      "mode": "automated_http",
+      "function": "test_tc_47",
+      "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
+    }
+  },
+  {
+    "id": "TC-48",
+    "requirement": "FR-08",
+    "title": "Public registration cannot grant administrator privileges",
+    "given": {
+      "fixture": "env in test_requirements.py",
+      "email": "new@example.com"
+    },
+    "action": {
+      "method": "POST",
+      "path": "/api/v1/auth/register",
+      "role": "ADMIN"
+    },
+    "expected": {
+      "http_status_in": [
+        201,
+        422
+      ],
+      "registered_admin": false
+    },
+    "verification": {
+      "mode": "automated_http",
+      "function": "test_tc_48",
+      "note": "Ignore client role and register USER, or reject the role field; neither may create ADMIN."
     }
   }
 ]
