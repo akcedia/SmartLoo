@@ -1,19 +1,44 @@
 # SmartLoo system context (DFD)
 
-Owner: Özgür Kılıç. Initial model, 14 October 2026. Covers the boundary for FR-01–FR-10; detailed models must refine these flows without adding unsupported features.
+Owner: Özgür Kılıç — issue #12.
+
+Integration draft, 16 October 2026; pending owner/TA review. Baseline: [requirements](../../REQUIREMENTS.MD).
+
+![System context DFD](../assets/context.svg)
+
+<details>
+<summary>Editable Mermaid source</summary>
 
 ```mermaid
-flowchart TD
-    G["Guest"] -->|"Location, filters, facility ID, registration or login data"| S(("SmartLoo"))
-    S -->|"Map results, details, reviews, AI summary or auth result"| G
-    U["Registered user"] -->|"Token, review changes, suggestion, preferences, account deletion"| S
-    S -->|"Operation result or preference recommendations"| U
-    A["Administrator"] -->|"Token, moderation, closure, date/district filters, import or export request"| S
-    S -->|"Decision result, analytics, import counts or report file"| A
-    I["IBB dataset source"] -->|"Facility metadata and candidate historical usage data"| S
+flowchart TB
+    G["Guest"]
+    U["Registered user"]
+    A["Administrator"]
+    S("0 SmartLoo")
+    I["IBB dataset source"]
+    P["AI provider"]
+    B["Browser location service"]
+    M["Map tile provider"]
+    G -->|"Search / filters / facility ID / credentials"| S
+    S -->|"Map / details / reviews / summary / auth result"| G
+    U -->|"Token / review / suggestion / preferences / deletion request"| S
+    S -->|"Operation result / suitable facilities"| U
+    A -->|"Token / decision / status / filters / batch / export format"| S
+    S -->|"Decision / metrics / counts / report"| A
     S -->|"Dataset retrieval request"| I
-    P["External AI provider"] -->|"Generated structured output or provider error"| S
-    S -->|"Redacted review content and task instructions"| P
+    I -->|"Facility metadata / optional historical usage"| S
+    S -->|"Redacted evidence / separate task instructions"| P
+    P -->|"Candidate JSON / error"| S
+    S -->|"Location permission request"| B
+    B -->|"Coordinates or permission failure"| S
+    S -->|"Tile coordinates and zoom"| M
+    M -->|"Base map tiles"| S
 ```
 
-The source is a downloadable external dataset, not an assumed live sensor feed. Historical usage data is optional until joins are validated; it is not hygiene feedback. The provider never receives server secrets through review text or direct browser credentials. Map-tile and browser-location services support the map view; their detailed boundary flows are pending Furkan's model. Guest, registered user and administrator are permission roles and may be the same person in different contexts. Internal stores are intentionally hidden at the context level.
+</details>
+
+The boundary includes browser UI and backend. Guest, user and administrator are roles, not separate databases. Internal stores are hidden at context level. Rectangles are external entities, rounded rectangles are processes and cylinders in detailed DFDs are stores. Arrows carry named data; they do not prescribe call order.
+
+IBB supplies downloadable metadata, not live occupancy or hygiene. Historical usage is optional and is not joined to facilities without a verified crosswalk. Map tiles do not supply SmartLoo facility records. Browser coordinates are distinct from a manually selected map center. Read-only search uses local data independently of AI availability. No secrets or account identifiers enter AI review payloads.
+
+Detailed DFDs refine these boundary flows; their process numbers identify functions, not execution sequence.
