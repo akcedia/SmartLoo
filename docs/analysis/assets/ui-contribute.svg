@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="850" viewBox="0 0 1200 850">
+<rect width="1200" height="850" fill="#f2f6f8"/>
+<rect width="1200" height="84" fill="#123b4a"/>
+<text x="30" y="37" font-family="Arial, sans-serif" font-size="27" fill="white" font-weight="bold">SmartLoo</text>
+<text x="30" y="65" font-family="Arial, sans-serif" font-size="16" fill="#cce6e8" font-weight="normal">03 / Reviews and facility suggestions</text>
+<text x="910" y="36" font-family="Arial, sans-serif" font-size="16" fill="white" font-weight="normal">ANALYSIS MOCKUP</text>
+<text x="910" y="62" font-family="Arial, sans-serif" font-size="14" fill="#cce6e8" font-weight="normal">Illustrative data / not live</text>
+<rect x="30" y="110" width="555" height="330" rx="14" fill="white" stroke="#cbd9df"/>
+<text x="52" y="146" font-family="Arial, sans-serif" font-size="21" fill="#173e4b" font-weight="bold">Your review — example facility</text>
+<rect x="44" y="163" width="510" height="29" rx="4" fill="#f8fafb" stroke="#ccd9df"/><text x="52" y="186" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Cleanliness: [ 1  2  3  4  5 ]</text>
+<rect x="44" y="194" width="510" height="29" rx="4" fill="#f8fafb" stroke="#ccd9df"/><text x="52" y="217" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Comment (optional): [ text, up to 1000 chars ]</text>
+<text x="52" y="248" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Character counter: 0 / 1000</text>
+<rect x="50" y="257" width="510" height="36" rx="7" fill="#0b786c"/>
+<text x="64" y="281" font-family="Arial, sans-serif" font-size="16" fill="white" font-weight="normal">Submit review</text>
+<text x="52" y="327" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">One current review per user and facility.</text>
+<text x="52" y="358" font-family="Arial, sans-serif" font-size="16" fill="#a24b16" font-weight="normal">Guest: sign in before submitting.</text>
+<rect x="615" y="110" width="555" height="330" rx="14" fill="white" stroke="#cbd9df"/>
+<text x="637" y="146" font-family="Arial, sans-serif" font-size="21" fill="#173e4b" font-weight="bold">Existing review</text>
+<text x="637" y="186" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Your score: 4 / 5</text>
+<text x="637" y="217" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Your comment: “Clean, but no soap.”</text>
+<rect x="635" y="226" width="510" height="36" rx="7" fill="#0b786c"/>
+<text x="649" y="250" font-family="Arial, sans-serif" font-size="16" fill="white" font-weight="normal">Save changes     |     Delete my review</text>
+<text x="637" y="296" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Duplicate submission: edit existing review.</text>
+<text x="637" y="327" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Invalid score / overlong text: field error.</text>
+<text x="637" y="358" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Success updates displayed count and mean.</text>
+<rect x="30" y="465" width="555" height="330" rx="14" fill="white" stroke="#cbd9df"/>
+<text x="52" y="501" font-family="Arial, sans-serif" font-size="21" fill="#173e4b" font-weight="bold">Suggest a missing facility</text>
+<rect x="44" y="518" width="510" height="29" rx="4" fill="#f8fafb" stroke="#ccd9df"/><text x="52" y="541" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Name: [ required ]   District: [ required ]</text>
+<rect x="44" y="549" width="510" height="29" rx="4" fill="#f8fafb" stroke="#ccd9df"/><text x="52" y="572" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Latitude: [ required ] Longitude: [ required ]</text>
+<text x="52" y="603" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Accessibility / baby changing / price: Unknown</text>
+<rect x="50" y="612" width="510" height="36" rx="7" fill="#0b786c"/>
+<text x="64" y="636" font-family="Arial, sans-serif" font-size="16" fill="white" font-weight="normal">Send suggestion</text>
+<text x="52" y="682" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Receipt: suggestion ID • pending review</text>
+<text x="52" y="713" font-family="Arial, sans-serif" font-size="16" fill="#a24b16" font-weight="normal">Pending suggestions are not public markers.</text>
+<rect x="615" y="465" width="555" height="330" rx="14" fill="white" stroke="#cbd9df"/>
+<text x="637" y="501" font-family="Arial, sans-serif" font-size="21" fill="#173e4b" font-weight="bold">Result states</text>
+<text x="637" y="541" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Valid suggestion: awaiting administrator decision.</text>
+<text x="637" y="572" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Invalid coordinates: correct highlighted fields.</text>
+<text x="637" y="603" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Forbidden change: no modification performed.</text>
+<text x="637" y="634" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">No reviews: “Henüz puan yok” • count 0</text>
+<text x="637" y="665" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">AI summary refreshes after review changes.</text>
+<text x="637" y="696" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">All values shown here are illustrative.</text>
+</svg>

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="850" viewBox="0 0 1200 850">
+<rect width="1200" height="850" fill="#f2f6f8"/>
+<rect width="1200" height="84" fill="#123b4a"/>
+<text x="30" y="37" font-family="Arial, sans-serif" font-size="27" fill="white" font-weight="bold">SmartLoo</text>
+<text x="30" y="65" font-family="Arial, sans-serif" font-size="16" fill="#cce6e8" font-weight="normal">04 / Dashboard, moderation and import/export</text>
+<text x="910" y="36" font-family="Arial, sans-serif" font-size="16" fill="white" font-weight="normal">ANALYSIS MOCKUP</text>
+<text x="910" y="62" font-family="Arial, sans-serif" font-size="14" fill="#cce6e8" font-weight="normal">Illustrative data / not live</text>
+<rect x="30" y="110" width="555" height="330" rx="14" fill="white" stroke="#cbd9df"/>
+<text x="52" y="146" font-family="Arial, sans-serif" font-size="21" fill="#173e4b" font-weight="bold">Dashboard — illustrative selected period</text>
+<text x="52" y="186" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">District: [ Kadıköy ]  Period: [ Last 30 days ]</text>
+<text x="52" y="217" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Also: last 7 days / custom from–to dates</text>
+<text x="52" y="248" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Mean: 3.0 / 5   Reviews: 2   Active ratio: 75%</text>
+<text x="52" y="279" font-family="Arial, sans-serif" font-size="16" fill="#a24b16" font-weight="normal">Acil Müdahale Gerekli — mean below 3.5</text>
+<text x="52" y="310" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Trend chart + facility table use same filters.</text>
+<text x="52" y="341" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">No reviews: No data, mean null, count 0.</text>
+<rect x="50" y="350" width="510" height="36" rx="7" fill="#0b786c"/>
+<text x="64" y="374" font-family="Arial, sans-serif" font-size="16" fill="white" font-weight="normal">Export CSV     |     Export JSON</text>
+<rect x="615" y="110" width="555" height="330" rx="14" fill="white" stroke="#cbd9df"/>
+<text x="637" y="146" font-family="Arial, sans-serif" font-size="21" fill="#173e4b" font-weight="bold">Moderation and closure</text>
+<text x="637" y="186" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Pending suggestion: Example Park WC</text>
+<text x="637" y="217" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Metadata / coordinates / known amenities</text>
+<rect x="635" y="226" width="510" height="36" rx="7" fill="#0b786c"/>
+<text x="649" y="250" font-family="Arial, sans-serif" font-size="16" fill="white" font-weight="normal">Approve     |     Reject</text>
+<text x="637" y="296" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Only approved valid facilities can be published.</text>
+<text x="637" y="327" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Facility status: [ ACTIVE / CLOSED / MAINTENANCE ]</text>
+<rect x="635" y="336" width="510" height="36" rx="7" fill="#0b786c"/>
+<text x="649" y="360" font-family="Arial, sans-serif" font-size="16" fill="white" font-weight="normal">Save status     |     Delete selected review</text>
+<text x="637" y="406" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Closure preserves existing review history.</text>
+<rect x="30" y="465" width="555" height="330" rx="14" fill="white" stroke="#cbd9df"/>
+<text x="52" y="501" font-family="Arial, sans-serif" font-size="21" fill="#173e4b" font-weight="bold">Import — CSV or JSON</text>
+<text x="52" y="541" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">File: [ choose CSV / JSON ]</text>
+<text x="52" y="572" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Required metadata and source identity validated.</text>
+<rect x="50" y="581" width="510" height="36" rx="7" fill="#0b786c"/>
+<text x="64" y="605" font-family="Arial, sans-serif" font-size="16" fill="white" font-weight="normal">Import batch</text>
+<text x="52" y="651" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Success: inserted 4 / updated 2 / rejected 0</text>
+<text x="52" y="682" font-family="Arial, sans-serif" font-size="16" fill="#a24b16" font-weight="normal">Invalid batch: row errors; no rows committed.</text>
+<text x="52" y="713" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Example error: row 3 latitude out of range.</text>
+<rect x="615" y="465" width="555" height="330" rx="14" fill="white" stroke="#cbd9df"/>
+<text x="637" y="501" font-family="Arial, sans-serif" font-size="21" fill="#173e4b" font-weight="bold">Export and missing information</text>
+<text x="637" y="541" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Uses the active district and date selection.</text>
+<text x="637" y="572" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Columns: facility_id, district, hygiene_score,</text>
+<text x="637" y="603" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">open_issues_count, last_cleaned_at</text>
+<text x="637" y="634" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Missing operational data: blank CSV / null JSON.</text>
+<text x="637" y="665" font-family="Arial, sans-serif" font-size="16" fill="#a24b16" font-weight="normal">Usage counts never become hygiene scores.</text>
+<text x="637" y="696" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Admin data requires authorized ADMIN access.</text>
+</svg>
