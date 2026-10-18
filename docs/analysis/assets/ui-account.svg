@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="850" viewBox="0 0 1200 850">
+<rect width="1200" height="850" fill="#f2f6f8"/>
+<rect width="1200" height="84" fill="#123b4a"/>
+<text x="30" y="37" font-family="Arial, sans-serif" font-size="27" fill="white" font-weight="bold">SmartLoo</text>
+<text x="30" y="65" font-family="Arial, sans-serif" font-size="16" fill="#cce6e8" font-weight="normal">02 / Sign in, register and account deletion</text>
+<text x="910" y="36" font-family="Arial, sans-serif" font-size="16" fill="white" font-weight="normal">ANALYSIS MOCKUP</text>
+<text x="910" y="62" font-family="Arial, sans-serif" font-size="14" fill="#cce6e8" font-weight="normal">Illustrative data / not live</text>
+<rect x="30" y="110" width="555" height="330" rx="14" fill="white" stroke="#cbd9df"/>
+<text x="52" y="146" font-family="Arial, sans-serif" font-size="21" fill="#173e4b" font-weight="bold">Sign in</text>
+<rect x="44" y="163" width="510" height="29" rx="4" fill="#f8fafb" stroke="#ccd9df"/><text x="52" y="186" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Email: [ name@example.com ]</text>
+<rect x="44" y="194" width="510" height="29" rx="4" fill="#f8fafb" stroke="#ccd9df"/><text x="52" y="217" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Password: [ •••••••• ]</text>
+<rect x="50" y="226" width="510" height="36" rx="7" fill="#0b786c"/>
+<text x="64" y="250" font-family="Arial, sans-serif" font-size="16" fill="white" font-weight="normal">Sign in</text>
+<text x="52" y="296" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Generic error: Invalid email or password</text>
+<text x="52" y="327" font-family="Arial, sans-serif" font-size="16" fill="#a24b16" font-weight="normal">Too many attempts: try after the limit expires.</text>
+<text x="52" y="358" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Guest browsing remains available.</text>
+<rect x="615" y="110" width="555" height="330" rx="14" fill="white" stroke="#cbd9df"/>
+<text x="637" y="146" font-family="Arial, sans-serif" font-size="21" fill="#173e4b" font-weight="bold">Create account</text>
+<rect x="629" y="163" width="510" height="29" rx="4" fill="#f8fafb" stroke="#ccd9df"/><text x="637" y="186" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Display name: [ 3–30 characters ]</text>
+<rect x="629" y="194" width="510" height="29" rx="4" fill="#f8fafb" stroke="#ccd9df"/><text x="637" y="217" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Email: [ valid email ]</text>
+<rect x="629" y="225" width="510" height="29" rx="4" fill="#f8fafb" stroke="#ccd9df"/><text x="637" y="248" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Password: [ 8+ characters, letter and digit ]</text>
+<rect x="635" y="257" width="510" height="36" rx="7" fill="#0b786c"/>
+<text x="649" y="281" font-family="Arial, sans-serif" font-size="16" fill="white" font-weight="normal">Create account</text>
+<text x="637" y="327" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Duplicate email / field errors shown here.</text>
+<text x="637" y="358" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">No administrator-role selector.</text>
+<rect x="30" y="465" width="555" height="330" rx="14" fill="white" stroke="#cbd9df"/>
+<text x="52" y="501" font-family="Arial, sans-serif" font-size="21" fill="#173e4b" font-weight="bold">Account and privacy</text>
+<text x="52" y="541" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Signed in as: Example user</text>
+<text x="52" y="572" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Deleting account removes account personal data.</text>
+<text x="52" y="603" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Reviews remain under “Anonymous”.</text>
+<text x="52" y="634" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Personal text must be removed or redacted.</text>
+<rect x="50" y="643" width="510" height="36" rx="7" fill="#0b786c"/>
+<text x="64" y="667" font-family="Arial, sans-serif" font-size="16" fill="white" font-weight="normal">Delete my account</text>
+<text x="52" y="713" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Success shown only after cleanup completes.</text>
+<rect x="615" y="465" width="555" height="330" rx="14" fill="white" stroke="#cbd9df"/>
+<text x="637" y="501" font-family="Arial, sans-serif" font-size="21" fill="#173e4b" font-weight="bold">Session and access states</text>
+<text x="637" y="541" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Expired / invalid session: sign in again.</text>
+<text x="637" y="572" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Valid user on admin screen: access denied.</text>
+<text x="637" y="603" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">Review editing restricted to its owner.</text>
+<text x="637" y="634" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">ADMIN may delete another user’s review.</text>
+<text x="637" y="665" font-family="Arial, sans-serif" font-size="17" fill="#173e4b" font-weight="normal">No refresh, social login or password-reset UI.</text>
+<text x="637" y="696" font-family="Arial, sans-serif" font-size="16" fill="#a24b16" font-weight="normal">These are analysis screens, not working forms.</text>
+</svg>
