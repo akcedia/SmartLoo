@@ -18,6 +18,13 @@ export const SCENARIOS = {
   forbidden: "Yetkisiz rol (403)",
 };
 
+// Demo session shown in the header for each scenario. Not authentication.
+export function sampleSessionFor(scenario) {
+  if (scenario === "unauthorized") return null;
+  if (scenario === "forbidden") return { displayName: "Örnek Kullanıcı", role: "USER", isSample: true };
+  return { displayName: "Örnek Yönetici", role: "ADMIN", isSample: true };
+}
+
 const F = (n) => `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
 
 export function createSampleDataset(today = todayInIstanbul()) {
