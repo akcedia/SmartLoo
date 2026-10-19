@@ -8,6 +8,18 @@ export function LoadingPanel() {
   );
 }
 
+// First load: placeholder shapes instead of empty space.
+export function SkeletonPanel() {
+  return (
+    <div className="admin-skeleton" role="status" aria-label="Veriler yükleniyor">
+      <div className="admin-skeleton-row">
+        <span /><span /><span />
+      </div>
+      <span className="admin-skeleton-block" />
+    </div>
+  );
+}
+
 export function ErrorPanel({ error, onRetry }) {
   if (error.status === 401) {
     return (

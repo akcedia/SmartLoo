@@ -45,7 +45,13 @@ export default function TrendChart({ trend, threshold = CRITICAL_THRESHOLD }) {
         ))}
         {trend.map((d, i) =>
           d.average_cleanliness === null ? null : (
-            <circle key={d.date} cx={x(i)} cy={y(d.average_cleanliness)} r="3.5" className="admin-chart-dot">
+            <circle
+              key={d.date}
+              cx={x(i)}
+              cy={y(d.average_cleanliness)}
+              r="4"
+              className={d.average_cleanliness < threshold ? "admin-chart-dot admin-chart-dot--critical" : "admin-chart-dot"}
+            >
               <title>{`${d.date}: ${d.average_cleanliness.toFixed(2)} (${d.review_count} değerlendirme)`}</title>
             </circle>
           ),

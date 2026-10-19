@@ -25,7 +25,11 @@ export default function FacilityTable({ rows }) {
               <tr key={r.facility_id}>
                 <th scope="row">{r.name ?? r.facility_id}</th>
                 <td>{r.district}</td>
-                <td>{STATUS_LABELS[r.status] ?? "Bilinmiyor"}</td>
+                <td>
+                  <span className={`admin-status-pill admin-status-pill--${r.status ?? "UNKNOWN"}`}>
+                    {STATUS_LABELS[r.status] ?? "Bilinmiyor"}
+                  </span>
+                </td>
                 <td className={isCritical(r.hygiene_score) ? "admin-cell--critical" : undefined}>
                   {score ?? "Veri yok"}
                   {isCritical(r.hygiene_score) && <span className="admin-sr"> (kritik)</span>}
