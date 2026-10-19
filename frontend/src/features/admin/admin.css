@@ -178,7 +178,7 @@ body { margin: 0; }
 .admin-subtitle { margin: 4px 0 0; color: var(--admin-muted); }
 
 .admin-tabs { display: flex; gap: 4px; margin: 20px 0 16px; border-bottom: 1px solid var(--admin-border); }
-.admin-tab { padding: 8px 14px; margin-bottom: -1px; border-bottom: 2px solid transparent; font-weight: 500; }
+.admin-tab { white-space: nowrap; padding: 8px 14px; margin-bottom: -1px; border-bottom: 2px solid transparent; font-weight: 500; }
 .admin-tab--active { color: var(--admin-accent); border-bottom-color: var(--admin-accent); }
 .admin-tab--disabled { color: #9aa3b2; cursor: not-allowed; }
 
@@ -245,7 +245,7 @@ body { margin: 0; }
 .admin-content--stale > :not(.admin-status) { opacity: 0.5; transition: opacity 0.2s; }
 
 /* KPIs */
-.admin-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 16px; }
+.admin-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px; margin-top: 16px; }
 .admin-card {
   background: var(--admin-surface);
   border: 1px solid var(--admin-border);
@@ -272,8 +272,10 @@ body { margin: 0; }
   color: #fff;
 }
 
-.admin-grid { display: grid; gap: 16px; margin-top: 16px; }
+/* minmax(0, 1fr) lets panels shrink below the table's width so the table scrolls inside its own box. */
+.admin-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; margin-top: 16px; }
 .admin-panel {
+  min-width: 0;
   background: var(--admin-surface);
   border: 1px solid var(--admin-border);
   border-radius: var(--admin-radius);
@@ -293,7 +295,7 @@ body { margin: 0; }
 .admin-chart-label { font-size: 11px; fill: var(--admin-muted); }
 
 /* Table */
-.admin-table-wrap { overflow-x: auto; border: 1px solid var(--admin-border); border-radius: 8px; }
+.admin-table-wrap { position: relative; overflow-x: auto; border: 1px solid var(--admin-border); border-radius: 8px; }
 .admin-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
 .admin-table caption { text-align: left; padding: 8px 12px; color: var(--admin-muted); font-size: 0.85rem; }
 .admin-table th, .admin-table td { padding: 10px 12px; border-top: 1px solid var(--admin-border); text-align: left; }
@@ -357,7 +359,7 @@ body { margin: 0; }
 @keyframes admin-spin { to { transform: rotate(360deg); } }
 
 .admin-skeleton { margin-top: 16px; display: grid; gap: 12px; }
-.admin-skeleton-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.admin-skeleton-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 12px; }
 .admin-skeleton span {
   display: block;
   height: 96px;
