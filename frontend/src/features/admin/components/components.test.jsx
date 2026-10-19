@@ -4,7 +4,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import AccountMenu from "./AccountMenu.jsx";
 import KpiCards from "./KpiCards.jsx";
 import FacilityTable from "./FacilityTable.jsx";
-import TrendChart from "./TrendChart.jsx";
+import TrendChart, { chartGeometry } from "./TrendChart.jsx";
 import { ErrorPanel, NoDataPanel } from "./StatusPanel.jsx";
 import AdminDashboard, { formatDateTr } from "../AdminDashboard.jsx";
 import { sampleSessionFor } from "../api/sampleAdapter.js";
@@ -64,6 +64,26 @@ describe("FacilityTable and TrendChart", () => {
     const html = render(<TrendChart trend={trend} />);
     expect(html.match(/<circle/g)).toHaveLength(2);
     expect(html.match(/<polyline/g)).toHaveLength(2);
+  });
+
+  it("table cells carry labels for the narrow-screen card layout", () => {
+    const html = render(
+      <FacilityTable rows={[{ facility_id: "a", name: "A", district: "Kadıköy", status: "ACTIVE", hygiene_score: 4, review_count: 1 }]} />,
+    );
+    for (const label of ["İlçe", "Durum", "Hijyen puanı", "Değerlendirme"]) {
+      expect(html).toContain(`data-label="${label}"`);
+    }
+  });
+
+  it("adapts chart size and label density to the measured width", () => {
+    const phone = chartGeometry(300, 30);
+    const desktop = chartGeometry(1000, 30);
+    expect(phone.W).toBe(300);
+    expect(chartGeometry(120, 30).W).toBe(260); // never narrower than the minimum
+    expect(phone.labelEvery).toBeGreaterThan(desktop.labelEvery);
+    expect(Math.ceil(30 / phone.labelEvery)).toBeLessThanOrEqual(Math.floor((300 - 44) / 56));
+    expect(phone.H).toBeGreaterThanOrEqual(170);
+    expect(desktop.H).toBeLessThanOrEqual(240);
   });
 
   it("shows an empty message when the trend has no values", () => {

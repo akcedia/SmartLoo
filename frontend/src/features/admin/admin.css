@@ -14,8 +14,13 @@
   --admin-sample-border: #f0b429;
   --admin-shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 1px 3px rgba(16, 24, 40, 0.08);
   --admin-radius: 10px;
+  /* Fluid spacing: grows smoothly from small phones to desktop, no fixed device list. */
+  --admin-gutter: clamp(12px, 4vw, 24px);
+  --admin-gap: clamp(10px, 2.5vw, 16px);
+  --admin-touch: 36px;
 
   min-height: 100vh;
+  min-height: 100dvh;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   color: var(--admin-text);
   background: var(--admin-bg);
@@ -24,7 +29,7 @@
 
 body { margin: 0; }
 
-.admin h1 { margin: 0; font-size: 1.6rem; letter-spacing: -0.01em; }
+.admin h1 { margin: 0; font-size: clamp(1.3rem, 1.1rem + 1vw, 1.6rem); letter-spacing: -0.01em; }
 .admin h2 { font-size: 1.05rem; margin: 0 0 12px; }
 .admin a { color: var(--admin-accent); }
 .admin button {
@@ -48,8 +53,10 @@ body { margin: 0; }
   z-index: 10;
   display: flex;
   align-items: center;
-  gap: 24px;
-  padding: 10px 24px;
+  gap: clamp(12px, 3vw, 24px);
+  /* Safe-area insets keep content clear of notches and rounded corners. */
+  padding: max(8px, env(safe-area-inset-top)) max(var(--admin-gutter), env(safe-area-inset-right))
+    8px max(var(--admin-gutter), env(safe-area-inset-left));
   background: var(--admin-surface);
   border-bottom: 1px solid var(--admin-border);
   box-shadow: var(--admin-shadow);
@@ -174,7 +181,13 @@ body { margin: 0; }
 }
 
 /* Page */
-.admin-main { max-width: 1120px; margin: 0 auto; padding: 24px; }
+.admin-main {
+  container: admin-main / inline-size;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: var(--admin-gutter) max(var(--admin-gutter), env(safe-area-inset-right))
+    max(var(--admin-gutter), env(safe-area-inset-bottom)) max(var(--admin-gutter), env(safe-area-inset-left));
+}
 .admin-subtitle { margin: 4px 0 0; color: var(--admin-muted); }
 
 .admin-tabs { display: flex; gap: 4px; margin: 20px 0 16px; border-bottom: 1px solid var(--admin-border); }
@@ -256,7 +269,7 @@ body { margin: 0; }
 }
 .admin-card h3 { margin: 0; font-size: 0.85rem; color: var(--admin-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
 .admin-card--critical { border-color: var(--admin-critical); border-top-color: var(--admin-critical); background: var(--admin-critical-bg); }
-.admin-kpi { font-size: 2rem; font-weight: 700; margin: 6px 0 2px; font-variant-numeric: tabular-nums; }
+.admin-kpi { font-size: clamp(1.5rem, 1.2rem + 1.5vw, 2rem); font-weight: 700; margin: 6px 0 2px; font-variant-numeric: tabular-nums; }
 .admin-kpi small { font-size: 0.9rem; font-weight: 400; color: var(--admin-muted); }
 .admin-kpi--empty { color: var(--admin-muted); font-size: 1.4rem; }
 .admin-card-note { margin: 0; font-size: 0.8rem; color: var(--admin-muted); }
@@ -275,6 +288,7 @@ body { margin: 0; }
 /* minmax(0, 1fr) lets panels shrink below the table's width so the table scrolls inside its own box. */
 .admin-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; margin-top: 16px; }
 .admin-panel {
+  container: admin-panel / inline-size;
   min-width: 0;
   background: var(--admin-surface);
   border: 1px solid var(--admin-border);
@@ -285,7 +299,7 @@ body { margin: 0; }
 
 /* Chart */
 .admin-chart { margin: 0; }
-.admin-chart svg { width: 100%; height: auto; display: block; }
+.admin-chart svg { width: 100%; height: auto; display: block; overflow: visible; }
 .admin-chart figcaption { font-size: 0.8rem; color: var(--admin-muted); padding-top: 6px; }
 .admin-chart-grid { stroke: var(--admin-border); stroke-width: 1; }
 .admin-chart-threshold { stroke: var(--admin-critical); stroke-width: 1.5; stroke-dasharray: 6 4; }
@@ -301,7 +315,9 @@ body { margin: 0; }
 .admin-table th, .admin-table td { padding: 10px 12px; border-top: 1px solid var(--admin-border); text-align: left; }
 .admin-table thead th { background: var(--admin-bg); font-weight: 600; font-size: 0.85rem; color: var(--admin-muted); }
 .admin-table tbody th { font-weight: 500; }
-.admin-table tbody tr:hover { background: #f9fafb; }
+@media (hover: hover) {
+  .admin-table tbody tr:hover { background: #f9fafb; }
+}
 .admin-table td:nth-child(4), .admin-table td:nth-child(5),
 .admin-table thead th:nth-child(4), .admin-table thead th:nth-child(5) { text-align: right; font-variant-numeric: tabular-nums; }
 .admin-cell--critical { color: var(--admin-critical); font-weight: 700; }
@@ -384,13 +400,68 @@ body { margin: 0; }
   white-space: nowrap;
 }
 
+/* ---- Automatic adaptation ----
+   Components respond to the space they actually get (container queries),
+   not to a list of devices, so any phone/tablet width or rotation works. */
+
+/* Filters stack when the page column is narrow. */
+@container admin-main (max-width: 600px) {
+  .admin-filters { flex-direction: column; align-items: stretch; }
+  .admin-filters select,
+  .admin-filters input[type="date"] { width: 100%; box-sizing: border-box; }
+  .admin-tabs { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+  .admin-export button { flex: 1 1 140px; }
+}
+
+/* Table turns into labelled cards when its panel is too narrow for 5 columns. */
+@container admin-panel (max-width: 540px) {
+  .admin-table-wrap { overflow: visible; border: 0; }
+  .admin-table, .admin-table tbody, .admin-table tr, .admin-table th, .admin-table td { display: block; }
+  .admin-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .admin-table caption { display: block; padding: 0 0 8px; }
+  .admin-table tbody tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 12px;
+    margin-bottom: 10px;
+    padding: 12px;
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+  }
+  .admin-table tbody th { grid-column: 1 / -1; padding: 0; border: 0; font-weight: 600; }
+  .admin-table td { padding: 0; border: 0; text-align: left !important; }
+  .admin-table td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 0.75rem;
+    color: var(--admin-muted);
+  }
+}
+
+/* Top bar: hide secondary items when the viewport is narrow. */
 @media (max-width: 640px) {
-  .admin-topbar { gap: 12px; padding: 8px 16px; }
   .admin-topnav { display: none; }
   .admin-account { margin-left: auto; }
   .admin-account-name { display: none; }
-  .admin-main { padding: 16px; }
-  .admin-filters { flex-direction: column; align-items: stretch; }
-  .admin-tabs { overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
-  .admin-account-menu { right: -8px; }
+  .admin-account-menu { right: -8px; max-width: calc(100vw - 2 * var(--admin-gutter)); }
+}
+
+/* Short landscape phones: free vertical space by not pinning the top bar. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .admin-topbar { position: static; }
+}
+
+/* Touch screens: 44px targets and 16px inputs (prevents iOS zoom on focus). */
+@media (pointer: coarse) {
+  .admin { --admin-touch: 44px; }
+  .admin button,
+  .admin select,
+  .admin input[type="date"],
+  .admin-radio,
+  .admin-account-menu a,
+  .admin .admin-signin,
+  .admin-topnav a { min-height: var(--admin-touch); box-sizing: border-box; }
+  .admin-account-menu a { display: flex; align-items: center; }
+  .admin select,
+  .admin input[type="date"] { font-size: 16px; }
 }

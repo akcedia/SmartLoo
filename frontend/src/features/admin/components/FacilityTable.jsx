@@ -24,17 +24,17 @@ export default function FacilityTable({ rows }) {
             return (
               <tr key={r.facility_id}>
                 <th scope="row">{r.name ?? r.facility_id}</th>
-                <td>{r.district}</td>
-                <td>
+                <td data-label="İlçe">{r.district}</td>
+                <td data-label="Durum">
                   <span className={`admin-status-pill admin-status-pill--${r.status ?? "UNKNOWN"}`}>
                     {STATUS_LABELS[r.status] ?? "Bilinmiyor"}
                   </span>
                 </td>
-                <td className={isCritical(r.hygiene_score) ? "admin-cell--critical" : undefined}>
+                <td data-label="Hijyen puanı" className={isCritical(r.hygiene_score) ? "admin-cell--critical" : undefined}>
                   {score ?? "Veri yok"}
                   {isCritical(r.hygiene_score) && <span className="admin-sr"> (kritik)</span>}
                 </td>
-                <td>{r.review_count}</td>
+                <td data-label="Değerlendirme">{r.review_count}</td>
               </tr>
             );
           })}
