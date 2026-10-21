@@ -5,3 +5,16 @@ A centralized web platform that aggregates public toilet locations, hygiene stat
 Requirements review starts with [docs/REQUIREMENTS.MD](docs/REQUIREMENTS.MD).
 The [WBS](docs/planning/WBS.md), [PERT](docs/planning/PERT.md) and [Gantt](docs/planning/GANTT.md) follow the [Charter](docs/CHARTER.MD) milestones.
 Functional specifications are in [the case catalog](tests/requirements_cases.json) and [HTTP contract tests](tests/test_requirements.py); setup and the current red-stage result are documented in the report.
+
+---
+
+## Local Development & Testing Setup
+
+### Prerequisites
+- Docker & Docker Compose
+- Python 3.11+
+
+### Setup Instructions
+1. **Set up environment variables:**
+   ```bash
+   cp .env.example .env
