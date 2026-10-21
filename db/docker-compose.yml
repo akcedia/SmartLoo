@@ -1,0 +1,25 @@
+# Local PostgreSQL/PostGIS for the facility store (issue #24).
+# Development credentials only. Names/ports may move to the shared .env.example agreed in #23.
+services:
+  postgis:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_USER: ${SMARTLOO_DB_USER:-smartloo}
+      POSTGRES_PASSWORD: ${SMARTLOO_DB_PASSWORD:-smartloo-dev-only}
+      POSTGRES_DB: ${SMARTLOO_DB_NAME:-smartloo}
+      PGUSER: ${SMARTLOO_DB_USER:-smartloo}
+      PGDATABASE: ${SMARTLOO_DB_NAME:-smartloo}
+      TZ: Europe/Istanbul
+    ports:
+      - "${SMARTLOO_DB_PORT:-5432}:5432"
+    volumes:
+      - ./:/db:ro
+      - smartloo-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -q"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  smartloo-pgdata:
