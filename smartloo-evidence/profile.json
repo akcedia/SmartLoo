@@ -1,0 +1,4250 @@
+{
+  "files": {
+    "35aaebc1-7e60-458e-9707-4dd00ee7b98c.xlsx": {
+      "bytes": 14848414,
+      "sha256": "53e8d75e4fb5cd1666dde5a865b92843dc7a55f11a8d7a10378be33c44c9009f"
+    },
+    "5cc31ccc-af58-4f39-8ddb-044b140b2728.xlsx": {
+      "bytes": 11230443,
+      "sha256": "e30c3ac09853191981b6c3da0d92fb3a482022dbf3e8cf8f3f6cde17f2145cd2"
+    },
+    "8994ef18-64cf-4d77-a96e-667ddbaebc98.xlsx": {
+      "bytes": 15394284,
+      "sha256": "ab3fbfe5fc7fddef407074f0223704b14d6f24d121e3e94acbdd45d6b62f741e"
+    },
+    "9585ab4a-d160-4541-8a41-b86eeec4c1cc.geojson": {
+      "bytes": 178715,
+      "sha256": "ebb1b4e924c4aecf62cb05abe68d8faa0e3ce04d0e62be3d95e2671275dd803b"
+    },
+    "sehir-tuvaletleri-kullanim-istatistikleri.metadata.json": {
+      "bytes": 9585,
+      "sha256": "6c43c412b45e1507129dece07a44806b00a5e1b313433b7f81ce555c0df72457"
+    },
+    "sehir-tuvaletleri-veri-seti.metadata.json": {
+      "bytes": 4368,
+      "sha256": "9ea3a9a24bbc7dd28b982eef82b1620838c342b342c5fde0c2a663189275ed4a"
+    }
+  },
+  "facility": {
+    "rows": 422,
+    "feature_keys": [
+      "geometry",
+      "properties",
+      "type"
+    ],
+    "geometry_types": {
+      "Point": 422
+    },
+    "properties": {
+      "BAKIM_ODASI": {
+        "types": {
+          "str": 422
+        },
+        "null_or_empty": 0,
+        "distinct": 2,
+        "values": {
+          "Var": 196,
+          "Yok": 226
+        }
+      },
+      "HIZMET_YERI": {
+        "types": {
+          "str": 422
+        },
+        "null_or_empty": 0,
+        "distinct": 15,
+        "values": {
+          "Sahil": 57,
+          "Metro": 90,
+          "Park": 85,
+          "Koru": 24,
+          "Meydan": 27,
+          "Ulaşım": 14,
+          "Alışveriş": 11,
+          "Metrobüs": 10,
+          "Orman": 19,
+          "Millet Bahçesi": 3,
+          "Kent Ormanı": 26,
+          "Cami": 28,
+          "Plaj": 9,
+          "Otogar": 14,
+          "Sosyal Tesis": 5
+        }
+      },
+      "ILCE": {
+        "types": {
+          "str": 422
+        },
+        "null_or_empty": 0,
+        "distinct": 37,
+        "values": {
+          "ADALAR": 2,
+          "ATAŞEHİR": 7,
+          "BEYKOZ": 12,
+          "KADIKÖY": 29,
+          "KARTAL": 10,
+          "MALTEPE": 28,
+          "BAKIRKÖY": 17,
+          "BAŞAKŞEHİR": 13,
+          "BEŞİKTAŞ": 18,
+          "BEYLİKDÜZÜ": 7,
+          "BEYOĞLU": 18,
+          "BÜYÜKÇEKMECE": 6,
+          "ÇATALCA": 3,
+          "ÇEKMEKÖY": 7,
+          "ESENLER": 14,
+          "EYÜPSULTAN": 31,
+          "FATİH": 39,
+          "SARIYER": 29,
+          "PENDİK": 19,
+          "SULTANBEYLİ": 2,
+          "ŞİLE": 2,
+          "TUZLA": 4,
+          "ÜMRANİYE": 15,
+          "ÜSKÜDAR": 27,
+          "GAZİOSMANPAŞA": 6,
+          "KAĞITHANE": 3,
+          "KÜÇÜKÇEKMECE": 7,
+          "ARNAVUTKÖY": 1,
+          "AVCILAR": 7,
+          "BAĞCILAR": 10,
+          "BAHÇELİEVLER": 3,
+          "ESENYURT": 2,
+          "ŞİŞLİ": 7,
+          "SİLİVRİ": 6,
+          "SULTANGAZİ": 4,
+          "ZEYTİNBURNU": 6,
+          "SANCAKTEPE": 1
+        }
+      },
+      "MAHAL_ADI": {
+        "types": {
+          "str": 422
+        },
+        "null_or_empty": 0,
+        "distinct": 297
+      },
+      "TUVALET_DURUM": {
+        "types": {
+          "str": 422
+        },
+        "null_or_empty": 0,
+        "distinct": 3,
+        "values": {
+          "Aktif": 386,
+          "Pasif": 19,
+          "Dönemlik": 17
+        }
+      },
+      "TUVALET_TIP": {
+        "types": {
+          "str": 422
+        },
+        "null_or_empty": 0,
+        "distinct": 3,
+        "values": {
+          "Modüler": 174,
+          "Sabit": 234,
+          "Konteyner": 14
+        }
+      },
+      "X": {
+        "types": {
+          "float": 422
+        },
+        "null_or_empty": 0,
+        "distinct": 411
+      },
+      "Y": {
+        "types": {
+          "float": 422
+        },
+        "null_or_empty": 0,
+        "distinct": 411
+      }
+    },
+    "coordinate_bounds": [
+      [
+        28.1636884665,
+        29.6084857932
+      ],
+      [
+        40.8136539999,
+        41.4869657001
+      ]
+    ],
+    "max_xy_difference": [
+      4.988010005035903e-11,
+      4.984457291357103e-11
+    ],
+    "name": {
+      "distinct": 297,
+      "duplicates": [
+        {
+          "key": "BEYKOZ KORUSU",
+          "count": 2
+        },
+        {
+          "key": "ŞEHİT KADİR YILDIRIM PARKI (CADDEBOSTAN KARA VE SAHİL PARKI)",
+          "count": 3
+        },
+        {
+          "key": "DALYAN PARKI",
+          "count": 3
+        },
+        {
+          "key": "KADIKÖY MEYDANI",
+          "count": 3
+        },
+        {
+          "key": "MODA İNCİBURNU PARKI",
+          "count": 2
+        },
+        {
+          "key": "SALI PAZARI MEYDANI",
+          "count": 6
+        },
+        {
+          "key": "UZUNÇAYIR KAVŞAĞI",
+          "count": 2
+        },
+        {
+          "key": "İBB SOSYAL TESİSLER - KARTAL İDO ARASI KARA VE SAHİL PARKI",
+          "count": 4
+        },
+        {
+          "key": "İDEALTEPE - DRAGOS ARASI KARA VE SAHİL PARKI",
+          "count": 3
+        },
+        {
+          "key": "ORHANGAZİ ŞEHİR PARKI/BATI 1",
+          "count": 2
+        },
+        {
+          "key": "ORHANGAZİ ŞEHİR PARKI/DOĞU 1",
+          "count": 3
+        },
+        {
+          "key": "FLORYA SAHİL PARKI",
+          "count": 2
+        },
+        {
+          "key": "ŞEHİT GÜLŞEN BAHADIR PARKI",
+          "count": 3
+        },
+        {
+          "key": "FLORYA ATATÜRK ORMANI VE İPA YERLEŞKESİ",
+          "count": 4
+        },
+        {
+          "key": "MAÇKA DEMOKRASİ PARKI",
+          "count": 3
+        },
+        {
+          "key": "ZİNCİRLİKUYU KAVŞAĞI",
+          "count": 4
+        },
+        {
+          "key": "YILDIZ KORUSU",
+          "count": 3
+        },
+        {
+          "key": "GÜRPINAR KAVŞAĞI - M.SİNAN KAVŞAĞI ARASI (S RAMPASI)",
+          "count": 2
+        },
+        {
+          "key": "YAKUPLU B TİPİ MESİRE ALANI",
+          "count": 2
+        },
+        {
+          "key": "NURİ KİLLİGİL PARKI",
+          "count": 2
+        },
+        {
+          "key": "RAHMİ DEMİR KENT ORMANI",
+          "count": 4
+        },
+        {
+          "key": "AKSARAY METRO İSTASYONU VE ÇEVRESİ",
+          "count": 3
+        },
+        {
+          "key": "15 TEMMUZ DEMOKRASİ OTOGARI ORTA VE YAN REFÜJLER",
+          "count": 12
+        },
+        {
+          "key": "EYÜPSULTAN ATATÜRK BULVARI",
+          "count": 2
+        },
+        {
+          "key": "15 TEMMUZ KENT ORMANI 1. ETAP",
+          "count": 12
+        },
+        {
+          "key": "15 TEMMUZ KENT ORMANI 2. ETAP",
+          "count": 3
+        },
+        {
+          "key": "15 TEMMUZ KENT ORMANI 3. ETAP",
+          "count": 2
+        },
+        {
+          "key": "GÜLHANE KORUSU",
+          "count": 3
+        },
+        {
+          "key": "SULTANAHMET MEYDANI CAMİ BAHÇESİ VE ÇEVRESİ",
+          "count": 3
+        },
+        {
+          "key": "DR. MİMAR KADİR TOPBAŞ MEYDANI",
+          "count": 8
+        },
+        {
+          "key": "NEŞET SUYU MESİRE ALANI",
+          "count": 3
+        },
+        {
+          "key": "KÖMÜRCÜ BENT MESİRE ALANI",
+          "count": 2
+        },
+        {
+          "key": "BÜYÜKDERE FİDANLIĞI",
+          "count": 2
+        },
+        {
+          "key": "ORHANGAZİ ŞEHİR PARKI/DOĞU 2",
+          "count": 5
+        },
+        {
+          "key": "TOPRAK DEDE HAYRETTİN KARACA PARKI",
+          "count": 3
+        },
+        {
+          "key": "SULTANBEYLİ GÖLET PARKI",
+          "count": 2
+        },
+        {
+          "key": "KAMİL ABDUŞ LAGÜN PARKI",
+          "count": 2
+        },
+        {
+          "key": "ŞEHİT ÖMER ÖNER PARKI",
+          "count": 2
+        },
+        {
+          "key": "ÇARŞI METRO İSTASYONU",
+          "count": 2
+        },
+        {
+          "key": "KÜÇÜKÇEKMECE KANARYA GÖL PARKI",
+          "count": 4
+        },
+        {
+          "key": "EMİRGAN KORUSU",
+          "count": 8
+        },
+        {
+          "key": "BENTLER MESİRE ALANI",
+          "count": 3
+        },
+        {
+          "key": "FATİH ÇEŞMESİ MESİRE ALANI",
+          "count": 3
+        },
+        {
+          "key": "HAREM - ÜSKÜDAR ARASI SAHİL PARKLARI",
+          "count": 3
+        },
+        {
+          "key": "MİLLET PARKI",
+          "count": 2
+        },
+        {
+          "key": "BÜYÜK ÇAMLICA KORUSU",
+          "count": 2
+        },
+        {
+          "key": "KÜÇÜK ÇAMLICA KORUSU",
+          "count": 2
+        },
+        {
+          "key": "AVCILAR SAHİL PARKI - 1",
+          "count": 2
+        },
+        {
+          "key": "AVCILAR SAHİL PARKI - 2",
+          "count": 4
+        },
+        {
+          "key": "ORUÇ REİS METRO ÇIKIŞI (DOĞU-BATI)",
+          "count": 2
+        },
+        {
+          "key": "MAHMUTBEY METRO İSTASYONU",
+          "count": 2
+        },
+        {
+          "key": "AYTEKİN KOTİL PARKI",
+          "count": 2
+        },
+        {
+          "key": "ÇIRPICI ŞEHİR PARKI",
+          "count": 3
+        },
+        {
+          "key": "TAKSİM GEZİ PARKI",
+          "count": 2
+        },
+        {
+          "key": "HACIOSMAN ATATÜRK KENT ORMANI VE DERBENT BÖLÜMÜ",
+          "count": 3
+        }
+      ]
+    },
+    "district_name": {
+      "distinct": 302,
+      "duplicates": [
+        {
+          "key": [
+            "BEYKOZ",
+            "BEYKOZ KORUSU"
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "KADIKÖY",
+            "ŞEHİT KADİR YILDIRIM PARKI (CADDEBOSTAN KARA VE SAHİL PARKI)"
+          ],
+          "count": 3
+        },
+        {
+          "key": [
+            "KADIKÖY",
+            "DALYAN PARKI"
+          ],
+          "count": 3
+        },
+        {
+          "key": [
+            "KADIKÖY",
+            "KADIKÖY MEYDANI"
+          ],
+          "count": 3
+        },
+        {
+          "key": [
+            "KADIKÖY",
+            "MODA İNCİBURNU PARKI"
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "KADIKÖY",
+            "SALI PAZARI MEYDANI"
+          ],
+          "count": 6
+        },
+        {
+          "key": [
+            "KADIKÖY",
+            "UZUNÇAYIR KAVŞAĞI"
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "KARTAL",
+            "İBB SOSYAL TESİSLER - KARTAL İDO ARASI KARA VE SAHİL PARKI"
+          ],
+          "count": 4
+        },
+        {
+          "key": [
+            "MALTEPE",
+            "İDEALTEPE - DRAGOS ARASI KARA VE SAHİL PARKI"
+          ],
+          "count": 3
+        },
+        {
+          "key": [
+            "MALTEPE",
+            "ORHANGAZİ ŞEHİR PARKI/BATI 1"
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "MALTEPE",
+            "ORHANGAZİ ŞEHİR PARKI/DOĞU 1"
+          ],
+          "count": 3
+        },
+        {
+          "key": [
+            "BAKIRKÖY",
+            "FLORYA SAHİL PARKI"
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "BAKIRKÖY",
+            "ŞEHİT GÜLŞEN BAHADIR PARKI"
+          ],
+          "count": 3
+        },
+        {
+          "key": [
+            "BAKIRKÖY",
+            "FLORYA ATATÜRK ORMANI VE İPA YERLEŞKESİ"
+          ],
+          "count": 4
+        },
+        {
+          "key": [
+            "BEŞİKTAŞ",
+            "MAÇKA DEMOKRASİ PARKI"
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "BEŞİKTAŞ",
+            "ZİNCİRLİKUYU KAVŞAĞI"
+          ],
+          "count": 4
+        },
+        {
+          "key": [
+            "BEŞİKTAŞ",
+            "YILDIZ KORUSU"
+          ],
+          "count": 3
+        },
+        {
+          "key": [
+            "BEYLİKDÜZÜ",
+            "GÜRPINAR KAVŞAĞI - M.SİNAN KAVŞAĞI ARASI (S RAMPASI)"
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "BEYLİKDÜZÜ",
+            "YAKUPLU B TİPİ MESİRE ALANI"
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "BEYOĞLU",
+            "NURİ KİLLİGİL PARKI"
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "ÇEKMEKÖY",
+            "RAHMİ DEMİR KENT ORMANI"
+          ],
+          "count": 4
+        },
+        {
+          "key": [
+            "ESENLER",
+            "AKSARAY METRO İSTASYONU VE ÇEVRESİ"
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "ESENLER",
+            "15 TEMMUZ DEMOKRASİ OTOGARI ORTA VE YAN REFÜJLER"
+          ],
+          "count": 12
+        },
+        {
+          "key": [
+            "EYÜPSULTAN",
+            "EYÜPSULTAN ATATÜRK BULVARI"
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "EYÜPSULTAN",
+            "15 TEMMUZ KENT ORMANI 1. ETAP"
+          ],
+          "count": 12
+        },
+        {
+          "key": [
+            "EYÜPSULTAN",
+            "15 TEMMUZ KENT ORMANI 2. ETAP"
+          ],
+          "count": 3
+        },
+        {
+          "key": [
+            "EYÜPSULTAN",
+            "15 TEMMUZ KENT ORMANI 3. ETAP"
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "FATİH",
+            "GÜLHANE KORUSU"
+          ],
+          "count": 3
+        },
+        {
+          "key": [
+            "FATİH",
+            "SULTANAHMET MEYDANI CAMİ BAHÇESİ VE ÇEVRESİ"
+          ],
+          "count": 3
+        },
+        {
+          "key": [
+            "FATİH",
+            "DR. MİMAR KADİR TOPBAŞ MEYDANI"
+          ],
+          "count": 7
+        },
+        {
+          "key": [
+            "SARIYER",
+            "NEŞET SUYU MESİRE ALANI"
+          ],
+          "count": 3
+        },
+        {
+          "key": [
+            "SARIYER",
+            "KÖMÜRCÜ BENT MESİRE ALANI"
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "SARIYER",
+            "BÜYÜKDERE FİDANLIĞI"
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "MALTEPE",
+            "ORHANGAZİ ŞEHİR PARKI/DOĞU 2"
+          ],
+          "count": 5
+        },
+        {
+          "key": [
+            "PENDİK",
+            "TOPRAK DEDE HAYRETTİN KARACA PARKI"
+          ],
+          "count": 3
+        },
+        {
+          "key": [
+            "SULTANBEYLİ",
+            "SULTANBEYLİ GÖLET PARKI"
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "TUZLA",
+            "KAMİL ABDUŞ LAGÜN PARKI"
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "TUZLA",
+            "ŞEHİT ÖMER ÖNER PARKI"
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "ÜMRANİYE",
+            "ÇARŞI METRO İSTASYONU"
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "KÜÇÜKÇEKMECE",
+            "KÜÇÜKÇEKMECE KANARYA GÖL PARKI"
+          ],
+          "count": 4
+        },
+        {
+          "key": [
+            "SARIYER",
+            "EMİRGAN KORUSU"
+          ],
+          "count": 8
+        },
+        {
+          "key": [
+            "SARIYER",
+            "BENTLER MESİRE ALANI"
+          ],
+          "count": 3
+        },
+        {
+          "key": [
+            "SARIYER",
+            "FATİH ÇEŞMESİ MESİRE ALANI"
+          ],
+          "count": 3
+        },
+        {
+          "key": [
+            "ÜSKÜDAR",
+            "HAREM - ÜSKÜDAR ARASI SAHİL PARKLARI"
+          ],
+          "count": 3
+        },
+        {
+          "key": [
+            "ÜSKÜDAR",
+            "MİLLET PARKI"
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "ÜSKÜDAR",
+            "BÜYÜK ÇAMLICA KORUSU"
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "ÜSKÜDAR",
+            "KÜÇÜK ÇAMLICA KORUSU"
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "AVCILAR",
+            "AVCILAR SAHİL PARKI - 1"
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "AVCILAR",
+            "AVCILAR SAHİL PARKI - 2"
+          ],
+          "count": 4
+        },
+        {
+          "key": [
+            "BAĞCILAR",
+            "ORUÇ REİS METRO ÇIKIŞI (DOĞU-BATI)"
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "BAĞCILAR",
+            "MAHMUTBEY METRO İSTASYONU"
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "BAKIRKÖY",
+            "AYTEKİN KOTİL PARKI"
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "SARIYER",
+            "HACIOSMAN ATATÜRK KENT ORMANI VE DERBENT BÖLÜMÜ"
+          ],
+          "count": 3
+        },
+        {
+          "key": [
+            "ZEYTİNBURNU",
+            "ÇIRPICI ŞEHİR PARKI"
+          ],
+          "count": 2
+        }
+      ]
+    },
+    "geometry": {
+      "distinct": 411,
+      "duplicates": [
+        {
+          "key": [
+            28.8933255051,
+            41.0391033087
+          ],
+          "count": 3
+        },
+        {
+          "key": [
+            28.8943078765,
+            41.0417370924
+          ],
+          "count": 3
+        },
+        {
+          "key": [
+            28.8946216812,
+            41.0403334994
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            28.96506,
+            41.1877500006
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            29.0537116047,
+            41.1072346918
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            29.0555825408,
+            41.1110356765
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            28.6673155313,
+            41.0239154281
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            28.2374247941,
+            41.0780738107
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            28.9182860239,
+            40.9919762173
+          ],
+          "count": 2
+        }
+      ]
+    },
+    "candidate_identity": {
+      "distinct": 415,
+      "duplicates": [
+        {
+          "key": [
+            "ESENLER",
+            "15 TEMMUZ DEMOKRASI OTOGARI ORTA VE YAN REFUJLER",
+            28.8933255051,
+            41.0391033087
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "ESENLER",
+            "15 TEMMUZ DEMOKRASI OTOGARI ORTA VE YAN REFUJLER",
+            28.8943078765,
+            41.0417370924
+          ],
+          "count": 3
+        },
+        {
+          "key": [
+            "ESENLER",
+            "15 TEMMUZ DEMOKRASI OTOGARI ORTA VE YAN REFUJLER",
+            28.8946216812,
+            41.0403334994
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "SARIYER",
+            "NESET SUYU MESIRE ALANI",
+            28.96506,
+            41.1877500006
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "SARIYER",
+            "EMIRGAN KORUSU",
+            29.0537116047,
+            41.1072346918
+          ],
+          "count": 2
+        },
+        {
+          "key": [
+            "SARIYER",
+            "EMIRGAN KORUSU",
+            29.0555825408,
+            41.1110356765
+          ],
+          "count": 2
+        }
+      ]
+    },
+    "exact_duplicate_rows_excess": 7,
+    "usage_all_station_names": 525,
+    "usage_all_name_match_counts": {
+      "none": 446,
+      "one": 73,
+      "multiple": 6
+    }
+  },
+  "usage": {
+    "35aaebc1-7e60-458e-9707-4dd00ee7b98c.xlsx": {
+      "sheet": "Veri",
+      "rows": 373933,
+      "columns": [
+        "Yıl",
+        "Ay",
+        "Hat_Adı",
+        "İstasyon",
+        "Terminal_No",
+        "Yaş_Aralığı",
+        "Cinsiyet",
+        "Geçiş_Adedi"
+      ],
+      "types": {
+        "Yıl": {
+          "int": 373933
+        },
+        "Ay": {
+          "int": 373933
+        },
+        "Hat_Adı": {
+          "str": 373933
+        },
+        "İstasyon": {
+          "str": 373933
+        },
+        "Terminal_No": {
+          "str": 373933
+        },
+        "Yaş_Aralığı": {
+          "str": 373933
+        },
+        "Cinsiyet": {
+          "str": 373933
+        },
+        "Geçiş_Adedi": {
+          "int": 373933
+        }
+      },
+      "null_or_empty": {
+        "Yıl": 0,
+        "Ay": 0,
+        "Hat_Adı": 0,
+        "İstasyon": 0,
+        "Terminal_No": 0,
+        "Yaş_Aralığı": 0,
+        "Cinsiyet": 0,
+        "Geçiş_Adedi": 0
+      },
+      "non_integer": {},
+      "negative_passages": 0,
+      "months": [
+        [
+          2024,
+          1
+        ],
+        [
+          2024,
+          2
+        ],
+        [
+          2024,
+          3
+        ],
+        [
+          2024,
+          4
+        ],
+        [
+          2024,
+          5
+        ],
+        [
+          2024,
+          6
+        ],
+        [
+          2024,
+          7
+        ],
+        [
+          2024,
+          8
+        ],
+        [
+          2024,
+          9
+        ],
+        [
+          2024,
+          10
+        ],
+        [
+          2024,
+          11
+        ],
+        [
+          2024,
+          12
+        ],
+        [
+          2025,
+          1
+        ],
+        [
+          2025,
+          2
+        ],
+        [
+          2025,
+          3
+        ],
+        [
+          2025,
+          4
+        ],
+        [
+          2025,
+          5
+        ],
+        [
+          2025,
+          6
+        ],
+        [
+          2025,
+          7
+        ],
+        [
+          2025,
+          8
+        ]
+      ],
+      "stations": 467,
+      "terminals": 967,
+      "lines": [
+        "İBB ŞEHİR TUVALETLERİ"
+      ],
+      "genders": {
+        "Kadın": 132700,
+        "Erkek": 137014,
+        "Bilinmeyen": 104219
+      },
+      "age_groups": [
+        "0-10 Yaş",
+        "11-20 Yaş",
+        "21-30 Yaş",
+        "31-40 Yaş",
+        "41-50 Yaş",
+        "51-60 Yaş",
+        "61-70 Yaş",
+        "70 Yaş Üzeri",
+        "Bilinmeyen"
+      ],
+      "duplicate_dimension_keys": 0,
+      "name_match_counts": {
+        "none": 390,
+        "one": 71,
+        "multiple": 6
+      },
+      "name_match_candidates": {
+        "AKSARAY METRO ALT GECIT": [],
+        "AKSARAY YERALTI CARSI": [],
+        "AKSARAY YERALTI CARSISI": [
+          213
+        ],
+        "ALBEYKOY CEP OTOGARI": [],
+        "ALIBEYKOY BARAJ USTU PARKI": [],
+        "ALIBEYKOY CEP OTOGARI": [
+          146
+        ],
+        "ALIBEYKOY CEP OTOGARI MODULER": [
+          147
+        ],
+        "ALIBEYKOY CEP OTOGARI MODULER 2": [],
+        "ALIBEYKOY CEP OTOGARI MODULER2": [],
+        "ALIBEYKOY OFIS": [],
+        "ATALAR PELIT CAFE": [],
+        "ATASEHIR 80 YIL PARKI": [],
+        "ATASEHIR DENIZ GEZMIS PARK": [],
+        "ATASEHIR DENIZ GEZMIS PARKI": [],
+        "AVCILAR GURES SAHASI": [],
+        "AVCILAR KAMPUS": [],
+        "AVCILAR SAHIL": [],
+        "AVCILAR SAHIL KAFE YANI": [],
+        "AVCILAR SOSYAL TESISLAR": [],
+        "AVCILAR SOSYAL TESISLER": [],
+        "AYAMAMA PARKI": [],
+        "AZERBAYCAN PARKI": [],
+        "BAGLARBASI": [],
+        "BAKIRKOY OZGURLUK MEYDANI": [],
+        "BAKIRKOY SAHIL": [],
+        "BALAT MODULER": [],
+        "BALKAN SEHIRLERI PARKI": [],
+        "BARUTHANE MILLET BAHCESI": [],
+        "BEBEK": [],
+        "BELGRAD FATIH CESMESI 2": [],
+        "BELGRAD ORMANI BENTLER - 2": [],
+        "BELGRAD ORMANI BENTLER 1": [],
+        "BELGRAD ORMANI BENTLER 2": [],
+        "BELGRAD ORMANI FATIH CESMESI 1": [],
+        "BELGRAD ORMANI FATIH CESMESI 2": [],
+        "BELGRAD ORMANI KOMURCU BENT": [],
+        "BELGRAD ORMANI NESET SUYU 1": [],
+        "BELGRAD ORMANI NESET SUYU 2": [],
+        "BELGRAD ORMANI NESETSUYU 1": [],
+        "BELGRAD ORMANI NESETSUYU 2": [],
+        "BESIKTAS MEYDAN": [],
+        "BESIKTAS SAHIL": [],
+        "BEYKOZ BURUNBAHCE": [],
+        "BEYKOZ BURUNBAHCE WC": [],
+        "BEYKOZ DEDEOGLU PARKI": [],
+        "BEYKOZ KORUSU": [
+          11,
+          382
+        ],
+        "BEYKOZ MEYDAN": [],
+        "BEYKOZ MEYDAN WC": [],
+        "BEYKOZ ONCESME": [],
+        "BEYKOZ OTAGTEPE": [],
+        "BEYKOZ PAZAR YERI": [],
+        "BEYKOZ PAZAR YERI WC": [],
+        "BEYKOZ SULTANIYE PARKI": [],
+        "BEYLIKDUZU METROBUS": [
+          300
+        ],
+        "BEYLIKDUZU YASAM VADISI": [],
+        "BOGAZ SILIVRI BOGLUCA PARKI": [],
+        "BOGAZICI - BUYUKDERE FIDANLIK ISTON": [],
+        "BOGAZICI - GURPINAR SAHIL": [],
+        "BOGAZICI - KADIKOY KALAMIS PARKI": [],
+        "BOGAZICI - KEMERBURGAZ YURUYUS YOLU": [],
+        "BOGAZICI - M8 KUCUKBAKKALKOY": [],
+        "BOGAZICI - YASAR KEMAL MEYDANI": [],
+        "BOGAZICI FLORYA SOSYAL TESISLER YANI": [],
+        "BOGAZICI OSMANLI PARKI": [],
+        "BOGAZICI SILIVRI BOGLUCA PARKI": [],
+        "BURGAZADA": [],
+        "BURGAZADA WC": [],
+        "BUYUK CAMLICA 2": [],
+        "BUYUK CAMLICA KORUSU": [
+          257,
+          416
+        ],
+        "BUYUKCEKMECE KORDON BOYU": [],
+        "BUYUKCEKMECE SOSYAL TESIS": [],
+        "BUYUKCEKMECE SOSYAL TESISLERI": [],
+        "BUYUKCEKMECE YASAM VADISI": [
+          371
+        ],
+        "BUYUKCEKMECE YASAM VADISI 1": [],
+        "BUYUKDERE FIDANLIK": [],
+        "BUYUKDERE FIDANLIK ISTON": [],
+        "CADDE BOSTAN BUYUK KULUP ONU": [],
+        "CADDEBOSTAN BELTUR": [],
+        "CADDEBOSTAN BUYUK KULUP ONU": [],
+        "CADDEBOSTAN PLAJ": [],
+        "CADDEBOSTAN PLAJI WC": [],
+        "CAMLIK PARKI": [],
+        "CEBECI PARKI": [
+          345
+        ],
+        "CEKMEKOY DOGA PARK": [
+          114
+        ],
+        "CEKMEKOY RAHMI DEMIR 1": [],
+        "CEKMEKOY RAHMI DEMIR 2": [],
+        "CEZAYIRLI HASANPASA PARKI": [],
+        "CIROZ YESIL ALAN": [],
+        "CIRPICI OTOPARK MEVKI": [],
+        "CIRPICI PARKI": [],
+        "CUKURPAZAR AVM": [
+          215
+        ],
+        "DENIZKOSKLER PLAJI": [],
+        "DUATEPE PARKI": [
+          166
+        ],
+        "EDIRNEKAPI PARKI": [],
+        "EMIRGAN HAVUZ ALTI": [],
+        "EMIRGAN KOROSU MODULER": [],
+        "EMIRGAN KORUSU MODULER": [],
+        "EMIRGAN MESCIT": [],
+        "EMIRGAN MESCIT ALTI": [],
+        "EMIRGAN OTOPARK": [],
+        "EMIRGAN SARI KOSK": [],
+        "EYUP HASTAHANE": [],
+        "FERIKOY KENT PARKI": [],
+        "FERIKOY SEMT PAZARI": [],
+        "FETHI PASA KORUSU": [],
+        "FLORYA ATATURK ORMANI 1": [],
+        "FLORYA ATATURK ORMANI 3": [],
+        "FLORYA ATATURK ORMANI ARKA KAPI": [],
+        "FLORYA ATATURK ORMANI1": [],
+        "FLORYA ATATURK ORMANI3": [],
+        "FLORYA SAHIL": [],
+        "GALATA KOPRUSU EMINONU": [
+          328
+        ],
+        "GALATA KOPRUSU KARAKOY": [],
+        "GALATASARAY MEYDAN": [],
+        "GAZI PARKI": [
+          347
+        ],
+        "GAZILER PARKI": [],
+        "GEZICI TIR": [],
+        "GOLET PARKI": [],
+        "GOZDAGI PARKI": [],
+        "GOZTEPE PARKI": [],
+        "GULHANE PARKI GIRIS": [],
+        "GULHANE PARKI MODULER": [],
+        "GURPINAR SAHIL": [],
+        "HACI AHMET PARKI": [],
+        "HACI OSMAN KORUSU 3": [],
+        "HACIOSMAN KORUSU 2": [],
+        "HACIOSMAN KORUSU GIRIS": [],
+        "HALIC SOSYAL TESIS YANI": [],
+        "HALIC SOSYAL TESISLER YANI": [],
+        "HAREM SAHIL": [],
+        "HAREM SAHIL WC": [],
+        "HEYBELIADA": [],
+        "HEYBELIADA WC": [],
+        "HIDIV KORUSU": [
+          12
+        ],
+        "HOSDERE MILLET BAHCESI": [],
+        "HUSEYIN AGA CAMI": [],
+        "HUSEYIN AGA CAMII": [
+          103
+        ],
+        "IDEALTEPE 50.YIL KORUSU": [
+          395
+        ],
+        "IDEALTEPE BELTUR YANI": [],
+        "IDEALTEPE BELTUR YANI WC": [],
+        "IDEALTEPE SAHIL": [],
+        "IDEALTEPE SAHIL 1": [],
+        "IDELATEPE SAHIL 2 BELTUR": [],
+        "IDELATEPE SAHIL BELTUR": [],
+        "INCEGIZ MAGARALARI": [],
+        "KABATAS MARTI WC": [],
+        "KADIKOY IETT SON DURAK 1": [],
+        "KADIKOY IETT SON DURAK 2": [],
+        "KADIKOY KALAMIS PARKI": [],
+        "KADIKOY MODA ISKELE": [],
+        "KADIKOY OZGURLUK PARKI WC": [],
+        "KADIKOY SALI PAZARI1": [],
+        "KADIKOY SALI PAZARI2": [],
+        "KADIKOY SALI PAZARI3": [],
+        "KADIKOY SALI PAZARI4": [],
+        "KADIKOY SALI PAZARI5": [],
+        "KANLICA YERALTI": [],
+        "KANLICA YERALTI  WC": [],
+        "KAPALICARSI": [
+          212
+        ],
+        "KARAKOY SAHIL": [],
+        "KARAKOY SAHIL GIRIS": [],
+        "KARAKOY YER ALTI CAMII": [
+          104
+        ],
+        "KARAKOY YER ALTI GECIDI": [
+          102
+        ],
+        "KARAKOY YERALTI CAMI": [],
+        "KARAKOY YERALTI GECIDI": [],
+        "KARTAL CECENISTAN PARKI": [],
+        "KARTAL DSI": [],
+        "KARTAL IETT SON DURAK": [],
+        "KARTAL KOCTAS ONU": [],
+        "KARTAL KUMCULAR": [],
+        "KARTAL KUMCULAR WC": [],
+        "KARTAL OZGURLUK PARKI": [
+          40
+        ],
+        "KARTAL PALMIYE CAFE": [],
+        "KARTAL PALMIYE KAFE": [],
+        "KAVACIK AKTARMA NOKTASI": [
+          14
+        ],
+        "KAZLICESME": [],
+        "KAZLICESME OTOPARK": [
+          359
+        ],
+        "KAZLICESME OTOPARK GIRIS": [],
+        "KAZLICESME SAHIL PARKI": [],
+        "KEMERBURGAZ KENT ORMANI 1.KAPI 1.": [],
+        "KEMERBURGAZ KENT ORMANI 1.KAPI 1.WC": [],
+        "KEMERBURGAZ KENT ORMANI 1.KAPI 2": [],
+        "KEMERBURGAZ KENT ORMANI 1.KAPI 2.WC": [],
+        "KEMERBURGAZ KENT ORMANI 2.KAPI": [],
+        "KEMERBURGAZ KENT ORMANI 2.KAPI 1": [],
+        "KEMERBURGAZ KENT ORMANI 2.KAPI 1.WC": [],
+        "KEMERBURGAZ KENT ORMANI 2.KAPI 2": [],
+        "KEMERBURGAZ KENT ORMANI 2.KAPI 2.WC": [],
+        "KEMERBURGAZ KENT ORMANI 2.KAPI 3.WC": [],
+        "KEMERBURGAZ KENT ORMANI 3.KAPI 1": [],
+        "KEMERBURGAZ KENT ORMANI 3.KAPI 1.WC": [],
+        "KEMERBURGAZ KENT ORMANI 3.KAPI 2": [],
+        "KEMERBURGAZ KENT ORMANI 3.KAPI 2.WC": [],
+        "KEMERBURGAZ KENT ORMANI CIKIS OTOPARK": [],
+        "KEMERBURGAZ KENT ORMANI COCUK KOYU": [],
+        "KEMERBURGAZ KENT ORMANI KAMELYA ALANI": [],
+        "KEMERBURGAZ KENT ORMANI KONTEYNER": [],
+        "KEMERBURGAZ KENT ORMANI ZEYTIN KAFE YANI": [],
+        "KEMERBURGAZ YURUYUS YOLU": [],
+        "KISIKLI MILLET PARKI": [],
+        "KISIRKAYA PLAJI": [
+          338
+        ],
+        "KIZ KULESI SAHIL": [],
+        "KOCA MUSTAFA PASA PARKI": [],
+        "KOCAMUSTAFAPASA PARKI": [],
+        "KOCATEPE": [],
+        "KUCUK CAMLICA 2": [],
+        "KUCUK CAMLICA KORUSU": [
+          259,
+          417
+        ],
+        "KUCUKCAMLICA KORUSU": [],
+        "KUCUKCEKMECE GOL": [],
+        "KUCUKCEKMECE GOL PARK": [],
+        "KUCUKCEKMECE GOL PARKI": [],
+        "KUCUKCEKMECE GOLU": [],
+        "KUCUKCEKMECE LAGUN PARKI": [],
+        "KUCUKCEKMECE SOSYAL TESISLERI": [],
+        "KUCUKCEKMECE TEPEUSTU": [],
+        "KUCUKKOY MEYDAN": [
+          226
+        ],
+        "KUCUKSU PARKI": [],
+        "KUCUKSU PARKI WC": [],
+        "KUCUKYALI SAHIL BELTUR YANI": [],
+        "KURTKOY ERSOY HASTAHANESI ONU": [],
+        "KURTKOY ERSOY HASTANESI ONU": [],
+        "KURTKOY OSMANGAZI PARKI": [],
+        "KURUCESME": [],
+        "M2 4.LEVENT": [
+          87
+        ],
+        "M2 GAYRETTEPE": [
+          297
+        ],
+        "M2 HACIOSMAN": [
+          303
+        ],
+        "M2 HCIOSMAN": [],
+        "M2 LEVENT": [
+          86
+        ],
+        "M2 OSMANBEY": [
+          353
+        ],
+        "M2 TAKSIM": [
+          105
+        ],
+        "M3 BASAK KONUTLARI": [],
+        "M3 BASAKSEHIR METROKENT": [],
+        "M3 IKITELLI SANAYI": [
+          71
+        ],
+        "M3 ISTOC": [],
+        "M3 MAHMUTBEY BATI": [],
+        "M3 OLIMPIYAT BATI": [],
+        "M3 SITELER": [
+          292
+        ],
+        "M3 TURGUT OZAL": [
+          72
+        ],
+        "M3 YENIMAHALLE": [],
+        "M4 ACIBADEM": [],
+        "M4 ADLIYE": [],
+        "M4 AYRILIKCESME": [],
+        "M4 BOSTANCI": [],
+        "M4 ESENKENT": [
+          400
+        ],
+        "M4 FEVZI CAKMAK": [],
+        "M4 FEVZI CAKMAK WC": [],
+        "M4 GOZTEPE": [],
+        "M4 GULSUYU": [],
+        "M4 HASTANE": [
+          173
+        ],
+        "M4 HUZUREVI": [],
+        "M4 KADIKOY": [],
+        "M4 KARTAL": [],
+        "M4 KOZYATAGI": [],
+        "M4 KUCUKYALI": [
+          172
+        ],
+        "M4 KURTKOY": [
+          188
+        ],
+        "M4 KURTKOY WC": [],
+        "M4 MALTEPE": [],
+        "M4 PENDIK": [],
+        "M4 SOGANLIK": [
+          174
+        ],
+        "M4 TAVSANTEPE": [
+          185
+        ],
+        "M4 UNALAN": [],
+        "M4 YAKACIK": [
+          42
+        ],
+        "M4 YAYALAR": [],
+        "M4 YAYALAR WC": [],
+        "M4 YENISAHRA": [],
+        "M5 ALTINSEHIR": [],
+        "M5 ALTUNIZADE": [],
+        "M5 BAGLARBASI": [
+          418
+        ],
+        "M5 CARSI": [],
+        "M5 CEKMEKOY": [],
+        "M5 DUDULLU": [
+          201
+        ],
+        "M5 FISTIKAGACI": [],
+        "M5 IHLAMUR KUYU": [],
+        "M5 IHLAMURKUYU": [],
+        "M5 IMAM HATIP LISESI": [],
+        "M5 MECLIS": [],
+        "M5 NECIP FAZIL": [
+          202
+        ],
+        "M5 SAMANDIRA": [],
+        "M5 SANCAKTEPE": [],
+        "M5 UMRANIYE": [],
+        "M5 USKUDAR": [
+          262
+        ],
+        "M5SARIGAZ": [],
+        "M7 ALIBEYKOY BATI": [],
+        "M7 CAGLAYAN BATI": [
+          229
+        ],
+        "M7 CIRCIR DOGU": [],
+        "M7 GOZTEPE": [],
+        "M7 KARADENIZ MAHALLESI BATI": [
+          361
+        ],
+        "M7 KARADENIZ MAHALLESI DOGU": [],
+        "M7 KAZIM KARABEKIR": [],
+        "M7 MAHMUTBEY BATI": [],
+        "M7 MAHMUTBEY DOGU": [],
+        "M7 MECIDIYEKOY BATI": [
+          354
+        ],
+        "M7 MECIDIYEKOY DOGU": [],
+        "M7 NURTEPE BATI": [],
+        "M7 ORUC REIS BATI": [],
+        "M7 ORUC REIS DOGU": [],
+        "M7 TEKSTILKENT": [],
+        "M7 VEYSEL KARANI BATI": [],
+        "M7 YENIMAHALLE": [],
+        "M7 YESILPINAR": [
+          149
+        ],
+        "M8  IMES WC": [],
+        "M8 AYSE KADIN WC": [],
+        "M8 AYSEKADIN": [
+          35
+        ],
+        "M8 BOSTANCI": [
+          175
+        ],
+        "M8 BOSTANCI WC": [],
+        "M8 EMIN ALI PASA": [
+          34
+        ],
+        "M8 EMIN ALI PASA WC": [],
+        "M8 EMIN ALI PASAWC": [],
+        "M8 HUZUR": [
+          205
+        ],
+        "M8 ICERENKOY": [
+          379
+        ],
+        "M8 ICERENKOY WC": [],
+        "M8 IMES": [
+          374
+        ],
+        "M8 KAYISDAGI": [
+          5
+        ],
+        "M8 KAYISDAGI WC": [],
+        "M8 KUCUKBAKKALKOY": [
+          4
+        ],
+        "M8 MEVLANA": [
+          6
+        ],
+        "M8 PARSELLER": [
+          377
+        ],
+        "MACKA DEMOKRASI PARKI": [
+          78,
+          79,
+          349
+        ],
+        "MACKA DEMOKRASI PARKI -2": [],
+        "MACKA DEMOKRASI PARKI 2": [],
+        "MACKA TELEFERIK": [],
+        "MAHMUT SEVKET PASA": [],
+        "MALTEPE ALTAY CESME PARKI": [],
+        "MALTEPE ALTAY CESME PARKI  WC": [],
+        "MALTEPE ALTINTEPE": [],
+        "MALTEPE AVSAR CAFE YANI": [],
+        "MALTEPE CUMHURIYET PARKI": [],
+        "MALTEPE SAHIL - DOLGU ALANI BAYAN": [],
+        "MALTEPE SAHIL - OYUN ALANI BAY SABIT": [],
+        "MALTEPE SAHIL - OYUN ALANI BAYAN SABIT": [],
+        "MALTEPE SAHIL 1": [],
+        "MALTEPE SAHIL 2 BELTUR": [],
+        "MALTEPE SAHIL 3  DOLGU ALANI BAY": [],
+        "MALTEPE SAHIL 3 DOLGU ALANI BAY": [],
+        "MALTEPE SAHIL 4 DOLGU ALANI BAYAN": [],
+        "MALTEPE SAHIL OYUN ALANI BAY SABIT": [],
+        "MALTEPE SAHIL OYUN ALANI BAYAN SABIT": [],
+        "MALTEPE SAHILL 2 BELTUR": [],
+        "MALTEPE TESADUF KAFE YANI": [],
+        "MALTEPE YAKAMOZ CAFE YANI": [],
+        "MARMARA HASTANE": [],
+        "MECIDIYEKOY MEYDAN": [
+          352
+        ],
+        "MENEKSE DERESI": [],
+        "MENEKSE PARKI 2": [],
+        "MENEKSE PLAJI": [],
+        "MENEKSE PLAJI WC": [],
+        "METRO KIRAZLI": [],
+        "METROBUS TUYAP": [],
+        "METROBUS UZUNCAYIR": [],
+        "METROBUS UZUNCAYIR WC": [],
+        "METROBUS ZINCIRLIKUYU BESIKTAS YONU": [],
+        "METROBUS ZINCIRLIKUYU LEVENT YONU": [],
+        "MIMAR SINAN SAHIL 1": [],
+        "MODA ISKELE NOKTASI": [],
+        "MODA PARKI": [],
+        "MS1-MS1": [],
+        "NADIR NADI PARKI": [],
+        "OTOGAR 1. KULE BAY": [],
+        "OTOGAR 1. KULE BAYAN": [],
+        "OTOGAR 2. KULE 1": [],
+        "OTOGAR 2. KULE 2": [],
+        "OTOGAR 2. KULE-1": [],
+        "OTOGAR 2. KULE-2": [],
+        "OTOGAR 3. KULE 1": [],
+        "OTOGAR 3. KULE 2": [],
+        "OTOGAR 3. KULE-1": [],
+        "OTOGAR 3. KULE-2": [],
+        "OTOGAR 4. KULE BAY": [],
+        "OTOGAR 4. KULE BAYAN": [],
+        "OTOGAR BOYAHANELER": [],
+        "OTOGAR CAMI BAY": [],
+        "OTOGAR CAMII BAY": [],
+        "OTOGAR HAMIDIYE": [],
+        "OTOGAR IDARI BINA ERKEK": [],
+        "OTOGAR IDARI BINA KADIN": [],
+        "OTOGAR METRO TURIZM": [],
+        "PASA LIMANI PARKI": [],
+        "PASA LIMANI PARKI WC": [],
+        "PENDIK": [],
+        "PENDIK BELTUR IDO YANI": [],
+        "PENDIK DEDEPASA PARKI": [],
+        "PENDIK GREEN PARK OTEL ONU": [],
+        "PENDIK MARMARA PARKI": [],
+        "PENDIK MERKEZ SABIT": [],
+        "PENDIK YASAM VADISI": [],
+        "PENDIK YUZUNCUYIL PARKI": [],
+        "RANIYE MESIRE ALANI 1": [],
+        "RANIYE MESIRE ALANI 2": [],
+        "RONEPARK": [],
+        "SADABAT PARKI": [],
+        "SADABAT PARKI 1": [],
+        "SAGLIKLI YASAM PARKI": [],
+        "SAKIZ AGACI": [],
+        "SANCAKTEPE  AYAZMA PARKI": [],
+        "SANCAKTEPE ABDURRAHMAN GAZI PARKI": [],
+        "SANCAKTEPE SEFA TEPESI": [],
+        "SARACHANE": [],
+        "SARAYBURNU SAHIL": [],
+        "SASKINBAKKAL ALT GECIDI": [],
+        "SASKINBAKKAL SAHIL BELTUR YANI": [],
+        "SEHIT OMER AKTUG": [],
+        "SEHIT OMER AKTUG PARKI WC": [],
+        "SELIMPASA PLAJI": [],
+        "SEMIZKUM PLAJI": [],
+        "SILAHTARAGA GENCLIK KAMPI": [],
+        "SILAHTARAGA GENCLIK PARKI": [],
+        "SILAHTARAGA PARKI": [
+          315
+        ],
+        "SILE LIMAN": [],
+        "SILE TERMINAL": [
+          192
+        ],
+        "SILIVRI": [
+          341
+        ],
+        "SILIVRI KUMLUK PLAJI": [],
+        "SIRINEVLER HALK PAZARI": [
+          280
+        ],
+        "SIRKECI 1": [],
+        "SIRKECI-1": [],
+        "SUADIYE BELTUR YANI": [],
+        "SUADIYE SAHIL": [],
+        "SUADIYE SAHIL WC": [],
+        "SULTANAHMET MEYDAN": [],
+        "SULTANAHMET YER ALTI": [],
+        "SURURI PARKI": [
+          98
+        ],
+        "SUTLUCE PARKI": [],
+        "TAKSIM GEZ PARKI": [],
+        "TAKSIM GEZI PARKI": [
+          302,
+          350
+        ],
+        "TOLGA KAFE": [],
+        "TOPKAPI DEPREM PARKI": [
+          357
+        ],
+        "TOPKAPI KALEICI": [
+          214
+        ],
+        "TUZLA IDO ONU": [],
+        "TUZLA IDO ONU WC": [],
+        "TUZLA KAMIL ABDUS PARKI ERKEK": [],
+        "TUZLA KAMIL ABDUS PARKI KADIN": [],
+        "TUZLA SAHIL AQUA PARK YANI": [],
+        "UGUR MUMCU TAVSAN TEPE PARKI": [],
+        "UMRANIYE ATAKENT PARKI": [],
+        "UMRANIYE MESIRE ALANI 1": [
+          412
+        ],
+        "UMRANIYE MESIRE ALANI 2": [
+          203
+        ],
+        "UMRANIYE SUTCU IMAM": [],
+        "USKUDAR DOGANCILAR PARKI": [],
+        "USKUDAR MARMARAY": [],
+        "USKUDAR MARMARAY WC": [],
+        "USKUDAR MEYDAN": [
+          261
+        ],
+        "UZLA KAMIL ABDUS PARKI KADIN": [],
+        "VANIKOY PARK": [],
+        "VANIKOY PARKI": [
+          256
+        ],
+        "YAHYA KEMAL": [],
+        "YAKUPLU KENT ORMANI": [],
+        "YALIKOY PLAJI 1": [
+          307
+        ],
+        "YASAR KEMAL MEYDANI": [],
+        "YENIBOSNA AKTARMA MERKEZI": [],
+        "YENIBOSNA KAVSAK NOKTASI": [],
+        "YENIKAPI 3": [],
+        "YENIKAPI BAY - 1": [],
+        "YENIKAPI DOLGU ALANI BAY 1": [],
+        "YENIKAPI DOLGU ALANI BAY-1": [],
+        "YENIKAPI DOLGU ALANI BAYAN 1": [],
+        "YENIKAPI DOLGU ALANI BAYAN-1": [],
+        "YENIKAPI ETKINLIK ALANI": [],
+        "YENIKAPI IDO": [],
+        "YENIKAPI SAMATYA": [],
+        "YENIKAPI-3": [],
+        "YENIKOY PLAJI": [],
+        "YESILKOY CIROZ SAHIL": [],
+        "YESILKOY MARINA": [
+          65
+        ],
+        "YILDIZ CADIR KOSKU": [],
+        "YILDIZ KORUSU": [
+          83,
+          84,
+          85
+        ],
+        "YILDIZ KORUSU 2": [],
+        "YOGURTCU PARKI": [
+          391
+        ],
+        "YOGUTCU PARKI WC": []
+      }
+    },
+    "5cc31ccc-af58-4f39-8ddb-044b140b2728.xlsx": {
+      "sheet": "Veri",
+      "rows": 284137,
+      "columns": [
+        "Yıl",
+        "Ay",
+        "Hat_Adı",
+        "İstasyon",
+        "Terminal_No",
+        "Yaş_Aralığı",
+        "Cinsiyet",
+        "Geçiş_Adedi"
+      ],
+      "types": {
+        "Yıl": {
+          "int": 284137
+        },
+        "Ay": {
+          "int": 284137
+        },
+        "Hat_Adı": {
+          "str": 284137
+        },
+        "İstasyon": {
+          "str": 284137
+        },
+        "Terminal_No": {
+          "str": 284137
+        },
+        "Yaş_Aralığı": {
+          "str": 284137
+        },
+        "Cinsiyet": {
+          "str": 284137
+        },
+        "Geçiş_Adedi": {
+          "int": 284137
+        }
+      },
+      "null_or_empty": {
+        "Yıl": 0,
+        "Ay": 0,
+        "Hat_Adı": 0,
+        "İstasyon": 0,
+        "Terminal_No": 0,
+        "Yaş_Aralığı": 0,
+        "Cinsiyet": 0,
+        "Geçiş_Adedi": 0
+      },
+      "non_integer": {},
+      "negative_passages": 0,
+      "months": [
+        [
+          2020,
+          2
+        ],
+        [
+          2020,
+          3
+        ],
+        [
+          2020,
+          4
+        ],
+        [
+          2020,
+          5
+        ],
+        [
+          2020,
+          6
+        ],
+        [
+          2020,
+          7
+        ],
+        [
+          2020,
+          8
+        ],
+        [
+          2020,
+          9
+        ],
+        [
+          2020,
+          10
+        ],
+        [
+          2020,
+          11
+        ],
+        [
+          2020,
+          12
+        ],
+        [
+          2021,
+          1
+        ],
+        [
+          2021,
+          2
+        ],
+        [
+          2021,
+          3
+        ],
+        [
+          2021,
+          4
+        ],
+        [
+          2021,
+          5
+        ],
+        [
+          2021,
+          6
+        ],
+        [
+          2021,
+          7
+        ],
+        [
+          2021,
+          8
+        ],
+        [
+          2021,
+          9
+        ],
+        [
+          2021,
+          10
+        ],
+        [
+          2021,
+          11
+        ],
+        [
+          2021,
+          12
+        ]
+      ],
+      "stations": 302,
+      "terminals": 920,
+      "lines": [
+        "İBB ŞEHİR TUVALETLERİ"
+      ],
+      "genders": {
+        "Kadın": 106351,
+        "Bilinmeyen": 62864,
+        "Erkek": 114922
+      },
+      "age_groups": [
+        "0-10 Yaş",
+        "11-20 Yaş",
+        "21-30 Yaş",
+        "31-40 Yaş",
+        "41-50 Yaş",
+        "51-60 Yaş",
+        "61-70 Yaş",
+        "70 Yaş Üzeri",
+        "Bilinmeyen"
+      ],
+      "duplicate_dimension_keys": 0,
+      "name_match_counts": {
+        "none": 249,
+        "one": 49,
+        "multiple": 4
+      },
+      "name_match_candidates": {
+        "1453PANORAMA 28062021 KAPATILDI": [],
+        "AKSARAY METRO ALT GECIT": [],
+        "AKSARAY YERALTI CARSI": [],
+        "ALBEYKOY CEP OTOGARI": [],
+        "ALIBEYKOY BARAJ": [],
+        "ALIBEYKOY CEP OTOGARI MODULER": [
+          147
+        ],
+        "ALIBEYKOY CEP OTOGARI MODULER2": [],
+        "ALIBEYKOY OFIS": [],
+        "ARNAVUTKOY 2 BAY": [],
+        "ARNAVUTKOY BAYAN": [],
+        "ATALAR PELIT CAFE": [],
+        "ATASEHIR DENIZ GEZMIS PARK": [],
+        "AVCILAR GURES SAHASI": [],
+        "AVCILAR KAMPUS": [],
+        "AVCILAR SAHIL": [],
+        "AVCILAR SOSYAL TESISLAR": [],
+        "AVCILAR SOSYALTESISLAR YANI": [],
+        "BAGCILAR PARKI": [],
+        "BAGLARBASI": [],
+        "BAKIRKOY SAHIL": [],
+        "BALAT MODULER": [],
+        "BARUTHANE MILLET BAHCESI": [],
+        "BASAK": [],
+        "BASAKSEHIR MILLET BAHCESI": [],
+        "BEBEK": [],
+        "BELGRAD FATIH CESMESI 2": [],
+        "BELGRAD IRMAK TABIAT PARKI": [],
+        "BELGRAD ORMANI BENTLER - 2": [],
+        "BELGRAD ORMANI BENTLER 1": [],
+        "BELGRAD ORMANI FATIH CESMESI 1": [],
+        "BELGRAD ORMANI KOMURCU BENT": [],
+        "BELGRAD ORMANI NESETSUYU 1": [],
+        "BELGRAD ORMANI NESETSUYU 2": [],
+        "BESIKTAS SAHIL": [],
+        "BEYKOZ BURUNBAHCE WC": [],
+        "BEYKOZ CAYIRI": [
+          13
+        ],
+        "BEYKOZ DEDEOGLU PARKI": [],
+        "BEYKOZ KORUSU": [
+          11,
+          382
+        ],
+        "BEYKOZ ONCESME": [],
+        "BEYLIKDUZU METROBUS": [
+          300
+        ],
+        "BUYUK CAMLICA KORUSU": [
+          257,
+          416
+        ],
+        "BUYUKCEKMECE KORDON BOYU": [],
+        "BUYUKCEKMECE SOSYAL TESISLERI": [],
+        "CADDE BOSTAN BUYUK KULUP ONU": [],
+        "CADDEBOSTAN BELTUR": [],
+        "CADDEBOSTAN MINIBUS DURAKLARI YANI": [],
+        "CADDEBOSTAN PLAJI WC": [],
+        "CEBECI PARKI": [
+          345
+        ],
+        "CEKMEKOY DOGA PARK": [
+          114
+        ],
+        "CIROZ KAMP ONU": [],
+        "CIRPICI OTOPARK MEVKI": [],
+        "CIRPICI PARKI": [],
+        "CUKURPAZAR AVM": [
+          215
+        ],
+        "EDIRNEKAPI PARKI": [],
+        "EMIRGAN HAVUZ ALTI": [],
+        "EMIRGAN KOROSU MODULER": [],
+        "EMIRGAN MESCIT": [],
+        "EMIRGAN MODULER2": [],
+        "EMIRGAN OTOPARK": [],
+        "EMIRGAN SARI KOSK": [],
+        "EYUP HASTAHANE": [],
+        "FERIKOY SEMT PAZARI": [],
+        "FETHI PASA KORUSU": [],
+        "FLORYA ATATURK ORMANI1": [],
+        "FLORYA ATATURK ORMANI2": [],
+        "FLORYA ATATURK ORMANI3": [],
+        "FLORYA SAHIL": [],
+        "GALATA KOPRUSU EMINONU": [
+          328
+        ],
+        "GALATA KOPRUSU KARAKOY": [],
+        "GALATASARAY MEYDAN": [],
+        "GAZILER PARKI": [],
+        "GEZICI TIR": [],
+        "GOLET PARKI": [],
+        "GOZDAGI PARKI": [],
+        "GOZTEPE PARKI": [],
+        "GULHANE PARKI GIRIS": [],
+        "GULHANE PARKI MODULER": [],
+        "HACI AHMET PARKI": [],
+        "HACIOSMAN KORUSU 2": [],
+        "HACIOSMAN KORUSU GIRIS": [],
+        "HALIC SOSYAL TESISLER YANI": [],
+        "HARBIYE ACIK HAVA 1": [],
+        "HARBIYE ACIK HAVA 2": [],
+        "HASKOY PARKI": [],
+        "HIDIV KORUSU": [
+          12
+        ],
+        "HOSDERE MILLET BAHCESI": [],
+        "HUSEYIN AGA CAMII": [
+          103
+        ],
+        "IDEALTEPE 50.YIL KORUSU": [
+          395
+        ],
+        "IDEALTEPE SAHIL 1": [],
+        "IDELATEPE SAHIL 2 BELTUR": [],
+        "KABATAS ISKELE": [
+          88
+        ],
+        "KADIKOY IETT SON DURAK 1": [],
+        "KADIKOY IETT SON DURAK 2": [],
+        "KADIKOY MODA ISKELE": [],
+        "KADIKOY SALI PAZARI1": [],
+        "KADIKOY SALI PAZARI2": [],
+        "KADIKOY SALI PAZARI3": [],
+        "KADIKOY SALI PAZARI4": [],
+        "KADIKOY SALI PAZARI5": [],
+        "KANLICA YERALTI  WC": [],
+        "KAPALICARSI": [
+          212
+        ],
+        "KARABURUN PLAJI 1": [],
+        "KARAKOY YER ALTI CAMII": [
+          104
+        ],
+        "KARAKOY YER ALTI CARSISI": [],
+        "KARTAL CECENISTAN PARKI": [],
+        "KARTAL DSI": [],
+        "KARTAL IETT SON DURAK": [],
+        "KARTAL KOCTAS ONU": [],
+        "KARTAL KUMCULAR WC": [],
+        "KARTAL OZGURLUK PARKI": [
+          40
+        ],
+        "KARTAL PALMIYE CAFE": [],
+        "KAVACIK AKTARMA NOKTASI": [
+          14
+        ],
+        "KAZLICESME": [],
+        "KAZLICESME OTOPARK": [
+          359
+        ],
+        "KEMERBURGAZ KENT ORMANI 1": [],
+        "KEMERBURGAZ KENT ORMANI 2": [],
+        "KEMERBURGAZ KENT ORMANI 3": [],
+        "KEMERBURGAZ KENT ORMANI 3.KAPI 1.WC": [],
+        "KEMERBURGAZ KENT ORMANI 3.KAPI 2.WC": [],
+        "KEMERBURGAZ KENT ORMANI 4": [],
+        "KEMERBURGAZ KENT ORMANI 5": [],
+        "KEMERBURGAZ KENT ORMANI CIKIS OTOPARK": [],
+        "KEMERBURGAZ KENT ORMANI COCUK KOYU": [],
+        "KEMERBURGAZ KENT ORMANI KONTEYNER": [],
+        "KISIKLI MILLET PARKI": [],
+        "KISIRKAYA PLAJI": [
+          338
+        ],
+        "KIZ KULESI SAHIL": [],
+        "KUCUKCAMLICA KORUSU": [],
+        "KUCUKCEKMECE GOL": [],
+        "KUCUKCEKMECE SOSYAL TESISLERI": [],
+        "KUCUKCEKMECE TEPEUSTU": [],
+        "KUCUKKOY MEYDAN": [
+          226
+        ],
+        "KUCUKSU PARKI WC": [],
+        "KUCUKYALI SAHIL BELTUR YANI": [],
+        "KURTKOY ERSOY HASTAHANESI ONU": [],
+        "KURTKOY OSMANGAZI PARKI": [],
+        "KURTKOY YENISEHIR PARKI": [],
+        "KURUCESME": [],
+        "M2 4.LEVENT": [
+          87
+        ],
+        "M2 GAYRETTEPE": [
+          297
+        ],
+        "M2 HCIOSMAN": [],
+        "M2 LEVENT": [
+          86
+        ],
+        "M2 OSMANBEY": [
+          353
+        ],
+        "M2 TAKSIM": [
+          105
+        ],
+        "M3 BASAK KONUTLARI": [],
+        "M3 BASAKSEHIR METROKENT": [],
+        "M3 IKITELLI SANAYI": [
+          71
+        ],
+        "M3 ISTOC": [],
+        "M3 MAHMUTBEY BATI": [],
+        "M3 OLIMPIYAT BATI": [],
+        "M3 SITELER": [
+          292
+        ],
+        "M3 TURGUT OZAL": [
+          72
+        ],
+        "M3 YENIMAHALLE": [],
+        "M3 ZIYA GOKALP MAHALLESI": [],
+        "M4 ACIBADEM": [],
+        "M4 ADLIYE": [],
+        "M4 AYRILIKCESME": [],
+        "M4 BOSTANCI": [],
+        "M4 ESENKENT": [
+          400
+        ],
+        "M4 GOZTEPE": [],
+        "M4 GULSUYU": [],
+        "M4 HASTANE": [
+          173
+        ],
+        "M4 HUZUREVI": [],
+        "M4 KADIKOY": [],
+        "M4 KARTAL": [],
+        "M4 KOZYATAGI": [],
+        "M4 KUCUKYALI": [
+          172
+        ],
+        "M4 MALTEPE": [],
+        "M4 PENDIK": [],
+        "M4 SOGANLIK": [
+          174
+        ],
+        "M4 TAVSANTEPE": [
+          185
+        ],
+        "M4 UNALAN": [],
+        "M4 YAKACIK": [
+          42
+        ],
+        "M4 YENISAHRA": [],
+        "M5 ALTINSEHIR": [],
+        "M5 ALTUNIZADE": [],
+        "M5 BAGLARBASI": [
+          418
+        ],
+        "M5 CARSI": [],
+        "M5 CEKMEKOY": [],
+        "M5 DUDULLU": [
+          201
+        ],
+        "M5 FISTIKAGACI": [],
+        "M5 IHLAMUR KUYU": [],
+        "M5 IMAM HATIP LISESI": [],
+        "M5 NECIP FAZIL": [
+          202
+        ],
+        "M5 UMRANIYE": [],
+        "M5 USKUDAR": [
+          262
+        ],
+        "M7 ALIBEYKOY BATI": [],
+        "M7 CAGLAYAN BATI": [
+          229
+        ],
+        "M7 CIRCIR DOGU": [],
+        "M7 GOZTEPE": [],
+        "M7 KARADENIZ MAHALLESI BATI": [
+          361
+        ],
+        "M7 KARADENIZ MAHALLESI DOGU": [],
+        "M7 KAZIM KARABEKIR": [],
+        "M7 MAHMUTBEY BATI": [],
+        "M7 MAHMUTBEY DOGU": [],
+        "M7 MECIDIYEKOY BATI": [
+          354
+        ],
+        "M7 MECIDIYEKOY DOGU": [],
+        "M7 NURTEPE BATI": [],
+        "M7 ORUC REIS BATI": [],
+        "M7 ORUC REIS DOGU": [],
+        "M7 TEKSTILKENT": [],
+        "M7 VEYSEL KARANI BATI": [],
+        "M7 YENIMAHALLE": [],
+        "M7 YESILPINAR": [
+          149
+        ],
+        "MACKA DEMOKRASI PARKI": [
+          78,
+          79,
+          349
+        ],
+        "MACKA DEMOKRASI PARKI -2": [],
+        "MACKA TELEFERIK": [],
+        "MALTEPE ALTINTEPE": [],
+        "MALTEPE AVSAR CAFE YANI": [],
+        "MALTEPE SAHIL 1": [],
+        "MALTEPE SAHIL 2 BELTUR": [],
+        "MALTEPE SAHIL 3  DOLGU ALANI BAY": [],
+        "MALTEPE SAHIL 4 DOLGU ALANI BAYAN": [],
+        "MALTEPE SAHIL OYUN ALANI BAY SABIT": [],
+        "MALTEPE SAHIL OYUN ALANI BAYAN SABIT": [],
+        "MALTEPE TESADUF KAFE YANI": [],
+        "MALTEPE YAKAMOZ CAFE YANI": [],
+        "MARMARA HASTANE": [],
+        "MECIDIYEKOY MEYDAN": [
+          352
+        ],
+        "MENEKSE PARKI 1": [],
+        "MENEKSE PARKI 2": [],
+        "MENEKSE PLAJI WC": [],
+        "METRO KIRAZLI": [],
+        "METROBUS TUYAP": [],
+        "METROBUS UZUNCAYIR WC": [],
+        "METROBUS ZINCIRLIKUYU ANADOLU": [],
+        "METROBUS ZINCIRLIKUYU AVRUPA": [],
+        "MODA PARKI": [],
+        "MS1-MS1": [],
+        "MSG": [],
+        "MUHSIN YAZICIOGLU PARKI": [],
+        "OTOGAR 1. KULE BAY": [],
+        "OTOGAR 1. KULE BAYAN": [],
+        "OTOGAR 2. KULE-1": [],
+        "OTOGAR 2. KULE-2": [],
+        "OTOGAR 3. KULE-1": [],
+        "OTOGAR 3. KULE-2": [],
+        "OTOGAR 4. KULE BAY": [],
+        "OTOGAR 4. KULE BAYAN": [],
+        "OTOGAR BOYAHANELER": [],
+        "OTOGAR CAMII BAY": [],
+        "OTOGAR CARSI BAY": [],
+        "OTOGAR CARSI BAYAN": [],
+        "OTOGAR HAMIDIYE": [],
+        "OTOGAR METRO TURIZM": [],
+        "PENDIK BELTUR IDO YANI": [],
+        "PENDIK GREEN PARK OTEL ONU": [],
+        "PENDIK MARMARA PARKI": [],
+        "PENDIK MERKEZ SABIT": [],
+        "PENDIK YUZUNCUYIL PARKI": [],
+        "RANIYE MESIRE ALANI 1": [],
+        "RANIYE MESIRE ALANI 2": [],
+        "RONEPARK": [],
+        "SAKIZ AGACI": [],
+        "SARACHANE": [],
+        "SASKINBAKKAL ALT GECIDI": [],
+        "SASKINBAKKAL SAHIL BELTUR YANI": [],
+        "SEHIT OMER AKTUG PARKI WC": [],
+        "SEMIZKUM PLAJI": [],
+        "SILE LIMAN": [],
+        "SILE TERMINAL": [
+          192
+        ],
+        "SILIVRI": [
+          341
+        ],
+        "SIRINEVLER HALK PAZARI": [
+          280
+        ],
+        "SIRKECI-1": [],
+        "SUADIYE BELTUR YANI": [],
+        "SULTANAHMET MEYDAN": [],
+        "SULTANAHMET YER ALTI": [],
+        "SUTLUCE PARKI": [],
+        "TAKSIM GEZ PARKI": [],
+        "TAKSIM MESCIT": [],
+        "TOPKAPI DEPREM PARKI": [
+          357
+        ],
+        "TOPKAPI KALEICI": [
+          214
+        ],
+        "TUZLA IDO ONU WC": [],
+        "TUZLA KAMIL ABDUS PARKI 2": [],
+        "TUZLA KAMIL ABDUS PARKI ERKEK": [],
+        "TUZLA SAHIL AQUA PARK YANI": [],
+        "UMRANIYE ATAKENT PARKI": [],
+        "UMRANIYE OSMAN GAZI KORUSU": [],
+        "UMRANIYE SUTCU IMAM": [],
+        "USKUDAR DOGANCILAR PARKI": [],
+        "USKUDAR MEYDAN": [
+          261
+        ],
+        "USKUDAR-2": [],
+        "UZLA KAMIL ABDUS PARKI KADIN": [],
+        "VANIKOY PARK": [],
+        "YAKUPLU KENT ORMANI": [],
+        "YALIKOY PLAJI 1": [
+          307
+        ],
+        "YENIBOSNA AKTARMA MERKEZI": [],
+        "YENIBOSNA KAVSAK NOKTASI": [],
+        "YENIKAPI BALIKCILAR CARSISI": [],
+        "YENIKAPI ERKEK": [],
+        "YENIKAPI IDO": [],
+        "YENIKAPI KADIN": [],
+        "YENIKAPI PROTOKOL": [],
+        "YENIKAPI SAMATYA": [],
+        "YENIKAPI-3": [],
+        "YENIKOY PLAJI": [],
+        "YESILKOY CIROZ SAHIL": [],
+        "YESILKOY MARINA": [
+          65
+        ],
+        "YILDIZ KORUSU": [
+          83,
+          84,
+          85
+        ],
+        "YILDIZ KORUSU 2": [],
+        "YILDIZ KORUSU 3": [],
+        "YOGUTCU PARKI WC": []
+      }
+    },
+    "8994ef18-64cf-4d77-a96e-667ddbaebc98.xlsx": {
+      "sheet": "Veri",
+      "rows": 390505,
+      "columns": [
+        "Yıl",
+        "Ay",
+        "Hat_Adı",
+        "İstasyon",
+        "Terminal_No",
+        "Yaş_Aralığı",
+        "Cinsiyet",
+        "Geçiş_Adedi"
+      ],
+      "types": {
+        "Yıl": {
+          "int": 390505
+        },
+        "Ay": {
+          "int": 390505
+        },
+        "Hat_Adı": {
+          "str": 390505
+        },
+        "İstasyon": {
+          "str": 390503,
+          "NoneType": 2
+        },
+        "Terminal_No": {
+          "str": 390505
+        },
+        "Yaş_Aralığı": {
+          "str": 390505
+        },
+        "Cinsiyet": {
+          "str": 390505
+        },
+        "Geçiş_Adedi": {
+          "int": 390505
+        }
+      },
+      "null_or_empty": {
+        "Yıl": 0,
+        "Ay": 0,
+        "Hat_Adı": 0,
+        "İstasyon": 2,
+        "Terminal_No": 0,
+        "Yaş_Aralığı": 0,
+        "Cinsiyet": 0,
+        "Geçiş_Adedi": 0
+      },
+      "non_integer": {},
+      "negative_passages": 0,
+      "months": [
+        [
+          2022,
+          1
+        ],
+        [
+          2022,
+          2
+        ],
+        [
+          2022,
+          3
+        ],
+        [
+          2022,
+          4
+        ],
+        [
+          2022,
+          5
+        ],
+        [
+          2022,
+          6
+        ],
+        [
+          2022,
+          7
+        ],
+        [
+          2022,
+          8
+        ],
+        [
+          2022,
+          9
+        ],
+        [
+          2022,
+          10
+        ],
+        [
+          2022,
+          11
+        ],
+        [
+          2022,
+          12
+        ],
+        [
+          2023,
+          1
+        ],
+        [
+          2023,
+          2
+        ],
+        [
+          2023,
+          3
+        ],
+        [
+          2023,
+          4
+        ],
+        [
+          2023,
+          5
+        ],
+        [
+          2023,
+          6
+        ],
+        [
+          2023,
+          7
+        ],
+        [
+          2023,
+          8
+        ],
+        [
+          2023,
+          9
+        ],
+        [
+          2023,
+          10
+        ],
+        [
+          2023,
+          11
+        ],
+        [
+          2023,
+          12
+        ]
+      ],
+      "stations": 389,
+      "terminals": 927,
+      "lines": [
+        "İBB ŞEHİR TUVALETLERİ"
+      ],
+      "genders": {
+        "Erkek": 148520,
+        "Kadın": 141874,
+        "Bilinmeyen": 100111
+      },
+      "age_groups": [
+        "0-10 Yaş",
+        "11-20 Yaş",
+        "21-30 Yaş",
+        "31-40 Yaş",
+        "41-50 Yaş",
+        "51-60 Yaş",
+        "61-70 Yaş",
+        "70 Yaş Üzeri",
+        "Bilinmeyen"
+      ],
+      "duplicate_dimension_keys": 0,
+      "name_match_counts": {
+        "none": 324,
+        "one": 61,
+        "multiple": 4
+      },
+      "name_match_candidates": {
+        "AKSARAY METRO ALT GECIT": [],
+        "AKSARAY YERALTI CARSI": [],
+        "ALBEYKOY CEP OTOGARI": [],
+        "ALIBEYKOY BARAJ": [],
+        "ALIBEYKOY BARAJ USTU PARKI": [],
+        "ALIBEYKOY CEP OTOGARI MODULER": [
+          147
+        ],
+        "ALIBEYKOY CEP OTOGARI MODULER2": [],
+        "ALIBEYKOY OFIS": [],
+        "ATALAR PELIT CAFE": [],
+        "ATASEHIR DENIZ GEZMIS PARK": [],
+        "AVCILAR GURES SAHASI": [],
+        "AVCILAR KAMPUS": [],
+        "AVCILAR SAHIL": [],
+        "AVCILAR SAHIL KAFE YANI": [],
+        "AVCILAR SOSYAL TESISLAR": [],
+        "AVCILAR SOSYALTESISLAR YANI": [],
+        "AYAMAMA PARKI": [],
+        "AZERBAYCAN PARKI": [],
+        "B BOL-BOGAZICI GAZI PARKI": [],
+        "B BOL-BOGAZICI SURURI PARKI": [],
+        "BAGCILAR PARKI": [],
+        "BAGLARBASI": [],
+        "BAKIRKOY SAHIL": [],
+        "BALAT MODULER": [],
+        "BALKAN SEHIRLERI PARKI": [],
+        "BARAJ USTU PARKI": [],
+        "BARUTHANE MILLET BAHCESI": [],
+        "BEBEK": [],
+        "BELGRAD FATIH CESMESI 2": [],
+        "BELGRAD ORMANI BENTLER - 2": [],
+        "BELGRAD ORMANI BENTLER 1": [],
+        "BELGRAD ORMANI FATIH CESMESI 1": [],
+        "BELGRAD ORMANI KOMURCU BENT": [],
+        "BELGRAD ORMANI NESET SUYU 1": [],
+        "BELGRAD ORMANI NESETSUYU 1": [],
+        "BELGRAD ORMANI NESETSUYU 2": [],
+        "BEYKOZ BURUNBAHCE WC": [],
+        "BEYKOZ CAYIRI": [
+          13
+        ],
+        "BEYKOZ DEDEOGLU PARKI": [],
+        "BEYKOZ KORUSU": [
+          11,
+          382
+        ],
+        "BEYKOZ ONCESME": [],
+        "BEYKOZ OTAGTEPE": [],
+        "BEYKOZ PAZAR YERI": [],
+        "BEYKOZ PAZAR YERI WC": [],
+        "BEYKOZ SULTANIYE PARKI": [],
+        "BEYLIKDUZU METROBUS": [
+          300
+        ],
+        "BOGAZICI FLORYA SOSYAL TESISLER YANI": [],
+        "BOGAZICI OSMANLI PARKI": [],
+        "BOGAZICI SILIVRI BOGLUCA PARKI": [],
+        "BURGAZADA WC": [],
+        "BUYUK CAMLICA 2": [],
+        "BUYUK CAMLICA KORUSU": [
+          257,
+          416
+        ],
+        "BUYUKCEKMECE KORDON BOYU": [],
+        "BUYUKCEKMECE SOSYAL TESIS": [],
+        "BUYUKCEKMECE SOSYAL TESISLERI": [],
+        "CADDE BOSTAN BUYUK KULUP ONU": [],
+        "CADDEBOSTAN BELTUR": [],
+        "CADDEBOSTAN BUYUK KULUP ONU": [],
+        "CADDEBOSTAN MINIBUS DURAKLARI YANI": [],
+        "CADDEBOSTAN PLAJI WC": [],
+        "CAMLIK PARKI": [],
+        "CEBECI PARKI": [
+          345
+        ],
+        "CEKMEKOY DOGA PARK": [
+          114
+        ],
+        "CEKMEKOY RAHMI DEMIR 1": [],
+        "CEKMEKOY RAHMI DEMIR 2": [],
+        "CEVIZLI-2": [],
+        "CEZAYIRLI HASANPASA PARKI": [],
+        "CIROZ YESIL ALAN": [],
+        "CIRPICI OTOPARK MEVKI": [],
+        "CIRPICI PARKI": [],
+        "CUKURPAZAR AVM": [
+          215
+        ],
+        "DENIZKOSKLER PLAJI": [],
+        "DUATEPE PARKI": [
+          166
+        ],
+        "EDIRNEKAPI PARKI": [],
+        "EMIRGAN HAVUZ ALTI": [],
+        "EMIRGAN KOROSU MODULER": [],
+        "EMIRGAN MESCIT": [],
+        "EMIRGAN MESCIT ALTI": [],
+        "EMIRGAN OTOPARK": [],
+        "EMIRGAN SARI KOSK": [],
+        "ESENLER OTOGAR IDARI BINA ERKEK": [],
+        "ESENLER OTOGAR IDARI BINA KADIN": [],
+        "EYUP DEVLET HASTANESI": [],
+        "EYUP HASTAHANE": [],
+        "FERIKOY SEMT PAZARI": [],
+        "FETHI PASA KORUSU": [],
+        "FLORYA ATATURK ORMANI ARKA KAPI": [],
+        "FLORYA ATATURK ORMANI1": [],
+        "FLORYA ATATURK ORMANI2": [],
+        "FLORYA ATATURK ORMANI3": [],
+        "FLORYA SAHIL": [],
+        "GALATA KOPRUSU EMINONU": [
+          328
+        ],
+        "GALATA KOPRUSU KARAKOY": [],
+        "GALATASARAY MEYDAN": [],
+        "GAZI PARKI": [
+          347
+        ],
+        "GAZILER PARKI": [],
+        "GOLET PARKI": [],
+        "GOZDAGI PARKI": [],
+        "GOZTEPE PARKI": [],
+        "GULHANE PARKI GIRIS": [],
+        "GULHANE PARKI MODULER": [],
+        "HACI AHMET PARKI": [],
+        "HACI OSMAN KORUSU 3": [],
+        "HACIOSMAN KORUSU 2": [],
+        "HACIOSMAN KORUSU GIRIS": [],
+        "HALIC SOSYAL TESISLER YANI": [],
+        "HARBIYE ACIK HAVA 1": [],
+        "HARBIYE ACIK HAVA 2": [],
+        "HAREM SAHIL WC": [],
+        "HASKOY PARKI": [],
+        "HEYBELIADA WC": [],
+        "HIDIV KORUSU": [
+          12
+        ],
+        "HOSDERE MILLET BAHCESI": [],
+        "HUSEYIN AGA CAMII": [
+          103
+        ],
+        "IDEALTEPE 50.YIL KORUSU": [
+          395
+        ],
+        "IDEALTEPE BELTUR YANI WC": [],
+        "IDEALTEPE SAHIL 1": [],
+        "IDELATEPE SAHIL 2 BELTUR": [],
+        "INCEGIZ MAGARALARI": [],
+        "KABATAS ISKELE": [
+          88
+        ],
+        "KADIKOY GAZHANE 1": [],
+        "KADIKOY GAZHANE 3": [],
+        "KADIKOY IETT SON DURAK 1": [],
+        "KADIKOY IETT SON DURAK 2": [],
+        "KADIKOY MODA ISKELE": [],
+        "KADIKOY SALI PAZARI1": [],
+        "KADIKOY SALI PAZARI2": [],
+        "KADIKOY SALI PAZARI3": [],
+        "KADIKOY SALI PAZARI4": [],
+        "KADIKOY SALI PAZARI5": [],
+        "KANLICA YERALTI  WC": [],
+        "KAPALICARSI": [
+          212
+        ],
+        "KARABURUN PLAJI 1": [],
+        "KARAKOY SAHIL GIRIS": [],
+        "KARAKOY YER ALTI CAMII": [
+          104
+        ],
+        "KARAKOY YER ALTI CARSISI": [],
+        "KARAKOY YER ALTI GECIDI": [
+          102
+        ],
+        "KARAKOY YERALTI GECIDI": [],
+        "KARTAL CECENISTAN PARKI": [],
+        "KARTAL DSI": [],
+        "KARTAL IETT SON DURAK": [],
+        "KARTAL KOCTAS ONU": [],
+        "KARTAL KUMCULAR": [],
+        "KARTAL KUMCULAR WC": [],
+        "KARTAL OZGURLUK PARKI": [
+          40
+        ],
+        "KARTAL PALMIYE CAFE": [],
+        "KAVACIK AKTARMA NOKTASI": [
+          14
+        ],
+        "KAZLICESME": [],
+        "KAZLICESME OTOPARK": [
+          359
+        ],
+        "KEMERBURGAZ KENT ORMANI 1": [],
+        "KEMERBURGAZ KENT ORMANI 1.KAPI 1.WC": [],
+        "KEMERBURGAZ KENT ORMANI 1.KAPI 2.WC": [],
+        "KEMERBURGAZ KENT ORMANI 2": [],
+        "KEMERBURGAZ KENT ORMANI 2.KAPI 1.WC": [],
+        "KEMERBURGAZ KENT ORMANI 2.KAPI 2": [],
+        "KEMERBURGAZ KENT ORMANI 2.KAPI 2.WC": [],
+        "KEMERBURGAZ KENT ORMANI 2.KAPI 3.WC": [],
+        "KEMERBURGAZ KENT ORMANI 3": [],
+        "KEMERBURGAZ KENT ORMANI 3.KAPI 1.WC": [],
+        "KEMERBURGAZ KENT ORMANI 3.KAPI 2.WC": [],
+        "KEMERBURGAZ KENT ORMANI 4": [],
+        "KEMERBURGAZ KENT ORMANI 5": [],
+        "KEMERBURGAZ KENT ORMANI CIKIS OTOPARK": [],
+        "KEMERBURGAZ KENT ORMANI COCUK KOYU": [],
+        "KEMERBURGAZ KENT ORMANI KAMELYA ALANI": [],
+        "KEMERBURGAZ KENT ORMANI KONTEYNER": [],
+        "KENT ORMANI 1.KAPI 1. WC": [],
+        "KENT ORMANI 2.KAPI 2. WC": [],
+        "KENT ORMANI 2.KAPI  1. WC": [],
+        "KISIKLI MILLET PARKI": [],
+        "KISIRKAYA PLAJI": [
+          338
+        ],
+        "KIZ KULESI SAHIL": [],
+        "KOCAMUSTAFAPASA PARKI": [],
+        "KUCUK CAMLICA 2": [],
+        "KUCUKCAMLICA KORUSU": [],
+        "KUCUKCEKMECE GOL": [],
+        "KUCUKCEKMECE GOL PARK": [],
+        "KUCUKCEKMECE SOSYAL TESISLERI": [],
+        "KUCUKCEKMECE TEPEUSTU": [],
+        "KUCUKKOY MEYDAN": [
+          226
+        ],
+        "KUCUKSU PARKI WC": [],
+        "KUCUKYALI SAHIL BELTUR YANI": [],
+        "KURTKOY ERSOY HASTAHANESI ONU": [],
+        "KURTKOY OSMANGAZI PARKI": [],
+        "KURUCESME": [],
+        "M2 4.LEVENT": [
+          87
+        ],
+        "M2 GAYRETTEPE": [
+          297
+        ],
+        "M2 HCIOSMAN": [],
+        "M2 LEVENT": [
+          86
+        ],
+        "M2 OSMANBEY": [
+          353
+        ],
+        "M2 TAKSIM": [
+          105
+        ],
+        "M3 BASAK KONUTLARI": [],
+        "M3 BASAKSEHIR METROKENT": [],
+        "M3 IKITELLI SANAYI": [
+          71
+        ],
+        "M3 ISTOC": [],
+        "M3 MAHMUTBEY BATI": [],
+        "M3 OLIMPIYAT BATI": [],
+        "M3 SITELER": [
+          292
+        ],
+        "M3 TURGUT OZAL": [
+          72
+        ],
+        "M3 YENIMAHALLE": [],
+        "M3 ZIYA GOKALP MAHALLESI": [],
+        "M4 ACIBADEM": [],
+        "M4 ADLIYE": [],
+        "M4 AYRILIKCESME": [],
+        "M4 BOSTANCI": [],
+        "M4 ESENKENT": [
+          400
+        ],
+        "M4 FEVZI CAKMAK": [],
+        "M4 FEVZI CAKMAK WC": [],
+        "M4 GOZTEPE": [],
+        "M4 GULSUYU": [],
+        "M4 HASTANE": [
+          173
+        ],
+        "M4 HUZUREVI": [],
+        "M4 KADIKOY": [],
+        "M4 KARTAL": [],
+        "M4 KOZYATAGI": [],
+        "M4 KUCUKYALI": [
+          172
+        ],
+        "M4 KURTKOY": [
+          188
+        ],
+        "M4 KURTKOY WC": [],
+        "M4 MALTEPE": [],
+        "M4 PENDIK": [],
+        "M4 SOGANLIK": [
+          174
+        ],
+        "M4 TAVSANTEPE": [
+          185
+        ],
+        "M4 UNALAN": [],
+        "M4 YAKACIK": [
+          42
+        ],
+        "M4 YAYALAR WC": [],
+        "M4 YENISAHRA": [],
+        "M5 ALTINSEHIR": [],
+        "M5 ALTUNIZADE": [],
+        "M5 BAGLARBASI": [
+          418
+        ],
+        "M5 CARSI": [],
+        "M5 CEKMEKOY": [],
+        "M5 DUDULLU": [
+          201
+        ],
+        "M5 FISTIKAGACI": [],
+        "M5 IHLAMUR KUYU": [],
+        "M5 IMAM HATIP LISESI": [],
+        "M5 NECIP FAZIL": [
+          202
+        ],
+        "M5 UMRANIYE": [],
+        "M5 USKUDAR": [
+          262
+        ],
+        "M7 ALIBEYKOY BATI": [],
+        "M7 CAGLAYAN BATI": [
+          229
+        ],
+        "M7 CIRCIR DOGU": [],
+        "M7 GOZTEPE": [],
+        "M7 KARADENIZ MAHALLESI BATI": [
+          361
+        ],
+        "M7 KARADENIZ MAHALLESI DOGU": [],
+        "M7 KAZIM KARABEKIR": [],
+        "M7 MAHMUTBEY BATI": [],
+        "M7 MAHMUTBEY DOGU": [],
+        "M7 MECIDIYEKOY BATI": [
+          354
+        ],
+        "M7 MECIDIYEKOY DOGU": [],
+        "M7 NURTEPE BATI": [],
+        "M7 ORUC REIS BATI": [],
+        "M7 ORUC REIS DOGU": [],
+        "M7 TEKSTILKENT": [],
+        "M7 VEYSEL KARANI BATI": [],
+        "M7 YENIMAHALLE": [],
+        "M7 YESILPINAR": [
+          149
+        ],
+        "M8 BOSTANCI": [
+          175
+        ],
+        "M8 HUZUR": [
+          205
+        ],
+        "M8 KAYISDAGI": [
+          5
+        ],
+        "M8 MEVLANA": [
+          6
+        ],
+        "M8 PARSELLER": [
+          377
+        ],
+        "MACKA DEMOKRASI PARKI": [
+          78,
+          79,
+          349
+        ],
+        "MACKA DEMOKRASI PARKI -2": [],
+        "MACKA TELEFERIK": [],
+        "MAHMUT SEVKET PASA": [],
+        "MALTEPE ALTAY CESME PARKI  WC": [],
+        "MALTEPE ALTINTEPE": [],
+        "MALTEPE AVSAR CAFE YANI": [],
+        "MALTEPE CUMHURIYET PARKI": [],
+        "MALTEPE SAHIL 1": [],
+        "MALTEPE SAHIL 2 BELTUR": [],
+        "MALTEPE SAHIL 3  DOLGU ALANI BAY": [],
+        "MALTEPE SAHIL 4 DOLGU ALANI BAYAN": [],
+        "MALTEPE SAHIL OYUN ALANI BAY SABIT": [],
+        "MALTEPE SAHIL OYUN ALANI BAYAN SABIT": [],
+        "MALTEPE TESADUF KAFE YANI": [],
+        "MALTEPE YAKAMOZ CAFE YANI": [],
+        "MARMARA HASTANE": [],
+        "MECIDIYEKOY MEYDAN": [
+          352
+        ],
+        "MENEKSE DERESI": [],
+        "MENEKSE PARKI 1": [],
+        "MENEKSE PARKI 1 MODULER": [],
+        "MENEKSE PARKI 2": [],
+        "MENEKSE PLAJI WC": [],
+        "METRO KIRAZLI": [],
+        "METROBUS TUYAP": [],
+        "METROBUS UZUNCAYIR WC": [],
+        "METROBUS ZINCIRLIKUYU ANADOLU": [],
+        "METROBUS ZINCIRLIKUYU AVRUPA": [],
+        "METROBUS ZINCIRLIKUYU BESIKTAS YONU": [],
+        "METROBUS ZINCIRLIKUYU LEVENT YONU": [],
+        "MIMAR SINAN SAHIL 1": [],
+        "MODA PARKI": [],
+        "MS1-MS1": [],
+        "MUHSIN YAZICIOGLU PARKI": [],
+        "NADIR NADI PARKI": [],
+        "None": [],
+        "OTOGAR 1. KULE BAY": [],
+        "OTOGAR 1. KULE BAYAN": [],
+        "OTOGAR 2. KULE 2": [],
+        "OTOGAR 2. KULE-1": [],
+        "OTOGAR 2. KULE-2": [],
+        "OTOGAR 3. KULE-1": [],
+        "OTOGAR 3. KULE-2": [],
+        "OTOGAR 4. KULE BAY": [],
+        "OTOGAR 4. KULE BAYAN": [],
+        "OTOGAR BOYAHANELER": [],
+        "OTOGAR CAMII BAY": [],
+        "OTOGAR CARSI BAY": [],
+        "OTOGAR CARSI BAYAN": [],
+        "OTOGAR HAMIDIYE": [],
+        "OTOGAR IDARI BINA ERKEK": [],
+        "OTOGAR IDARI BINA KADIN": [],
+        "OTOGAR METRO TURIZM": [],
+        "PENDIK BELTUR IDO YANI": [],
+        "PENDIK DEDEPASA PARKI": [],
+        "PENDIK GREEN PARK OTEL ONU": [],
+        "PENDIK MARMARA PARKI": [],
+        "PENDIK MERKEZ SABIT": [],
+        "PENDIK YASAM VADISI": [],
+        "PENDIK YUZUNCUYIL PARKI": [],
+        "RANIYE MESIRE ALANI 1": [],
+        "RANIYE MESIRE ALANI 2": [],
+        "RONEPARK": [],
+        "SADABAT PARKI": [],
+        "SAGLIKLI YASAM PARKI": [],
+        "SAKIZ AGACI": [],
+        "SANCAKTEPE SEFA TEPESI": [],
+        "SARACHANE": [],
+        "SASKINBAKKAL ALT GECIDI": [],
+        "SASKINBAKKAL SAHIL BELTUR YANI": [],
+        "SEHIT OMER AKTUG PARKI WC": [],
+        "SELIMPASA PLAJI": [],
+        "SEMIZKUM PLAJI": [],
+        "SILAHTARAGA GENCLIK PARKI": [],
+        "SILAHTARAGA IGDAS PARKI": [],
+        "SILAHTARAGA PARKI": [
+          315
+        ],
+        "SILE LIMAN": [],
+        "SILE TERMINAL": [
+          192
+        ],
+        "SILIVRI": [
+          341
+        ],
+        "SILIVRI KUMLUK PLAJI": [],
+        "SIRINEVLER HALK PAZARI": [
+          280
+        ],
+        "SIRKECI-1": [],
+        "SUADIYE BELTUR YANI": [],
+        "SUADIYE SAHIL WC": [],
+        "SULTANAHMET MEYDAN": [],
+        "SULTANAHMET YER ALTI": [],
+        "SURURI PARKI": [
+          98
+        ],
+        "SUTLUCE PARKI": [],
+        "TAKSIM GEZ PARKI": [],
+        "TOPKAPI DEPREM PARKI": [
+          357
+        ],
+        "TOPKAPI KALEICI": [
+          214
+        ],
+        "TUZLA IDO ONU WC": [],
+        "TUZLA KAMIL ABDUS PARKI 2": [],
+        "TUZLA KAMIL ABDUS PARKI ERKEK": [],
+        "TUZLA SAHIL AQUA PARK YANI": [],
+        "UGUR MUMCU TAVSAN TEPE PARKI": [],
+        "UMRANIYE ATAKENT PARKI": [],
+        "UMRANIYE SUTCU IMAM": [],
+        "USKUDAR DOGANCILAR PARKI": [],
+        "USKUDAR MARMARAY WC": [],
+        "USKUDAR MEYDAN": [
+          261
+        ],
+        "USKUDAR-2": [],
+        "UZLA KAMIL ABDUS PARKI KADIN": [],
+        "VANIKOY PARK": [],
+        "YAHYA KEMAL": [],
+        "YAKUPLU KENT ORMANI": [],
+        "YALIKOY PLAJI 1": [
+          307
+        ],
+        "YENIBOSNA AKTARMA MERKEZI": [],
+        "YENIBOSNA KAVSAK NOKTASI": [],
+        "YENIKAPI 3": [],
+        "YENIKAPI DOLGU ALANI BAY-1": [],
+        "YENIKAPI DOLGU ALANI BAYAN-1": [],
+        "YENIKAPI ERKEK": [],
+        "YENIKAPI ETKINLIK ALANI": [],
+        "YENIKAPI IDO": [],
+        "YENIKAPI KADIN": [],
+        "YENIKAPI PROTOKOL": [],
+        "YENIKAPI SAMATYA": [],
+        "YENIKAPI-3": [],
+        "YENIKOY PLAJI": [],
+        "YESILKOY CIROZ SAHIL": [],
+        "YESILKOY MARINA": [
+          65
+        ],
+        "YILDIZ CADIR KOSKU": [],
+        "YILDIZ KORUSU": [
+          83,
+          84,
+          85
+        ],
+        "YILDIZ KORUSU 2": [],
+        "YILDIZ KORUSU 3": [],
+        "YOGURTCU PARKI": [
+          391
+        ],
+        "YOGUTCU PARKI WC": []
+      }
+    }
+  },
+  "terminal_station_name_conflicts": {
+    "MT1-MT1-04-G": [
+      "MALTEPE SAHIL 2 BELTUR",
+      "MALTEPE SAHILL 2 BELTUR"
+    ],
+    "ZSY-ZSY-01-G": [
+      "METROBUS ZINCIRLIKUYU AVRUPA",
+      "METROBUS ZINCIRLIKUYU BESIKTAS YONU"
+    ],
+    "YL3-YL3-01-G": [
+      "YILDIZ CADIR KOSKU",
+      "YILDIZ KORUSU 3"
+    ],
+    "MT1-MT1-02-G": [
+      "MALTEPE SAHIL 2 BELTUR",
+      "MALTEPE SAHILL 2 BELTUR"
+    ],
+    "KPK-KPK-01-G": [
+      "KARTAL PALMIYE CAFE",
+      "KARTAL PALMIYE KAFE"
+    ],
+    "KPP-KPP-02-G": [
+      "KOCA MUSTAFA PASA PARKI",
+      "KOCAMUSTAFAPASA PARKI"
+    ],
+    "KYP-KYP-02-G": [
+      "KARAKOY YER ALTI CARSISI",
+      "KARAKOY YER ALTI GECIDI",
+      "KARAKOY YERALTI GECIDI"
+    ],
+    "A2K-A2K-02-G": [
+      "ALIBEYKOY CEP OTOGARI MODULER 2",
+      "ALIBEYKOY CEP OTOGARI MODULER2"
+    ],
+    "KYD-KYD-01-G": [
+      "M8 KAYISDAGI",
+      "M8 KAYISDAGI WC"
+    ],
+    "BPY-BPY-01-G": [
+      "BEYKOZ PAZAR YERI",
+      "BEYKOZ PAZAR YERI WC"
+    ],
+    "MAC-MAC-03-G": [
+      "MALTEPE ALTAY CESME PARKI",
+      "MALTEPE ALTAY CESME PARKI  WC"
+    ],
+    "MS1-MS1-02-G": [
+      "MIMAR SINAN SAHIL 1",
+      "MS1-MS1"
+    ],
+    "SOA-SOA-01-G": [
+      "SEHIT OMER AKTUG",
+      "SEHIT OMER AKTUG PARKI WC"
+    ],
+    "KO1-KO1-02-G": [
+      "KEMERBURGAZ KENT ORMANI 1",
+      "KEMERBURGAZ KENT ORMANI 1.KAPI 1.",
+      "KEMERBURGAZ KENT ORMANI 1.KAPI 1.WC",
+      "KENT ORMANI 1.KAPI 1. WC"
+    ],
+    "MT4-MT4-03-G": [
+      "MALTEPE SAHIL 3  DOLGU ALANI BAY",
+      "MALTEPE SAHIL 3 DOLGU ALANI BAY"
+    ],
+    "KYP-KYP-01-G": [
+      "KARAKOY YER ALTI CARSISI",
+      "KARAKOY YER ALTI GECIDI",
+      "KARAKOY YERALTI GECIDI"
+    ],
+    "HCO-HCO-02-G": [
+      "M2 HACIOSMAN",
+      "M2 HCIOSMAN"
+    ],
+    "BBB-BBB-01-G": [
+      "BEYKOZ BURUNBAHCE",
+      "BEYKOZ BURUNBAHCE WC"
+    ],
+    "MKP-MK2-01-G": [
+      "MACKA DEMOKRASI PARKI -2",
+      "MACKA DEMOKRASI PARKI 2"
+    ],
+    "CBK-CBK-03-G": [
+      "CADDE BOSTAN BUYUK KULUP ONU",
+      "CADDEBOSTAN BUYUK KULUP ONU"
+    ],
+    "HCO-HCO-01-G": [
+      "M2 HACIOSMAN",
+      "M2 HCIOSMAN"
+    ],
+    "HAV-HAV-01-G": [
+      "HEYBELIADA",
+      "HEYBELIADA WC"
+    ],
+    "TGP-TGP-02-G": [
+      "TAKSIM GEZ PARKI",
+      "TAKSIM GEZI PARKI"
+    ],
+    "KNV-KNV-02-G": [
+      "KANLICA YERALTI",
+      "KANLICA YERALTI  WC"
+    ],
+    "FAO-FAO-03-G": [
+      "FLORYA ATATURK ORMANI 1",
+      "FLORYA ATATURK ORMANI1"
+    ],
+    "O3E-O3E-02-G": [
+      "OTOGAR 3. KULE 2",
+      "OTOGAR 3. KULE-2"
+    ],
+    "O3K-O3K-03-G": [
+      "OTOGAR 3. KULE 1",
+      "OTOGAR 3. KULE-1"
+    ],
+    "KRA-KRA-02-G": [
+      "KARAKOY SAHIL",
+      "KARAKOY SAHIL GIRIS"
+    ],
+    "MO5-MO5-03-G": [
+      "MALTEPE SAHIL - OYUN ALANI BAY SABIT",
+      "MALTEPE SAHIL OYUN ALANI BAY SABIT"
+    ],
+    "MUC-MUC-04-G": [
+      "METROBUS UZUNCAYIR",
+      "METROBUS UZUNCAYIR WC"
+    ],
+    "MT6-MT6-01-G": [
+      "IDEALTEPE SAHIL",
+      "IDEALTEPE SAHIL 1"
+    ],
+    "FOB-FOB-02-G": [
+      "FLORYA ATATURK ORMANI ARKA KAPI",
+      "FLORYA ATATURK ORMANI2"
+    ],
+    "MSK-MSK-02-G": [
+      "SIRKECI 1",
+      "SIRKECI-1"
+    ],
+    "MKP-MK2-02-G": [
+      "MACKA DEMOKRASI PARKI -2",
+      "MACKA DEMOKRASI PARKI 2"
+    ],
+    "KO3-KO3-01-G": [
+      "KEMERBURGAZ KENT ORMANI 2.KAPI 1",
+      "KEMERBURGAZ KENT ORMANI 2.KAPI 1.WC",
+      "KEMERBURGAZ KENT ORMANI 3"
+    ],
+    "AYB-AYB-03-G": [
+      "ALIBEYKOY BARAJ",
+      "ALIBEYKOY BARAJ USTU PARKI",
+      "BARAJ USTU PARKI"
+    ],
+    "ASY-ASY-01-G": [
+      "AVCILAR SAHIL KAFE YANI",
+      "AVCILAR SOSYALTESISLAR YANI"
+    ],
+    "O2K-O2K-01-G": [
+      "OTOGAR 2. KULE 1",
+      "OTOGAR 2. KULE-1"
+    ],
+    "KKM-KKM-01-G": [
+      "M4 KURTKOY",
+      "M4 KURTKOY WC"
+    ],
+    "BSM-BSM-01-G": [
+      "BESIKTAS MEYDAN",
+      "BESIKTAS SAHIL"
+    ],
+    "MT1-MT1-01-G": [
+      "MALTEPE SAHIL 2 BELTUR",
+      "MALTEPE SAHILL 2 BELTUR"
+    ],
+    "AYC-AYC-04-G": [
+      "AKSARAY YERALTI CARSI",
+      "AKSARAY YERALTI CARSISI"
+    ],
+    "IMK-IMK-02-G": [
+      "M5 IHLAMUR KUYU",
+      "M5 IHLAMURKUYU"
+    ],
+    "KEH-KEH-01-G": [
+      "KURTKOY ERSOY HASTAHANESI ONU",
+      "KURTKOY ERSOY HASTANESI ONU"
+    ],
+    "MUC-MUC-01-G": [
+      "METROBUS UZUNCAYIR",
+      "METROBUS UZUNCAYIR WC"
+    ],
+    "MY1-MY1-01-G": [
+      "YENIKAPI 3",
+      "YENIKAPI-3"
+    ],
+    "OCK-OCK-01-G": [
+      "ESENLER OTOGAR IDARI BINA KADIN",
+      "OTOGAR CARSI BAYAN",
+      "OTOGAR IDARI BINA KADIN"
+    ],
+    "SOA-SOA-03-G": [
+      "SEHIT OMER AKTUG",
+      "SEHIT OMER AKTUG PARKI WC"
+    ],
+    "OCE-OCE-02-G": [
+      "ESENLER OTOGAR IDARI BINA ERKEK",
+      "OTOGAR CARSI BAY",
+      "OTOGAR IDARI BINA ERKEK"
+    ],
+    "MT4-MT4-02-G": [
+      "MALTEPE SAHIL 3  DOLGU ALANI BAY",
+      "MALTEPE SAHIL 3 DOLGU ALANI BAY"
+    ],
+    "MT5-MT5-04-G": [
+      "IDELATEPE SAHIL 2 BELTUR",
+      "IDELATEPE SAHIL BELTUR"
+    ],
+    "BCS-BCS-04-G": [
+      "BUYUKCEKMECE SOSYAL TESIS",
+      "BUYUKCEKMECE SOSYAL TESISLERI"
+    ],
+    "ZAY-ZAY-03-G": [
+      "METROBUS ZINCIRLIKUYU ANADOLU",
+      "METROBUS ZINCIRLIKUYU LEVENT YONU"
+    ],
+    "AYB-AYB-02-G": [
+      "ALIBEYKOY BARAJ",
+      "ALIBEYKOY BARAJ USTU PARKI",
+      "BARAJ USTU PARKI"
+    ],
+    "YK6-YK6-01-G": [
+      "YENIKAPI DOLGU ALANI BAY 1",
+      "YENIKAPI DOLGU ALANI BAY-1",
+      "YENIKAPI ERKEK"
+    ],
+    "HLC-HLC-02-G": [
+      "HALIC SOSYAL TESIS YANI",
+      "HALIC SOSYAL TESISLER YANI"
+    ],
+    "BBB-BBB-02-G": [
+      "BEYKOZ BURUNBAHCE",
+      "BEYKOZ BURUNBAHCE WC"
+    ],
+    "KCA-KCA-02-G": [
+      "KARAKOY YER ALTI CAMII",
+      "KARAKOY YERALTI CAMI"
+    ],
+    "KRA-KRA-01-G": [
+      "KARAKOY SAHIL",
+      "KARAKOY SAHIL GIRIS"
+    ],
+    "YYM-YYM-01-G": [
+      "M4 YAYALAR",
+      "M4 YAYALAR WC"
+    ],
+    "CPW-CPW-03-G": [
+      "CADDEBOSTAN PLAJ",
+      "CADDEBOSTAN PLAJI WC"
+    ],
+    "KCA-KCA-03-G": [
+      "KARAKOY YER ALTI CAMII",
+      "KARAKOY YERALTI CAMI"
+    ],
+    "TIO-TIO-04-G": [
+      "TUZLA IDO ONU",
+      "TUZLA IDO ONU WC"
+    ],
+    "FAO-FAO-02-G": [
+      "FLORYA ATATURK ORMANI 1",
+      "FLORYA ATATURK ORMANI1"
+    ],
+    "BPY-BPY-02-G": [
+      "BEYKOZ PAZAR YERI",
+      "BEYKOZ PAZAR YERI WC"
+    ],
+    "IMK-IMK-01-G": [
+      "M5 IHLAMUR KUYU",
+      "M5 IHLAMURKUYU"
+    ],
+    "MS1-MS1-01-G": [
+      "MIMAR SINAN SAHIL 1",
+      "MS1-MS1"
+    ],
+    "ASY-ASY-03-G": [
+      "AVCILAR SAHIL KAFE YANI",
+      "AVCILAR SOSYALTESISLAR YANI"
+    ],
+    "KPK-KPK-04-G": [
+      "KARTAL PALMIYE CAFE",
+      "KARTAL PALMIYE KAFE"
+    ],
+    "AYS-AYS-01-G": [
+      "M8 AYSE KADIN WC",
+      "M8 AYSEKADIN"
+    ],
+    "KGP-KGP-02-G": [
+      "KUCUKCEKMECE GOL PARK",
+      "KUCUKCEKMECE GOL PARKI"
+    ],
+    "MNS-MNS-03-G": [
+      "MENEKSE PLAJI",
+      "MENEKSE PLAJI WC"
+    ],
+    "KPK-KPK-02-G": [
+      "KARTAL PALMIYE CAFE",
+      "KARTAL PALMIYE KAFE"
+    ],
+    "ZSY-ZSY-02-G": [
+      "METROBUS ZINCIRLIKUYU AVRUPA",
+      "METROBUS ZINCIRLIKUYU BESIKTAS YONU"
+    ],
+    "OC1-OC1-01-G": [
+      "OTOGAR CAMI BAY",
+      "OTOGAR CAMII BAY"
+    ],
+    "K31-K31-01-G": [
+      "KEMERBURGAZ KENT ORMANI 3.KAPI 1",
+      "KEMERBURGAZ KENT ORMANI 3.KAPI 1.WC"
+    ],
+    "K32-K32-02-G": [
+      "KEMERBURGAZ KENT ORMANI 3.KAPI 2",
+      "KEMERBURGAZ KENT ORMANI 3.KAPI 2.WC"
+    ],
+    "SL2-IGD-01-G": [
+      "SILAHTARAGA GENCLIK KAMPI",
+      "SILAHTARAGA GENCLIK PARKI",
+      "SILAHTARAGA IGDAS PARKI"
+    ],
+    "CBK-CBK-01-G": [
+      "CADDE BOSTAN BUYUK KULUP ONU",
+      "CADDEBOSTAN BUYUK KULUP ONU"
+    ],
+    "ZAY-ZAY-02-G": [
+      "METROBUS ZINCIRLIKUYU ANADOLU",
+      "METROBUS ZINCIRLIKUYU LEVENT YONU"
+    ],
+    "TGP-TGP-01-G": [
+      "TAKSIM GEZ PARKI",
+      "TAKSIM GEZI PARKI"
+    ],
+    "MU2-MU2-01-G": [
+      "USKUDAR MARMARAY",
+      "USKUDAR MARMARAY WC"
+    ],
+    "BAV-BAV-01-G": [
+      "BURGAZADA",
+      "BURGAZADA WC"
+    ],
+    "ASY-ASY-04-G": [
+      "AVCILAR SAHIL KAFE YANI",
+      "AVCILAR SOSYALTESISLAR YANI"
+    ],
+    "KKV-KKV-01-G": [
+      "KARTAL KUMCULAR",
+      "KARTAL KUMCULAR WC"
+    ],
+    "O3E-O3E-01-G": [
+      "OTOGAR 3. KULE 2",
+      "OTOGAR 3. KULE-2"
+    ],
+    "MO6-MO6-02-G": [
+      "MALTEPE SAHIL - OYUN ALANI BAYAN SABIT",
+      "MALTEPE SAHIL OYUN ALANI BAYAN SABIT"
+    ],
+    "FOB-FOB-04-G": [
+      "FLORYA ATATURK ORMANI ARKA KAPI",
+      "FLORYA ATATURK ORMANI2"
+    ],
+    "KKM-KKM-02-G": [
+      "M4 KURTKOY",
+      "M4 KURTKOY WC"
+    ],
+    "MKP-MK2-04-G": [
+      "MACKA DEMOKRASI PARKI -2",
+      "MACKA DEMOKRASI PARKI 2"
+    ],
+    "GPA-GPA-01-G": [
+      "B BOL-BOGAZICI GAZI PARKI",
+      "GAZI PARKI"
+    ],
+    "A2K-A2K-01-G": [
+      "ALIBEYKOY CEP OTOGARI MODULER 2",
+      "ALIBEYKOY CEP OTOGARI MODULER2"
+    ],
+    "CPW-CPW-01-G": [
+      "CADDEBOSTAN PLAJ",
+      "CADDEBOSTAN PLAJI WC"
+    ],
+    "AYC-AYC-02-G": [
+      "AKSARAY YERALTI CARSI",
+      "AKSARAY YERALTI CARSISI"
+    ],
+    "AYC-AYC-03-G": [
+      "AKSARAY YERALTI CARSI",
+      "AKSARAY YERALTI CARSISI"
+    ],
+    "FOK-FOK-02-G": [
+      "FLORYA ATATURK ORMANI 3",
+      "FLORYA ATATURK ORMANI3"
+    ],
+    "SUP-SUP-01-G": [
+      "B BOL-BOGAZICI SURURI PARKI",
+      "SURURI PARKI"
+    ],
+    "MT5-MT5-03-G": [
+      "IDELATEPE SAHIL 2 BELTUR",
+      "IDELATEPE SAHIL BELTUR"
+    ],
+    "HSV-HSV-01-G": [
+      "HAREM SAHIL",
+      "HAREM SAHIL WC"
+    ],
+    "DGP-DGP-03-G": [
+      "ATASEHIR DENIZ GEZMIS PARK",
+      "ATASEHIR DENIZ GEZMIS PARKI"
+    ],
+    "YK6-YK6-03-G": [
+      "YENIKAPI DOLGU ALANI BAY 1",
+      "YENIKAPI DOLGU ALANI BAY-1",
+      "YENIKAPI ERKEK"
+    ],
+    "MT6-MT6-04-G": [
+      "IDEALTEPE SAHIL",
+      "IDEALTEPE SAHIL 1"
+    ],
+    "MUC-MUC-03-G": [
+      "METROBUS UZUNCAYIR",
+      "METROBUS UZUNCAYIR WC"
+    ],
+    "KCA-KCA-01-G": [
+      "KARAKOY YER ALTI CAMII",
+      "KARAKOY YERALTI CAMI"
+    ],
+    "BB2-BB2-01-G": [
+      "BELGRAD ORMANI BENTLER - 2",
+      "BELGRAD ORMANI BENTLER 2"
+    ],
+    "HAV-HAV-02-G": [
+      "HEYBELIADA",
+      "HEYBELIADA WC"
+    ],
+    "O2K-O2K-02-G": [
+      "OTOGAR 2. KULE 1",
+      "OTOGAR 2. KULE-1"
+    ],
+    "BAP-BAP-01-G": [
+      "AZERBAYCAN PARKI",
+      "BAGCILAR PARKI"
+    ],
+    "EMG-EMG-02-G": [
+      "EMIRGAN KOROSU MODULER",
+      "EMIRGAN KORUSU MODULER"
+    ],
+    "BSM-BSM-02-G": [
+      "BESIKTAS MEYDAN",
+      "BESIKTAS SAHIL"
+    ],
+    "MT5-MT5-01-G": [
+      "IDELATEPE SAHIL 2 BELTUR",
+      "IDELATEPE SAHIL BELTUR"
+    ],
+    "MUC-MUC-02-G": [
+      "METROBUS UZUNCAYIR",
+      "METROBUS UZUNCAYIR WC"
+    ],
+    "O2K-O2K-03-G": [
+      "OTOGAR 2. KULE 1",
+      "OTOGAR 2. KULE-1"
+    ],
+    "CBK-CBK-04-G": [
+      "CADDE BOSTAN BUYUK KULUP ONU",
+      "CADDEBOSTAN BUYUK KULUP ONU"
+    ],
+    "FAO-FAO-04-G": [
+      "FLORYA ATATURK ORMANI 1",
+      "FLORYA ATATURK ORMANI1"
+    ],
+    "MY1-MY1-02-G": [
+      "YENIKAPI 3",
+      "YENIKAPI-3"
+    ],
+    "DGP-DGP-01-G": [
+      "ATASEHIR DENIZ GEZMIS PARK",
+      "ATASEHIR DENIZ GEZMIS PARKI"
+    ],
+    "MT3-MT3-01-G": [
+      "MALTEPE SAHIL - DOLGU ALANI BAYAN",
+      "MALTEPE SAHIL 4 DOLGU ALANI BAYAN"
+    ],
+    "O3K-O3K-02-G": [
+      "OTOGAR 3. KULE 1",
+      "OTOGAR 3. KULE-1"
+    ],
+    "MYD-MYD-01-G": [
+      "M7 MAHMUTBEY DOGU",
+      "M7 MECIDIYEKOY DOGU"
+    ],
+    "ABK-ABK-02-G": [
+      "ALBEYKOY CEP OTOGARI",
+      "ALIBEYKOY CEP OTOGARI"
+    ],
+    "O2E-O2E-01-G": [
+      "OTOGAR 2. KULE 2",
+      "OTOGAR 2. KULE-2"
+    ],
+    "TIO-TIO-02-G": [
+      "TUZLA IDO ONU",
+      "TUZLA IDO ONU WC"
+    ],
+    "ZSY-ZSY-03-G": [
+      "METROBUS ZINCIRLIKUYU AVRUPA",
+      "METROBUS ZINCIRLIKUYU BESIKTAS YONU"
+    ],
+    "YK7-YK7-01-G": [
+      "YENIKAPI DOLGU ALANI BAYAN 1",
+      "YENIKAPI DOLGU ALANI BAYAN-1",
+      "YENIKAPI KADIN"
+    ],
+    "ABK-ABK-01-G": [
+      "ALBEYKOY CEP OTOGARI",
+      "ALIBEYKOY CEP OTOGARI"
+    ],
+    "MT6-MT6-02-G": [
+      "IDEALTEPE SAHIL",
+      "IDEALTEPE SAHIL 1"
+    ],
+    "BAP-BAP-02-G": [
+      "AZERBAYCAN PARKI",
+      "BAGCILAR PARKI"
+    ],
+    "KCK-KCK-03-G": [
+      "KUCUKCEKMECE GOL",
+      "KUCUKCEKMECE GOLU"
+    ],
+    "TIO-TIO-01-G": [
+      "TUZLA IDO ONU",
+      "TUZLA IDO ONU WC"
+    ],
+    "HLC-HLC-01-G": [
+      "HALIC SOSYAL TESIS YANI",
+      "HALIC SOSYAL TESISLER YANI"
+    ],
+    "KPV-KPV-02-G": [
+      "KUCUKSU PARKI",
+      "KUCUKSU PARKI WC"
+    ],
+    "SL2-IGD-02-G": [
+      "SILAHTARAGA GENCLIK KAMPI",
+      "SILAHTARAGA GENCLIK PARKI",
+      "SILAHTARAGA IGDAS PARKI"
+    ],
+    "MAC-MAC-02-G": [
+      "MALTEPE ALTAY CESME PARKI",
+      "MALTEPE ALTAY CESME PARKI  WC"
+    ],
+    "SUV-SUV-01-G": [
+      "SUADIYE SAHIL",
+      "SUADIYE SAHIL WC"
+    ],
+    "MAC-MAC-01-G": [
+      "MALTEPE ALTAY CESME PARKI",
+      "MALTEPE ALTAY CESME PARKI  WC"
+    ],
+    "BAV-BAV-02-G": [
+      "BURGAZADA",
+      "BURGAZADA WC"
+    ],
+    "O2E-O2E-02-G": [
+      "OTOGAR 2. KULE 2",
+      "OTOGAR 2. KULE-2"
+    ],
+    "YPV-YPV-03-G": [
+      "YOGURTCU PARKI",
+      "YOGUTCU PARKI WC"
+    ],
+    "YK7-YK7-03-G": [
+      "YENIKAPI DOLGU ALANI BAYAN 1",
+      "YENIKAPI DOLGU ALANI BAYAN-1",
+      "YENIKAPI KADIN"
+    ],
+    "KAK-KAK-01-G": [
+      "TUZLA KAMIL ABDUS PARKI KADIN",
+      "UZLA KAMIL ABDUS PARKI KADIN"
+    ],
+    "MSK-MSK-01-G": [
+      "SIRKECI 1",
+      "SIRKECI-1"
+    ],
+    "BMD-BMD-03-G": [
+      "BALAT MODULER",
+      "TOLGA KAFE"
+    ],
+    "BCS-BCS-03-G": [
+      "BUYUKCEKMECE SOSYAL TESIS",
+      "BUYUKCEKMECE SOSYAL TESISLERI"
+    ],
+    "IBY-IBY-02-G": [
+      "IDEALTEPE BELTUR YANI",
+      "IDEALTEPE BELTUR YANI WC"
+    ],
+    "EMA-EMA-02-G": [
+      "M8 EMIN ALI PASA",
+      "M8 EMIN ALI PASA WC",
+      "M8 EMIN ALI PASAWC"
+    ],
+    "YPV-YPV-04-G": [
+      "YOGURTCU PARKI",
+      "YOGUTCU PARKI WC"
+    ],
+    "YL3-YL3-02-G": [
+      "YILDIZ CADIR KOSKU",
+      "YILDIZ KORUSU 3"
+    ],
+    "PLP-PLP-02-G": [
+      "PASA LIMANI PARKI",
+      "PASA LIMANI PARKI WC"
+    ],
+    "KCO-KCO-01-G": [
+      "KAZLICESME OTOPARK",
+      "KAZLICESME OTOPARK GIRIS"
+    ],
+    "MNS-MNS-04-G": [
+      "MENEKSE PLAJI",
+      "MENEKSE PLAJI WC"
+    ],
+    "BAP-BAP-03-G": [
+      "AZERBAYCAN PARKI",
+      "BAGCILAR PARKI"
+    ],
+    "UM1-UM1-02-G": [
+      "RANIYE MESIRE ALANI 1",
+      "UMRANIYE MESIRE ALANI 1"
+    ],
+    "AST-AST-03-G": [
+      "AVCILAR SOSYAL TESISLAR",
+      "AVCILAR SOSYAL TESISLER"
+    ],
+    "AYS-AYS-02-G": [
+      "M8 AYSE KADIN WC",
+      "M8 AYSEKADIN"
+    ],
+    "KCK-KCK-01-G": [
+      "KUCUKCEKMECE GOL",
+      "KUCUKCEKMECE GOLU"
+    ],
+    "KO1-KO1-01-G": [
+      "KEMERBURGAZ KENT ORMANI 1",
+      "KEMERBURGAZ KENT ORMANI 1.KAPI 1.",
+      "KEMERBURGAZ KENT ORMANI 1.KAPI 1.WC",
+      "KENT ORMANI 1.KAPI 1. WC"
+    ],
+    "MYD-MYD-02-G": [
+      "M7 MAHMUTBEY DOGU",
+      "M7 MECIDIYEKOY DOGU"
+    ],
+    "BNS-BNS-01-G": [
+      "BELGRAD ORMANI NESET SUYU 1",
+      "BELGRAD ORMANI NESETSUYU 1"
+    ],
+    "ZAY-ZAY-01-G": [
+      "METROBUS ZINCIRLIKUYU ANADOLU",
+      "METROBUS ZINCIRLIKUYU LEVENT YONU"
+    ],
+    "K31-K31-02-G": [
+      "KEMERBURGAZ KENT ORMANI 3.KAPI 1",
+      "KEMERBURGAZ KENT ORMANI 3.KAPI 1.WC"
+    ],
+    "KGP-KGP-01-G": [
+      "KUCUKCEKMECE GOL PARK",
+      "KUCUKCEKMECE GOL PARKI"
+    ],
+    "UM1-UM1-04-G": [
+      "RANIYE MESIRE ALANI 1",
+      "UMRANIYE MESIRE ALANI 1"
+    ],
+    "ICE-ICE-01-G": [
+      "M8 ICERENKOY",
+      "M8 ICERENKOY WC"
+    ],
+    "FOK-FOK-01-G": [
+      "FLORYA ATATURK ORMANI 3",
+      "FLORYA ATATURK ORMANI3"
+    ],
+    "YYM-YYM-02-G": [
+      "M4 YAYALAR",
+      "M4 YAYALAR WC"
+    ],
+    "CPW-CPW-02-G": [
+      "CADDEBOSTAN PLAJ",
+      "CADDEBOSTAN PLAJI WC"
+    ],
+    "MT4-MT4-01-G": [
+      "MALTEPE SAHIL 3  DOLGU ALANI BAY",
+      "MALTEPE SAHIL 3 DOLGU ALANI BAY"
+    ],
+    "VKP-VKP-01-G": [
+      "VANIKOY PARK",
+      "VANIKOY PARKI"
+    ],
+    "KKV-KKV-02-G": [
+      "KARTAL KUMCULAR",
+      "KARTAL KUMCULAR WC"
+    ],
+    "OCE-OCE-01-G": [
+      "ESENLER OTOGAR IDARI BINA ERKEK",
+      "OTOGAR CARSI BAY",
+      "OTOGAR IDARI BINA ERKEK"
+    ],
+    "CBK-CBK-02-G": [
+      "CADDE BOSTAN BUYUK KULUP ONU",
+      "CADDEBOSTAN BUYUK KULUP ONU"
+    ],
+    "MT1-MT1-03-G": [
+      "MALTEPE SAHIL 2 BELTUR",
+      "MALTEPE SAHILL 2 BELTUR"
+    ],
+    "KPK-KPK-03-G": [
+      "KARTAL PALMIYE CAFE",
+      "KARTAL PALMIYE KAFE"
+    ],
+    "FOB-FOB-03-G": [
+      "FLORYA ATATURK ORMANI ARKA KAPI",
+      "FLORYA ATATURK ORMANI2"
+    ],
+    "MO6-MO6-03-G": [
+      "MALTEPE SAHIL - OYUN ALANI BAYAN SABIT",
+      "MALTEPE SAHIL OYUN ALANI BAYAN SABIT"
+    ],
+    "EMA-EMA-01-G": [
+      "M8 EMIN ALI PASA",
+      "M8 EMIN ALI PASA WC",
+      "M8 EMIN ALI PASAWC"
+    ],
+    "BCI-BCI-02-G": [
+      "M8 BOSTANCI",
+      "M8 BOSTANCI WC"
+    ],
+    "KUC-KUC-03-G": [
+      "KUCUK CAMLICA KORUSU",
+      "KUCUKCAMLICA KORUSU"
+    ],
+    "VKP-VKP-02-G": [
+      "VANIKOY PARK",
+      "VANIKOY PARKI"
+    ],
+    "YK6-YK6-02-G": [
+      "YENIKAPI DOLGU ALANI BAY 1",
+      "YENIKAPI DOLGU ALANI BAY-1",
+      "YENIKAPI ERKEK"
+    ],
+    "BCS-BCS-02-G": [
+      "BUYUKCEKMECE SOSYAL TESIS",
+      "BUYUKCEKMECE SOSYAL TESISLERI"
+    ],
+    "HAC-HAC-02-G": [
+      "HUSEYIN AGA CAMI",
+      "HUSEYIN AGA CAMII"
+    ],
+    "A2K-A2K-03-G": [
+      "ALIBEYKOY CEP OTOGARI MODULER 2",
+      "ALIBEYKOY CEP OTOGARI MODULER2"
+    ],
+    "MT6-MT6-03-G": [
+      "IDEALTEPE SAHIL",
+      "IDEALTEPE SAHIL 1"
+    ],
+    "YPV-YPV-01-G": [
+      "YOGURTCU PARKI",
+      "YOGUTCU PARKI WC"
+    ],
+    "A2K-A2K-04-G": [
+      "ALIBEYKOY CEP OTOGARI MODULER 2",
+      "ALIBEYKOY CEP OTOGARI MODULER2"
+    ],
+    "ASY-ASY-02-G": [
+      "AVCILAR SAHIL KAFE YANI",
+      "AVCILAR SOSYALTESISLAR YANI"
+    ],
+    "O2E-O2E-03-G": [
+      "OTOGAR 2. KULE 2",
+      "OTOGAR 2. KULE-2"
+    ],
+    "SUV-SUV-02-G": [
+      "SUADIYE SAHIL",
+      "SUADIYE SAHIL WC"
+    ],
+    "DGP-DGP-02-G": [
+      "ATASEHIR DENIZ GEZMIS PARK",
+      "ATASEHIR DENIZ GEZMIS PARKI"
+    ],
+    "FAO-FAO-01-G": [
+      "FLORYA ATATURK ORMANI 1",
+      "FLORYA ATATURK ORMANI1"
+    ],
+    "TIO-TIO-03-G": [
+      "TUZLA IDO ONU",
+      "TUZLA IDO ONU WC"
+    ],
+    "BCI-BCI-01-G": [
+      "M8 BOSTANCI",
+      "M8 BOSTANCI WC"
+    ],
+    "BMD-BMD-01-G": [
+      "BALAT MODULER",
+      "TOLGA KAFE"
+    ],
+    "KEH-KEH-02-G": [
+      "KURTKOY ERSOY HASTAHANESI ONU",
+      "KURTKOY ERSOY HASTANESI ONU"
+    ],
+    "O3K-O3K-01-G": [
+      "OTOGAR 3. KULE 1",
+      "OTOGAR 3. KULE-1"
+    ],
+    "KYD-KYD-02-G": [
+      "M8 KAYISDAGI",
+      "M8 KAYISDAGI WC"
+    ],
+    "BNS-BNS-02-G": [
+      "BELGRAD ORMANI NESET SUYU 1",
+      "BELGRAD ORMANI NESETSUYU 1"
+    ],
+    "AYC-AYC-01-G": [
+      "AKSARAY YERALTI CARSI",
+      "AKSARAY YERALTI CARSISI"
+    ],
+    "O3E-O3E-03-G": [
+      "OTOGAR 3. KULE 2",
+      "OTOGAR 3. KULE-2"
+    ],
+    "AST-AST-01-G": [
+      "AVCILAR SOSYAL TESISLAR",
+      "AVCILAR SOSYAL TESISLER"
+    ],
+    "KUC-KUC-02-G": [
+      "KUCUK CAMLICA KORUSU",
+      "KUCUKCAMLICA KORUSU"
+    ],
+    "AST-AST-04-G": [
+      "AVCILAR SOSYAL TESISLAR",
+      "AVCILAR SOSYAL TESISLER"
+    ],
+    "KNV-KNV-01-G": [
+      "KANLICA YERALTI",
+      "KANLICA YERALTI  WC"
+    ],
+    "MO5-MO5-02-G": [
+      "MALTEPE SAHIL - OYUN ALANI BAY SABIT",
+      "MALTEPE SAHIL OYUN ALANI BAY SABIT"
+    ],
+    "UM1-UM1-01-G": [
+      "RANIYE MESIRE ALANI 1",
+      "UMRANIYE MESIRE ALANI 1"
+    ],
+    "SLB-SLB-01-G": [
+      "BOGAZ SILIVRI BOGLUCA PARKI",
+      "BOGAZICI SILIVRI BOGLUCA PARKI"
+    ],
+    "MO6-MO6-01-G": [
+      "MALTEPE SAHIL - OYUN ALANI BAYAN SABIT",
+      "MALTEPE SAHIL OYUN ALANI BAYAN SABIT"
+    ],
+    "BN2-BN2-01-G": [
+      "BELGRAD ORMANI NESET SUYU 2",
+      "BELGRAD ORMANI NESETSUYU 2"
+    ],
+    "ZAY-ZAY-04-G": [
+      "METROBUS ZINCIRLIKUYU ANADOLU",
+      "METROBUS ZINCIRLIKUYU LEVENT YONU"
+    ],
+    "YPV-YPV-02-G": [
+      "YOGURTCU PARKI",
+      "YOGUTCU PARKI WC"
+    ],
+    "BN2-BN2-02-G": [
+      "BELGRAD ORMANI NESET SUYU 2",
+      "BELGRAD ORMANI NESETSUYU 2"
+    ],
+    "CPW-CPW-04-G": [
+      "CADDEBOSTAN PLAJ",
+      "CADDEBOSTAN PLAJI WC"
+    ],
+    "EMG-EMG-04-G": [
+      "EMIRGAN KOROSU MODULER",
+      "EMIRGAN KORUSU MODULER"
+    ],
+    "KUC-KUC-01-G": [
+      "KUCUK CAMLICA KORUSU",
+      "KUCUKCAMLICA KORUSU"
+    ],
+    "BMD-BMD-04-G": [
+      "BALAT MODULER",
+      "TOLGA KAFE"
+    ],
+    "MKP-MK2-03-G": [
+      "MACKA DEMOKRASI PARKI -2",
+      "MACKA DEMOKRASI PARKI 2"
+    ],
+    "VKP-VKP-03-G": [
+      "VANIKOY PARK",
+      "VANIKOY PARKI"
+    ],
+    "OCK-OCK-02-G": [
+      "ESENLER OTOGAR IDARI BINA KADIN",
+      "OTOGAR CARSI BAYAN",
+      "OTOGAR IDARI BINA KADIN"
+    ],
+    "AST-AST-02-G": [
+      "AVCILAR SOSYAL TESISLAR",
+      "AVCILAR SOSYAL TESISLER"
+    ],
+    "MT3-MT3-02-G": [
+      "MALTEPE SAHIL - DOLGU ALANI BAYAN",
+      "MALTEPE SAHIL 4 DOLGU ALANI BAYAN"
+    ],
+    "EMG-EMG-01-G": [
+      "EMIRGAN KOROSU MODULER",
+      "EMIRGAN KORUSU MODULER"
+    ],
+    "PLP-PLP-01-G": [
+      "PASA LIMANI PARKI",
+      "PASA LIMANI PARKI WC"
+    ],
+    "SLB-SLB-02-G": [
+      "BOGAZ SILIVRI BOGLUCA PARKI",
+      "BOGAZICI SILIVRI BOGLUCA PARKI"
+    ],
+    "MT5-MT5-02-G": [
+      "IDELATEPE SAHIL 2 BELTUR",
+      "IDELATEPE SAHIL BELTUR"
+    ],
+    "KPP-KPP-01-G": [
+      "KOCA MUSTAFA PASA PARKI",
+      "KOCAMUSTAFAPASA PARKI"
+    ],
+    "KKV-KKV-03-G": [
+      "KARTAL KUMCULAR",
+      "KARTAL KUMCULAR WC"
+    ],
+    "BMD-BMD-02-G": [
+      "BALAT MODULER",
+      "TOLGA KAFE"
+    ],
+    "ZSY-ZSY-04-G": [
+      "METROBUS ZINCIRLIKUYU AVRUPA",
+      "METROBUS ZINCIRLIKUYU BESIKTAS YONU"
+    ],
+    "MO5-MO5-01-G": [
+      "MALTEPE SAHIL - OYUN ALANI BAY SABIT",
+      "MALTEPE SAHIL OYUN ALANI BAY SABIT"
+    ],
+    "KCK-KCK-04-G": [
+      "KUCUKCEKMECE GOL",
+      "KUCUKCEKMECE GOLU"
+    ],
+    "YK7-YK7-02-G": [
+      "YENIKAPI DOLGU ALANI BAYAN 1",
+      "YENIKAPI DOLGU ALANI BAYAN-1",
+      "YENIKAPI KADIN"
+    ],
+    "HSV-HSV-02-G": [
+      "HAREM SAHIL",
+      "HAREM SAHIL WC"
+    ],
+    "KCK-KCK-02-G": [
+      "KUCUKCEKMECE GOL",
+      "KUCUKCEKMECE GOLU"
+    ],
+    "KO3-KO3-02-G": [
+      "KEMERBURGAZ KENT ORMANI 2.KAPI 1",
+      "KEMERBURGAZ KENT ORMANI 2.KAPI 1.WC",
+      "KEMERBURGAZ KENT ORMANI 3",
+      "KENT ORMANI 2.KAPI  1. WC"
+    ],
+    "BB2-BB2-02-G": [
+      "BELGRAD ORMANI BENTLER - 2",
+      "BELGRAD ORMANI BENTLER 2"
+    ],
+    "ICE-ICE-02-G": [
+      "M8 ICERENKOY",
+      "M8 ICERENKOY WC"
+    ],
+    "IBY-IBY-01-G": [
+      "IDEALTEPE BELTUR YANI",
+      "IDEALTEPE BELTUR YANI WC"
+    ],
+    "FOK-FOK-03-G": [
+      "FLORYA ATATURK ORMANI 3",
+      "FLORYA ATATURK ORMANI3"
+    ],
+    "EMG-EMG-03-G": [
+      "EMIRGAN KOROSU MODULER",
+      "EMIRGAN KORUSU MODULER"
+    ],
+    "FCM-FCM-01-G": [
+      "M4 FEVZI CAKMAK",
+      "M4 FEVZI CAKMAK WC"
+    ],
+    "MT3-MT3-03-G": [
+      "MALTEPE SAHIL - DOLGU ALANI BAYAN",
+      "MALTEPE SAHIL 4 DOLGU ALANI BAYAN"
+    ],
+    "FOB-FOB-01-G": [
+      "FLORYA ATATURK ORMANI ARKA KAPI",
+      "FLORYA ATATURK ORMANI2"
+    ],
+    "KEH-KEH-03-G": [
+      "KURTKOY ERSOY HASTAHANESI ONU",
+      "KURTKOY ERSOY HASTANESI ONU"
+    ],
+    "BAP-BAP-04-G": [
+      "AZERBAYCAN PARKI",
+      "BAGCILAR PARKI"
+    ],
+    "KUC-KUC-04-G": [
+      "KUCUK CAMLICA KORUSU",
+      "KUCUKCAMLICA KORUSU"
+    ],
+    "SOA-SOA-02-G": [
+      "SEHIT OMER AKTUG",
+      "SEHIT OMER AKTUG PARKI WC"
+    ],
+    "K32-K32-01-G": [
+      "KEMERBURGAZ KENT ORMANI 3.KAPI 2",
+      "KEMERBURGAZ KENT ORMANI 3.KAPI 2.WC"
+    ],
+    "UM1-UM1-03-G": [
+      "RANIYE MESIRE ALANI 1",
+      "UMRANIYE MESIRE ALANI 1"
+    ],
+    "HAC-HAC-01-G": [
+      "HUSEYIN AGA CAMI",
+      "HUSEYIN AGA CAMII"
+    ],
+    "BCS-BCS-01-G": [
+      "BUYUKCEKMECE SOSYAL TESIS",
+      "BUYUKCEKMECE SOSYAL TESISLERI"
+    ],
+    "MNS-MNS-02-G": [
+      "MENEKSE PLAJI",
+      "MENEKSE PLAJI WC"
+    ],
+    "KPV-KPV-01-G": [
+      "KUCUKSU PARKI",
+      "KUCUKSU PARKI WC"
+    ],
+    "KCO-KCO-02-G": [
+      "KAZLICESME OTOPARK",
+      "KAZLICESME OTOPARK GIRIS"
+    ],
+    "AYB-AYB-01-G": [
+      "ALIBEYKOY BARAJ",
+      "ALIBEYKOY BARAJ USTU PARKI",
+      "BARAJ USTU PARKI"
+    ],
+    "KO2-KO2-02-G": [
+      "KEMERBURGAZ KENT ORMANI 1.KAPI 2",
+      "KEMERBURGAZ KENT ORMANI 1.KAPI 2.WC",
+      "KEMERBURGAZ KENT ORMANI 2"
+    ],
+    "KO2-KO2-01-G": [
+      "KEMERBURGAZ KENT ORMANI 1.KAPI 2",
+      "KEMERBURGAZ KENT ORMANI 1.KAPI 2.WC",
+      "KEMERBURGAZ KENT ORMANI 2"
+    ],
+    "BYW-BYW-01-G": [
+      "BEYKOZ MEYDAN",
+      "BEYKOZ MEYDAN WC"
+    ],
+    "BYW-BYW-02-G": [
+      "BEYKOZ MEYDAN",
+      "BEYKOZ MEYDAN WC"
+    ],
+    "KO4-KO4-02-G": [
+      "KEMERBURGAZ KENT ORMANI 2.KAPI 2",
+      "KEMERBURGAZ KENT ORMANI 2.KAPI 2.WC",
+      "KEMERBURGAZ KENT ORMANI 4",
+      "KENT ORMANI 2.KAPI 2. WC"
+    ],
+    "KO5-KO5-01-G": [
+      "KEMERBURGAZ KENT ORMANI 2.KAPI",
+      "KEMERBURGAZ KENT ORMANI 2.KAPI 3.WC",
+      "KEMERBURGAZ KENT ORMANI 5"
+    ],
+    "UM2-UM2-04-G": [
+      "RANIYE MESIRE ALANI 2",
+      "UMRANIYE MESIRE ALANI 2"
+    ],
+    "MES-MES-01-G": [
+      "M8  IMES WC",
+      "M8 IMES"
+    ],
+    "KO5-KO5-02-G": [
+      "KEMERBURGAZ KENT ORMANI 2.KAPI",
+      "KEMERBURGAZ KENT ORMANI 2.KAPI 3.WC",
+      "KEMERBURGAZ KENT ORMANI 5"
+    ],
+    "UM2-UM2-03-G": [
+      "RANIYE MESIRE ALANI 2",
+      "UMRANIYE MESIRE ALANI 2"
+    ],
+    "MES-MES-02-G": [
+      "M8  IMES WC",
+      "M8 IMES"
+    ],
+    "BF2-BF2-01-G": [
+      "BELGRAD FATIH CESMESI 2",
+      "BELGRAD ORMANI FATIH CESMESI 2"
+    ],
+    "BF2-BF2-02-G": [
+      "BELGRAD FATIH CESMESI 2",
+      "BELGRAD ORMANI FATIH CESMESI 2"
+    ],
+    "UM2-UM2-02-G": [
+      "RANIYE MESIRE ALANI 2",
+      "UMRANIYE MESIRE ALANI 2"
+    ],
+    "UM2-UM2-01-G": [
+      "RANIYE MESIRE ALANI 2",
+      "UMRANIYE MESIRE ALANI 2"
+    ],
+    "KUB-KUB-01-G": [
+      "BOGAZICI - M8 KUCUKBAKKALKOY",
+      "M8 KUCUKBAKKALKOY"
+    ],
+    "KAP-KAP-02-G": [
+      "BOGAZICI - KADIKOY KALAMIS PARKI",
+      "KADIKOY KALAMIS PARKI"
+    ],
+    "KUB-KUB-02-G": [
+      "BOGAZICI - M8 KUCUKBAKKALKOY",
+      "M8 KUCUKBAKKALKOY"
+    ],
+    "KAP-KAP-01-G": [
+      "BOGAZICI - KADIKOY KALAMIS PARKI",
+      "KADIKOY KALAMIS PARKI"
+    ],
+    "KAP-KAP-03-G": [
+      "BOGAZICI - KADIKOY KALAMIS PARKI",
+      "KADIKOY KALAMIS PARKI"
+    ],
+    "MNS-MNS-01-G": [
+      "MENEKSE PLAJI",
+      "MENEKSE PLAJI WC"
+    ],
+    "YKM-YKM-02-G": [
+      "BOGAZICI - YASAR KEMAL MEYDANI",
+      "YASAR KEMAL MEYDANI"
+    ],
+    "KO4-KO4-01-G": [
+      "KEMERBURGAZ KENT ORMANI 2.KAPI 2",
+      "KEMERBURGAZ KENT ORMANI 2.KAPI 2.WC",
+      "KEMERBURGAZ KENT ORMANI 4"
+    ],
+    "KAP-KAP-04-G": [
+      "BOGAZICI - KADIKOY KALAMIS PARKI",
+      "KADIKOY KALAMIS PARKI"
+    ],
+    "YKM-YKM-01-G": [
+      "BOGAZICI - YASAR KEMAL MEYDANI",
+      "YASAR KEMAL MEYDANI"
+    ],
+    "GPS-GPS-01-G": [
+      "BOGAZICI - GURPINAR SAHIL",
+      "GURPINAR SAHIL"
+    ],
+    "BD2-BD2-02-G": [
+      "BOGAZICI - BUYUKDERE FIDANLIK ISTON",
+      "BUYUKDERE FIDANLIK ISTON"
+    ],
+    "GPS-GPS-02-G": [
+      "BOGAZICI - GURPINAR SAHIL",
+      "GURPINAR SAHIL"
+    ],
+    "BD2-BD2-01-G": [
+      "BOGAZICI - BUYUKDERE FIDANLIK ISTON",
+      "BUYUKDERE FIDANLIK ISTON"
+    ],
+    "KYY-KYY-02-G": [
+      "BOGAZICI - KEMERBURGAZ YURUYUS YOLU",
+      "KEMERBURGAZ YURUYUS YOLU"
+    ],
+    "KYY-KYY-03-G": [
+      "BOGAZICI - KEMERBURGAZ YURUYUS YOLU",
+      "KEMERBURGAZ YURUYUS YOLU"
+    ],
+    "KYY-KYY-01-G": [
+      "BOGAZICI - KEMERBURGAZ YURUYUS YOLU",
+      "KEMERBURGAZ YURUYUS YOLU"
+    ],
+    "KYY-KYY-04-G": [
+      "BOGAZICI - KEMERBURGAZ YURUYUS YOLU",
+      "KEMERBURGAZ YURUYUS YOLU"
+    ],
+    "CKO-CKO-02-G": [
+      "CIROZ KAMP ONU",
+      "CIROZ YESIL ALAN"
+    ],
+    "CKO-CKO-01-G": [
+      "CIROZ KAMP ONU",
+      "CIROZ YESIL ALAN"
+    ],
+    "EM2-EM2-01-G": [
+      "EMIRGAN MESCIT ALTI",
+      "EMIRGAN MODULER2"
+    ],
+    "EM2-EM2-03-G": [
+      "EMIRGAN MESCIT ALTI",
+      "EMIRGAN MODULER2"
+    ],
+    "EM2-EM2-04-G": [
+      "EMIRGAN MESCIT ALTI",
+      "EMIRGAN MODULER2"
+    ],
+    "EM2-EM2-02-G": [
+      "EMIRGAN MESCIT ALTI",
+      "EMIRGAN MODULER2"
+    ],
+    "MU2-MU2-41-G": [
+      "USKUDAR MARMARAY WC",
+      "USKUDAR-2"
+    ],
+    "MNK-MNK-03-G": [
+      "MENEKSE PARKI 1",
+      "MENEKSE PARKI 1 MODULER"
+    ],
+    "MNK-MNK-01-G": [
+      "MENEKSE PARKI 1",
+      "MENEKSE PARKI 1 MODULER"
+    ],
+    "MNK-MNK-02-G": [
+      "MENEKSE PARKI 1",
+      "MENEKSE PARKI 1 MODULER"
+    ],
+    "KKY-KKY-02-G": [
+      "KISIRKAYA PLAJI",
+      "M4 KURTKOY"
+    ],
+    "KKY-KKY-01-G": [
+      "KISIRKAYA PLAJI",
+      "M4 KURTKOY"
+    ]
+  }
+}
