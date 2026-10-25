@@ -21,7 +21,7 @@ Bu belge çalışan bir veri aktarımı veya canlı AI entegrasyonu tamamlandı�
 - [Ortak proje yapısı ve sözleşme görevi #23](https://github.com/akcedia/SmartLoo/issues/23)
 - [Önceki analiz görevi #14](https://github.com/akcedia/SmartLoo/issues/14) ve [PR #22](https://github.com/akcedia/SmartLoo/pull/22)
 
-Mevcut gereksinimler, önceki analizde bildirilen kaynak bulguları ve bu belgedeki tasarım önerileri ayrı tutulur. 25 Ekim ek incelemesinde yerel ham dosyalardan profil yeniden üretildi; tamamı ve altı dosyanın hash'i haftalık daldaki profile.json ile eşleşti. Bölüm 5.5 bu ölçümleri kimlik önerisinden ayırır. Paylaşılan indirme bağlantısının erişim kontrolü #14 kapsamında hâlâ açıktır.
+Mevcut gereksinimler, önceki analizde bildirilen kaynak bulguları ve bu belgedeki tasarım önerileri ayrı tutulur. 25 Ekim ek incelemesinde yerel ham dosyalardan profil yeniden üretildi; tamamı ve altı dosyanın hash'i haftalık daldaki profile.json ile eşleşti. Bölüm 5.5 bu ölçümleri kimlik önerisinden ayırır. Sonradan sağlanan Drive ZIP'indeki altı ham girdi hash/boyut olarak aynı dosyalarla eşleşti. Özgür'ün reader izni doğrulandı; alıcı oturumundan indirme ve tüm ekip erişimi ayrıca doğrulanmış değildir.
 
 Ortak API, veri modeli ve ortam değişkeni adlarını etkileyen öneriler ekip incelemesi gerektirir. Bu belge bu sözleşmeleri tek taraflı değiştirmez.
 
@@ -203,7 +203,7 @@ Bu politika, onaylı kimliklerin tekrar import’unu destekler. Sağlayıcının
 
 ### 5.5 Profil kanıtı ile kimlik önerisinin ilişkisi (25 Ekim incelemesi)
 
-Dayanak: [profil JSON](../../smartloo-evidence/profile.json), [profil scripti](../../smartloo-evidence/profile_sources.py) ve [tekrar üretim talimatları](../../smartloo-evidence/README.md). İncelenen haftalık dalın başlangıç commit'i: `28c0fa99d903862f41a97d1ec4374d5a5846dad0`. Profilin kamuya/ekibe indirilebilir ham paket üzerinden tekrar üretimi, paylaşım bağlantısının doğrulanmasına bağlıdır.
+Dayanak: [profil JSON](../../smartloo-evidence/profile.json), [profil scripti](../../smartloo-evidence/profile_sources.py) ve [tekrar üretim talimatları](../../smartloo-evidence/README.md). İncelenen haftalık dalın başlangıç commit'i: `28c0fa99d903862f41a97d1ec4374d5a5846dad0`. [Paylaşılan Drive ZIP'i](https://drive.google.com/file/d/1LIb0Os6XRlFNi_wjheVSSiH_bhEPk060/view?usp=drive_link) indirildi; altı ham girdinin tamamı kayıtlı hash/boyut değerleri ve yerel tekrar üretimde kullanılan dosyalarla eşleşti. Özgür'ün okuyucu izni metadata'dan doğrulandı. Alıcının oturumundan indirme ve tüm ekip erişimi ayrıca denenmedi.
 
 | Profil alanı | Gözlenen değer | Kimlik kararına etkisi |
 |---|---|---|
@@ -515,6 +515,6 @@ Ekip incelemesinde kesinleştirilecek konular:
 
 Bu katkı ortak ortam değişkeni veya bağımlılık dosyası değiştirmez. Gerçek sağlayıcı anahtarı içermez.
 
-Teslim doğrulaması ayrıca kaydedilecektir. Bu dokümantasyon güncellemesinde çalıştırılabilir adapter, mock sağlayıcı veya yeni otomatik test eklenmemiştir; bölüm 8’deki senaryolar çalıştırılmamıştır. 25 Ekim kontrolünde altı JSON örneğinin sözdizimi doğrulandı. Mevcut pytest testleri çalıştırılmak istendi ancak ortamda pytest bulunmadığından test toplama başlayamadı (No module named pytest); başarılı uygulama testi sonucu yoktur. Profil scripti ve README'deki tekrar üretim Python bloğu openpyxl 3.1.5 ile ayrı dizinlerde çalıştırıldı; altı ham dosya hash/boyut değeri ve profil JSON'unun tamamı eşleşti. Bunlar yerel dosya kontrolleridir; paylaşım URL erişim kanıtı değildir.
+Teslim doğrulaması ayrıca kaydedilecektir. Bu dokümantasyon güncellemesinde çalıştırılabilir adapter, mock sağlayıcı veya yeni otomatik test eklenmemiştir; bölüm 8’deki senaryolar çalıştırılmamıştır. 25 Ekim kontrolünde altı JSON örneğinin sözdizimi doğrulandı. Mevcut pytest testleri çalıştırılmak istendi ancak ortamda pytest bulunmadığından test toplama başlayamadı (No module named pytest); başarılı uygulama testi sonucu yoktur. Profil scripti ve README'deki tekrar üretim Python bloğu openpyxl 3.1.5 ile ayrı dizinlerde çalıştırıldı; altı ham dosya hash/boyut değeri ve profil JSON'unun tamamı eşleşti. Sonraki Drive kontrolü paketteki altı ham girdinin aynı baytları içerdiğini doğruladı; tekrar üretim analizi yeniden çalıştırılmadı. Owner oturumunda indirme ve Özgür'ün reader izni doğrulandı; alıcı oturumunda indirme yapılmadı.
 
 #28’in kapanışı için en az bir başka ekip üyesinin tasarım PR’ını incelemesi gerekir. #14 ve PR #22’nin kanıt takibi ayrı devam eder.
