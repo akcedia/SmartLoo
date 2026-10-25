@@ -21,7 +21,7 @@ Bu belge çalışan bir veri aktarımı veya canlı AI entegrasyonu tamamlandı�
 - [Ortak proje yapısı ve sözleşme görevi #23](https://github.com/akcedia/SmartLoo/issues/23)
 - [Önceki analiz görevi #14](https://github.com/akcedia/SmartLoo/issues/14) ve [PR #22](https://github.com/akcedia/SmartLoo/pull/22)
 
-Mevcut gereksinimler, önceki analizde bildirilen kaynak bulguları ve bu belgedeki tasarım önerileri ayrı tutulur. Önceki sayısal bulgular bu tasarım çalışmasında yeniden doğrulanmış sayılmaz. Kaynak kimliği kararının dayandığı profil kanıtlarının kontrolü #14 kapsamında takip edilir.
+Mevcut gereksinimler, önceki analizde bildirilen kaynak bulguları ve bu belgedeki tasarım önerileri ayrı tutulur. 25 Ekim ek incelemesinde yerel ham dosyalardan profil yeniden üretildi; tamamı ve altı dosyanın hash'i haftalık daldaki profile.json ile eşleşti. Bölüm 5.5 bu ölçümleri kimlik önerisinden ayırır. Paylaşılan indirme bağlantısının erişim kontrolü #14 kapsamında hâlâ açıktır.
 
 Ortak API, veri modeli ve ortam değişkeni adlarını etkileyen öneriler ekip incelemesi gerektirir. Bu belge bu sözleşmeleri tek taraflı değiştirmez.
 
@@ -162,7 +162,7 @@ Kaynağa erişilemiyorsa boş ve başarılı import sonucu üretilmez; hata bild
 - İBB dataset/resource UUID’si bir dosyayı tanımlar; tek bir tesisi tanımlamaz.
 - Ad, koordinat veya feature indeksi tek başına kalıcı tesis kimliği sayılmaz.
 
-Önceki analiz benzersizlik ve tekrar bulguları bildirir. Bu belge bu sayıları yeniden doğrulamaz. 422 kaynak kaydı, doğrudan 422 benzersiz fiziksel tesis olarak yorumlanmaz.
+Kaynak profilindeki ölçümler ve kimlik önerisinin sınırı bölüm 5.5'te ilişkilendirilmiştir. 422 kaynak kaydı, doğrudan 422 benzersiz fiziksel tesis olarak yorumlanmaz.
 
 ### 5.2 Önerilen kimlik politikası
 
@@ -200,6 +200,40 @@ Bu politika, onaylı kimliklerin tekrar import’unu destekler. Sağlayıcının
 `Aktif → ACTIVE` ve `Pasif → CLOSED` eşlemeleri ekip incelemesine sunulan önerilerdir; güncel açılış durumu hesaplamaz.
 
 `Dönemlik` için takvim ve ortak model kararı gerekir. Bilinmeyen veya çözümlenmemiş değerler sessizce `ACTIVE` yapılmaz; ham değer korunur ve canlı import öncesi çözüm istenir.
+
+### 5.5 Profil kanıtı ile kimlik önerisinin ilişkisi (25 Ekim incelemesi)
+
+Dayanak: [profil JSON](../../smartloo-evidence/profile.json), [profil scripti](../../smartloo-evidence/profile_sources.py) ve [tekrar üretim talimatları](../../smartloo-evidence/README.md). İncelenen haftalık dalın başlangıç commit'i: `28c0fa99d903862f41a97d1ec4374d5a5846dad0`. Profilin kamuya/ekibe indirilebilir ham paket üzerinden tekrar üretimi, paylaşım bağlantısının doğrulanmasına bağlıdır.
+
+| Profil alanı | Gözlenen değer | Kimlik kararına etkisi |
+|---|---|---|
+| `facility.rows` | 422 kayıt | Fiziksel tesis sayısı değildir |
+| `facility.feature_keys`, `facility.properties` | Kalıcı tesis ID alanı yok | Resource UUID'si veya feature indeksi tesis ID'si yapılamaz |
+| `facility.name.distinct` | 297 | Ad tek başına kimlik değildir |
+| `facility.district_name.distinct` | 302 | İlçe + ad da tek başına yeterli değildir |
+| `facility.geometry.distinct` | 411 | Aynı konumu paylaşan kayıtlar var; konuma göre birleştirme yapılamaz |
+| `facility.candidate_identity.distinct` | 415 | Profil aday anahtarı bile 422 ayrı kimlik üretmiyor |
+| `facility.exact_duplicate_rows_excess` | 7 fazla tam tekrar | Tekrarın fiziksel anlamı doğrulanmadan otomatik birleştirilmez |
+| `facility.max_xy_difference` | Her eksende < 5e-11 derece | Önerilen 1e-8 tutarlılık eşiği bu dosyayı kapsar; saha doğruluğunu kanıtlamaz |
+| `usage.*.rows` toplamı | 1.048.575 | Kullanım satırıdır; tesis/hijyen/canlı doluluk sayısı değildir |
+
+Profilin `norm()` işlevi Türkçe harfleri sadeleştirir, büyük harfe dönüştürür ve noktalama işaretlerini kaldırır. Bölüm 5.2'nin NFC ve harf koruyan fingerprint önerisi farklıdır. Bu nedenle 415 değeri önerilen v1 fingerprint'in benzersizliği veya onaylı tesis sayısı olarak sunulamaz. Uygulama öncesi yeni politikanın kendi çakışma raporu ve test vektörleri gerekir.
+
+### 5.6 Ortak şema ile eşleşme ve açık kararlar
+
+[Veri sözlüğü §2.2 ve §6](../analysis/data/er-data-dictionary.md), [SQL migration](../../db/migrations/001_create_toilets.sql) ve [gereksinimler FR-07](../REQUIREMENTS.MD) birlikte okundu.
+
+| Konu | Mevcut sözleşme / uygulama | Adapter sınırı ve açık karar |
+|---|---|---|
+| Kaynak kimliği | SQL'de `UNIQUE(source, source_id)` | Önerilen namespace `ibb`; onaylı fingerprint bu çiftin source_id bileşenidir. Sağlayıcı ID'si bulunmadığından `ibb_source_id = null`; fingerprint bu alana yazılmaz |
+| Kalıcı UUID | SQL birincil anahtarı `id` | Upsert mevcut UUID'yi korur; yeni UUID yalnız onaylı yeni tesis için üretilir. Çakışmada otomatik UUID yenilemek çözüm değildir |
+| Koordinat hassasiyeti | SQL `numeric(9,6)` | Fingerprint, SQL'den geri okunan yuvarlanmış koordinattan hesaplanamaz. Ham hassas koordinat ve onaylı fingerprint ilişkisi korunmalıdır. Hassasiyet/kayıt defteri saklama tasarımı Fırat ile açık |
+| Ad ve metadata | Ad en fazla 150 karakter; SQL'de `source_properties` kolonu yok | Adapter uzun adı sessiz kesmez, doğrulama hatası üretir. Ham metadata staging/provenance önerisidir; mevcut tabloya doğrudan yazılabilir nesne değildir |
+| Durum | SQL enum: ACTIVE, CLOSED, MAINTENANCE; varsayılan ACTIVE | Çözümsüz/Dönemlik kaynak değeri varsayılana bırakılmaz; batch engellenir. Eşleme/takvim ekip kararı bekler |
+| Bilinmeyen imkânlar | SQL boolean/ücret/saat alanları NULL kabul eder | Bölüm 3.4 null değerleri uyumludur; bilinmeyen bilgi filtreyi geçirmez |
+| Öneri kaynağı | Veri sözlüğünde `suggestion` ayrılmış namespace önerisi | Dış import bu namespace'i taklit edemez; namespace yetkilendirmesi import bileşeninde ele alınmalıdır |
+
+Alias/kayıt defteri ve review sürümü mevcut migration'da uygulanmış değildir. SQL unique kısıtı aynı fingerprint'in fiziksel anlamını doğrulamaz veya ad/konum değişikliğini kendiliğinden çözmez. Fırat/Özgür onayı, migration ya da ortak API değişikliği bu belgeyle verilmiş sayılmaz.
 
 ## 6. AI servis sözleşmesi
 
@@ -356,6 +390,25 @@ Kesin sürüm saklama ve invalidation mekanizması Özgür/Fırat ile kararlaşt
 
 Loglarda correlation ID, hata kodu, süre ve sürüm bilgisi tutulması önerilir. Ham yorumlar, kişisel veriler, sağlayıcı anahtarları ve reddedilen ham model çıktısı loglanmaz.
 
+### 7.1 Yorum yazımı ve cache için önerilen arayüz sorumlulukları
+
+Aşağıdaki dağılım inceleme teklifidir; Özgür/Fırat tarafından kabul edilmiş görev paylaşımı değildir. Veri sözlüğü REQ-DB-05, yorum değişikliği başarılı sayılmadan istatistiklerin yenilenmesini ister; MongoDB/PostgreSQL/Redis arasında ortak transaction uygulanmış değildir.
+
+| İşlem / arayüz | Önerilen sorumlu | Başarı ve hata sınırı |
+|---|---|---|
+| Yorum ekle/düzenle/sil; moderasyonla görünürlük değiştir | Özgür: yorum servisi; Fırat: veri tutarlılığı | İlgili toilet_id için yeni monoton review_revision üret; güncel görünür sayıyı/ortalamayı sağla; tekrar denemede aynı olayın iki kez uygulanmasını önle |
+| Hesap silme | Özgür: hesap/yorum akışı | Etkilenen tesisleri belirle; puanların korunması kuralını sürdür; metin/görünürlük etkileniyorsa sürümü değiştir. Kimlik/PII etkisi için cache'in yeniden değerlendirilmesini sağla |
+| Tutarlı okuma | Fırat ile veri arayüzü | Yorumlar, review_revision ve istatistikler aynı mantıksal snapshot'a ait olmalı; revision alanının yeri ve store'lar arası hata kurtarma kararı açık |
+| Özet okuma/yazma | Emir: AI adapter tasarımı | Cache anahtarına toilet_id + revision + dil + sözleşme/politika sürümü koy; sağlayıcı dönüşünde revision yeniden kontrol edilmeden sonucu yayımlama |
+| Invalidation bildirimi | Yorum/veri servisi üretir, AI bileşeni tüketir | Bildirim gecikse bile eski sürüm anahtarı okunmamalı; yalnız Redis DEL yapmak yarış durumunu çözmez. Outbox/retry veya eşdeğer tutarlılık mekanizması ekipçe seçilecek |
+| Redis veya güncel veri kesintisi | AI bileşeni | Redis yoksa doğrulanmış güncel veriyle devam edilebilir. Güncel revision doğrulanamıyorsa eski özet yerine fallback; başarı cache'i yazılmaz |
+
+İç snapshot önerisi: `{toilet_id, review_revision, reviews, review_count, average_cleanliness}`. Bu bir public API alan eklemesi değildir. Mutasyonun yarıda kaldığı, yeniden denendiği veya olayın geç geldiği durumda stale özetin nasıl engelleneceği kararlaştırılmadan bu sorumluluk maddesi tamamlandı sayılmaz.
+
+### 7.2 AI şeması için doğrulanan uyum sınırı
+
+FR-04'teki summary/pros/cons/recommendation ve backend'in eklediği based_on_reviews/generated_at alanları korunur. TC-08 fixture'ında categories.odor beklenir; bu, önerilen beş kategorinin tüm ayrıntıları için ortak JSON Schema onayı değildir. Ek alan reddi, dil/PII/içerik denetiminin uygulanma yöntemi, Unicode uzunluk kuralı ve moderasyon alanları Özgür ile kesinleştirilecektir. Veri sözlüğünde reviews.comment vardır; silinmiş/görünür bayraklarının fiziksel modeli henüz kesinleşmemiştir. Sadece `is_anonymized` olması yorumu görünmez saymak için gerekçe değildir.
+
 ## 8. Deterministik mock senaryoları
 
 Bu bölüm uygulanacak testlerin girdilerini ve beklenen sonuçlarını tanımlar. Çalıştırılabilir mock veya test kodunun tamamlandığı anlamına gelmez.
@@ -418,13 +471,30 @@ M10 gibi mock testleri hata yolunu doğrular; gerçek modelin tüm prompt-inject
 
 M13 için aday fixture: A erişilebilir ve ücretsiz, B erişilebilirlik bilgisi bilinmiyor ve ücretsiz, C erişilebilir ve ücretli. Tercihler erişilebilir ve ücretsiz olduğunda yalnız A döner; AI hatası bu uygunluk sonucunu değiştirmez.
 
+### 8.4 Hata senaryolarının kesin fixture beklentileri
+
+Bunlar çalıştırılmış test sonuçları değildir. Her senaryo bağımsız olarak bölüm 8.1 fixture'ını sıfırlar; saat, yorum sırası ve revision sabittir.
+
+| Senaryo | Kesin hazırlık ve beklenen gözlemler |
+|---|---|
+| M02 | r1/r2 tutulur; ikisinin puanı 4. HTTP 200; summary null; minimum 3 mesajı; sağlayıcı çağrısı 0; başarı cache yazımı 0. İstatistik döndürülüyorsa gerçek fixture değerleri count=2, average=4.0 |
+| M07 | Üç yorum; mock anında TimeoutError üretir. HTTP 200; summary null; servis-hatası mesajı; count=3, average=4.0; sağlayıcı çağrısı 1; başarı cache yazımı 0. Bu, gerçek 10 saniye zamanlayıcısının ölçümü değildir |
+| M08a | Başarılı çıktı kopyasında yalnız recommendation=perfect yapılır; doğrulama reddi; M07 ile aynı fallback ve cache beklentisi |
+| M08b | Başarılı çıktı kopyasında summary tam 401 adet U+0061 olur; uzunluk reddi; M07 ile aynı fallback. 400 karakter sınırı ayrıca sınır testi olarak kontrol edilmeli |
+| M08c | Sağlayıcı bozuk JSON metni döndürür; parse reddi; M07 ile aynı fallback; ham çıktı kullanıcıya/loga taşınmaz |
+| M16 — Yorum ekleme | M01 sonrası dördüncü görünür, uygun ve 4 puanlı yorum eklenir, revision=2. Sonraki okuma eski cache'i kullanmaz; toplam sağlayıcı çağrısı 2; based_on_reviews=4 |
+| M17 — Sıfır yorum | Görünür yorum yok; count=0, average=null; summary null; yetersiz yorum mesajı; sağlayıcı çağrısı/cache yazımı 0 |
+| M18 — Kısmi yazım / geç bildirim | Yorum değişmiş fakat revision/istatistik tutarlılığı doğrulanamıyor veya invalidation bildirimi geç geliyor. Eski özet sunulmaz; fallback; stale sonuç güncel cache'e yazılmaz |
+
+Mevcut tests/test_requirements.py TC-15 timeout/yetersiz yorum, TC-16 düzenleme/cache, TC-28 kişisel veri/güvenilmeyen içerik beklentileri içerir. src/app.py summary/review/import rotaları henüz 501 döndürür; testlerin bulunması bunların geçtiği anlamına gelmez. Bölüm 8'deki A/M senaryolarının tamamı mevcut pytest kataloğunda uygulanmış değildir.
+
 ## 9. Gereksinimlerle eşleştirme
 
 | Dayanak | Tasarım karşılığı | Önerilen doğrulama |
 |---|---|---|
 | FR-04 / TC-08 | Türkçe, en fazla 400 karakter, yapılandırılmış özet | M01, M08 |
 | FR-04 / TC-15 | Yetersiz yorum ve servis hatasında fallback; arama devam eder | M02, M07, M15 |
-| FR-04 / TC-16 | Cache ve yorum değişikliği | M04–M06, M11, M14 |
+| FR-04 / TC-16 | Cache ve yorum değişikliği | M04–M06, M11, M14, M16, M18 |
 | FR-04 / TC-17 | Tercihlere uygun en fazla 3 öneri | M13 |
 | FR-04 / TC-28 | Kişisel veri temizliği ve güvenilmeyen yorum | M09, M10 |
 | FR-07 / TC-19, TC-36 | Tekrar import ve kaynak kimliği | A07–A10 |
@@ -445,6 +515,6 @@ Ekip incelemesinde kesinleştirilecek konular:
 
 Bu katkı ortak ortam değişkeni veya bağımlılık dosyası değiştirmez. Gerçek sağlayıcı anahtarı içermez.
 
-Teslim doğrulaması ayrıca kaydedilecektir. Bu metin hazırlanırken çalıştırılabilir adapter, mock sağlayıcı veya yeni otomatik test eklenmemiştir; bölüm 8’deki senaryolar çalıştırılmamıştır.
+Teslim doğrulaması ayrıca kaydedilecektir. Bu dokümantasyon güncellemesinde çalıştırılabilir adapter, mock sağlayıcı veya yeni otomatik test eklenmemiştir; bölüm 8’deki senaryolar çalıştırılmamıştır. 25 Ekim kontrolünde altı JSON örneğinin sözdizimi doğrulandı. Mevcut pytest testleri çalıştırılmak istendi ancak ortamda pytest bulunmadığından test toplama başlayamadı (No module named pytest); başarılı uygulama testi sonucu yoktur. Profil scripti ve README'deki tekrar üretim Python bloğu openpyxl 3.1.5 ile ayrı dizinlerde çalıştırıldı; altı ham dosya hash/boyut değeri ve profil JSON'unun tamamı eşleşti. Bunlar yerel dosya kontrolleridir; paylaşım URL erişim kanıtı değildir.
 
 #28’in kapanışı için en az bir başka ekip üyesinin tasarım PR’ını incelemesi gerekir. #14 ve PR #22’nin kanıt takibi ayrı devam eder.
