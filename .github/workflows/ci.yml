@@ -3,7 +3,7 @@ on:
   push:
     branches: [main, weekly-review-2026-10-24]
   pull_request:
-    branches: [main]
+    branches: [main, weekly-review-2026-10-24]
 jobs:
   frontend:
     runs-on: ubuntu-latest
@@ -43,3 +43,41 @@ jobs:
         with:
           name: requirements-baseline
           path: requirements-results.xml
+  search:
+    name: Nearby search tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install Python dependencies
+        run: python -m pip install -r requirements-test.txt
+
+      - name: Run isolated search tests
+        run: >-
+          python -m pytest tests/test_requirements.py
+          -k "tc_01 or tc_02 or tc_03 or tc_11 or tc_12 or tc_13 or tc_14"
+          -q
+
+      - name: Start PostGIS
+        run: docker compose up -d --wait postgis
+
+      - name: Apply migrations
+        run: docker compose exec -T postgis sh /db/scripts/migrate.sh
+
+      - name: Load synthetic fixtures
+        run: >-
+          docker compose exec -T postgis
+          psql -v ON_ERROR_STOP=1 -f /db/seeds/fixtures.sql
+
+      - name: Run PostGIS integration tests
+        env:
+          SMARTLOO_TEST_POSTGIS: "1"
+        run: python -m pytest tests/test_nearby_postgis.py -q
+
+      - name: Stop PostGIS
+        if: always()
+        run: docker compose down -v
