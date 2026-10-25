@@ -45,9 +45,13 @@ The profile was regenerated from the supplied evidence ZIP and matched the commi
 
 ## Raw package access and reproducible commands (25 October)
 
-**Open blocker (#14): no shared raw-package URL is recorded in this README or the reviewed #14/#28 comments.** The actual share/download URL must be supplied by the package owner. Do not replace it with a guessed link or claim that local-file availability proves team access.
+Shared raw package: [SmartLoo_Evidence_Package.zip](https://drive.google.com/file/d/1LIb0Os6XRlFNi_wjheVSSiH_bhEPk060/view?usp=drive_link).
 
-Once supplied, record the real URL, the package version/date, and the access check (which intended team account could download it and when). Test access with an intended recipient account, download into a clean directory, extract the archive, and verify the six files below against the committed manifest. A successful download in the owner's session alone does not prove team access. Do not commit raw XLSX files.
+Package checked on 25 October 2026: 39,250,814 bytes; Drive modified time 16 October 2026, 22:01:52 UTC. Archive SHA-256: `03b577bfbb980b82b01c092cb74eb338b245c2f3af1b7900814156c7b0bb1a92`. This is the existing package supplied by Emir, not a fresh İBB download.
+
+Access check: the connected owner account downloaded the ZIP successfully; Drive permission metadata lists Özgür as a reader. The file is restricted to the listed accounts. No download was executed in Özgür's session, and access for every other team member is not established. Those recipients must request access from the owner if needed; no sharing permissions were changed.
+
+Open the link while signed into an authorized Google account, download the ZIP using Drive's download action, and extract it. Set RAW_EVIDENCE_DIR below to the extracted `SmartLoo_Evidence_Package` folder. The ZIP contains all six required raw inputs, plus README and DataStore samples; profile_sources.py/profile.json come from this repository, not from the old ZIP. A complete raw package does not require those two repository files to be added to the archive. Do not commit raw XLSX files.
 
 Required raw files (original bytes and filenames):
 
@@ -100,4 +104,4 @@ Expected aggregate counts: 422 GeoJSON records and 1,048,575 XLSX rows (373,933 
 
 The script profiles every XLSX/GeoJSON in its own directory and includes *.metadata.json in the manifest. Copying only the manifest-listed inputs into a clean directory avoids accidental extra inputs. Name-matching candidates use lossy normalization; they are not approved facility joins or the proposed production fingerprint.
 
-Local reproduction on 25 October used the raw files already present in the workspace and the script/profile from weekly commit `28c0fa99d903862f41a97d1ec4374d5a5846dad0`. Both the profile script and the Python block above were executed in separate working directories with openpyxl 3.1.5: the entire generated JSON and all six file hashes/sizes matched the committed profile. This local check cannot establish shared-download access; that check remains open until the real URL is supplied.
+Local reproduction on 25 October used the raw files already present in the workspace and the script/profile from weekly commit `28c0fa99d903862f41a97d1ec4374d5a5846dad0`. Both the profile script and the Python block above were executed in separate working directories with openpyxl 3.1.5: the entire generated JSON and all six file hashes/sizes matched the committed profile. The subsequently downloaded Drive ZIP contains all six inputs with identical sizes and SHA-256 hashes. This links the successful command run to the shared package without repeating the full analysis. Recipient-session download remains untested; permission metadata and owner-session download are the verified access evidence.
