@@ -1,0 +1,29 @@
+{
+  "count": 2,
+  "results": [
+    {
+      "id": "1",
+      "name": "Taksim Meydanı WC",
+      "latitude": 41.0369,
+      "longitude": 28.9850,
+      "distance_m": 120,
+      "has_disabled_access": true,
+      "has_baby_changing": true,
+      "is_free": false,
+      "is_open_now": true,
+      "average_cleanliness": 4.2
+    },
+    {
+      "id": "2",
+      "name": "İstiklal Caddesi WC",
+      "latitude": 41.0340,
+      "longitude": 28.9780,
+      "distance_m": 450,
+      "has_disabled_access": false,
+      "has_baby_changing": null,
+      "is_free": true,
+      "is_open_now": true,
+      "average_cleanliness": null
+    }
+  ]
+}
