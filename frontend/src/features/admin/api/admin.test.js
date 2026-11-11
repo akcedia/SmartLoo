@@ -35,10 +35,24 @@ describe("summary rules (FR-06)", () => {
   });
 
   it("matches TC-25: no reviews gives null average, never 0", () => {
-    const s = buildSummary({ facilities: tc09.facilities, reviews: [] }, { district: null, from: "2026-10-01", to: "2026-10-07" });
+    const data = { facilities: tc09.facilities, reviews: [] };
+    const s = buildSummary(data, tc09Filters);
     expect(s.average_cleanliness).toBeNull();
     expect(s.review_count).toBe(0);
     expect(s.critical_alert).toBe(false);
+    expect(s.trend).toHaveLength(7);
+    expect(s.trend.every((day) => day.average_cleanliness === null && day.review_count === 0)).toBe(true);
+    expect(s.facilities).toMatchObject([{ facility_id: KADIKOY, hygiene_score: null, review_count: 0 }]);
+    expect(buildExportRows(data, tc09Filters)).toMatchObject([{ facility_id: KADIKOY, hygiene_score: null }]);
+  });
+
+  it("returns empty facility and export lists when no facility matches the district", () => {
+    const filters = { ...tc09Filters, district: "Üsküdar" };
+    const s = buildSummary(tc09, filters);
+    expect(s.facilities).toEqual([]);
+    expect(s.active_facility_ratio).toBeNull();
+    expect(s.trend).toHaveLength(7);
+    expect(buildExportRows(tc09, filters)).toEqual([]);
   });
 
   it("averages individual reviews, not facility means", () => {
