@@ -29,3 +29,5 @@ sequenceDiagram
         Map->>Map: Clear the previous facility details
     end
 ```
+
+[Back to the Software Design Report](../REPORT.md)

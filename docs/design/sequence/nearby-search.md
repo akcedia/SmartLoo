@@ -41,3 +41,5 @@ sequenceDiagram
 ```
 
 For UC-01, the client requests `open_now=true` when showing nearby open facilities. Clearing an amenity filter omits that parameter. The implementation accepts radius 1–50,000 m and returns 200 for zero matches. Refs #25, #26 and #35.
+
+[Back to the Software Design Report](../REPORT.md)

@@ -84,3 +84,5 @@ sequenceDiagram
         end
     end
 ```
+
+[Back to the Software Design Report](../REPORT.md)
