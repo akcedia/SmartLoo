@@ -11,6 +11,7 @@ The [project Charter](../CHARTER.MD) defines the technology stack and milestones
 | --- | --- |
 | [`main` at `934a1eb`](https://github.com/akcedia/SmartLoo/tree/934a1ebdf4d714a9840fe17f0661b7e88757bd35) | Requirements and analysis are integrated. The application is a requirements-stage API scaffold. |
 | [Weekly integration #36](https://github.com/akcedia/SmartLoo/pull/36) | The branch implements FastAPI/PostGIS nearby search and includes a sample-data admin dashboard, database migrations, and CI. Other feature API routes still return 501. [Branch CI](https://github.com/akcedia/SmartLoo/actions/runs/40190017447) passed the configured checks. |
+| [Admin analytics PR #45](https://github.com/akcedia/SmartLoo/pull/45) | The revised [analytics contract](https://github.com/akcedia/SmartLoo/blob/d404deb4/docs/contracts/admin-analytics-api.md) and the admin panel run on a labelled sample adapter. 38 frontend tests pass, including the zero-review and no-facility cases. Summary and export endpoints still return 501 and depend on ADMIN authorization and a review reader. |
 | [Map PR #37](https://github.com/akcedia/SmartLoo/pull/37) | React/Leaflet map, filters and a facility detail card use mock data. Integration with the shared frontend and live search remains pending. |
 | [External data and AI contract](https://github.com/akcedia/SmartLoo/blob/9c5819f4f6f5b7108007cfbb1ef995e4d1e0a282/docs/design/adapter-ai-contract.md) | Proposed normalization, provider and cache contracts contributed by Emir Miraç İslamoğlu. Executable integration remains pending. |
 
@@ -44,6 +45,8 @@ The [nearby-search class diagram](class/nearby-search.md) represents the impleme
 | UC-02 / FR-02 | [Nearby search and filtering](sequence/nearby-search.md) | Apply or clear amenities and price filters and refresh results |
 | UC-09 / FR-09 | [Map and facility details](sequence/map-details.md) | Browse markers and request selected facility details, including the planned detail endpoint |
 | UC-08 / FR-08 | [Registration and sign-in](sequence/sign-in.md) | Registration, sign-in, failure throttling, JWT issuance and role checks in the target design |
+| UC-06 / FR-06 | [Administrator analytics and export](sequence/admin-analytics.md) | ADMIN check, Europe/Istanbul interval, facility and review queries, empty selections, review-store failure and panel states |
+| UC-07 / FR-07 | [Administrator analytics and export](sequence/admin-analytics.md) | CSV/JSON export of the dashboard selection. Facility import is modelled with the external data adapter (#39). |
 
 The [approved use case model](../requirements/use-cases.puml) defines 10 distinct UC identifiers and 12 use case elements. The initial sequences cover four distinct identifiers and four elements, or **40% by identifier and 33.3% by element**. Friday additions will expand coverage to AI, analytics and export. The final coverage table will reference the reviewed diagrams.
 
@@ -63,6 +66,14 @@ The [approved use case model](../requirements/use-cases.puml) defines 10 distinc
 
 ![Authorization of protected administrator requests](images/sequence-admin-authorization.svg)
 
+### Administrator analytics and export · UC-06 and UC-07
+
+The React panel sends one district/date selection to both endpoints. FastAPI enforces the ADMIN role, resolves the inclusive Europe/Istanbul interval and computes the KPI, daily trend, facility table and export from the same individual reviews. Facilities come from PostgreSQL and reviews from MongoDB, because the stored all-time facility aggregate cannot be date-filtered. A selection without reviews returns null scores and keeps matched facilities; a selection without facilities returns an empty table. A review-store failure returns a server error instead of an empty result. The panel currently runs on a labelled sample adapter (#45). Both endpoints return 501 until server-side authorization and the review reader exist.
+
+![Filtered administrator analytics sequence](images/sequence-admin-analytics.svg)
+
+![CSV and JSON report export sequence](images/sequence-admin-export.svg)
+
 ## 5. Non-functional design decisions
 
 | Requirement | Design decision | Tool and evidence |
@@ -76,6 +87,6 @@ The [approved use case model](../requirements/use-cases.puml) defines 10 distinc
 ## 6. Review items and final deliverable
 
 - Reconcile the review-store boundary and the consistency approach for aggregates, AI cache invalidation and account deletion.
-- Review the admin API's distinction between empty results, dates with missing values and facilities with zero reviews.
+- The admin API's distinction between empty results, dates with missing values and facilities with zero reviews is decided in the [analytics sequence model](sequence/admin-analytics.md#contract-decision-empty-results-null-days-and-facilities-without-reviews) and #45.
 - Confirm the map-to-live-API boundary and model the AI and administrative interactions with their contributors.
 - Embed the reviewed diagrams in the final PDF and verify legibility and page fit. Generate it from the approved PR revision for Learn submission by 15 November.
