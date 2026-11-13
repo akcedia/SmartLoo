@@ -112,3 +112,53 @@ $env:SMARTLOO_TEST_POSTGIS = "1"
 Verified: 10 isolated cases and 5 PostGIS integration cases passed.
 Other feature tests are outside this search-only verification.
 Map integration and large-dataset performance remain to be verified.
+## Accounts and authorization API — local development (#38)
+
+Registration, sign-in and the route guards follow FR-08. They use the same
+PostgreSQL database; `migrate.sh` creates the `users` and `login_failures` tables.
+
+The API signs tokens with `SMARTLOO_JWT_SECRET` (at least 32 bytes). Without it,
+sign-in and protected routes return 503. Use your own random value; never commit one.
+
+```powershell
+$env:SMARTLOO_JWT_SECRET = "replace-with-a-local-random-secret-of-32-bytes"
+.\.venv\Scripts\python.exe -m uvicorn src.app:create_app --factory --reload
+```
+
+| Request | Result |
+| --- | --- |
+| `POST /api/v1/auth/register` `{email, password, display_name}` | 201 public account with role USER; 409 email taken (case-insensitive); 422 invalid fields. Password: 8+ characters with a letter and a digit. A supplied `role` is ignored. |
+| `POST /api/v1/auth/login` `{email, password}` | 200 `{access_token, token_type: "Bearer", expires_in: 3600}`; generic 401 `Invalid email or password`; 429 after five failures for one email within 15 minutes |
+
+Protected routes use FastAPI dependencies from `src/auth.py`:
+
+```python
+from fastapi import Depends
+from src.auth import Principal, current_user, require_admin
+
+@app.get("/api/v1/admin/metrics/summary")
+def summary(admin: Principal = Depends(require_admin)):
+    ...  # admin.sub is the account UUID, admin.role == "ADMIN"
+```
+
+`current_user` returns 401 for a missing, tampered or expired token, or when the
+account no longer exists. `require_admin` additionally returns 403 for a valid
+USER. Review, suggestion and account-deletion routes now check the token, then
+still return 501 until those features exist. There is no admin registration
+route; promote a local test account with SQL:
+
+```powershell
+docker compose exec -T postgis psql -c "UPDATE users SET role = 'ADMIN' WHERE email = 'you@example.com'"
+```
+
+### Run auth tests
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest tests/test_requirements.py -k "tc_04 or tc_05 or tc_30 or tc_37 or tc_38 or tc_39 or tc_40 or tc_41 or tc_42 or tc_43 or tc_44 or tc_47 or tc_48" -q
+$env:SMARTLOO_TEST_POSTGIS = "1"
+.\.venv\Scripts\python.exe -m pytest tests/test_auth_postgres.py -q
+```
+
+Verified locally on 13 November 2026: 13 isolated FR-08 cases and 9 PostgreSQL cases passed.
+TC-45 (admin analytics 200), TC-46 (review ownership) and TC-34 (account deletion)
+need the analytics, review and deletion features and still fail.
