@@ -37,3 +37,5 @@ classDiagram
 ```
 
 The radius is in metres. Optional amenity filters accept true, false or omission. Unknown stored amenity values match neither true nor false. `FacilityResult` shows the fields required for map placement and distance ordering. Available amenity metadata travels with the result.
+
+[Back to the Software Design Report](../REPORT.md)

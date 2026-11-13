@@ -1,6 +1,6 @@
 # SmartLoo — Software Design Report
 
-**Course:** CMPE 331 · **Revision:** 0.2 for review · **Date:** 11 November 2026  
+**Course:** CMPE 331 · **Revision:** 0.3 for review · **Date:** 13 November 2026  
 **Team contact:** Özgür Kılıç
 
 ## 1. Design baseline
@@ -13,6 +13,8 @@ The [project Charter](../CHARTER.MD) defines the technology stack and milestones
 | [Weekly integration #36](https://github.com/akcedia/SmartLoo/pull/36) | The branch implements FastAPI/PostGIS nearby search and includes a sample-data admin dashboard, database migrations, and CI. Other feature API routes still return 501. [Branch CI](https://github.com/akcedia/SmartLoo/actions/runs/40190017447) passed the configured checks. |
 | [Map PR #37](https://github.com/akcedia/SmartLoo/pull/37) | React/Leaflet map, filters and a facility detail card use mock data. Integration with the shared frontend and live search remains pending. |
 | [External data and AI contract](https://github.com/akcedia/SmartLoo/blob/9c5819f4f6f5b7108007cfbb1ef995e4d1e0a282/docs/design/adapter-ai-contract.md) | Proposed normalization, provider and cache contracts contributed by Emir Miraç İslamoğlu. Executable integration remains pending. |
+| [Admin contract and panel #45](https://github.com/akcedia/SmartLoo/pull/45) | The contract and labelled sample adapter distinguish no facilities from facilities without reviews. The PR reports 38 frontend tests and a successful production build. |
+| [Review-score reader #50](https://github.com/akcedia/SmartLoo/pull/50) and [account access #51](https://github.com/akcedia/SmartLoo/pull/51) | Separate open implementation PRs. The contributors report six MongoDB tests and nine PostgreSQL authentication tests. Shared MongoDB setup, live analytics, review ownership and account deletion remain pending. |
 
 ## 2. Architecture and interfaces
 
@@ -30,22 +32,39 @@ Solid arrows show the nearby-search path implemented on the weekly branch and th
 | Import → İBB and PostgreSQL | Planned adapter reads facility GeoJSON and produces normalized candidates. A separate validated import operation writes facilities. Admin CSV/JSON import follows its own API contract. |
 | AI → review access, Redis and provider | Planned review snapshot and summary cache. Only selected, redacted review text is sent to the provider. Provider timeouts fall back to existing statistics and a null summary. |
 
+The [İBB adapter model](arch/ibb-geojson-adapter.md) describes the proposed GeoJSON normalization boundary. Candidates with unresolved source identity are held for review. The administrator's CSV/JSON batch import has a separate interface and rejects an invalid batch atomically with row-level errors.
+
+![İBB GeoJSON adapter architecture](images/architecture-ibb-adapter.svg)
+
 ## 3. Class model
 
-The [nearby-search class diagram](class/nearby-search.md) represents the implemented route/adapter relationship on #36. The Python implementation uses functions, so the diagram models their interfaces and the request/result data types. The domain model for accounts, reviews and moderation will be added to this section using the approved analysis model.
+The [nearby-search class diagram](class/nearby-search.md) represents the implemented route/adapter relationship on #36. The Python implementation uses functions, so the diagram models their interfaces and the request/result data types.
 
 ![Nearby-search class and interface model](images/class-nearby-search.svg)
 
+The [accounts and data class model](class/accounts-and-data.md) refines the approved E-R model for accounts, facilities, reviews and suggestions. It shows the store of each record, cardinalities, the one-review-per-user-and-facility rule, password hashing and which references the databases enforce. `Toilet` matches the implemented PostGIS migration. The account schema and access logic are proposed for integration in #51. The other records and cross-store coordination describe the target design.
+
+![Accounts, facilities, reviews and suggestions class model](images/class-accounts-and-data.svg)
+
+The service view places the authorization boundary in FastAPI dependencies: `current_user` returns 401, while `require_admin` and `require_review_owner` return 403 for a valid session without the required role or ownership. The current-user and administrator guards are implemented on #51. #50 implements the review-score reader. The review-ownership guard remains a design proposal.
+
+![Account access and authorization services](images/class-auth-services.svg)
+
 ## 4. Dynamic models and coverage
 
-| Approved use case | Sequence model | Scope shown |
+| Approved use case | Sequence source | Coverage counted |
 | --- | --- | --- |
-| UC-01 / FR-01 | [Nearby search and filtering](sequence/nearby-search.md) | Nearby open facilities, input validation, no matches, database unavailable |
-| UC-02 / FR-02 | [Nearby search and filtering](sequence/nearby-search.md) | Apply or clear amenities and price filters and refresh results |
-| UC-09 / FR-09 | [Map and facility details](sequence/map-details.md) | Browse markers and request selected facility details, including the planned detail endpoint |
-| UC-08 / FR-08 | [Registration and sign-in](sequence/sign-in.md) | Registration, sign-in, failure throttling, JWT issuance and role checks in the target design |
+| UC-01 / FR-01 | [Nearby search](sequence/nearby-search.md) | Nearby open facilities, location permission, validation, empty results and service failure. |
+| UC-02 / FR-02 | [Search filters](sequence/nearby-search.md) | Apply or clear filters and refresh results. |
+| UC-08 / FR-08 | [Account access](sequence/sign-in.md) | Registration, sign-in, 60-minute JWT and 401/403 boundaries. |
+| UC-09 / FR-09 | [Map and details](sequence/map-details.md) | Browse markers and view facility details, including the target detail endpoint. |
+| UC-06 / FR-06 | [Analytics](sequence/admin-analytics.md) | Date-filtered analytics, role checks, missing data and service errors. |
+| UC-10 / FR-10 | [Account deletion](sequence/account-deletion.md) | The delete-own-account element. Facility closure is outside this sequence. |
+| UC-04 / FR-04 | [AI summary](sequence/ai-summary.md) | Partial. Covers review summarization. The preference recommendations endpoint is outside this sequence. |
+| UC-07 / FR-07 | [Export](sequence/admin-analytics.md) | Partial. Covers CSV/JSON export. The İBB architecture describes the separate import boundary. |
+| UC-03 / FR-03 | [Review ownership](sequence/sign-in.md) | Partial. Covers authorization for an existing review. The full review lifecycle is outside this sequence. |
 
-The [approved use case model](../requirements/use-cases.puml) defines 10 distinct UC identifiers and 12 use case elements. The initial sequences cover four distinct identifiers and four elements, or **40% by identifier and 33.3% by element**. Friday additions will expand coverage to AI, analytics and export. The final coverage table will reference the reviewed diagrams.
+The [approved PlantUML model](../requirements/use-cases.puml) defines **10 distinct IDs and 12 use-case elements**. The five fully covered IDs (UC-01, UC-02, UC-06, UC-08 and UC-09) give **50% by ID**. Counting those five elements and the account-deletion element gives **6/12 elements (50%)**. The partially modelled flows do not increase either figure. Coverage measures the design artefacts. Implementation status is recorded in §1.
 
 ### Nearby search and filtering · UC-01 and UC-02
 
@@ -59,23 +78,46 @@ The [approved use case model](../requirements/use-cases.puml) defines 10 distinc
 
 ![Registration sequence](images/sequence-registration.svg)
 
+The sign-in diagram shows the target Redis limiter. #51 currently stores the 15-minute window in PostgreSQL. The sequence for review ownership is a target model.
+
 ![Sign-in sequence](images/sequence-sign-in.svg)
 
 ![Authorization of protected administrator requests](images/sequence-admin-authorization.svg)
 
+![Review ownership check for signed-in users](images/sequence-review-ownership.svg)
+
+### Account deletion · UC-10
+
+![Account deletion and review anonymization sequence](images/sequence-account-deletion.svg)
+
+### Administrator analytics and export · UC-06 and UC-07
+
+The React panel sends one district/date selection to both endpoints. FastAPI enforces the ADMIN role, resolves the inclusive Europe/Istanbul interval and computes the KPI, daily trend, facility table and export from the same individual reviews. Facilities come from PostgreSQL and reviews from MongoDB, because the stored all-time facility aggregate cannot be date-filtered. A selection without reviews returns null scores and keeps matched facilities; a selection without facilities returns an empty table. A review-store failure returns a server error instead of an empty result. The panel currently runs on a labelled sample adapter (#45). Both business endpoints remain placeholders. #51 supplies the guard and #50 supplies the reader on separate PRs. Live endpoints still need shared wiring and the analytics computation.
+
+![Filtered administrator analytics sequence](images/sequence-admin-analytics.svg)
+
+![CSV and JSON report export sequence](images/sequence-admin-export.svg)
+
+### AI review summarization · UC-04
+
+The [AI sequence](sequence/ai-summary.md) covers the cache, the 3–50 eligible review rule, redaction, output validation and statistics fallback. The service allocates the 10-second response budget across preparation, the provider call and fallback. Nearby search stays independent of the AI service.
+
+![AI review summarization sequence](images/sequence-ai-summary.svg)
+
 ## 5. Non-functional design decisions
 
-| Requirement | Design decision | Tool and evidence |
+| Requirement | Design decision | Verification method, target and status |
 | --- | --- | --- |
-| NFR-01 · Search latency | Use a PostGIS GiST index and `ST_DWithin` to limit candidates, then calculate and sort by distance. | Existing SQL checks and pytest/PostGIS integration verify correctness. Use PostgreSQL `EXPLAIN (ANALYZE, BUFFERS)` and a load run with 10,000 synthetic records and 50 clients to evaluate mean and p95 below 250 ms. Load measurement is pending. |
-| NFR-02, NFR-07 · AI latency and availability | Cache summaries and enforce a 10-second fallback deadline. Keep AI out of the nearby-search request path. | Exercise cache hit, healthy provider and forced timeout with pytest and a controllable provider stub. Record p95 and repeat core browsing with the provider unavailable. Measurement is pending. |
-| NFR-03, NFR-04, NFR-08 · Security and privacy | Enforce roles server-side. Hash passwords with bcrypt cost ≥10 or Argon2, issue signed 60-minute JWTs, and use HTTPS in deployment. Keep user coordinates out of persistent storage without consent. Redact PII before provider calls and during account deletion as required. | Use FastAPI validation and pytest for token, role and input boundaries. Capture requests with synthetic PII to verify redaction. Confirm HTTPS and secret handling in the deployment configuration. Auth and privacy verification are pending. |
-| NFR-05, NFR-06 · Map usability and accessibility | Provide a keyboard-operable results list alongside map markers, labelled controls and visible focus. Use an explicit viewport center if geolocation is denied. | Use axe/Lighthouse and manual keyboard checks at 360, 768 and 1920 px. Run the 500-marker performance scenario. These checks are pending. |
-| NFR-09 · Maintainability | Keep database and API tests executable in isolation. Run independent blocking checks for implemented features. | GitHub Actions and pytest cover the current search and database paths. The requirements baseline includes pending features. Backend coverage ≥80% remains a target. |
+| NFR-01 · Search latency | Use a PostGIS GiST index and `ST_DWithin` to limit candidates before sorting by distance. | SQL and pytest/PostGIS checks on #36 cover correctness. For NFR-T01, capture `EXPLAIN (ANALYZE, BUFFERS)` and run mixed search/filter load with 10,000 synthetic facilities and 50 concurrent clients. Warm up for one minute and measure for five minutes. Both mean and p95 must be <250 ms with zero unexpected non-2xx responses. Load measurement is pending. |
+| NFR-02, NFR-07 · AI latency and API availability | Cache summaries, enforce a 10-second fallback deadline and keep nearby search independent of AI. | For NFR-T04, use pytest and a controllable provider stub. Measure 100 cache hits (p95 <100 ms) and 20 healthy uncached requests (p95 <8 s). Force timeout and verify that statistics and a null summary return by 10 s. For NFR-T06, disable AI and exercise search, filtering and details. Monitor the public API every minute for a calendar month against the 99% availability target. These measurements are pending. |
+| NFR-03, NFR-04, NFR-08 · Security and privacy | Enforce roles server-side. Hash passwords with bcrypt cost ≥10 or Argon2, use signed 60-minute JWTs and deploy over HTTPS. Persist user coordinates only with explicit consent. Redact PII before provider calls and during account deletion as required. | For NFR-T02/T03/T07, use FastAPI and pytest to verify authentication, 401/403 role boundaries, input validation and unchanged state after rejection. Capture the provider request with synthetic PII, then inspect public responses and storage after denying location permission and deleting an account. Verify HTTPS and absence of secret/hash exposure. #51 reports authentication checks against PostgreSQL. Production HTTPS, account-deletion privacy and integrated authorization verification are pending. |
+| NFR-05, NFR-06 · Map usability and accessibility | Provide a keyboard-operable results list, labelled controls and visible focus. Use the viewport center if geolocation is denied. | For NFR-T05, use axe and Lighthouse plus manual keyboard, focus and contrast checks at 360, 768 and 1920 px. Target WCAG 2.1 AA, Lighthouse accessibility ≥90 and zero serious or critical axe findings. Record the mobile network profile and measure initial map load (<2 s) and pan/zoom with 500 visible markers (≥30 FPS). These checks are pending. |
+| NFR-09 · Maintainability | Run separate blocking CI checks for implemented features and retain the requirements baseline results. | On #36, GitHub Actions defines blocking search, SQL and frontend test/build jobs and publishes the non-blocking requirements baseline as JUnit. Use NFR-T08 to verify the lint, test and build gates and report backend branch coverage. The ≥80% backend coverage target and a separate lint gate remain pending. |
+| NFR-10 · Interface language | Provide Turkish and English interface labels and identify AI summaries as Turkish. | For NFR-T09, switch languages in the map, authentication, errors and dashboard. Verify that labels change and selected filters are preserved. Verification is pending. |
 
-## 6. Review items and final deliverable
+## 6. Design review and delivery
 
-- Reconcile the review-store boundary and the consistency approach for aggregates, AI cache invalidation and account deletion.
-- Review the admin API's distinction between empty results, dates with missing values and facilities with zero reviews.
-- Confirm the map-to-live-API boundary and model the AI and administrative interactions with their contributors.
-- Embed the reviewed diagrams in the final PDF and verify legibility and page fit. Generate it from the approved PR revision for Learn submission by 15 November.
+- Finalize source identity and repeat-import behavior before enabling production İBB ingestion.
+- Resolve retry and concurrency rules for review anonymization and AI cache invalidation across PostgreSQL and MongoDB.
+- Validate the map against the shared search API and verify live analytics after the required backend changes are integrated.
+- Review this revision in [PR #44](https://github.com/akcedia/SmartLoo/pull/44). Submit the PDF generated from the approved revision, with the diagrams embedded, through Learn by 15 November 2026.

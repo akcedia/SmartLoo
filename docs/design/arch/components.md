@@ -28,3 +28,5 @@ flowchart LR
     AI -.-> Redis[(Redis)]
     AI -.->|Redacted input| Provider[AI provider]
 ```
+
+[Back to the Software Design Report](../REPORT.md)
