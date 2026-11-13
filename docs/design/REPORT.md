@@ -32,9 +32,15 @@ Solid arrows show the nearby-search path implemented on the weekly branch and th
 
 ## 3. Class model
 
-The [nearby-search class diagram](class/nearby-search.md) represents the implemented route/adapter relationship on #36. The Python implementation uses functions, so the diagram models their interfaces and the request/result data types. The domain model for accounts, reviews and moderation will be added to this section using the approved analysis model.
+The [nearby-search class diagram](class/nearby-search.md) represents the implemented route/adapter relationship on #36. The Python implementation uses functions, so the diagram models their interfaces and the request/result data types. ![Nearby-search class and interface model](images/class-nearby-search.svg)
 
-![Nearby-search class and interface model](images/class-nearby-search.svg)
+The [accounts and data class model](class/accounts-and-data.md) refines the approved E-R model for accounts, facilities, reviews and suggestions. It shows the store of each record, cardinalities, the one-review-per-user-and-facility rule, password hashing and which references the databases enforce. `Toilet` matches the implemented PostGIS migration. The other records are target design.
+
+![Accounts, facilities, reviews and suggestions class model](images/class-accounts-and-data.svg)
+
+The service view places the authorization boundary in FastAPI dependencies: `current_user` returns 401, while `require_admin` and `require_review_owner` return 403 for a valid session without the required role or ownership. It also names the proposed `read_review_scores()` interface for analytics. None of these services is implemented yet.
+
+![Account access and authorization services](images/class-auth-services.svg)
 
 ## 4. Dynamic models and coverage
 
@@ -43,7 +49,8 @@ The [nearby-search class diagram](class/nearby-search.md) represents the impleme
 | UC-01 / FR-01 | [Nearby search and filtering](sequence/nearby-search.md) | Nearby open facilities, input validation, no matches, database unavailable |
 | UC-02 / FR-02 | [Nearby search and filtering](sequence/nearby-search.md) | Apply or clear amenities and price filters and refresh results |
 | UC-09 / FR-09 | [Map and facility details](sequence/map-details.md) | Browse markers and request selected facility details, including the planned detail endpoint |
-| UC-08 / FR-08 | [Registration and sign-in](sequence/sign-in.md) | Registration, sign-in, failure throttling, JWT issuance and role checks in the target design |
+| UC-08 / FR-08 | [Registration and sign-in](sequence/sign-in.md) | Registration rules, sign-in, failure throttling, JWT issuance, 401 for invalid or deleted-account tokens, 403 for role and review ownership in the target design |
+| UC-10 / FR-10 | [Account deletion](sequence/account-deletion.md) | Delete own account, anonymize and redact retained reviews, keep aggregates, make cached summaries stale; target design |
 
 The [approved use case model](../requirements/use-cases.puml) defines 10 distinct UC identifiers and 12 use case elements. The initial sequences cover four distinct identifiers and four elements, or **40% by identifier and 33.3% by element**. Friday additions will expand coverage to AI, analytics and export. The final coverage table will reference the reviewed diagrams.
 
@@ -62,6 +69,12 @@ The [approved use case model](../requirements/use-cases.puml) defines 10 distinc
 ![Sign-in sequence](images/sequence-sign-in.svg)
 
 ![Authorization of protected administrator requests](images/sequence-admin-authorization.svg)
+
+![Review ownership check for signed-in users](images/sequence-review-ownership.svg)
+
+### Account deletion · UC-10
+
+![Account deletion and review anonymization sequence](images/sequence-account-deletion.svg)
 
 ## 5. Non-functional design decisions
 
