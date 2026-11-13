@@ -60,8 +60,8 @@ export function buildSummary(dataset, filters) {
     critical_alert: isCritical(average),
     critical_threshold: CRITICAL_THRESHOLD,
     active_facility_ratio,
-    trend: eligible.length === 0 ? [] : trend,
-    facilities: eligible.length === 0 ? [] : rows,
+    trend,
+    facilities: rows,
   };
 }
 
