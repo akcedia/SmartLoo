@@ -66,6 +66,8 @@ The [approved use case model](../requirements/use-cases.puml) defines 10 distinc
 
 ### AI Review Summarization — UC-04
 
+![AI review summarization sequence](images/sequence-ai-summary.svg)
+
 The proposed AI summarization workflow is documented in
 [AI Summary Sequence](sequence/ai-summary.md).
 
@@ -75,6 +77,8 @@ and timeout/fallback behavior.
 
 The external source normalization boundary is documented in
 [IBB GeoJSON Adapter](arch/ibb-geojson-adapter.md).
+
+![IBB GeoJSON adapter architecture](images/architecture-ibb-adapter.svg)
 
 The AI service and GeoJSON adapter are proposed designs.
 Executable integration, provider verification, and
