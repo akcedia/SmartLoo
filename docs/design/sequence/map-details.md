@@ -1,6 +1,6 @@
 # Map and facility details · UC-09
 
-#37 shows a local detail card backed by mock data. The sequence describes the target connection to the selected facility detail endpoint, currently a 501 route on the weekly branch.
+`#37` implements a local detail panel backed by the selected facility object from the mock search dataset. The sequence below describes the target integration with the dedicated facility detail endpoint (`GET /api/v1/toilets/{toilet_id}`), which is currently a `501` placeholder route on the weekly branch (`#36`).
 
 ```mermaid
 sequenceDiagram
@@ -16,16 +16,18 @@ sequenceDiagram
     API->>Store: Read facility by ID
     alt Facility available
         Store-->>API: Facility details and available statistics
-        API-->>Map: 200 facility details
-        Map-->>Visitor: Show details and label unknown values
-        Map->>Map: Show user distance only for known device location
+        API-->>Map: 200 OK facility details
+        Map-->>Visitor: Open detail panel and label null/unknown values explicitly
+        Map->>Map: Show user distance only when device location permission is granted
     else Facility unavailable
         Store-->>API: No visible facility for that ID
         API-->>Map: 404 facility unavailable
         Map-->>Visitor: Show unavailable state and keep browsing
+    else Endpoint not implemented or network error
+        API-->>Map: 501 Not Implemented / connection error
+        Map-->>Visitor: Fallback to cached search item details or show error notice
     end
     opt Visitor closes the panel or selects a different facility
-        Visitor->>Map: Close or change selection
-        Map->>Map: Clear the previous facility details
+        Visitor->>Map: Close panel or select another marker
+        Map->>Map: Clear previous facility details and update selection
     end
-```
