@@ -39,12 +39,20 @@ sequenceDiagram
             API->>API: Treat review text as untrusted input
             API->>AI: Request Turkish structured summary
 
-            alt Valid response within time limit
-                AI-->>API: Structured JSON response
-                API->>API: Validate schema and evidence
-                API->>Cache: Cache valid summary for 6 hours
-                API-->>UI: 200 summary, pros, cons, recommendation
-            else Provider error, timeout or invalid output
+            alt Provider responds within 10 seconds
+                AI-->>API: Candidate JSON response
+                API->>API: Validate schema, Turkish text and evidence
+
+                alt Output is valid
+                    API->>Cache: Cache validated summary for 6 hours
+                    API-->>UI: 200 summary, pros, cons, recommendation
+                else Output is invalid
+                    API->>DB: Read cleanliness average and review count
+                    DB-->>API: Existing facility statistics
+                    API-->>UI: 200 summary=null with statistics
+                end
+
+            else Provider error or timeout
                 API->>DB: Read cleanliness average and review count
                 DB-->>API: Existing facility statistics
                 API-->>UI: 200 summary=null with statistics
