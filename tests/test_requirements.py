@@ -45,6 +45,58 @@ def facility(id, lat, accessible=True, baby=True, free=False, status="ACTIVE"):
                 is_free=free, average_cleanliness=None, review_count=0)
 
 
+def fixture_nearby(
+    store,
+    lat,
+    lon,
+    radius=1000,
+    open_now=False,
+    has_disabled_access=None,
+    has_baby_changing=None,
+    is_free=None,
+):
+    from math import asin, cos, radians, sin, sqrt
+
+    filters = {
+        "has_disabled_access": has_disabled_access,
+        "has_baby_changing": has_baby_changing,
+        "is_free": is_free,
+    }
+    results = []
+
+    for facility in store["toilets"].values():
+        if any(
+            value is not None and facility.get(field) != value
+            for field, value in filters.items()
+        ):
+            continue
+
+        # These isolated fixtures use 24/7 hours.
+        # Other opening-hour formats are checked against real PostGIS.
+        hours = facility.get("opening_hours")
+        if open_now:
+            if facility["status"] != "ACTIVE" or hours is None:
+                continue
+            if hours != "24/7":
+                raise NotImplementedError(
+                    "This test double supports only 24/7 opening hours"
+                )
+
+        lat1 = radians(lat)
+        lat2 = radians(float(facility["latitude"]))
+        delta_lat = lat2 - lat1
+        delta_lon = radians(float(facility["longitude"]) - lon)
+        a = (
+            sin(delta_lat / 2) ** 2
+            + cos(lat1) * cos(lat2) * sin(delta_lon / 2) ** 2
+        )
+        distance = 2 * 6371008.8 * asin(sqrt(min(1.0, max(0.0, a))))
+
+        if distance <= radius:
+            results.append({**facility, "distance_m": distance})
+
+    return sorted(results, key=lambda row: (row["distance_m"], row["id"]))
+
 @pytest.fixture
 def env():
     state = {
@@ -60,6 +112,9 @@ def env():
                            "categories":{"cleanliness":"positive","odor":"unknown",
                                          "supplies":"negative","accessibility":"unknown","safety":"unknown"}})
     app = create_app(state, ai, KEY)
+    app.state.nearby_search = lambda **params: fixture_nearby(
+        app.state.repository, **params
+    )
     with TestClient(app) as client:
         yield SimpleNamespace(client=client, store=app.state.repository, ai=ai)
 

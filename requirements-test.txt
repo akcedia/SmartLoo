@@ -22,3 +22,5 @@ soupsieve==2.10
 starlette==1.7.0
 typing-inspection==0.4.4
 typing_extensions==4.16.0
+psycopg[binary]==3.3.6
+uvicorn==0.54.0
