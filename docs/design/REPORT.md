@@ -1,6 +1,7 @@
 # SmartLoo — Software Design Report
 
-**Course:** CMPE 331 · **Revision:** 0.3 for review · **Date:** 13 November 2026  
+**Course:** CMPE 331 · **Revision:** 0.4 for re-review · **Date:** 14 November 2026
+
 **Team contact:** Özgür Kılıç
 
 ## 1. Design baseline
@@ -9,9 +10,9 @@ The [project Charter](../CHARTER.MD) defines the technology stack and milestones
 
 | Evidence | Observed status |
 | --- | --- |
-| [`main` at `934a1eb`](https://github.com/akcedia/SmartLoo/tree/934a1ebdf4d714a9840fe17f0661b7e88757bd35) | Requirements and analysis are integrated. The application is a requirements-stage API scaffold. |
-| [Weekly integration #36](https://github.com/akcedia/SmartLoo/pull/36) | The branch implements FastAPI/PostGIS nearby search and includes a sample-data admin dashboard, database migrations, and CI. Other feature API routes still return 501. [Branch CI](https://github.com/akcedia/SmartLoo/actions/runs/40190017447) passed the configured checks. |
-| [Map PR #37](https://github.com/akcedia/SmartLoo/pull/37) | React/Leaflet map, filters and a facility detail card use mock data. Integration with the shared frontend and live search remains pending. |
+| [`main` at `934a1eb`](https://github.com/akcedia/SmartLoo/tree/934a1ebdf4d714a9840fe17f0661b7e88757bd35) | Requirements and analysis are integrated. The default branch still contains the requirements-stage API scaffold at the stated revision. |
+| [Weekly integration #36](https://github.com/akcedia/SmartLoo/pull/36) | The branch implements FastAPI/PostGIS nearby search and includes a sample-data admin dashboard, database migrations, and CI. Other feature API routes still return 501. Yeşim approved integration commit `6868c7c` on 14 November. The approved snapshot remains open for merge into main. [Branch CI](https://github.com/akcedia/SmartLoo/actions/runs/40190017447) passed the configured checks. |
+| [Map PR #37](https://github.com/akcedia/SmartLoo/pull/37) | React/Leaflet map, filters and a facility detail card use mock data. Its replacement, [#54](https://github.com/akcedia/SmartLoo/pull/54), connects the shared frontend to live nearby search and is pending integration and independent verification. |
 | [External data and AI contract](https://github.com/akcedia/SmartLoo/blob/9c5819f4f6f5b7108007cfbb1ef995e4d1e0a282/docs/design/adapter-ai-contract.md) | Proposed normalization, provider and cache contracts contributed by Emir Miraç İslamoğlu. Executable integration remains pending. |
 | [Admin contract and panel #45](https://github.com/akcedia/SmartLoo/pull/45) | The contract and labelled sample adapter distinguish no facilities from facilities without reviews. The PR reports 38 frontend tests and a successful production build. |
 | [Review-score reader #50](https://github.com/akcedia/SmartLoo/pull/50) and [account access #51](https://github.com/akcedia/SmartLoo/pull/51) | Separate open implementation PRs. The contributors report six MongoDB tests and nine PostgreSQL authentication tests. Shared MongoDB setup, live analytics, review ownership and account deletion remain pending. |
@@ -20,7 +21,7 @@ The [project Charter](../CHARTER.MD) defines the technology stack and milestones
 
 The [component diagram](arch/components.md) shows one React client with discovery and administration views, and one FastAPI service with separate responsibilities for discovery, account access, community data, administration, import, and AI. The deployment and persistence boundaries build on the [weekly design notes](https://github.com/akcedia/SmartLoo/blob/9c5819f4f6f5b7108007cfbb1ef995e4d1e0a282/docs/DESIGN.MD).
 
-![Target architecture and component interfaces](images/architecture.svg)
+![Target architecture and component interfaces](images/architecture.png)
 
 Solid arrows show the nearby-search path implemented on the weekly branch and the tile connection in the map prototype. Dotted arrows show planned integration or services.
 
@@ -34,75 +35,102 @@ Solid arrows show the nearby-search path implemented on the weekly branch and th
 
 The [İBB adapter model](arch/ibb-geojson-adapter.md) describes the proposed GeoJSON normalization boundary. Candidates with unresolved source identity are held for review. The administrator's CSV/JSON batch import has a separate interface and rejects an invalid batch atomically with row-level errors.
 
-![İBB GeoJSON adapter architecture](images/architecture-ibb-adapter.svg)
+![İBB GeoJSON adapter architecture](images/architecture-ibb-adapter.png)
+
+[Deployment view](arch/deployment.md) records the current local Vite, FastAPI and Docker Compose PostGIS setup and the target HTTPS, service and private datastore boundaries. The target is a design for later deployment.
+
+![Current local development deployment](images/deployment.png)
+
+![Planned deployment and private datastore boundary](images/deployment-target.png)
 
 ## 3. Class model
 
 The [nearby-search class diagram](class/nearby-search.md) represents the implemented route/adapter relationship on #36. The Python implementation uses functions, so the diagram models their interfaces and the request/result data types.
 
-![Nearby-search class and interface model](images/class-nearby-search.svg)
+![Nearby-search class and interface model](images/class-nearby-search.png)
 
 The [accounts and data class model](class/accounts-and-data.md) refines the approved E-R model for accounts, facilities, reviews and suggestions. It shows the store of each record, cardinalities, the one-review-per-user-and-facility rule, password hashing and which references the databases enforce. `Toilet` matches the implemented PostGIS migration. The account schema and access logic are proposed for integration in #51. The other records and cross-store coordination describe the target design.
 
-![Accounts, facilities, reviews and suggestions class model](images/class-accounts-and-data.svg)
+![Accounts, facilities, reviews and suggestions class model](images/class-accounts-and-data.png)
 
 The service view places the authorization boundary in FastAPI dependencies: `current_user` returns 401, while `require_admin` and `require_review_owner` return 403 for a valid session without the required role or ownership. The current-user and administrator guards are implemented on #51. #50 implements the review-score reader. The review-ownership guard remains a design proposal.
 
-![Account access and authorization services](images/class-auth-services.svg)
+![Account access and authorization services](images/class-auth-services.png)
 
 ## 4. Dynamic models and coverage
 
-| Approved use case | Sequence source | Coverage counted |
+| Approved use case | Sequence source | Modelled use-case elements |
 | --- | --- | --- |
-| UC-01 / FR-01 | [Nearby search](sequence/nearby-search.md) | Nearby open facilities, location permission, validation, empty results and service failure. |
-| UC-02 / FR-02 | [Search filters](sequence/nearby-search.md) | Apply or clear filters and refresh results. |
-| UC-08 / FR-08 | [Account access](sequence/sign-in.md) | Registration, sign-in, 60-minute JWT and 401/403 boundaries. |
-| UC-09 / FR-09 | [Map and details](sequence/map-details.md) | Browse markers and view facility details, including the target detail endpoint. |
-| UC-06 / FR-06 | [Analytics](sequence/admin-analytics.md) | Date-filtered analytics, role checks, missing data and service errors. |
-| UC-10 / FR-10 | [Account deletion](sequence/account-deletion.md) | The delete-own-account element. Facility closure is outside this sequence. |
-| UC-04 / FR-04 | [AI summary](sequence/ai-summary.md) | Partial. Covers review summarization. The preference recommendations endpoint is outside this sequence. |
-| UC-07 / FR-07 | [Export](sequence/admin-analytics.md) | Partial. Covers CSV/JSON export. The İBB architecture describes the separate import boundary. |
-| UC-03 / FR-03 | [Review ownership](sequence/sign-in.md) | Partial. Covers authorization for an existing review. The full review lifecycle is outside this sequence. |
+| UC-01 / FR-01 | [Nearby search](sequence/nearby-search.md) | Find nearby open facilities. |
+| UC-02 / FR-02 | [Search filters](sequence/nearby-search.md) | Apply and clear amenity and price filters. |
+| UC-03 / FR-03 | [Review lifecycle](sequence/review-lifecycle.md) | Create, edit and delete reviews with ownership and duplicate checks. |
+| UC-04 / FR-04 | [AI summary](sequence/ai-summary.md), [recommendations](sequence/recommendations.md) | Read an AI summary and request preference recommendations. |
+| UC-05 / FR-05 | [Suggestion and moderation](sequence/suggestion-moderation.md) | Suggest a new location, and approve or reject pending suggestions. |
+| UC-06 / FR-06 | [Analytics](sequence/admin-analytics.md) | Inspect district and date-filtered analytics. |
+| UC-07 / FR-07 | [Import](sequence/facility-import.md), [export](sequence/admin-analytics.md) | Import facilities and export reports. |
+| UC-08 / FR-08 | [Account access](sequence/sign-in.md) | Register and sign in, with authorization boundaries. |
+| UC-09 / FR-09 | [Map and details](sequence/map-details.md) | Browse markers and view facility details. |
+| UC-10 / FR-10 | [Account deletion](sequence/account-deletion.md), [facility closure](sequence/facility-closure.md) | Delete an account, and close a facility while retaining reviews. |
 
-The [approved PlantUML model](../requirements/use-cases.puml) defines **10 distinct IDs and 12 use-case elements**. The five fully covered IDs (UC-01, UC-02, UC-06, UC-08 and UC-09) give **50% by ID**. Counting those five elements and the account-deletion element gives **6/12 elements (50%)**. The partially modelled flows do not increase either figure. Coverage measures the design artefacts. Implementation status is recorded in §1.
+The [approved PlantUML model](../requirements/use-cases.puml) defines 10 distinct use-case IDs and 12 elements. Each ID and element now has a sequence model (**10/10 IDs, 12/12 elements**). This is design coverage. Working implementation and test evidence are recorded separately in §1 and §5.
 
 ### Nearby search and filtering · UC-01 and UC-02
 
-![Nearby search and filtering sequence](images/sequence-nearby-search.svg)
+![Nearby search and filtering sequence](images/sequence-nearby-search.png)
 
 ### Map and facility details · UC-09
 
-![Map marker selection and facility details sequence](images/sequence-map-details.svg)
+![Map marker selection and facility details sequence](images/sequence-map-details.png)
 
 ### Registration, sign-in and authorization · UC-08
 
-![Registration sequence](images/sequence-registration.svg)
+![Registration sequence](images/sequence-registration.png)
 
 The sign-in diagram shows the target Redis limiter. #51 currently stores the 15-minute window in PostgreSQL. The sequence for review ownership is a target model.
 
-![Sign-in sequence](images/sequence-sign-in.svg)
+![Sign-in sequence](images/sequence-sign-in.png)
 
-![Authorization of protected administrator requests](images/sequence-admin-authorization.svg)
+![Authorization of protected administrator requests](images/sequence-admin-authorization.png)
 
-![Review ownership check for signed-in users](images/sequence-review-ownership.svg)
+![Review ownership check for signed-in users](images/sequence-review-ownership.png)
 
 ### Account deletion · UC-10
 
-![Account deletion and review anonymization sequence](images/sequence-account-deletion.svg)
+![Account deletion and review anonymization sequence](images/sequence-account-deletion.png)
 
 ### Administrator analytics and export · UC-06 and UC-07
 
 The React panel sends one district/date selection to both endpoints. FastAPI enforces the ADMIN role, resolves the inclusive Europe/Istanbul interval and computes the KPI, daily trend, facility table and export from the same individual reviews. Facilities come from PostgreSQL and reviews from MongoDB, because the stored all-time facility aggregate cannot be date-filtered. A selection without reviews returns null scores and keeps matched facilities; a selection without facilities returns an empty table. A review-store failure returns a server error instead of an empty result. The panel currently runs on a labelled sample adapter (#45). Both business endpoints remain placeholders. #51 supplies the guard and #50 supplies the reader on separate PRs. Live endpoints still need shared wiring and the analytics computation.
 
-![Filtered administrator analytics sequence](images/sequence-admin-analytics.svg)
+![Filtered administrator analytics sequence](images/sequence-admin-analytics.png)
 
-![CSV and JSON report export sequence](images/sequence-admin-export.svg)
+![CSV and JSON report export sequence](images/sequence-admin-export.png)
 
 ### AI review summarization · UC-04
 
 The [AI sequence](sequence/ai-summary.md) covers the cache, the 3–50 eligible review rule, redaction, output validation and statistics fallback. The service allocates the 10-second response budget across preparation, the provider call and fallback. Nearby search stays independent of the AI service.
 
-![AI review summarization sequence](images/sequence-ai-summary.svg)
+![AI review summarization sequence](images/sequence-ai-summary.png)
+
+### Review lifecycle · UC-03
+
+![Review creation, editing and deletion](images/sequence-review-lifecycle.png)
+
+### Preference recommendations · UC-04
+
+![Preference-based facility recommendations](images/sequence-recommendations.png)
+
+### Facility suggestion and moderation · UC-05
+
+![Submit, approve or reject a facility suggestion](images/sequence-suggestion-moderation.png)
+
+### Administrator facility import · UC-07
+
+![Atomic CSV and JSON facility import](images/sequence-facility-import.png)
+
+### Facility closure · UC-10
+
+![Close a facility while retaining reviews](images/sequence-facility-closure.png)
 
 ## 5. Non-functional design decisions
 

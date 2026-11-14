@@ -1,32 +1,30 @@
 # SmartLoo component architecture
 
-Solid edges identify the search implementation on the weekly branch and the map UI's public interface with its tile provider. Dotted edges show intended integration or planned services. The React/Leaflet discovery screen currently uses mock facility data in #37.
+Solid arrows show interfaces available in the approved weekly integration snapshot or used by the map prototype. Dashed arrows show planned application connections. The route labels use the /api/v1 prefix.
 
 ```mermaid
 flowchart LR
-    Browser[React + Leaflet] --> Tiles[Map tiles]
-    Browser -.->|HTTPS API| API[FastAPI routes]
-
-    subgraph Backend[FastAPI application]
-        API --> Search[Discovery]
-        API -.-> Auth[Accounts and access]
-        API -.-> Community[Reviews and moderation]
-        API -.-> Admin[Admin analytics]
-        API -.-> Import[Facility import]
-        API -.-> AI[AI orchestration]
+    UI["React client"] -->|"HTTPS tile requests"| Tiles["Map tile provider"]
+    UI -.->|"HTTPS JSON /api/v1"| API
+    subgraph FastAPI["FastAPI application"]
+        API["HTTP routes"] -->|"GET /toilets/nearby"| Search["Discovery"]
+        API -.->|"POST /auth/register, /auth/login"| Auth["Accounts"]
+        API -.->|"Reviews and suggestions API"| Community["Community"]
+        API -.->|"Summary and export API"| Admin["Analytics"]
+        API -.->|"POST /admin/import"| Import["Facility import"]
+        API -.->|"Summary and recommendations API"| AI["AI orchestration"]
     end
-
-    Search -->|nearby_toilets| PG[(PostgreSQL + PostGIS)]
-    Auth -.-> PG
-    Community -.-> PG
-    Community -.-> Mongo[(MongoDB)]
-    Admin -.-> PG
-    Admin -.-> Mongo
-    Import -.-> PG
-    IBB[İBB GeoJSON] -.-> Import
-    AI -.->|Eligible reviews| Community
-    AI -.-> Redis[(Redis)]
-    AI -.->|Redacted input| Provider[AI provider]
+    Search -->|"SQL nearby_toilets()"| PG["PostgreSQL / PostGIS"]
+    Auth -.->|"SQL users and login failures"| PG
+    Community -.->|"SQL facilities and suggestions"| PG
+    Community -.->|"MongoDB reviews read/write"| Mongo["MongoDB"]
+    Admin -.->|"SQL facilities by district"| PG
+    Admin -.->|"read_review_scores()"| Mongo
+    Import -.->|"SQL transactional upsert"| PG
+    IBB["İBB open data"] -.->|"HTTPS GeoJSON download"| Import
+    AI -.->|"Eligible review snapshot"| Community
+    AI -.->|"Redis GET / SET with TTL"| Redis["Redis"]
+    AI -.->|"HTTPS structured JSON request"| Provider["AI provider"]
 ```
 
 [Back to the Software Design Report](../REPORT.md)
