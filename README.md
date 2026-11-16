@@ -1,6 +1,6 @@
 # SmartLoo
 
-Weekly integration candidate. The admin panel uses labelled sample data. API features still return 501; no complete map/search demo is claimed.
+The nearby search API uses PostGIS. The admin panel uses labelled sample data. The shared local environment also starts MongoDB and Redis for integration work.
 
 ## Shared layout
 - `src/`: FastAPI application factory (`src.app:create_app`). Preserve the existing test injection interface.
@@ -28,6 +28,18 @@ npm run dev
 The acceptance baseline currently fails on unimplemented 501 responses. Do not interpret the baseline job's permitted failure as implemented features. Frontend and SQL checks are blocking CI jobs. Use `npm run build` for the frontend build.
 
 Root docker-compose.yml is the shared environment; the standalone db/docker-compose.yml is retained for the original contribution. Do not run both at once. Credentials are local development examples only. Changing DB env values does not alter an existing volume's initialized account.
+
+## Shared service checks
+
+Run `docker compose up -d --wait` from the repository root, then inspect `docker compose ps` for service health. Run the PostGIS migration and synthetic seed commands in the nearby search section below. Use `docker compose logs SERVICE` for startup issues and `docker compose down` to stop the services while preserving database volumes.
+
+| Service | Default local port | Health check |
+| --- | --- | --- |
+| PostGIS | 5432 | `pg_isready` over TCP |
+| MongoDB | 27017 | `mongosh` ping |
+| Redis | 6379 | `redis-cli ping` |
+
+The published ports bind to loopback. To avoid a port conflict, change the relevant port in `.env` and update the connection settings in the shell that runs the application or tests. For the MongoDB tests proposed in #50, set `SMARTLOO_MONGO_URL` to the corresponding `mongodb://127.0.0.1:<port>` URL. Keep credentials and provider keys in the local environment.
 
 ## Team workflow
 Start from current main, use a feature branch, reference the issue in a small PR, include actual verification results, and obtain another member's review. Coordinate changes to env names, package files and API contracts. No main merge is implied by this weekly review.
