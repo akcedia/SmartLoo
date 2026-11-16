@@ -14,6 +14,14 @@ Baseline: [main at 24611dd](https://github.com/akcedia/SmartLoo/tree/24611ddee81
 | Security | Record local/staging scope, method, findings, fixes and retests for access control, input validation, dependencies, secrets and personal data. |
 | SonarQube | Record server/project, scanner version, commit, findings and retest. Analysis is pending. |
 
+## Early execution evidence
+
+| Revision | Environment | Executed checks | Result |
+| --- | --- | --- | --- |
+| Main `24611dd` | Windows, Node 26.13.1, npm 11.20.0 | `npm ci`, `npm test`, `npm run build` in frontend | 38 tests passed and build passed. |
+| Map PR #54 head `ad91e37` | Windows, Node 26.13.1, npm 11.20.0 | `npm ci --no-audit --no-fund`, `npm test`, `npm run build` in frontend | 37 tests passed and build passed. Tests were the admin suite on the PR head. Live map validation is pending. |
+| QA setup PR #66 `f02bdfa` | GitHub Actions, Linux | Compose health for PostGIS, MongoDB and Redis, PostGIS migration and SQL checks, isolated and real PostGIS search, frontend test/build | [Required CI jobs passed](https://github.com/akcedia/SmartLoo/actions/runs/43927503558). Full requirements results are collected by the non-blocking baseline job. |
+
 ## Functional traceability
 
 Sources: [requirements](../REQUIREMENTS.MD) and [test catalog](../../tests/requirements_cases.json).
