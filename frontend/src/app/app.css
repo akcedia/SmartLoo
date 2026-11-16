@@ -6,11 +6,12 @@
   --app-text: #1d2433;
   --app-muted: #5b6475;
   --app-border: #dde2ea;
-  --app-accent: #1f6feb;
-  --app-accent-strong: #1958c4;
+  --app-accent: #1a63d6;
+  --app-accent-strong: #1550b0;
   --app-accent-soft: #e8f0fe;
-  --app-ok: #1a7f37;
+  --app-ok: #18752f;
   --app-ok-bg: #e6f4ea;
+  --app-input-border: #868fa0; /* 3.26:1 against white, WCAG 1.4.11 */
   --app-critical: #b42318;
   --app-critical-bg: #fef3f2;
   --app-warn-bg: #fff8e1;
@@ -228,7 +229,7 @@ body { margin: 0; }
 .app-field input {
   font: inherit;
   padding: 9px 11px;
-  border: 1px solid var(--app-border);
+  border: 1px solid var(--app-input-border);
   border-radius: 8px;
   background: var(--app-surface);
   min-height: var(--app-touch);

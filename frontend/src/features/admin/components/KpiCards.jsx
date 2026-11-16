@@ -10,7 +10,8 @@ export default function KpiCards({ data }) {
   const threshold = data.critical_threshold ?? CRITICAL_THRESHOLD;
 
   return (
-    <section className="admin-kpis" aria-label="Özet göstergeler">
+    <section className="admin-kpis" aria-labelledby="kpi-title">
+      <h2 id="kpi-title" className="admin-sr">Özet göstergeler</h2>
       <div className={`admin-card${data.critical_alert ? " admin-card--critical" : ""}`}>
         <h3>Ortalama hijyen</h3>
         {average === null ? (
