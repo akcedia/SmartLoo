@@ -1,13 +1,11 @@
 // Static render tests (react-dom/server) — no extra test dependencies needed.
 import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
-import AccountMenu from "./AccountMenu.jsx";
 import KpiCards from "./KpiCards.jsx";
 import FacilityTable from "./FacilityTable.jsx";
 import TrendChart, { chartGeometry } from "./TrendChart.jsx";
 import { ErrorPanel, NoDataPanel } from "./StatusPanel.jsx";
 import AdminDashboard, { formatDateTr } from "../AdminDashboard.jsx";
-import { sampleSessionFor } from "../api/sampleAdapter.js";
 import { CRITICAL_ALERT_TEXT } from "../api/contract.js";
 
 const render = (el) => renderToStaticMarkup(el);
@@ -97,6 +95,8 @@ describe("Status panels", () => {
     [403, "Yetkiniz yok"],
     [422, "Filtre geçersiz"],
     [500, "Tekrar dene"],
+    [501, "henüz hazır değil"],
+    [0, "Sunucuya ulaşılamadı"],
   ])("renders the %s state", (status, text) => {
     expect(render(<ErrorPanel error={{ status }} onRetry={() => {}} />)).toContain(text);
   });
@@ -110,33 +110,13 @@ describe("Status panels", () => {
   });
 });
 
-describe("AccountMenu", () => {
-  it("offers sign-in when nobody is signed in", () => {
-    const html = render(<AccountMenu session={null} />);
-    expect(html).toContain("Giriş yap");
-    expect(html).toContain('href="#/sign-in"');
-  });
-
-  it("shows the name and role of the sample session", () => {
-    const html = render(<AccountMenu session={sampleSessionFor("normal")} />);
-    expect(html).toContain("Örnek Yönetici");
-    expect(html).toContain("Yönetici");
-    expect(html).toContain('aria-expanded="false"');
-  });
-
-  it("maps demo scenarios to sessions", () => {
-    expect(sampleSessionFor("unauthorized")).toBeNull();
-    expect(sampleSessionFor("forbidden").role).toBe("USER");
-    expect(sampleSessionFor("error").role).toBe("ADMIN");
-  });
-});
-
 describe("AdminDashboard shell", () => {
-  it("renders the sample banner, filters, account menu and only Analytics as active tab", () => {
+  it("renders the sample banner, demo control, filters and only Analytics as active tab", () => {
     const html = render(<AdminDashboard />);
     expect(html).toContain("ÖRNEK VERİ");
     expect(html).toContain("Tüm ilçeler");
-    expect(html).toContain("Örnek Yönetici");
+    expect(html).toContain("Demo senaryosu");
+    expect(html).not.toContain("admin-topbar");
     expect(html.match(/admin-tab--active/g)).toHaveLength(1);
     expect(html.match(/aria-disabled="true"/g)).toHaveLength(2);
   });

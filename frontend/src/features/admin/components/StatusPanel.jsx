@@ -1,5 +1,7 @@
 // Full-panel states that replace the dashboard content.
 
+import { Link, signInPath } from "../../../app/router.jsx";
+
 export function LoadingPanel() {
   return (
     <div className="admin-status" role="status" aria-live="polite">
@@ -26,7 +28,7 @@ export function ErrorPanel({ error, onRetry }) {
       <div className="admin-status admin-status--warn" role="alert">
         <h2>Oturum gerekli</h2>
         <p>Oturumunuz yok ya da süresi doldu. Paneli görmek için yönetici hesabıyla giriş yapın.</p>
-        <a href="#/sign-in">Giriş yap</a>
+        <Link to={signInPath("/admin")}>Giriş yap</Link>
       </div>
     );
   }
@@ -35,7 +37,7 @@ export function ErrorPanel({ error, onRetry }) {
       <div className="admin-status admin-status--warn" role="alert">
         <h2>Yetkiniz yok</h2>
         <p>Bu sayfa yalnızca yöneticiler içindir. Hiçbir analiz verisi gösterilmedi.</p>
-        <a href="#/">Haritaya dön</a>
+        <Link to="/">Haritaya dön</Link>
       </div>
     );
   }
@@ -47,10 +49,18 @@ export function ErrorPanel({ error, onRetry }) {
       </div>
     );
   }
+  if (error.status === 501) {
+    return (
+      <div className="admin-status admin-status--warn" role="alert">
+        <h2>Analitik servisi henüz hazır değil</h2>
+        <p>Backend bu uç noktayı henüz uygulamadı (501). Gösterilecek gerçek veri yok; örnek veri kullanılmadı.</p>
+      </div>
+    );
+  }
   return (
     <div className="admin-status admin-status--error" role="alert">
       <h2>Veriler alınamadı</h2>
-      <p>Bir hata oluştu. Filtreleriniz korundu.</p>
+      <p>{error.status === 0 ? "Sunucuya ulaşılamadı." : "Sunucu hatası oluştu."} Filtreleriniz korundu.</p>
       <button type="button" onClick={onRetry}>Tekrar dene</button>
     </div>
   );
