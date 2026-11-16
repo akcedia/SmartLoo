@@ -18,7 +18,7 @@ function adapterWith(responder) {
 
 describe("live admin adapter", () => {
   it("requests the summary with the selected filters and the session token", async () => {
-    const { adapter, calls } = adapterWith(() => Response.json({ review_count: 0, average_cleanliness: null }));
+    const { adapter, calls } = adapterWith(() => Response.json({ review_count: 0, average_cleanliness: null, critical_alert: false }));
     const data = await adapter.fetchSummary(filters);
     expect(adapter.isSample).toBe(false);
     expect(data.average_cleanliness).toBeNull();

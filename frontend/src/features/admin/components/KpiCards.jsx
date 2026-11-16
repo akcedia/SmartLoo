@@ -34,7 +34,8 @@ export default function KpiCards({ data }) {
             <small>({ratio.active}/{ratio.total})</small>
           </p>
         ) : (
-          <p className="admin-kpi admin-kpi--empty">Bilinmiyor</p>
+          // null means either no matched facility or unknown status data (contract §2.1, §2.3).
+          <p className="admin-kpi admin-kpi--empty">{data.facilities?.length === 0 ? "Tesis yok" : "Bilinmiyor"}</p>
         )}
         <p className="admin-card-note">İdari durum (ACTIVE); anlık doluluk değildir</p>
       </div>
