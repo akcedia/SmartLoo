@@ -22,15 +22,18 @@ Baseline: [main at 24611dd](https://github.com/akcedia/SmartLoo/tree/24611ddee81
 | Map PR #54 head `ad91e37` | Windows, Node 26.13.1, npm 11.20.0 | `npm ci --no-audit --no-fund`, `npm test`, `npm run build` in frontend | 37 tests passed and build passed. Tests were the admin suite on the PR head. Live map validation is pending. |
 | QA setup PR #66 `f02bdfa` | GitHub Actions, Linux | Compose health for PostGIS, MongoDB and Redis, PostGIS migration and SQL checks, isolated and real PostGIS search, frontend test/build | [Required CI jobs passed](https://github.com/akcedia/SmartLoo/actions/runs/43927503558). Full requirements results are collected by the non-blocking baseline job. |
 
+| Main `24611dd` | Windows, Python 3.12.10 | `python -m pip check`, isolated nearby pytest (`tc_01 or tc_02 or tc_03 or tc_11 or tc_12 or tc_13 or tc_14`), local Uvicorn HTTP smoke | No broken dependencies. 10 passed, 42 deselected. OpenAPI HTTP 200, invalid nearby latitude HTTP 422. OpenAPI emitted duplicate operation ID warnings for pending review routes. |
+| PR #65 `187d1b6` | Windows, Node 26.13.1 | `npm test`, `npm run build -- --outDir ../../qa65-build` | [125 tests passed, including 25 accessibility tests. Build passed.](https://github.com/akcedia/SmartLoo/pull/65#issuecomment-6926576126) Manual browser and scanner results pending. |
+
 ## Functional traceability
 
 Sources: [requirements](../REQUIREMENTS.MD) and [test catalog](../../tests/requirements_cases.json).
 
 | Case | Requirement | Scenario | Verification | Result | Evidence |
 | --- | --- | --- | --- | --- | --- |
-| TC-01 | FR-01 | Nearby open toilets | test_tc_01 | Not run | — |
-| TC-02 | FR-02 | Accessibility filter | test_tc_02 | Not run | — |
-| TC-03 | FR-02 | Baby changing filter | test_tc_03 | Not run | — |
+| TC-01 | FR-01 | Nearby open toilets | test_tc_01 | Passed | Main `24611dd`, isolated nearby pytest (above) |
+| TC-02 | FR-02 | Accessibility filter | test_tc_02 | Passed | Main `24611dd`, isolated nearby pytest (above) |
+| TC-03 | FR-02 | Baby changing filter | test_tc_03 | Passed | Main `24611dd`, isolated nearby pytest (above) |
 | TC-04 | FR-08 | Successful login | test_tc_04 | Not run | — |
 | TC-05 | FR-03 | Reject guest review | test_tc_05 | Not run | — |
 | TC-06 | FR-03 | Create review and aggregate | test_tc_06 | Not run | — |
@@ -38,10 +41,10 @@ Sources: [requirements](../REQUIREMENTS.MD) and [test catalog](../../tests/requi
 | TC-08 | FR-04 | Structured Turkish AI summary | test_tc_08 | Not run | — |
 | TC-09 | FR-06 | Filtered dashboard | test_tc_09 | Not run | — |
 | TC-10 | FR-07 | CSV report export | test_tc_10 | Not run | — |
-| TC-11 | FR-01 | Reject invalid search | test_tc_11 | Not run | — |
-| TC-12 | FR-02 | Combined filters and clearing | test_tc_12 | Not run | — |
-| TC-13 | FR-02 | Pricing filter | test_tc_13 | Not run | — |
-| TC-14 | FR-01 | Empty nearby results | test_tc_14 | Not run | — |
+| TC-11 | FR-01 | Reject invalid search | test_tc_11 | Passed | Main `24611dd`, isolated nearby pytest (above) |
+| TC-12 | FR-02 | Combined filters and clearing | test_tc_12 | Passed | Main `24611dd`, isolated nearby pytest (above) |
+| TC-13 | FR-02 | Pricing filter | test_tc_13 | Passed | Main `24611dd`, isolated nearby pytest (above) |
+| TC-14 | FR-01 | Empty nearby results | test_tc_14 | Passed | Main `24611dd`, isolated nearby pytest (above) |
 | TC-15 | FR-04 | AI outage and insufficient reviews | test_tc_15 | Not run | — |
 | TC-16 | FR-04 | Summary cache | test_tc_16 | Not run | — |
 | TC-17 | FR-04 | Preference recommendations | test_tc_17 | Not run | — |
