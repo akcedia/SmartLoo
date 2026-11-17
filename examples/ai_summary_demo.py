@@ -13,7 +13,7 @@ from time import monotonic
 
 from src.ai_evidence import EvidencePreparer, ReviewText
 from src.ai_output import CATEGORIES, SummaryOutputValidator
-from src.ai_summary_service import ReviewSnapshot, SummaryService
+from src.ai_summary_service import PublicationDecision, ReviewSnapshot, SummaryService
 
 REVIEW_TEXTS = ("Temiz.", "Sabun eksik.", "Temiz, ancak sabun eksik.")
 OUTPUT = {"summary": REVIEW_TEXTS[2], "pros": [REVIEW_TEXTS[0]],
@@ -33,6 +33,14 @@ class SyntheticRepository:
         if toilet_id != "synthetic-A":
             raise LookupError("synthetic_facility_not_found")
         return self.current
+
+    async def publish_current(self, toilet_id, revision, publish):
+        # This demo mutates records only BETWEEN requests. This simple fixture
+        # is not a production writer/reader guard or concurrency demonstration.
+        snapshot = await self.snapshot(toilet_id)
+        if not snapshot.consistent or snapshot.revision != revision:
+            return PublicationDecision(False, snapshot)
+        return PublicationDecision(True, snapshot, await publish())
 
 
 class SyntheticCache:
@@ -66,7 +74,8 @@ async def main():
         privacy_check=approve_fixture_text, grounding_check=approve_fixture_output)
     service = SummaryService(repository, SyntheticCache(), synthetic_provider,
         prepare_evidence=EvidencePreparer(privacy_check=approve_fixture_text),
-        validate_output=validator, policy_version="audited-synthetic-demo-v1")
+        validate_output=validator, policy_version="audited-synthetic-demo-v1",
+        publish_current=repository.publish_current)
     first = await service.summarize("synthetic-A")
     second = await service.summarize("synthetic-A")
     cached_calls = calls

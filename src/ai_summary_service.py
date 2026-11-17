@@ -40,6 +40,13 @@ class ReviewRepository(Protocol):
     async def snapshot(self, toilet_id: str) -> ReviewSnapshot: ...
 
 
+@dataclass(frozen=True)
+class PublicationDecision:
+    accepted: bool
+    snapshot: ReviewSnapshot
+    value: dict | None = None
+
+
 class SummaryCache(Protocol):
     async def get(self, key: str) -> dict | None: ...
     async def put(self, key: str, value: dict, ttl: int) -> None: ...
@@ -65,9 +72,11 @@ class RedisSummaryCache:
 
 class SummaryService:
     def __init__(self, repository, cache, provider, *, prepare_evidence,
-                 validate_output, policy_version, timeout_seconds=10):
+                 validate_output, policy_version, publish_current, timeout_seconds=10):
         if not policy_version or not 0 < timeout_seconds <= 10:
             raise ValueError("A policy version and a budget of at most 10s are required")
+        if not callable(publish_current):
+            raise ValueError("guarded_publication_is_required")
         self.repository = repository
         self.cache = cache
         self.provider = provider
@@ -75,6 +84,7 @@ class SummaryService:
         self.validate_output = validate_output
         self.policy_version = policy_version
         self.timeout_seconds = timeout_seconds
+        self.publish_current = publish_current
 
     def cache_key(self, toilet_id, revision):
         # JSON encodes components unambiguously; policy covers prompt/model,
@@ -106,6 +116,38 @@ class SummaryService:
             evidence = (await self.prepare_evidence(first))[:50]
             if len(evidence) < 3:
                 return fallback(INSUFFICIENT)
+
+            async def finish(value, *, cache_key=None):
+                nonlocal latest
+                calls = 0
+
+                async def publish():
+                    nonlocal calls
+                    calls += 1
+                    if calls != 1:
+                        raise ValueError("publication_callback_repeated")
+                    # The coordinator holds the common writer guard here.
+                    # Only bounded cache I/O and response assembly are allowed.
+                    if cache_key is not None:
+                        try:
+                            await self.cache.put(cache_key, deepcopy(value), TTL_SECONDS)
+                        except Exception:
+                            LOG.warning("ai_cache_write_failed correlation_id=%s", correlation_id)
+                    return deepcopy(value)
+
+                decision = await self.publish_current(toilet_id, revision, publish)
+                if not isinstance(decision, PublicationDecision) or not isinstance(decision.snapshot, ReviewSnapshot):
+                    raise ValueError("invalid_publication_decision")
+                latest = decision.snapshot
+                if decision.accepted is not True:
+                    if decision.value is not None:
+                        raise ValueError("rejected_publication_exposed_value")
+                    return fallback()
+                if (calls != 1 or not latest.consistent or latest.revision != revision
+                        or not isinstance(decision.value, dict) or decision.value != value):
+                    raise ValueError("invalid_guarded_publication")
+                return decision.value
+
             key = self.cache_key(toilet_id, revision)
             cached = None
             try:
@@ -123,25 +165,14 @@ class SummaryService:
                 except Exception:
                     LOG.warning("ai_cache_rejected correlation_id=%s", correlation_id)
                 else:
-                    if (await current()).revision != revision:
-                        return fallback()
-                    return {**validated, "based_on_reviews": count,
-                            "generated_at": generated_at}
+                    return await finish({**validated, "based_on_reviews": count,
+                                         "generated_at": generated_at})
 
             candidate = await self.provider(deepcopy(evidence))
             validated = await self.validate_output(candidate, evidence)
             result = {**validated, "based_on_reviews": len(evidence),
                       "generated_at": datetime.now(timezone.utc).isoformat()}
-            if (await current()).revision != revision:
-                return fallback()
-            try:
-                await self.cache.put(key, deepcopy(result), TTL_SECONDS)
-            except Exception:
-                LOG.warning("ai_cache_write_failed correlation_id=%s", correlation_id)
-            # Recheck after cache I/O, including the cache-hit path above.
-            if (await current()).revision != revision:
-                return fallback()
-            return result
+            return await finish(result, cache_key=key)
 
         try:
             # Covers repository, cache, evidence preparation, provider and checks.

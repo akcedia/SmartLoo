@@ -7,13 +7,13 @@ The caller must assemble a store-consistent read of payload and statistics;
 this adapter does not manufacture a distributed snapshot from independent reads.
 """
 
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from math import isfinite
 
 from src.ai_evidence import ReviewText
-from src.ai_review_contract import parse_summary_snapshot
-from src.ai_summary_service import ReviewSnapshot
+from src.ai_review_contract import SummaryPublication, SummarySnapshot, parse_summary_snapshot
+from src.ai_summary_service import PublicationDecision, ReviewSnapshot
 
 
 @dataclass(frozen=True)
@@ -114,3 +114,48 @@ def adapt_summary_snapshot(payload, *, expected_toilet_id):
         ReviewStatistics(snapshot.review_version, snapshot.review_count,
                          snapshot.average_cleanliness, consistent=snapshot.ready),
     )
+
+
+class CoordinatedReviewRepository:
+    """Consumer-side bridge to the proposed ConsistentReviewPort.
+
+    The injected coordinator, not this adapter, implements distributed guarding
+    and durable recovery. No fallback to separate Mongo/SQL reads is provided.
+    """
+
+    def __init__(self, coordinator):
+        self.coordinator = coordinator
+
+    def _adapt(self, snapshot, toilet_id):
+        if not isinstance(snapshot, SummarySnapshot):
+            raise ValueError("invalid_coordinator_snapshot")
+        payload = {"protocol_version": 1, **asdict(snapshot)}
+        payload["reviews"] = list(payload["reviews"])
+        return adapt_summary_snapshot(payload, expected_toilet_id=toilet_id)
+
+    async def snapshot(self, toilet_id):
+        snapshot = await self.coordinator.snapshot_for_summary(toilet_id, limit=50)
+        return self._adapt(snapshot, toilet_id)
+
+    async def publish_current(self, toilet_id, expected_revision, publish):
+        try:
+            version = int(expected_revision)
+        except (ValueError, TypeError):
+            raise ValueError("invalid_expected_review_version") from None
+        if version < 0 or str(version) != expected_revision:
+            raise ValueError("invalid_expected_review_version")
+        decision = await self.coordinator.publish_summary_if_current(toilet_id, version, publish)
+        if not isinstance(decision, SummaryPublication):
+            raise ValueError("invalid_coordinator_publication")
+        snapshot = self._adapt(decision.snapshot, toilet_id)
+        if decision.status == "published":
+            if not snapshot.consistent or snapshot.revision != expected_revision or not isinstance(decision.value, dict):
+                raise ValueError("invalid_published_snapshot")
+            return PublicationDecision(True, snapshot, decision.value)
+        if decision.status not in ("stale", "busy", "repair_required") or decision.value is not None:
+            raise ValueError("invalid_rejected_publication")
+        if decision.status == "stale" and (not snapshot.consistent or snapshot.revision == expected_revision):
+            raise ValueError("invalid_stale_snapshot")
+        if decision.status in ("busy", "repair_required") and snapshot.consistent:
+            raise ValueError("unready_publication_claimed_ready")
+        return PublicationDecision(False, snapshot)

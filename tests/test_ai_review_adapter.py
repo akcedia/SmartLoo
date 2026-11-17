@@ -110,7 +110,8 @@ class RepositoryTests(unittest.IsolatedAsyncioTestCase):
         cache = AsyncMock()
         service = SummaryService(ReviewServiceRepository(bridge), cache, provider,
             prepare_evidence=EvidencePreparer(privacy_check=AsyncMock(return_value=True)),
-            validate_output=AsyncMock(), policy_version="contract-tests-v1")
+            validate_output=AsyncMock(), policy_version="contract-tests-v1",
+            publish_current=AsyncMock())
         result = await service.summarize("facility-A")
         self.assertIsNone(result["summary"])
         self.assertEqual(result["review_count"], 20)

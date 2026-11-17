@@ -5,6 +5,7 @@ import unittest
 from copy import deepcopy
 from dataclasses import replace
 from unittest.mock import AsyncMock
+from tests.ai_test_ports import sequential_publication
 
 from src.ai_summary_service import (
     INSUFFICIENT, TTL_SECONDS, RedisSummaryCache, ReviewSnapshot, SummaryService,
@@ -40,6 +41,7 @@ class SummaryServiceTests(unittest.IsolatedAsyncioTestCase):
         self.service = SummaryService(
             self.repo, self.cache, self.provider, prepare_evidence=self.prepare,
             validate_output=self.validator, policy_version="test-only-v1",
+            publish_current=sequential_publication(self.repo.snapshot),
         )
 
     async def test_M01_M04_success_and_second_read_uses_cache(self):

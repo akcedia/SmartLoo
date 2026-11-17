@@ -6,6 +6,7 @@ from copy import deepcopy
 from dataclasses import replace
 from datetime import datetime, timedelta, timezone
 from unittest.mock import AsyncMock
+from tests.ai_test_ports import sequential_publication
 
 from src.ai_evidence import EvidencePreparer, ReviewText, redact_known_identifiers
 from src.ai_output import CATEGORIES, SummaryOutputValidator, validate_summary_schema
@@ -163,7 +164,8 @@ class PipelineBoundaryTests(unittest.IsolatedAsyncioTestCase):
             grounding_check=self.grounding, privacy_check=AsyncMock(return_value=True))
         self.service = SummaryService(self.repo, self.cache, self.provider,
             prepare_evidence=EvidencePreparer(privacy_check=AsyncMock(return_value=True)),
-            validate_output=self.validator, policy_version="synthetic-boundary-tests-v1")
+            validate_output=self.validator, policy_version="synthetic-boundary-tests-v1",
+            publish_current=sequential_publication(self.repo.snapshot))
 
     async def test_sanitized_reviews_reach_provider_and_valid_schema_returns(self):
         result = await self.service.summarize("A")

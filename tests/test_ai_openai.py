@@ -6,6 +6,7 @@ import unittest
 from copy import deepcopy
 from types import SimpleNamespace
 from unittest.mock import AsyncMock
+from tests.ai_test_ports import sequential_publication
 
 from src.ai_openai import ENDPOINT, OpenAISummaryProvider, ProviderError, build_summary_request
 from src.ai_summary_service import ReviewSnapshot, SummaryService
@@ -145,7 +146,8 @@ class ProviderTests(unittest.IsolatedAsyncioTestCase):
         service = SummaryService(repo, cache, self.provider,
             prepare_evidence=AsyncMock(return_value=deepcopy(EVIDENCE)),
             validate_output=AsyncMock(return_value=deepcopy(OUTPUT)),
-            policy_version="test-openai-adapter-v1")
+            policy_version="test-openai-adapter-v1",
+            publish_current=sequential_publication(repo.snapshot))
         result = await service.summarize("A")
         self.assertEqual(result["summary"], OUTPUT["summary"])
         self.assertEqual(result["based_on_reviews"], 3)
@@ -159,7 +161,8 @@ class ProviderTests(unittest.IsolatedAsyncioTestCase):
         cache.get.return_value = None
         service = SummaryService(repo, cache, self.provider,
             prepare_evidence=AsyncMock(return_value=deepcopy(EVIDENCE)),
-            validate_output=AsyncMock(), policy_version="test-openai-adapter-v1")
+            validate_output=AsyncMock(), policy_version="test-openai-adapter-v1",
+            publish_current=sequential_publication(repo.snapshot))
         result = await service.summarize("A")
         self.assertIsNone(result["summary"])
         self.assertEqual(result["average_cleanliness"], 4.0)

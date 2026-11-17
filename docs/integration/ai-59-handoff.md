@@ -19,7 +19,7 @@ evidence preparation and output validation ports. There is no permissive default
 sanitizer or validator. Wiring these ports is mandatory before production use.
 It caps prepared evidence at 50, skips generation below 3, adds server-owned
 count/time, uses a six-hour revision/policy cache, and rechecks the source
-revision after provider/cache operations. A consistent source snapshot is
+revision at final acceptance through a mandatory guarded publication operation. A consistent source snapshot is
 required even for cache hits. Old revision keys expire naturally.
 
 The total async pipeline has a 10-second cancellation budget. Every production
@@ -108,7 +108,7 @@ HTTP 200 mapping is a route integration task; this slice does not register route
 ## Verification and remaining work
 
 Run `python3 -m unittest discover -s tests -p 'test_ai_*.py' -v`.
-87 tests passed, 0 failed, 0 skipped on macOS / Python 3.14.3 (10.305 seconds).
+101 tests passed, 0 failed, 0 skipped on macOS / Python 3.14.3 (10.153 seconds).
 Includes an actual 10-second cancellation test and a separate immediately raised
 TimeoutError test; TTL uses a fake clock. New tests cover redaction, post-privacy
 eligibility, strict output schema and rejected-policy fallback. Test callbacks
@@ -176,6 +176,14 @@ marker, recovery lifecycle and final guarded cache/response assembly. Protocol
 and strict envelope parser: src/ai_review_contract.py; consumer conversion:
 adapt_summary_snapshot(). A new 15-test in-memory model exercises ordering and
 failure examples. This is not a team-approved schema or a production coordinator.
-The existing SummaryService still needs guarded-publication wiring after the
-joint interface is agreed; do not claim that revision rechecks alone solve the
-final publication race. Fırat's writer/migration and Özgür's route were not edited.
+SummaryService now requires guarded-publication wiring and the new coordinated
+adapter consumes the proposed port. This is consumer implementation against a
+test port, not production coordination or team agreement. Fırat's writer/migration and Özgür's route were not edited.
+
+## Consumer guarded-publication wiring (step 2)
+
+[ai-guarded-publication.md](ai-guarded-publication.md) describes the new required
+publish_current callback, CoordinatedReviewRepository and setup. Fourteen new
+actual-consumer/model-port tests bring the local suite to 101. Fırat's real
+coordinator, durable writer/recovery and store integration remain pending. No
+new approval/comment was sent on behalf of the team.

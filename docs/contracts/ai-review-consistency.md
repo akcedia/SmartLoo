@@ -137,9 +137,12 @@ normal concurrent behavior, not a promise to freeze data until network delivery.
 ## 5. Current implementation vs remaining integration
 
 - Added strict snapshot envelope/parser, async port definition and adapter.
-- Existing #68 generation uses a before/after revision check and has a gap
-  between its check and cache write. **It does not yet call this guarded
-  publication port.** Port wiring is step 2 after agreement, not claimed complete.
+- Step 2 now wires the #68 consumer to the proposed guarded publication port.
+  SummaryService requires an explicit publication callback, used for both new
+  results and cache hits. CoordinatedReviewRepository validates/adapts the port.
+  The old separate-check/cache-write path has been removed from the consumer.
+  This does not supply or approve the production writer/coordinator backend;
+  see ../integration/ai-guarded-publication.md for test scope and remaining work.
 - No SQL/migration, upstream `src/reviews.py`, route, dependency or environment
   file changed. Fırat owns writer/recovery; Emir owns AI consumer/publication
   wiring; Özgür coordinates routes and merge; Yusuf verifies real DB evidence.
