@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import MapView from "./MapView.jsx";
-import { fetchNearbyToilets } from "./toiletApi.js";
+import FacilityDetailPanel from "./FacilityDetailPanel.jsx";
+import AiRecommendationsPanel from "./AiRecommendationsPanel.jsx";
+import { fetchNearbyToilets, fetchToiletDetail } from "./toiletApi.js";
 
 const DEFAULT_CENTER = { lat: 41.0, lon: 29.0 };
 const INITIAL_FILTERS = {
@@ -23,6 +25,13 @@ export default function SearchPage({ onSwitchToAdmin }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [retryToken, setRetryToken] = useState(0);
+
+  const [toiletDetail, setToiletDetail] = useState(null);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [detailError, setDetailError] = useState("");
+  const [detailNotFound, setDetailNotFound] = useState(false);
+  const [detailRetryToken, setDetailRetryToken] = useState(0);
+  const [showRecommendations, setShowRecommendations] = useState(false);
 
   useEffect(() => {
     if (!navigator.geolocation) {
@@ -79,6 +88,41 @@ export default function SearchPage({ onSwitchToAdmin }) {
     return () => controller.abort();
   }, [searchCenter, radius, filters, retryToken]);
 
+  const selectedToiletId = selectedToilet?.id ?? null;
+
+  useEffect(() => {
+    if (!selectedToiletId) {
+      setToiletDetail(null);
+      setDetailLoading(false);
+      setDetailError("");
+      setDetailNotFound(false);
+      return;
+    }
+
+    const controller = new AbortController();
+    setToiletDetail(null);
+    setDetailLoading(true);
+    setDetailError("");
+    setDetailNotFound(false);
+
+    fetchToiletDetail(selectedToiletId, { signal: controller.signal })
+      .then((data) => {
+        setToiletDetail(data);
+        setDetailLoading(false);
+      })
+      .catch((err) => {
+        if (err.name === "AbortError") return;
+        if (err.status === 404) {
+          setDetailNotFound(true);
+        } else {
+          setDetailError("Güncel tesis detayları alınamadı; özet bilgiler gösteriliyor.");
+        }
+        setDetailLoading(false);
+      });
+
+    return () => controller.abort();
+  }, [selectedToiletId, detailRetryToken]);
+
   const toggleFilter = (key) => {
     setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
   };
@@ -106,11 +150,6 @@ export default function SearchPage({ onSwitchToAdmin }) {
     if (!userLocation) return;
     setSearchCenter(userLocation);
     setPendingCenter(null);
-  };
-
-  const formatBooleanField = (val, trueText, falseText) => {
-    if (val === null || val === undefined) return "Bilinmiyor";
-    return val ? trueText : falseText;
   };
 
   const hasLocationPermission = locationStatus === "granted";
@@ -204,6 +243,24 @@ export default function SearchPage({ onSwitchToAdmin }) {
             Filtreleri Temizle
           </button>
 
+          <button
+            type="button"
+            aria-expanded={showRecommendations}
+            onClick={() => setShowRecommendations((prev) => !prev)}
+            style={{
+              padding: "6px 10px",
+              borderRadius: "6px",
+              border: "1px solid #7c3aed",
+              background: showRecommendations ? "#7c3aed" : "#f5f3ff",
+              color: showRecommendations ? "#ffffff" : "#5b21b6",
+              cursor: "pointer",
+              fontWeight: "600",
+              fontSize: "13px",
+            }}
+          >
+            AI Önerileri
+          </button>
+
           {hasLocationPermission && userLocation && (
             <button
               type="button"
@@ -292,48 +349,27 @@ export default function SearchPage({ onSwitchToAdmin }) {
           onClearSelection={() => setSelectedToilet(null)}
         />
 
-        {selectedToilet && (
-          <aside
-            style={{
-              position: "absolute",
-              top: "16px",
-              right: "16px",
-              width: "min(310px, calc(100vw - 32px))",
-              background: "#ffffff",
-              padding: "16px",
-              borderRadius: "8px",
-              boxShadow: "0 4px 14px rgba(0,0,0,0.18)",
-              zIndex: 1000,
-            }}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #e2e8f0", paddingBottom: "8px" }}>
-              <h3 style={{ margin: 0, fontSize: "16px", color: "#0f172a" }}>{selectedToilet.name}</h3>
-              <button
-                type="button"
-                aria-label="Detay panelini kapat"
-                onClick={() => setSelectedToilet(null)}
-                style={{ border: "none", background: "transparent", fontSize: "20px", cursor: "pointer", color: "#64748b" }}
-              >
-                &times;
-              </button>
-            </div>
-            <ul style={{ listStyle: "none", padding: 0, marginTop: "12px", fontSize: "14px", lineHeight: "1.9", color: "#334155" }}>
-              {hasLocationPermission && selectedToilet.distance_m != null && (
-                <li><strong>Kullanıcı Mesafesi:</strong> {Math.round(selectedToilet.distance_m)} m</li>
-              )}
-              <li><strong>Durum:</strong> {formatBooleanField(selectedToilet.is_open_now, "Açık", "Kapalı")}</li>
-              <li><strong>Engelli Erişimi:</strong> {formatBooleanField(selectedToilet.has_disabled_access, "Var", "Yok")}</li>
-              <li><strong>Bebek Bakım:</strong> {formatBooleanField(selectedToilet.has_baby_changing, "Var", "Yok")}</li>
-              <li><strong>Ücret:</strong> {formatBooleanField(selectedToilet.is_free, "Ücretsiz", "Ücretli")}</li>
-              <li>
-                <strong>Hijyen Puanı:</strong>{" "}
-                {selectedToilet.average_cleanliness != null
-                  ? `${selectedToilet.average_cleanliness} / 5`
-                  : "Henüz puanlanmamış"}
-              </li>
-            </ul>
-          </aside>
-        )}
+        <AiRecommendationsPanel
+          isOpen={showRecommendations}
+          searchCenter={searchCenter}
+          filters={filters}
+          hasLocationPermission={hasLocationPermission}
+          onSelectToilet={(toilet) => setSelectedToilet(toilet)}
+          onClose={() => setShowRecommendations(false)}
+        />
+
+        <FacilityDetailPanel
+          selectedToilet={selectedToilet}
+          detail={toiletDetail}
+          loading={detailLoading}
+          error={detailError}
+          notFound={detailNotFound}
+          hasLocationPermission={hasLocationPermission}
+          summaryRefreshKey={detailRetryToken}
+          onRetry={() => setDetailRetryToken((c) => c + 1)}
+          onReviewsMutated={() => setDetailRetryToken((c) => c + 1)}
+          onClose={() => setSelectedToilet(null)}
+        />
       </div>
     </div>
   );
