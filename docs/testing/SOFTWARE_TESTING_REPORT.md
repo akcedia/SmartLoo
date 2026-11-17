@@ -40,6 +40,20 @@ The new required suite gates run auth, MongoDB review reads and facility details
 
 Performance at the specified load, full integrated demo, rapid request races, manual browser accessibility and SonarQube results are pending. Final PDF review follows completion of this week's report evidence.
 
+## Required suite CI results — 17 November
+
+[Candidate validation run](https://github.com/akcedia/SmartLoo/actions/runs/44144525380) used QA commit `74c4010`, based on current main `87994f9`, with each exact feature revision merged independently in a disposable runner. The auth candidate resolved only the independent JWT and MongoDB/Redis additions to `.env.example`. Feature owners still review and merge their own PRs. Candidate-only CI wiring was removed after this run.
+
+| Suite | Feature revision | Passed | Failed / errors | Skipped | Evidence |
+| --- | --- | --- | --- | --- | --- |
+| Real MongoDB review reads | #50 `2be3e82` | 6 | 0 / 0 | 0 | [MongoDB job](https://github.com/akcedia/SmartLoo/actions/runs/44144525380/job/134255911910) |
+| Real PostgreSQL auth and isolated password byte boundaries | #51 `4ebd147` | 18 | 0 / 0 | 0 | [Auth job](https://github.com/akcedia/SmartLoo/actions/runs/44144525380/job/134255912383) |
+| Facility details, real PostGIS plus injected failure case | #70 `f2aabff` | 6 | 0 / 0 | 0 | [Detail job](https://github.com/akcedia/SmartLoo/actions/runs/44144525380/job/134255912832) |
+
+Each candidate job passed the JUnit gate and uploaded its report. Existing SQL, nearby and frontend checks also [passed on the QA change](https://github.com/akcedia/SmartLoo/actions/runs/44144525231). Eight local guard checks verified success and rejection of skipped/import-skipped, empty, missing, incomplete, failed and error reports.
+
+The permanent workflow discovers feature suites in the checked-out PR merge revision. A suite that existed in the base revision also remains required if its file is removed. This allows #50/#51/#70 to merge independently; their dedicated jobs activate once those test files are present. Expected modules missing within an active suite, missing dependencies, skipped cases or too few passing cases fail that job. The full acceptance catalog remains an independently published non-blocking baseline.
+
 ## Functional traceability
 
 Sources: [requirements](../REQUIREMENTS.MD) and [test catalog](../../tests/requirements_cases.json).
