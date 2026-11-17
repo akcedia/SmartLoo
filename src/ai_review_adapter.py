@@ -12,6 +12,7 @@ from datetime import datetime
 from math import isfinite
 
 from src.ai_evidence import ReviewText
+from src.ai_review_contract import parse_summary_snapshot
 from src.ai_summary_service import ReviewSnapshot
 
 
@@ -99,3 +100,17 @@ class ReviewServiceRepository:
     async def snapshot(self, toilet_id):
         payload, statistics = await self.read_consistent_snapshot(toilet_id, limit=50)
         return adapt_eligible_reviews(payload, statistics)
+
+
+def adapt_summary_snapshot(payload, *, expected_toilet_id):
+    """Consume the proposed single snapshot envelope, including unready states.
+
+    Separate publication-port wiring is still required before production use;
+    this conversion alone does not close the final cache-write race.
+    """
+    snapshot = parse_summary_snapshot(payload, expected_toilet_id=expected_toilet_id)
+    return adapt_eligible_reviews(
+        {"review_version": snapshot.review_version, "reviews": list(snapshot.reviews)},
+        ReviewStatistics(snapshot.review_version, snapshot.review_count,
+                         snapshot.average_cleanliness, consistent=snapshot.ready),
+    )

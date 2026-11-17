@@ -108,7 +108,7 @@ HTTP 200 mapping is a route integration task; this slice does not register route
 ## Verification and remaining work
 
 Run `python3 -m unittest discover -s tests -p 'test_ai_*.py' -v`.
-72 tests passed, 0 failed, 0 skipped on macOS / Python 3.14.3 (10.081 seconds).
+87 tests passed, 0 failed, 0 skipped on macOS / Python 3.14.3 (10.305 seconds).
 Includes an actual 10-second cancellation test and a separate immediately raised
 TimeoutError test; TTL uses a fake clock. New tests cover redaction, post-privacy
 eligibility, strict output schema and rejected-policy fallback. Test callbacks
@@ -167,3 +167,15 @@ including timestamp shapes, redaction limits, incomplete cross-store read
 coordination and missing total statistics, is at the top of
 [review-contract-56-review.md](review-contract-56-review.md). No approval or
 external coordination comment was sent on the user's behalf.
+
+## Concrete consistency proposal for #67 review
+
+[ai-review-consistency.md](../contracts/ai-review-consistency.md) now specifies
+the complete snapshot, common writer/read/publication guard, durable pending
+marker, recovery lifecycle and final guarded cache/response assembly. Protocol
+and strict envelope parser: src/ai_review_contract.py; consumer conversion:
+adapt_summary_snapshot(). A new 15-test in-memory model exercises ordering and
+failure examples. This is not a team-approved schema or a production coordinator.
+The existing SummaryService still needs guarded-publication wiring after the
+joint interface is agreed; do not claim that revision rechecks alone solve the
+final publication race. Fırat's writer/migration and Özgür's route were not edited.
