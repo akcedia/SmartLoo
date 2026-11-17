@@ -27,6 +27,9 @@ TOKEN_LIFETIME_S = 3600
 FAILURE_LIMIT = 5
 FAILURE_WINDOW_S = 15 * 60
 BCRYPT_ROUNDS = 12
+# bcrypt reads at most 72 bytes. Registration rejects longer passwords instead of truncating them,
+# so two passwords that share their first 72 bytes can never both be accepted.
+MAX_PASSWORD_BYTES = 72
 GENERIC_LOGIN_ERROR = "Invalid email or password"
 EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 # Compared against when the email is unknown, so both failure paths cost one bcrypt check.
@@ -67,8 +70,8 @@ class RegisterRequest(BaseModel):
     def strong_password(cls, value):
         if len(value) < 8 or not re.search(r"[A-Za-z]", value) or not re.search(r"\d", value):
             raise ValueError("Password needs at least 8 characters, a letter and a digit")
-        if len(value.encode()) > 72:
-            raise ValueError("Password must be at most 72 bytes")
+        if len(value.encode()) > MAX_PASSWORD_BYTES:
+            raise ValueError(f"Password must be at most {MAX_PASSWORD_BYTES} bytes in UTF-8")
         return value
 
     @field_validator("display_name")
@@ -226,8 +229,11 @@ def login(payload: LoginRequest, request: Request):
     if accounts.count_failures(email, now - FAILURE_WINDOW_S) >= FAILURE_LIMIT:
         raise HTTPException(status_code=429, detail="Too many failed attempts. Try again later.")
     user = accounts.find_by_email(email)
+    password = payload.password.encode()
     stored = user["password_hash"] if user else DUMMY_HASH
-    if not bcrypt.checkpw(payload.password.encode()[:72], stored.encode()) or user is None:
+    # A password longer than the registration limit cannot belong to any account; it is never truncated.
+    matches = len(password) <= MAX_PASSWORD_BYTES and bcrypt.checkpw(password, stored.encode())
+    if not matches or user is None:
         accounts.record_failure(email, now)
         raise HTTPException(status_code=401, detail=GENERIC_LOGIN_ERROR)
     return issue_token(key, user, now)
