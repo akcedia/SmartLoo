@@ -108,7 +108,7 @@ HTTP 200 mapping is a route integration task; this slice does not register route
 ## Verification and remaining work
 
 Run `python3 -m unittest discover -s tests -p 'test_ai_*.py' -v`.
-55 tests passed, 0 failed, 0 skipped on macOS / Python 3.14.3 (10.054 seconds).
+72 tests passed, 0 failed, 0 skipped on macOS / Python 3.14.3 (10.081 seconds).
 Includes an actual 10-second cancellation test and a separate immediately raised
 TimeoutError test; TTL uses a fake clock. New tests cover redaction, post-privacy
 eligibility, strict output schema and rejected-policy fallback. Test callbacks
@@ -136,7 +136,7 @@ checked or used. No HTTP/UI acceptance, real Redis/Mongo integration, GeoJSON ad
 live recommendation integration, external import or independent review is complete.
 
 Next: confirm ports/settings and production privacy/language/grounding policies,
-implement the OpenAI adapter, wire real repository/cache and routes, then execute TC-08/15/16/17/28
+wire the implemented OpenAI adapter and real repository/cache/routes, then execute TC-08/15/16/17/28
 with Yusuf and Furkan. GeoJSON normalization is Thursday's separate slice;
 source identity/alias decisions remain shared with Fırat. Shared route, migration,
 Compose and dependency files have not been changed. No GitHub write, message,
@@ -153,3 +153,17 @@ interface, required metadata and remaining concurrent-write/rollback decisions.
 The 55-test run includes 11 adapter and 9 recommendation tests beyond the earlier
 35. Demo still passes. No shared route, migration or environment file changed;
 no external message, approval, push or PR was sent.
+
+## OpenAI adapter follow-up
+
+`src/ai_openai.py` now implements the server-side provider; setup, official API
+sources and limitations are in [ai-openai-setup.md](ai-openai-setup.md). 16 new
+transport/payload/error tests plus the #67 ISO timestamp compatibility case
+bring the local suite to 72 tests. This supersedes the older note that the
+adapter was still unimplemented; live OpenAI access/smoke remains pending.
+
+Fırat's unmerged #67 now implements the eligible reader. The latest code review,
+including timestamp shapes, redaction limits, incomplete cross-store read
+coordination and missing total statistics, is at the top of
+[review-contract-56-review.md](review-contract-56-review.md). No approval or
+external coordination comment was sent on the user's behalf.

@@ -7,7 +7,7 @@ python3 -m unittest discover -s tests -p 'test_ai_*.py' -v
 python3 -m examples.ai_summary_demo
 ```
 
-Latest recorded test run: **55 passed, 0 failed, 0 skipped**, 10.054 seconds.
+Latest recorded test run: **72 passed, 0 failed, 0 skipped**, 10.081 seconds.
 Python syntax checks passed. The offline demo also passed: two reads produced
 one synthetic provider call; deletion reduced eligible reviews to two, resulting
 in a null summary without reusing old cached text or making another call.
@@ -16,8 +16,9 @@ in a null summary without reusing old cached text or making another call.
 |---|---:|---|
 | test_ai_summary_service.py | 17 | Orchestration, hit/TTL, revision races, errors, actual 10-second cancellation |
 | test_ai_boundaries.py | 18 | Redaction, privacy eligibility, strict schema, injected policy rejection |
-| test_ai_review_adapter.py | 11 | Proposed #50 record shape, statistics and consistency boundary |
+| test_ai_review_adapter.py | 12 | Proposed #50 record shape, statistics and consistency boundary |
 | test_ai_recommendations.py | 9 | Hard filters, maximum three, ranking proposal, optional reason fallback |
+| test_ai_openai.py | 16 | Request/schema construction, isolated review data, safe errors, refusal/truncation, async timeout and service wiring |
 
 This is service-level synthetic evidence, not full TC-08/15/16/17/28 acceptance.
 TTL uses a fake clock; an immediately raised TimeoutError is tested separately
@@ -31,3 +32,9 @@ No shared route registration, migration, Compose, CI or dependency file changed.
 See ai-59-handoff.md and review-contract-56-review.md for remaining integration
 decisions and ownership. This first delivery must remain a draft; it does not
 close #59, #28 or #39.
+
+OpenAI adapter follow-up: src/ai_openai.py and ai-openai-setup.md now provide a
+server-side implementation and setup contract. Network behavior is tested with
+an injected fake HTTP transport, not a live API request. Shared CI discovers the
+AI unittest classes through its full pytest baseline, but that baseline is
+non-blocking. A dedicated blocking AI test job remains Yusuf's coordination item.

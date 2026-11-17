@@ -1,7 +1,8 @@
 """Adapt Fırat's proposed #50 review contract to Emir's #59 service.
 
-Source: docs/contracts/reviews-service.md at #50 head 2be3e821.
-The upstream function is PLANNED, not currently imported or implemented here.
+Source: docs/contracts/reviews-service.md at #50 head 2be3e821; implementation
+app.state.reviews.eligible_for_summary at unmerged #67 head 8c5d58f1.
+The upstream function is not imported here; production coordination is pending.
 The caller must assemble a store-consistent read of payload and statistics;
 this adapter does not manufacture a distributed snapshot from independent reads.
 """
@@ -61,6 +62,13 @@ def adapt_eligible_reviews(payload, statistics):
             raise ValueError("invalid_or_duplicate_review_id")
         if type(score) is not int or not 1 <= score <= 5:
             raise ValueError("invalid_review_score")
+        # #67's isolated store serializes timestamps as ISO strings; live Mongo
+        # may return datetime objects. Never guess the timezone of naive values.
+        if isinstance(date, str):
+            try:
+                date = datetime.fromisoformat(date)
+            except ValueError:
+                raise ValueError("invalid_review_timestamp") from None
         if not isinstance(date, datetime) or date.tzinfo is None or date.utcoffset() is None:
             raise ValueError("invalid_review_timestamp")
         if comment is not None and (not isinstance(comment, str) or len(comment) > 1000):

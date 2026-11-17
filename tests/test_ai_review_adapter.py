@@ -84,6 +84,13 @@ class AdapterTests(unittest.TestCase):
         adapt_eligible_reviews(data, self.stats)
         self.assertEqual(data, original)
 
+    def test_PR67_isolated_store_iso_timestamps_are_accepted(self):
+        data = payload()
+        data["reviews"][0]["created_at"] = NOW.isoformat()
+        data["reviews"][1]["created_at"] = NOW.isoformat().replace("+00:00", "Z")
+        result = adapt_eligible_reviews(data, self.stats)
+        self.assertTrue(all(isinstance(r.created_at, datetime) for r in result.reviews))
+
 
 class RepositoryTests(unittest.IsolatedAsyncioTestCase):
     async def test_calls_bridge_with_facility_and_limit(self):

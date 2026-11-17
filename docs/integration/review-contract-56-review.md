@@ -1,5 +1,39 @@
 # #56 / #59 review integration — 17 November
 
+## Latest follow-up: review service is now in unmerged #67
+
+[Fırat's follow-up](https://github.com/akcedia/SmartLoo/issues/56#issuecomment-6942571571)
+and [src/reviews.py at 8c5d58f1](https://github.com/akcedia/SmartLoo/blob/8c5d58f182737dfe4eaa9af6084629477ab02b2f/src/reviews.py)
+were inspected after the initial review below. `app.state.reviews.eligible_for_summary`
+now exists on that PR; the earlier statements about it being planned describe
+the older #50 snapshot, not the current #67 implementation. #67 is still open and
+unmerged, with a proposed #51 → #50 → #67 merge order.
+
+The implemented reader is synchronous and returns the expected version/record
+shape; production async wiring must not block the event loop. Its isolated
+repository returns ISO timestamps, while Mongo can return datetime objects.
+The AI adapter now accepts timezone-aware ISO timestamps too and still rejects
+naive values. No import of an unmerged branch is added to main-based AI code.
+
+Remaining gaps were confirmed in code:
+- `eligible_for_summary()` reads Mongo records first and SQL version afterwards,
+  with no writer/reader boundary spanning both. Mongo mutations happen before
+  the SQL row lock in recompute. The SQL lock alone does not protect the earlier
+  read/write window; version inclusion is compatible but not a full guarantee.
+- The response still omits total review count and mean. The top-50 comments
+  cannot replace those actual facility statistics.
+- `_commit()` ignores an undo exception and returns 503. A later reconcile is
+  possible, but a failed undo has no durable pending marker for AI reads.
+- Redaction currently covers email/number patterns, not known author names or
+  arbitrary PII. Our residual privacy approval must remain mandatory.
+- The implementation limits commented documents before redaction/downstream
+  privacy approval, so eligible evidence may need refilling from older records.
+
+These are integration decisions to resolve with Fırat/Özgür, not a reason to
+claim the upstream work is absent or to modify his service in this PR.
+
+## Initial review against #50
+
 Source: [Fırat's 17 November status](https://github.com/akcedia/SmartLoo/issues/56#issuecomment-6942043860),
 also read in the Gmail notification `1a1e87b21afeafb9` (17 November 10:49 Istanbul).
 Contract: [reviews-service.md at #50 head 2be3e821](https://github.com/akcedia/SmartLoo/blob/2be3e8215750e2a8fcb380308f205107b21e5e2f/docs/contracts/reviews-service.md).
