@@ -1,9 +1,9 @@
 # Admin analytics API contract (draft)
 
-Owner: Onur Arda Buldağ (issue [#29](https://github.com/akcedia/SmartLoo/issues/29)). Backend reviewer: Özgür Kılıç. Version 0.1, 19 October 2026.
+Owner: Onur Arda Buldağ (issue [#29](https://github.com/akcedia/SmartLoo/issues/29)). Backend reviewer: Özgür Kılıç. Version 0.2, 11 November 2026.
 Covers FR-06 and FR-07 export. Baseline: [REQUIREMENTS.MD §3.6, §3.7, §8](../REQUIREMENTS.MD), [dashboard-import-export.md](../analysis/behavior/dashboard-import-export.md), [UI Spec Lite — Administration](../analysis/ui-spec-lite.md).
 
-**Status: DRAFT — not yet reviewed by the backend owner.** Fields marked *required* are already fixed by the requirements and the HTTP contract tests (TC-09, TC-10, TC-24, TC-25). Fields marked *proposed* are what the admin panel skeleton needs; they become binding only after review with Özgür. This document does not change [src/app.py](../../src/app.py) or the tests; both endpoints still return 501.
+**Status: Draft for frontend/backend review.** Fields marked *required* are fixed by the requirements and the HTTP contract tests (TC-09, TC-10, TC-24, TC-25). Fields marked *proposed* describe the panel contract for joint review. Both endpoints currently return 501 in [src/app.py](../../src/app.py).
 
 ## 1. Shared rules
 
@@ -15,9 +15,9 @@ Covers FR-06 and FR-07 export. Baseline: [REQUIREMENTS.MD §3.6, §3.7, §8](../
 | `district` | Optional. Omitted means all districts. Exact Turkish name as stored in `Toilet.district` (e.g. `Kadıköy`). | dashboard-import-export.md §1 |
 | `from`, `to` | `YYYY-MM-DD` calendar dates, both **inclusive**, interpreted in **Europe/Istanbul**. Implemented as the half-open interval `[from 00:00, (to + 1 day) 00:00)` Istanbul time. | §3.6 |
 | Date field | Filter applies to `Review.created_at`. | D-5 resolved |
-| Defaults | If `from`/`to` are omitted: last 30 calendar days, i.e. `from = today − 29 days`, `to = today` (Istanbul). *Proposed interpretation — see Q1.* | §3.6 |
+| Defaults | If both dates are omitted, use today and the previous 29 Istanbul calendar days. For the last-seven-days preset, send today and the previous six days. If only one boundary is supplied, return 422 and identify the missing boundary. | §3.6, §5 |
 | Invalid input | Non-date strings, or `from > to` → 422 with the canonical FastAPI validation body naming the field. | §1 decision table |
-| Unknown district | 200 with the no-data shape (not 404). *Proposed — see Q3.* | — |
+| Unknown district | 200 with zero matching facilities and the no-data review metrics. Echo the selected dates and district. | §5 |
 
 ### Boundary example
 
@@ -66,20 +66,31 @@ All three views (KPI, trend, table) are computed from the **same** selection (TC
 
 (`trend` shortened; it continues to `2026-10-07`. The September review and the Beşiktaş review are excluded.)
 
-### 2.3 Example — no data (TC-25)
+### 2.3 Example — existing facility, zero eligible reviews (TC-25)
+
+Return `average_cleanliness: null`, `review_count: 0` and `critical_alert: false` when no reviews match. The trend still contains one row per selected day with a null average and a zero count. The facility list still contains every matched facility with a null hygiene score and a zero review count. The administrative status ratio remains available when statuses are known. The panel can show a no-data message for review metrics while retaining the facility rows.
+
+`GET /api/v1/admin/metrics/summary?district=Kadıköy&from=2026-10-01&to=2026-10-02`
 
 ```json
 {
-  "filters": { "district": null, "from": "2026-09-20", "to": "2026-10-19", "timezone": "Europe/Istanbul" },
+  "filters": { "district": "Kadıköy", "from": "2026-10-01", "to": "2026-10-02", "timezone": "Europe/Istanbul" },
   "average_cleanliness": null,
   "review_count": 0,
   "critical_alert": false,
   "critical_threshold": 3.5,
-  "active_facility_ratio": null,
-  "trend": [],
-  "facilities": []
+  "active_facility_ratio": { "active": 1, "total": 1 },
+  "trend": [
+    { "date": "2026-10-01", "average_cleanliness": null, "review_count": 0 },
+    { "date": "2026-10-02", "average_cleanliness": null, "review_count": 0 }
+  ],
+  "facilities": [
+    { "facility_id": "00000000-0000-4000-8000-000000000001", "name": "Example facility", "district": "Kadıköy", "status": "ACTIVE", "hygiene_score": null, "review_count": 0 }
+  ]
 }
 ```
+
+If there are no matching facilities, return the same null KPI and daily trend values, `facilities: []` and `active_facility_ratio: null`.
 
 ### 2.4 Why the overall mean is review-weighted
 
@@ -88,6 +99,8 @@ Facility A has reviews 5, 5, 5, 5 and facility B has one review of 1. Review-wei
 ## 3. `GET /api/v1/admin/analytics/export`
 
 Parameters: `format` (`csv` | `json`, required), plus the same `district`, `from`, `to` as the summary. The panel always sends the filters currently shown on screen, so the export describes the same selection as the dashboard.
+
+Export one row per matched facility, including facilities with zero eligible reviews. An empty facility selection yields a header-only CSV or JSON with `count: 0` and `results: []`.
 
 ### 3.1 Columns (fixed, both formats)
 
@@ -137,17 +150,23 @@ facility_id,district,hygiene_score,open_issues_count,last_cleaned_at
 | 422 | Filter validation message next to the date controls. |
 | 5xx / network | Generic error with Retry; filters are kept. |
 
-## 5. Open questions for the backend owner (Özgür)
+## 5. Integration decisions for review
 
-| ID | Question | Panel assumption until answered |
+| ID | Topic | Decision for the initial integration |
 |---|---|---|
-| Q1 | “Last 30 calendar days” = today and the 29 days before (inclusive)? | Yes. |
-| Q2 | Is there a maximum interval length, and may `to` be in the future? | No limit; client only checks format and `from ≤ to`. |
-| Q3 | Unknown district → 200 no-data or 422? | 200 no-data. |
-| Q4 | Where does the district list come from (static 39 Istanbul districts vs. distinct `Toilet.district`)? | Static list of 39 districts in the frontend. |
-| Q5 | Should `trend`/`facilities` be part of the summary response or separate endpoints? | Part of the summary (one request, one selection). |
-| Q6 | Should `active_facility_ratio` count CLOSED and MAINTENANCE in `total`? | `total` = all facilities in district, `active` = ACTIVE. |
-| Q7 | Rounding: does the API round `average_cleanliness`? | API returns full precision; UI shows 2 decimals. |
+| Q1 | Default dates | Today and the previous 29 calendar days in Istanbul. |
+| Q2 | Interval validation | Keep the demo's current calendar format and ordering checks. Decide and test a resource limit before production. |
+| Q3 | Unknown district | 200 with zero matching facilities. |
+| Q4 | District list | Keep the static Istanbul list for the demo. A source-backed list remains open. |
+| Q5 | Summary shape | One response contains `trend` and `facilities`. |
+| Q6 | Administrative ratio | `total` includes all matched facilities. `active` counts `ACTIVE` only. The date filter applies to reviews. |
+| Q7 | Score precision | Preserve API precision and display two decimal places in the UI. |
+
+The sample adapter covers both cases in §2.3: an existing facility without reviews and a district with no matched facilities.
+
+### Backend data sources
+
+Select facility metadata and administrative status in PostgreSQL. Select individual reviews from MongoDB using the selected facility UUIDs and the Istanbul timestamp interval. The review field `toilet_id` maps to `facility_id` in the response. Use these same reviews for the overall score, daily trend, facility score and export. The current facility-level aggregate in PostgreSQL describes all reviews and cannot supply date-filtered results. If the review store is unavailable, return a server error so the panel displays a retry state. Reserve an empty result for a successful query.
 
 ## 6. Not covered / not claimed
 

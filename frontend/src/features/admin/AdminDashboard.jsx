@@ -130,20 +130,17 @@ export default function AdminDashboard({ adapter: injectedAdapter, session: inje
           <div className={status === "loading" ? "admin-content admin-content--stale" : "admin-content"} aria-busy={status === "loading"}>
             {status === "loading" && <LoadingPanel />}
             <KpiCards data={data} />
-            {hasData ? (
-              <div className="admin-grid">
-                <section className="admin-panel" aria-labelledby="trend-title">
-                  <h2 id="trend-title">Hijyen trendi</h2>
-                  <TrendChart trend={data.trend} threshold={data.critical_threshold} />
-                </section>
-                <section className="admin-panel" aria-labelledby="facilities-title">
-                  <h2 id="facilities-title">Tesisler</h2>
-                  <FacilityTable rows={data.facilities} />
-                </section>
-              </div>
-            ) : (
-              <NoDataPanel />
-            )}
+            {!hasData && <NoDataPanel />}
+            <div className="admin-grid">
+              <section className="admin-panel" aria-labelledby="trend-title">
+                <h2 id="trend-title">Hijyen trendi</h2>
+                <TrendChart trend={data.trend} threshold={data.critical_threshold} />
+              </section>
+              <section className="admin-panel" aria-labelledby="facilities-title">
+                <h2 id="facilities-title">Tesisler</h2>
+                <FacilityTable rows={data.facilities} />
+              </section>
+            </div>
             <ExportButtons adapter={adapter} filters={query} disabled={status === "loading"} />
           </div>
         )}
