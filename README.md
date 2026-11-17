@@ -196,3 +196,24 @@ $env:SMARTLOO_TEST_MONGO = "1"
 ```
 
 Verified locally on 13 November 2026 with MongoDB 7.0 and pymongo 4.10.1: 6 cases passed.
+
+## Reviews API (#56)
+
+Review routes need PostgreSQL (migrations up to `004_review_version.sql`) and MongoDB
+(`SMARTLOO_MONGO_URL`, default `mongodb://localhost:27017`; database `SMARTLOO_MONGO_DB`,
+default `smartloo`). Contract and status codes: [docs/contracts/reviews-service.md](docs/contracts/reviews-service.md).
+
+```powershell
+docker run -d --name smartloo-mongo-test -p 27017:27017 mongo:7.0
+docker compose exec -T postgis sh /db/scripts/migrate.sh
+$env:SMARTLOO_TEST_POSTGIS = "1"; $env:SMARTLOO_TEST_MONGO = "1"
+.\.venv\Scripts\python.exe -m pytest tests/test_reviews.py tests/test_reviews_integration.py -q
+```
+
+Every review change writes MongoDB first, then recomputes `average_cleanliness`,
+`review_count` and `review_version` under a PostgreSQL row lock, and only then answers
+success. If the PostgreSQL step fails, the MongoDB change is undone and the API returns 503.
+
+Verified locally on 17 November 2026: 13 isolated and 2 real-stack cases passed,
+including 8 concurrent reviews. Facility details (TC-06/26/35) and summaries (TC-16)
+still need their own routes.

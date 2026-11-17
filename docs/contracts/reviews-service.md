@@ -2,7 +2,7 @@
 
 Owner: Fırat Karadoğan ([#56](https://github.com/akcedia/SmartLoo/issues/56)). For Özgür (route registration, details, analytics) and Emir (AI summary). Data rules come from the [class model](../design/class/accounts-and-data.md) and [er-data-dictionary.md](../analysis/data/er-data-dictionary.md).
 
-**Status.** `read_review_scores()` is implemented and tested on MongoDB ([#50](https://github.com/akcedia/SmartLoo/pull/50)). Everything under "Planned" is the interface I will implement this week; names are proposals until Özgür and Emir confirm them in #56.
+**Status (17 November).** `read_review_scores()` ([#50](https://github.com/akcedia/SmartLoo/pull/50)), the review service and migration 004 are implemented and tested on real PostgreSQL + MongoDB. Facility details, the AI summary route and account deletion are not part of this change.
 
 ## Implemented: scores for analytics
 
@@ -24,17 +24,24 @@ Proposed in [#28](https://github.com/akcedia/SmartLoo/issues/28#issuecomment-640
 - The AI summary cache key includes it, e.g. `summary:{toilet_id}:v{review_version}:{lang}:{contract}:{policy}`. Emir reads the version before calling the provider and again before publishing; if it changed, the result is not published or cached.
 - Old keys expire by their 6-hour TTL; nothing has to delete them, so a Redis outage cannot leave a stale summary marked current.
 
-## Planned: review service (`src/reviews.py`)
+## Review service (`src/reviews.py`)
 
-Pure functions with injected stores; Özgür registers the routes in `src/app.py` and does not reimplement them.
+`ReviewService` is created once as `app.state.reviews`; its router is included in `src/app.py` (Özgür owns that file; the change is two lines). Other modules call the service, they do not reimplement it.
 
-| Function | Route | Results |
+| Method | Route | Results |
 | --- | --- | --- |
-| `list_reviews(toilet_id, limit=20, offset=0)` | `GET /toilets/{id}/reviews` | 200 `{count, results}`; author shown as display name or `"Anonymous"`; 404 unknown toilet |
-| `create_review(principal, toilet_id, cleanliness_score, comment=None, tags=[])` | `POST /toilets/{id}/reviews` | 201 review; 401 guest; 404 toilet missing or `CLOSED`; 409 second review by the same user; 422 score outside 1–5, comment over 1000 characters, unknown tag |
-| `update_review(principal, review_id, changes)` | `PATCH /reviews/{id}` | 200; 403 not the author; 404; 422 |
-| `delete_review(principal, review_id)` | `DELETE /reviews/{id}` | 204; 403 neither author nor ADMIN; 404 |
-| `eligible_reviews_for_summary(toilet_id, limit=50)` | used by Emir | `{review_version, reviews: [{id, cleanliness_score, comment, created_at}]}`, newest first, comments already redacted, no user ids |
+| `list(toilet_id, limit=20, offset=0)` | `GET /toilets/{id}/reviews` | 200 `{count, results}`, newest first; each result `{id, toilet_id, author, cleanliness_score, comment, tags, created_at, updated_at, is_own}`; author is the display name or `"Anonymous"`; 404 unknown toilet |
+| `create(principal, toilet_id, ReviewIn)` | `POST /toilets/{id}/reviews` | 201 review; 401 guest; 404 toilet missing or `CLOSED`; 409 `"You have already reviewed this toilet. Edit your existing review."`; 422 score not an integer 1–5, comment over 1000 characters, unknown tag |
+| `update(principal, review_id, ReviewPatch)` | `PATCH /reviews/{id}` | 200 review; 403 not the author (also for ADMIN); 404; 422 empty or invalid change |
+| `delete(principal, review_id)` | `DELETE /reviews/{id}` | 204; 403 neither author nor ADMIN; 404 |
+| `eligible_for_summary(toilet_id, limit=50)` | for Emir | `{review_version, reviews: [{id, cleanliness_score, comment, created_at}]}`, newest first, only reviews with a comment, emails and phone numbers replaced by `[removed]`, no user ids |
+| `reconcile(toilet_id)` | maintenance | recompute one toilet's aggregates from MongoDB after an interrupted request |
+
+Tags (proposal, FR-03 only names examples): `clean`, `dirty`, `smelly`, `well-lit`, `no-soap`, `no-paper`, `no-water`, `out-of-order`.
+
+**Visibility policy.** There is no hidden or moderated state in this release: a review is either public or deleted (hard delete by its author or an ADMIN, REQ-SEC-05). After account deletion a review stays public as `"Anonymous"` with redacted text (FR-10, implemented separately).
+
+For details and analytics (Özgür): `average_cleanliness`, `review_count` and `review_version` on the PostgreSQL `toilets` row are always current after a successful review response.
 
 Every successful change returns only after PostgreSQL has the new average, count and `review_version` (REQ-DB-05, TC-26, TC-35).
 
