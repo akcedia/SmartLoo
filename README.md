@@ -162,3 +162,37 @@ $env:SMARTLOO_TEST_POSTGIS = "1"
 Verified locally on 13 November 2026: 13 isolated FR-08 cases and 9 PostgreSQL cases passed.
 TC-45 (admin analytics 200), TC-46 (review ownership) and TC-34 (account deletion)
 need the analytics, review and deletion features and still fail.
+
+## Review score reader for analytics (#38, #45)
+
+`src/review_scores.py` reads review scores from the MongoDB `reviews` collection
+for the admin summary and export. Comment text and user identity are not read.
+
+```python
+from datetime import datetime, timezone
+from src.review_scores import ReviewStoreError, read_review_scores, review_collection
+
+rows = read_review_scores(
+    review_collection(),                                   # SMARTLOO_MONGO_URL, default mongodb://localhost:27017
+    ["00000000-0000-4000-8000-000000000001"],              # facility UUIDs
+    datetime(2026, 9, 30, 21, 0, tzinfo=timezone.utc),     # start, inclusive (1 Oct 00:00 Istanbul)
+    datetime(2026, 10, 1, 21, 0, tzinfo=timezone.utc),     # end, exclusive
+)
+# [{"toilet_id": "...", "created_at": datetime(..., tzinfo=UTC), "cleanliness_score": 4}, ...]
+```
+
+No match returns `[]`. Naive datetimes, `start >= end` or a non-UUID facility id raise
+`ValueError`; a MongoDB failure raises `ReviewStoreError`, which the route should map to 503.
+`ensure_review_indexes()` creates the one-review-per-user-and-facility index (TC-32).
+
+MongoDB and `pymongo` are not yet part of the shared `docker-compose.yml` and
+`requirements-test.txt`; adding them is left to the integration step. Local check:
+
+```powershell
+docker run -d --name smartloo-mongo-test -p 27017:27017 mongo:7.0
+.\.venv\Scripts\python.exe -m pip install pymongo==4.10.1
+$env:SMARTLOO_TEST_MONGO = "1"
+.\.venv\Scripts\python.exe -m pytest tests/test_review_scores_mongo.py -q
+```
+
+Verified locally on 13 November 2026 with MongoDB 7.0 and pymongo 4.10.1: 6 cases passed.
