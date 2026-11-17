@@ -1,0 +1,98 @@
+name: Required database suite
+
+on:
+  workflow_call:
+    inputs:
+      suite:
+        required: true
+        type: string
+      candidate_ref:
+        description: Optional candidate commit to merge into the calling revision
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SMARTLOO_TEST_POSTGIS: '1'
+      SMARTLOO_TEST_MONGO: '1'
+      SMARTLOO_MONGO_URL: mongodb://127.0.0.1:27017
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Prepare candidate against the calling revision
+        if: inputs.candidate_ref != ''
+        env:
+          CANDIDATE_REF: ${{ inputs.candidate_ref }}
+        run: |
+          git config user.name 'SmartLoo QA'
+          git config user.email 'qa@smartloo.invalid'
+          git fetch origin "$CANDIDATE_REF"
+          if ! git merge --no-commit --no-ff FETCH_HEAD; then
+            # #51 and #66 add independent settings at the same end of this file.
+            test "$(git diff --name-only --diff-filter=U)" = '.env.example'
+            git show HEAD:.env.example > .env.example
+            git show FETCH_HEAD:.env.example | grep -F 'SMARTLOO_JWT_SECRET=' >> .env.example
+            git add .env.example
+          fi
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Select required suite
+        id: suite
+        env:
+          SUITE: ${{ inputs.suite }}
+        run: |
+          case "$SUITE" in
+            mongo) echo 'service=mongo' >> "$GITHUB_OUTPUT" ;;
+            auth|detail) echo 'service=postgis' >> "$GITHUB_OUTPUT" ;;
+            *) echo "Unknown suite: $SUITE" >&2; exit 1 ;;
+          esac
+      - run: python -m pip install -r requirements-test.txt
+      - name: Install MongoDB test driver
+        if: inputs.suite == 'mongo'
+        run: python -m pip install pymongo==4.10.1
+      - name: Start real database
+        env:
+          SERVICE: ${{ steps.suite.outputs.service }}
+        run: docker compose up -d --wait "$SERVICE"
+      - name: Apply PostgreSQL migrations and seed
+        if: inputs.suite != 'mongo'
+        run: |
+          docker compose exec -T postgis sh /db/scripts/migrate.sh
+          docker compose exec -T postgis psql -v ON_ERROR_STOP=1 -f /db/seeds/fixtures.sql
+      - name: Run required real database tests
+        env:
+          SUITE: ${{ inputs.suite }}
+        run: |
+          case "$SUITE" in
+            mongo) python -m pytest tests/test_review_scores_mongo.py -q --junitxml=required-results.xml ;;
+            auth) python -m pytest tests/test_auth_postgres.py tests/test_auth_password_bytes.py -q --junitxml=required-results.xml ;;
+            detail) python -m pytest tests/test_toilet_detail.py -q --junitxml=required-results.xml ;;
+          esac
+      - name: Reject skipped or incomplete suite
+        if: always()
+        env:
+          SUITE: ${{ inputs.suite }}
+        run: |
+          case "$SUITE" in
+            mongo|detail) minimum=6 ;;
+            auth) minimum=18 ;;
+            *) exit 1 ;;
+          esac
+          python scripts/check_required_junit.py required-results.xml --minimum "$minimum"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: required-${{ inputs.suite }}
+          path: required-results.xml
+          if-no-files-found: error
+      - name: Stop database
+        if: always()
+        run: docker compose down -v

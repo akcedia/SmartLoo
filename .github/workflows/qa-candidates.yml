@@ -1,0 +1,26 @@
+name: QA candidate validation
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  candidates:
+    if: github.head_ref == 'selim-aksu/qa-60-db-gates'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - suite: mongo
+            revision: 2be3e8215750e2a8fcb380308f205107b21e5e2f
+          - suite: auth
+            revision: 4ebd1472d54ccadc199c8586f9cfaf973e81414f
+          - suite: detail
+            revision: f2aabff43edde3f0f247c9cd9fbda0c5be994281
+    uses: ./.github/workflows/required-db.yml
+    with:
+      suite: ${{ matrix.suite }}
+      candidate_ref: ${{ matrix.revision }}

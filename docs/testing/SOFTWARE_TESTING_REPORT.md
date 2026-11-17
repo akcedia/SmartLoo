@@ -2,7 +2,7 @@
 
 Draft for #60. Internal review target: 20 November at 18:00 (Europe/Istanbul). Course deadline: 22 November at 23:59.
 
-Baseline: [main at 24611dd](https://github.com/akcedia/SmartLoo/tree/24611ddee81f4c93c8e6ce2b365a0dc96fb9debb). For each run, record commit, OS, tool versions, seed, commands, and an evidence link. Record Passed, Failed, Skipped, or Not run per case. Add the reason for failures or skips and link the issue and retest. Attribute existing contributor results to the original commit.
+Current QA baseline: [main at 87994f9](https://github.com/akcedia/SmartLoo/tree/87994f967d430f1d8394465cd205d4b8e772b580). Historical runs retain their original revisions below. For each run, record commit, OS, tool versions, seed, commands, and an evidence link. Record Passed, Failed, Skipped, or Not run per case. Add the reason for failures or skips and link the issue and retest. Attribute existing contributor results to the original commit.
 
 | Area | Evidence to collect |
 | --- | --- |
@@ -21,9 +21,24 @@ Baseline: [main at 24611dd](https://github.com/akcedia/SmartLoo/tree/24611ddee81
 | Main `24611dd` | Windows, Node 26.13.1, npm 11.20.0 | `npm ci`, `npm test`, `npm run build` in frontend | 38 tests passed and build passed. |
 | Map PR #54 head `ad91e37` | Windows, Node 26.13.1, npm 11.20.0 | `npm ci --no-audit --no-fund`, `npm test`, `npm run build` in frontend | 37 tests passed and build passed. Tests were the admin suite on the PR head. Live map validation is pending. |
 | QA setup PR #66 `f02bdfa` | GitHub Actions, Linux | Compose health for PostGIS, MongoDB and Redis, PostGIS migration and SQL checks, isolated and real PostGIS search, frontend test/build | [Required CI jobs passed](https://github.com/akcedia/SmartLoo/actions/runs/43927503558). Full requirements results are collected by the non-blocking baseline job. |
-
 | Main `24611dd` | Windows, Python 3.12.10 | `python -m pip check`, isolated nearby pytest (`tc_01 or tc_02 or tc_03 or tc_11 or tc_12 or tc_13 or tc_14`), local Uvicorn HTTP smoke | No broken dependencies. 10 passed, 42 deselected. OpenAPI HTTP 200, invalid nearby latitude HTTP 422. OpenAPI emitted duplicate operation ID warnings for pending review routes. |
 | PR #65 `187d1b6` | Windows, Node 26.13.1 | `npm test`, `npm run build -- --outDir ../../qa65-build` | [125 tests passed, including 25 accessibility tests. Build passed.](https://github.com/akcedia/SmartLoo/pull/65#issuecomment-6926576126) Manual browser and scanner results pending. |
+
+## 17 November handoff evidence
+
+[Özgür’s independent verification record](https://github.com/akcedia/SmartLoo/issues/60#issuecomment-6946980623) supplies the following results. These runs were performed by Özgür at the revisions listed.
+
+| Revision | Verification | Result and scope |
+| --- | --- | --- |
+| #54 `71e8ce8`, merged as `5781eb4` | Real FastAPI/PostGIS and browser, 393 × 852 mobile view | Open facilities 2 → free 1 → open 2; stale card cleared; paid 1; full filter reset 3. Geolocation permission/denial, manual center, empty result and recovery after connection failure passed. 38 frontend tests and build passed. Rapid request races remain pending. |
+| #66 `53b064d`, merged as `87994f9` | Separate clean setup on a second computer | All three Compose services healthy. PostGIS ALL CHECKS PASSED, MongoDB ok: 1 and Redis PONG. |
+| #51 `4ebd147` | Real PostgreSQL auth and password byte boundaries | 18 passed, 0 skipped. |
+| #50 `2be3e82` | Real MongoDB 7.0, PyMongo 4.10.1 | 6 passed, 0 skipped. |
+| #70 `f2aabff` | Facility detail API | 6 detail tests, 5 real nearby tests and 10 isolated search tests. Detail 200/404/422 used real PostGIS; the 503 scenario injected a database failure. |
+
+The new required suite gates run auth, MongoDB review reads and facility details independently. They reject missing reports, skipped tests, failures/errors and fewer than the expected passing cases (18 auth, 6 MongoDB, 6 detail). Each publishes JUnit evidence. Existing SQL, nearby, frontend and full acceptance baseline jobs continue to run.
+
+Performance at the specified load, full integrated demo, rapid request races, manual browser accessibility and SonarQube results are pending. Final PDF review follows completion of this week's report evidence.
 
 ## Functional traceability
 
@@ -52,8 +67,8 @@ Sources: [requirements](../REQUIREMENTS.MD) and [test catalog](../../tests/requi
 | TC-19 | FR-07 | Idempotent CSV and JSON import | test_tc_19 | Not run | — |
 | TC-20 | FR-07 | Invalid import is atomic | test_tc_20 | Not run | — |
 | TC-21 | FR-09 | Initial map HTML and manual marker details | test_tc_21 | Not run | — |
-| TC-22 | FR-09 | Map without geolocation | Manual UI | Not run | — |
-| TC-23 | FR-09 | Filter markers remain consistent | Manual UI | Not run | — |
+| TC-22 | FR-09 | Map without geolocation | Manual UI | Passed | Özgür, #54 `71e8ce8`, 17 November handoff above |
+| TC-23 | FR-09 | Filter markers remain consistent | Manual UI | Passed | Özgür, #54 `71e8ce8`, 17 November handoff above |
 | TC-24 | FR-07 | JSON report export | test_tc_24 | Not run | — |
 | TC-25 | FR-06 | Dashboard has no data | test_tc_25 | Not run | — |
 | TC-26 | FR-03 | Edit and delete own review | test_tc_26 | Not run | — |
