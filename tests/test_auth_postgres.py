@@ -114,6 +114,15 @@ def test_guards_return_401_then_403(client, email):
     assert client.get(admin_route, headers=bearer(token)).status_code == 501
 
 
+def test_72_byte_limit_without_truncation(client, email):
+    at_limit = "a1" + "ş" * 35  # 72 bytes in UTF-8
+    response = client.post(f"{AUTH}/register", json={"email": email, "password": at_limit,
+                                                     "display_name": "Test User"})
+    assert response.status_code == 201, response.text
+    assert login(client, email, at_limit).status_code == 200
+    assert login(client, email, at_limit + "x").status_code == 401
+
+
 def test_token_of_deleted_account_is_rejected(client, email):
     register(client, email)
     token = login(client, email).json()["access_token"]
