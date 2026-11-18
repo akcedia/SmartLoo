@@ -1,14 +1,19 @@
-// Slot for the discovery map. Furkan's SearchPage (#54) replaces this
-// placeholder once merged; it can read the shared session with useSession().
+// "/" — discovery map (Furkan's SearchPage, #54/#57) inside the shared shell.
+// Loaded on demand: Leaflet needs a browser window, and the sign-in and admin
+// pages should not download the map. The shared header already links to the
+// admin panel, so SearchPage gets no onSwitchToAdmin.
+
+import { lazy, Suspense } from "react";
+
+const SearchPage = lazy(() => import("../features/map/SearchPage.jsx"));
 
 export default function HomeRoute() {
   return (
-    <main className="app-page app-narrow">
-      <h1>Harita</h1>
-      <p className="app-muted">
-        Harita ve arama ekranı (#54) bu rotaya bağlanacak. Ortak oturum ve HTTP istemcisi hazır:
-        bileşenler <code>useSession()</code> ile oturuma ve <code>api.request()</code> ile backend'e erişebilir.
-      </p>
+    <main className="app-home">
+      <h1 className="app-sr">Harita</h1>
+      <Suspense fallback={<p className="app-page app-muted" role="status">Harita yükleniyor…</p>}>
+        <SearchPage />
+      </Suspense>
     </main>
   );
 }
