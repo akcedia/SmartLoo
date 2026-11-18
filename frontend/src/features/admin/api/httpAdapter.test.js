@@ -48,6 +48,14 @@ describe("live admin adapter", () => {
     }
   });
 
+  it("names a download without Content-Disposition after the selection", async () => {
+    const { adapter } = adapterWith(() => Response.json({ count: 0, results: [] }));
+    const file = await adapter.fetchExport(filters, "json");
+    expect(file.filename).toBe("smartloo-hygiene-Kadıköy-2026-11-01_2026-11-07.json");
+    const all = await adapter.fetchExport({ district: null, from: "2026-11-01", to: "2026-11-07" }, "json");
+    expect(all.filename).toBe("smartloo-hygiene-all-2026-11-01_2026-11-07.json");
+  });
+
   it("reads plain and RFC 5987 filenames", () => {
     expect(filenameFrom('attachment; filename="a.csv"', "x")).toBe("a.csv");
     expect(filenameFrom("attachment; filename*=UTF-8''Kad%C4%B1k%C3%B6y.json", "x")).toBe("Kadıköy.json");

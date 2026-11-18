@@ -3,6 +3,7 @@
 
 import { ApiError } from "../../../shared/http/apiClient.js";
 import { CRITICAL_THRESHOLD, EXPORT_PATH, SUMMARY_PATH } from "./contract.js";
+import { exportFilename } from "./metrics.js";
 
 const isNullableNumber = (v) => v === null || (typeof v === "number" && Number.isFinite(v));
 
@@ -70,7 +71,8 @@ export function createHttpAdapter({ client }) {
     async fetchExport(filters, format, { signal } = {}) {
       const res = await client.request(EXPORT_PATH, { query: queryParams(filters, format), signal, raw: true });
       return {
-        filename: filenameFrom(res.headers.get("Content-Disposition"), `smartloo-hygiene.${format}`),
+        // Without a Content-Disposition (e.g. JSON today), name the file after the selection like the CSV.
+        filename: filenameFrom(res.headers.get("Content-Disposition"), exportFilename(filters, format)),
         mimeType: res.headers.get("Content-Type") ?? "application/octet-stream",
         body: await res.blob(),
       };
