@@ -82,7 +82,7 @@ function Routes() {
   }, [path]);
 
   return (
-    <div className="app">
+    <div className={route === "home" ? "app app--full" : "app"}>
       <a className="app-skip" href="#main">İçeriğe geç</a>
       <Header path={path} />
       <Notice />
