@@ -144,4 +144,10 @@ describe("semantics", () => {
     expect(html).toContain("<th scope=\"row\">2026-10-02</th><td>4.00</td><td>1</td>");
     expect(html).toContain("2.00 (kritik)");
   });
+
+  it("the hidden trend table sits inside a 1px wrapper so it cannot widen the page", () => {
+    const html = renderToStaticMarkup(<TrendChart trend={SUMMARY_TC09.trend} threshold={3.5} />);
+    expect(html).toMatch(/<div class="admin-sr"><table>/);
+    expect(html).not.toMatch(/<table class="admin-sr"/);
+  });
 });

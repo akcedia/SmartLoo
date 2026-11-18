@@ -256,12 +256,18 @@ body { margin: 0; }
   .admin-spinner, .admin-skeleton span { animation: none; }
 }
 
+/* Visually hidden, still read by assistive technology. Wrap tables in a div with
+   this class: a table ignores width:1px and would widen the page (#65 QA, 360 px). */
 .admin-sr {
   position: absolute;
   width: 1px;
   height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
   overflow: hidden;
   clip: rect(0 0 0 0);
+  clip-path: inset(50%);
   white-space: nowrap;
 }
 
