@@ -35,12 +35,22 @@ export function presetRange(preset, today = todayInIstanbul()) {
   return { from: addDays(today, -(days - 1)), to: today };
 }
 
+// Proposed with the backend owner in #58 (contract Q2): at most 366 inclusive
+// calendar days per query. The server stays authoritative and answers 422.
+export const MAX_RANGE_DAYS = 366;
+
+export function rangeDays(from, to) {
+  return Math.round((new Date(`${to}T00:00:00Z`) - new Date(`${from}T00:00:00Z`)) / DAY_MS) + 1;
+}
+
 export function validateRange({ from, to }) {
   const errors = {};
   if (!isValidDate(from)) errors.from = "Geçerli bir başlangıç tarihi girin (YYYY-AA-GG).";
   if (!isValidDate(to)) errors.to = "Geçerli bir bitiş tarihi girin (YYYY-AA-GG).";
   if (!errors.from && !errors.to && from > to) {
     errors.to = "Bitiş tarihi başlangıçtan önce olamaz.";
+  } else if (!errors.from && !errors.to && rangeDays(from, to) > MAX_RANGE_DAYS) {
+    errors.to = `En fazla ${MAX_RANGE_DAYS} günlük bir aralık seçilebilir.`;
   }
   return errors;
 }
