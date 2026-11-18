@@ -43,6 +43,25 @@ body { margin: 0; }
 }
 .app-skip:focus { top: 8px; }
 
+/* Full-height map page: header on top, map fills the rest without page scroll.
+   SearchPage sets an inline 100vh height, so it is overridden to fill its slot. */
+.app--full { display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
+.app--full > #main { flex: 1; min-height: 0; }
+.app-home { height: 100%; }
+.app-home > div { height: 100% !important; }
+
+.app-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* Top bar */
 .app-topbar {
   position: sticky;
