@@ -66,3 +66,14 @@ after inspecting the dedicated CI job and its actual results.
 Sources checked:
 - [redis-py package and Python requirements](https://pypi.org/project/redis/8.1.0/)
 - [Official redis-py async client lifecycle](https://redis.readthedocs.io/en/stable/examples/asyncio_examples.html)
+
+## Verified CI result
+
+[Run 44320415440](https://github.com/akcedia/SmartLoo/actions/runs/44320415440),
+code head `ecb7557c`, tested PR merge revision `b13c4c4b`:
+**8 passed, 0 failures, 0 errors, 0 skipped** (suite 2.307 s; runner 2.333 s).
+Server Redis **7.4.12**, redis-py **8.1.0**, Python **3.11.18**. The same job
+passed the 101 independent AI tests (10.460 s). Existing review checks also
+passed at run 44320415001. The JSON report was uploaded as an Actions artifact;
+a source-linked copy is in ../evidence/ai-redis-2026-11-18.json.
+This is real Redis component evidence; the provider/coordinator remain synthetic.

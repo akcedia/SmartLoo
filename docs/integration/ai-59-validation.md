@@ -28,9 +28,11 @@ from the actual 10-second timer. Redis adapter calls are tested with an injected
 client double. Language, residual privacy, grounding and one-sentence policies
 are explicit injected test policies; general production policies remain pending.
 
-No live OpenAI, Redis, MongoDB/PostgreSQL coordination or HTTP/browser test ran.
+No live OpenAI, real MongoDB/PostgreSQL coordination or HTTP/browser test ran.
+Real Redis component verification now passed separately; see below.
 The existing full pytest acceptance catalog did not run in this environment.
-No shared route registration, migration, Compose, CI or dependency file changed.
+No shared route, migration, Compose, existing ci.yml or shared dependency file
+changed. A new isolated AI Redis workflow is proposed separately.
 See ai-59-handoff.md and review-contract-56-review.md for remaining integration
 decisions and ownership. This first delivery must remain a draft; it does not
 close #59, #28 or #39.
@@ -48,3 +50,10 @@ Step 2 now wires SummaryService through a mandatory guarded publication callback
 for new results and cache hits. Tests exercise the actual consumer and adapter
 with a conforming in-memory coordinator. The production writer/coordinator and
 real stores remain pending; no joint TC-16/26/35 acceptance is claimed.
+
+18 November real Redis evidence: eight checks passed with zero failures/errors/
+skips on Redis 7.4.12, redis-py 8.1.0 and Python 3.11.18. The same dedicated job
+passed the 101 AI unit tests. See ai-real-redis.md and source-linked report
+../evidence/ai-redis-2026-11-18.json. This verifies the Redis adapter/component,
+not real multi-store coordination or live OpenAI. The new job is not silently
+skipped and missing setup fails; branch-protection requirements need team review.

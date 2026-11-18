@@ -31,14 +31,16 @@ failure is propagated for the route owner to map to 404/503; statistics are neve
 invented. Logs contain correlation IDs and error types, not exception messages.
 
 `RedisSummaryCache` accepts an injected `redis.asyncio`-compatible client and
-uses JSON and `SET ... EX 21600`. The client/package is not yet installed or
-connected. The test double proves the call contract only.
+uses JSON and `SET ... EX 21600`. It is now verified against real Redis in an
+isolated CI job (18 November). Runtime application wiring remains pending;
+see ai-real-redis.md for exact component evidence and its synthetic boundaries.
 
 ## Redis settings to confirm with Yusuf
 
 [Yusuf's request](https://github.com/akcedia/SmartLoo/issues/60#issuecomment-6926607345)
-refers to [draft PR #66](https://github.com/akcedia/SmartLoo/pull/66), head
-`53b064d48ed4ddbc5d2c144443c1a12390efa9fa`, not merged main.
+refers to [PR #66](https://github.com/akcedia/SmartLoo/pull/66), head
+`53b064d48ed4ddbc5d2c144443c1a12390efa9fa`. It was merged on 17 November;
+MongoDB/Redis services and port settings now exist on main.
 
 | Runner | Redis address from #66 |
 |---|---|
@@ -124,23 +126,24 @@ synthetic fixture strings and must never be used for arbitrary real comments.
 |---|---|---|
 | TC-08 | evidence cap, strict schema, 400/401 boundary | production language/grounding; HTTP; live-provider smoke |
 | TC-15 | insufficient input, provider failure, actual async timeout | HTTP 200, independent nearby regression and browser |
-| TC-16 | hit, expiry, revision changes, races, cache failure | real Redis, real Mongo/SQL mutation consistency |
+| TC-16 | unit/model behavior plus eight real Redis component checks | real Mongo/SQL writer coordination and full HTTP acceptance |
 | TC-17 | hard filters, max 3, ranking proposal and rejected/error reason fallback | live discovery/auth/HTTP and production grounded-reason policy |
 | TC-28 | known/pattern PII redaction, policy-rejection fallback and safe logs | production residual-PII policy, separated provider instructions and grounding |
 
 Related M scenarios are partial service-level evidence; no TC is declared passed.
 No full existing pytest suite ran: this execution environment lacks its packages.
-No Docker or redis-server executable was found. User confirmed Docker/Redis and
-OpenAI access are not yet available; continue offline. No live OpenAI key was
-checked or used. No HTTP/UI acceptance, real Redis/Mongo integration, GeoJSON adapter,
-live recommendation integration, external import or independent review is complete.
+No local Docker/redis-server executable was found. Real Redis checks instead
+passed on an isolated CI server. No live OpenAI key was checked or used. Real
+Mongo/PostgreSQL coordination, HTTP/UI acceptance, live recommendation integration
+and external import remain pending. GeoJSON normalization is separately in #69;
+its identity/status/persistence acceptance is still open.
 
 Next: confirm ports/settings and production privacy/language/grounding policies,
 wire the implemented OpenAI adapter and real repository/cache/routes, then execute TC-08/15/16/17/28
 with Yusuf and Furkan. GeoJSON normalization is Thursday's separate slice;
 source identity/alias decisions remain shared with Fırat. Shared route, migration,
-Compose and dependency files have not been changed. No GitHub write, message,
-push, PR, merge or issue closure was performed by this local work.
+Compose and shared dependency files have not been changed. Current work is in
+PR #68 and external normalization in #69; no merge or issue closure was performed.
 
 ## Follow-up after Fırat’s 17 November mention
 
@@ -187,3 +190,13 @@ publish_current callback, CoordinatedReviewRepository and setup. Fourteen new
 actual-consumer/model-port tests bring the local suite to 101. Fırat's real
 coordinator, durable writer/recovery and store integration remain pending. No
 new approval/comment was sent on behalf of the team.
+
+## 18 November — real Redis component check completed
+
+The new isolated .github/workflows/ai-redis.yml passed 101 AI unit tests plus
+8 real Redis checks (zero failures/errors/skips), with no OpenAI credential or
+live review-store access. Exact versions, commit and artifact links are in
+ai-real-redis.md and ../evidence/ai-redis-2026-11-18.json. Runtime URL/client
+agreement and joint Mongo/PostgreSQL/Redis writer+AI acceptance are still open.
+The existing shared CI/Compose/dependency/environment files were not modified;
+Yusuf should review the new isolated job and test-only dependency selection.

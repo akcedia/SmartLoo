@@ -1,0 +1,27 @@
+{
+  "suite": "ai-real-redis",
+  "commit": "b13c4c4bfdb15c69d47abf5e673d514809bdf333",
+  "run_id": "44320415440",
+  "python": "3.11.18",
+  "redis_py": "8.1.0",
+  "redis_server": "7.4.12",
+  "expected": 8,
+  "tests": 8,
+  "passed": 8,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "seconds": 2.333,
+  "success": true,
+  "scope": "real Redis; synthetic provider and in-memory review coordinator; no live OpenAI/DB acceptance",
+  "head_commit": "ecb7557c090db4f43873d31ee8d0bea68f9f94c1",
+  "workflow_url": "https://github.com/akcedia/SmartLoo/actions/runs/44320415440",
+  "job_id": 134857550261,
+  "unit_tests": {
+    "passed": 101,
+    "failed": 0,
+    "skipped": 0,
+    "seconds": 10.46
+  },
+  "existing_checks_url": "https://github.com/akcedia/SmartLoo/actions/runs/44320415001"
+}
