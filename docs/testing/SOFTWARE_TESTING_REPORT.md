@@ -64,6 +64,8 @@ The permanent workflow discovers feature suites in the checked-out PR merge revi
 - #65 `187d1b6`: keyboard focus checks passed. axe found no automatic violations in sign-in, registration and the sample dashboard. Dashboard contrast requires manual review and its hidden trend table causes 405 px document width at 360 px. Full NFR-T05 acceptance remains pending.
 - Shared dependencies now include PyMongo 4.10.1, redis-py 8.1.0 and Windows tzdata 2026.6. Local connection and timeout choices are recorded in the QA runtime contract for the route owners.
 
+Development-tool security update: Vite 8.3.8, Vitest 5.1.1 and React plugin 6.3.0 remove all 5 originally audited package findings. npm audit now reports zero vulnerabilities. Node 24 is used in CI. The QA baseline, #73 and #65 passed 38, 46 and 125 tests respectively with the updated tools, and their builds passed.
+
 Full demo, load performance, remaining security/privacy checks, NVDA/Lighthouse and SonarQube evidence remain open. Integration findings have owners and source links in the QA record.
 
 ## Functional traceability

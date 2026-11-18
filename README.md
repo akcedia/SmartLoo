@@ -10,7 +10,7 @@ The nearby search API uses PostGIS. The admin panel uses labelled sample data. T
 - `docs/DESIGN.MD`: architecture and decisions.
 
 ## Local setup
-Use Python 3.11, Node 20 and Docker Compose. From repository root:
+Use Python 3.11, Node 24 and Docker Compose. From repository root:
 ```sh
 cp .env.example .env
 docker compose up -d --wait

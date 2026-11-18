@@ -14,3 +14,5 @@ The shared Python dependency file includes PyMongo 4.10.1, redis-py 8.1.0 and tz
 | SMARTLOO_AI_TEST_REDIS_URL | Explicit isolated component test URL, redis://127.0.0.1:6379/15. The component runner requires this setting. Production URLs and credentials stay outside committed evidence. |
 
 The real Redis suite in #68 covers cache operations using a synthetic provider and in-memory review coordinator. The shared HTTP routes, durable PostgreSQL/MongoDB writer coordination and live OpenAI validation are still integration work. The guarded publication and repair state must be preserved when wiring the clients.
+
+Frontend QA uses Node 24 in CI. Vite 8.3.8, Vitest 5.1.1 and the React plugin 6.3.0 replace development-tool versions flagged by npm audit. Feature PRs need the shared package/lock updates when rebased.
