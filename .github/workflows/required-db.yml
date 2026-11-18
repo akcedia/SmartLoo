@@ -36,9 +36,6 @@ jobs:
             *) echo "Unknown suite: $SUITE" >&2; exit 1 ;;
           esac
       - run: python -m pip install -r requirements-test.txt
-      - name: Install MongoDB test driver
-        if: inputs.suite == 'mongo'
-        run: python -m pip install pymongo==4.10.1
       - name: Start real database
         env:
           SERVICE: ${{ steps.suite.outputs.service }}

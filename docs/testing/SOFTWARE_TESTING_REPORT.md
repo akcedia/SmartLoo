@@ -54,6 +54,18 @@ Each candidate job passed the JUnit gate and uploaded its report. Existing SQL, 
 
 The permanent workflow discovers feature suites in the checked-out PR merge revision. A suite that existed in the base revision also remains required if its file is removed. This allows #50/#51/#70 to merge independently; their dedicated jobs activate once those test files are present. Expected modules missing within an active suite, missing dependencies, skipped cases or too few passing cases fail that job. The full acceptance catalog remains an independently published non-blocking baseline.
 
+## 18 November QA update
+
+[Independent QA record](QA-2026-11-18.md) contains the executed commands, scopes, browser measurements and defects.
+
+- #73 `f61de4f`: 46 frontend tests and build passed. Shared session and review ownership contract defects block the logged-in comment demo.
+- #68 `d9fa94df`: 117 independent AI tests passed locally. The real Redis component CI log confirms 8 passed with zero failures/errors/skips. A local missing-server negative control exited 1 with 8 explicit errors and zero skips.
+- #67 `8c5d58f`: 13 isolated review-service tests passed. An authenticated author read still returns is_own=false.
+- #65 `187d1b6`: keyboard focus checks passed. axe found no automatic violations in sign-in, registration and the sample dashboard. Dashboard contrast requires manual review and its hidden trend table causes 405 px document width at 360 px. Full NFR-T05 acceptance remains pending.
+- Shared dependencies now include PyMongo 4.10.1, redis-py 8.1.0 and Windows tzdata 2026.6. Local connection and timeout choices are recorded in the QA runtime contract for the route owners.
+
+Full demo, load performance, remaining security/privacy checks, NVDA/Lighthouse and SonarQube evidence remain open. Integration findings have owners and source links in the QA record.
+
 ## Functional traceability
 
 Sources: [requirements](../REQUIREMENTS.MD) and [test catalog](../../tests/requirements_cases.json).
