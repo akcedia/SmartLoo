@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { EXPORT_COLUMNS, isCritical } from "./contract.js";
-import { presetRange, validateRange } from "./dateRange.js";
+import { MAX_RANGE_DAYS, presetRange, rangeDays, validateRange } from "./dateRange.js";
 import { buildExportRows, buildSummary, exportFilename, toCsv } from "./metrics.js";
 import { createSampleAdapter, createSampleDataset } from "./sampleAdapter.js";
 import { buildQuery } from "./httpAdapter.js";
@@ -101,6 +101,16 @@ describe("date filter", () => {
     expect(validateRange({ from: "2026-10-01", to: "2026-10-07" })).toEqual({});
     expect(validateRange({ from: "2026-02-30", to: "2026-10-07" })).toHaveProperty("from");
     expect(validateRange({ from: "2026-10-08", to: "2026-10-07" })).toHaveProperty("to");
+  });
+
+  it("allows at most 366 inclusive days (contract Q2 proposal)", () => {
+    expect(MAX_RANGE_DAYS).toBe(366);
+    expect(rangeDays("2026-10-01", "2026-10-01")).toBe(1);
+    expect(rangeDays("2024-01-01", "2024-12-31")).toBe(366);
+    expect(validateRange({ from: "2024-01-01", to: "2024-12-31" })).toEqual({});
+    expect(validateRange({ from: "2024-01-01", to: "2025-01-01" }).to).toMatch(/366/);
+    // Presets stay well inside the limit.
+    expect(validateRange(presetRange("last30", "2026-11-18"))).toEqual({});
   });
 });
 

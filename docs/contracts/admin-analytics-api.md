@@ -16,7 +16,7 @@ Covers FR-06 and FR-07 export. Baseline: [REQUIREMENTS.MD §3.6, §3.7, §8](../
 | `from`, `to` | `YYYY-MM-DD` calendar dates, both **inclusive**, interpreted in **Europe/Istanbul**. Implemented as the half-open interval `[from 00:00, (to + 1 day) 00:00)` Istanbul time. | §3.6 |
 | Date field | Filter applies to `Review.created_at`. | D-5 resolved |
 | Defaults | If both dates are omitted, use today and the previous 29 Istanbul calendar days. For the last-seven-days preset, send today and the previous six days. If only one boundary is supplied, return 422 and identify the missing boundary. | §3.6, §5 |
-| Invalid input | Non-date strings, or `from > to` → 422 with the canonical FastAPI validation body naming the field. | §1 decision table |
+| Invalid input | Non-date strings, `from > to`, or more than 366 inclusive calendar days → 422 with the canonical FastAPI validation body naming the field. | §1 decision table, Q2 |
 | Unknown district | 200 with zero matching facilities and the no-data review metrics. Echo the selected dates and district. | §5 |
 
 ### Boundary example
@@ -155,7 +155,7 @@ facility_id,district,hygiene_score,open_issues_count,last_cleaned_at
 | ID | Topic | Decision for the initial integration |
 |---|---|---|
 | Q1 | Default dates | Today and the previous 29 calendar days in Istanbul. |
-| Q2 | Interval validation | Keep the demo's current calendar format and ordering checks. Decide and test a resource limit before production. |
+| Q2 | Interval validation | At most 366 inclusive calendar days per query (proposed by the backend owner in #58, accepted for the panel). A longer interval returns 422 naming `to`. The panel checks the same limit before sending; server enforcement is pending in #71. |
 | Q3 | Unknown district | 200 with zero matching facilities. |
 | Q4 | District list | Keep the static Istanbul list for the demo. A source-backed list remains open. |
 | Q5 | Summary shape | One response contains `trend` and `facilities`. |
