@@ -108,6 +108,9 @@ jobs:
           -k "tc_01 or tc_02 or tc_03 or tc_11 or tc_12 or tc_13 or tc_14"
           -q
 
+      - name: Run nearby input and failure safety checks
+        run: python -m pytest tests/test_nearby_safety.py -q
+
       - name: Start PostGIS
         run: docker compose up -d --wait postgis
 

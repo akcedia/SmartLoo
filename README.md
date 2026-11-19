@@ -73,10 +73,21 @@ Fixtures are synthetic test facilities, not real public toilet data.
 The backend reads SMARTLOO_DB_HOST, SMARTLOO_DB_PORT,
 SMARTLOO_DB_NAME, SMARTLOO_DB_USER and SMARTLOO_DB_PASSWORD
 from the process environment. Defaults match the local Docker setup:
-localhost:5432, database/user smartloo, password smartloo-dev-only.
+127.0.0.1:5432, database/user smartloo, password smartloo-dev-only.
 
 These defaults are for local development only.
 The backend does not automatically load a .env file.
+
+Use the IPv4 loopback address for the host process because Compose publishes
+the services on 127.0.0.1. On Windows, localhost can resolve to ::1 first and
+delay the connection before falling back. To override an existing shell setting:
+
+```powershell
+$env:SMARTLOO_DB_HOST = "127.0.0.1"
+```
+
+The nearby store uses this default. Other feature stores must use the same
+process setting when integrated; this change does not update unmerged auth code.
 
 ### Run the API
 

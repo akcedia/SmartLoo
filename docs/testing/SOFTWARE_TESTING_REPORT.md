@@ -68,75 +68,100 @@ Development-tool security update: Vite 8.3.8, Vitest 5.1.1 and React plugin 6.3.
 
 Full demo, load performance, remaining security/privacy checks, NVDA/Lighthouse and SonarQube evidence remain open. Integration findings have owners and source links in the QA record.
 
+## 19 November independent work
+
+[Daily record](QA-2026-11-19.md) documents the exact revisions, tools, commands and limitations. #65 edc8e020: 128 frontend tests and build passed; 360/768/1920 px sample-dashboard retest has no horizontal overflow. Keyboard regression passed. axe registration has 15 passing rules and no violations/incomplete; dashboard has 20 passing rules, no violations and a retained contrast incomplete. SVG label contrast was independently calculated as 5.958:1. The mobile defect is fixed; complete NFR-T05 remains open.
+
+New nearby safety suite: 29 passed. With existing isolated nearby contract cases: 39 passed, 0 failed/skipped, 42 deselected. Invalid inputs do not reach the store; connection errors hide synthetic secret details. IPv4 loopback defaults and documented process settings match Compose. Real Windows latency was not measured. Current-baseline coverage: 28/31 lines, 2/2 branches, combined 90.91%, coverage 7.10.7. This excludes SQL/frontend/real-DB IO and unmerged features; it is not final application coverage acceptance.
+
+The existing [18 November catalog log](https://github.com/akcedia/SmartLoo/actions/runs/44359417171/job/134996345479) was inspected: 52 parametrized requirements instances, 10 passed / 42 failed / 0 skipped, representing 7 passing and 39 failing automated TC IDs. Five additional PostGIS tests skipped only in that reporting job; the separate PostGIS gate runs them. The functional matrix now records these failed baseline cases instead of Not run. Separate feature-candidate evidence does not turn this unintegrated baseline into a pass. No blocked full-demo, SonarQube or live-DB performance work was started on 19 November.
+
+The PDF accompanying this report is a review draft with pending acceptance visible. Final integrated evidence and Özgür's review remain required before submission.
+
 ## Functional traceability
 
 Sources: [requirements](../REQUIREMENTS.MD) and [test catalog](../../tests/requirements_cases.json).
 
 | Case | Requirement | Scenario | Verification | Result | Evidence |
 | --- | --- | --- | --- | --- | --- |
-| TC-01 | FR-01 | Nearby open toilets | test_tc_01 | Passed | Main `24611dd`, isolated nearby pytest (above) |
-| TC-02 | FR-02 | Accessibility filter | test_tc_02 | Passed | Main `24611dd`, isolated nearby pytest (above) |
-| TC-03 | FR-02 | Baby changing filter | test_tc_03 | Passed | Main `24611dd`, isolated nearby pytest (above) |
-| TC-04 | FR-08 | Successful login | test_tc_04 | Not run | — |
-| TC-05 | FR-03 | Reject guest review | test_tc_05 | Not run | — |
-| TC-06 | FR-03 | Create review and aggregate | test_tc_06 | Not run | — |
-| TC-07 | FR-05 | Suggest location | test_tc_07 | Not run | — |
-| TC-08 | FR-04 | Structured Turkish AI summary | test_tc_08 | Not run | — |
-| TC-09 | FR-06 | Filtered dashboard | test_tc_09 | Not run | — |
-| TC-10 | FR-07 | CSV report export | test_tc_10 | Not run | — |
-| TC-11 | FR-01 | Reject invalid search | test_tc_11 | Passed | Main `24611dd`, isolated nearby pytest (above) |
-| TC-12 | FR-02 | Combined filters and clearing | test_tc_12 | Passed | Main `24611dd`, isolated nearby pytest (above) |
-| TC-13 | FR-02 | Pricing filter | test_tc_13 | Passed | Main `24611dd`, isolated nearby pytest (above) |
-| TC-14 | FR-01 | Empty nearby results | test_tc_14 | Passed | Main `24611dd`, isolated nearby pytest (above) |
-| TC-15 | FR-04 | AI outage and insufficient reviews | test_tc_15 | Not run | — |
-| TC-16 | FR-04 | Summary cache | test_tc_16 | Not run | — |
-| TC-17 | FR-04 | Preference recommendations | test_tc_17 | Not run | — |
-| TC-18 | FR-05 | Moderate suggestions | test_tc_18 | Not run | — |
-| TC-19 | FR-07 | Idempotent CSV and JSON import | test_tc_19 | Not run | — |
-| TC-20 | FR-07 | Invalid import is atomic | test_tc_20 | Not run | — |
-| TC-21 | FR-09 | Initial map HTML and manual marker details | test_tc_21 | Not run | — |
+| TC-01 | FR-01 | Nearby open toilets | test_tc_01 | Passed | Existing catalog log; nearby regression rerun 19 November, 10 cases |
+| TC-02 | FR-02 | Accessibility filter | test_tc_02 | Passed | Existing catalog log; nearby regression rerun 19 November, 10 cases |
+| TC-03 | FR-02 | Baby changing filter | test_tc_03 | Passed | Existing catalog log; nearby regression rerun 19 November, 10 cases |
+| TC-04 | FR-08 | Successful login | test_tc_04 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-05 | FR-03 | Reject guest review | test_tc_05 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-06 | FR-03 | Create review and aggregate | test_tc_06 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-07 | FR-05 | Suggest location | test_tc_07 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-08 | FR-04 | Structured Turkish AI summary | test_tc_08 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-09 | FR-06 | Filtered dashboard | test_tc_09 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-10 | FR-07 | CSV report export | test_tc_10 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-11 | FR-01 | Reject invalid search | test_tc_11 | Passed | Existing catalog log; nearby regression rerun 19 November, 10 cases |
+| TC-12 | FR-02 | Combined filters and clearing | test_tc_12 | Passed | Existing catalog log; nearby regression rerun 19 November, 10 cases |
+| TC-13 | FR-02 | Pricing filter | test_tc_13 | Passed | Existing catalog log; nearby regression rerun 19 November, 10 cases |
+| TC-14 | FR-01 | Empty nearby results | test_tc_14 | Passed | Existing catalog log; nearby regression rerun 19 November, 10 cases |
+| TC-15 | FR-04 | AI outage and insufficient reviews | test_tc_15 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-16 | FR-04 | Summary cache | test_tc_16 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-17 | FR-04 | Preference recommendations | test_tc_17 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-18 | FR-05 | Moderate suggestions | test_tc_18 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-19 | FR-07 | Idempotent CSV and JSON import | test_tc_19 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-20 | FR-07 | Invalid import is atomic | test_tc_20 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-21 | FR-09 | Initial map HTML and manual marker details | test_tc_21 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
 | TC-22 | FR-09 | Map without geolocation | Manual UI | Passed | Özgür, #54 `71e8ce8`, 17 November handoff above |
 | TC-23 | FR-09 | Filter markers remain consistent | Manual UI | Passed | Özgür, #54 `71e8ce8`, 17 November handoff above |
-| TC-24 | FR-07 | JSON report export | test_tc_24 | Not run | — |
-| TC-25 | FR-06 | Dashboard has no data | test_tc_25 | Not run | — |
-| TC-26 | FR-03 | Edit and delete own review | test_tc_26 | Not run | — |
-| TC-27 | FR-10 | Close reviewed facility | test_tc_27 | Not run | — |
-| TC-28 | FR-04 | Untrusted review content | test_tc_28 | Not run | — |
-| TC-29 | FR-10 | Invalid toilet coordinates | test_tc_29 | Not run | — |
-| TC-30 | FR-08 | Case insensitive email | test_tc_30 | Not run | — |
-| TC-31 | FR-03 | Invalid review rating | test_tc_31 | Not run | — |
-| TC-32 | FR-03 | Duplicate review | test_tc_32 | Not run | — |
-| TC-33 | FR-10 | Nonexistent toilet | test_tc_33 | Not run | — |
-| TC-34 | FR-10 | Account deletion | test_tc_34 | Not run | — |
-| TC-35 | FR-03 | Recalculate aggregate | test_tc_35 | Not run | — |
-| TC-36 | FR-07 | Stable source identity | test_tc_36 | Not run | — |
-| TC-37 | FR-08 | Weak password | test_tc_37 | Not run | — |
-| TC-38 | FR-08 | Password storage and response | test_tc_38 | Not run | — |
-| TC-39 | FR-08 | JWT claims | test_tc_39 | Not run | — |
-| TC-40 | FR-08 | Generic login error | test_tc_40 | Not run | — |
-| TC-41 | FR-08 | Missing token | test_tc_41 | Not run | — |
-| TC-42 | FR-08 | Tampered token | test_tc_42 | Not run | — |
-| TC-43 | FR-08 | Expired token | test_tc_43 | Not run | — |
-| TC-44 | FR-08 | User cannot access admin | test_tc_44 | Not run | — |
-| TC-45 | FR-08 | Admin access | test_tc_45 | Not run | — |
-| TC-46 | FR-03 | Review ownership | test_tc_46 | Not run | — |
-| TC-47 | FR-08 | Login throttling | test_tc_47 | Not run | — |
-| TC-48 | FR-08 | Public registration cannot grant administrator privileges | test_tc_48 | Not run | — |
+| TC-24 | FR-07 | JSON report export | test_tc_24 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-25 | FR-06 | Dashboard has no data | test_tc_25 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-26 | FR-03 | Edit and delete own review | test_tc_26 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-27 | FR-10 | Close reviewed facility | test_tc_27 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-28 | FR-04 | Untrusted review content | test_tc_28 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-29 | FR-10 | Invalid toilet coordinates | test_tc_29 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-30 | FR-08 | Case insensitive email | test_tc_30 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-31 | FR-03 | Invalid review rating | test_tc_31 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-32 | FR-03 | Duplicate review | test_tc_32 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-33 | FR-10 | Nonexistent toilet | test_tc_33 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-34 | FR-10 | Account deletion | test_tc_34 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-35 | FR-03 | Recalculate aggregate | test_tc_35 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-36 | FR-07 | Stable source identity | test_tc_36 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-37 | FR-08 | Weak password | test_tc_37 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-38 | FR-08 | Password storage and response | test_tc_38 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-39 | FR-08 | JWT claims | test_tc_39 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-40 | FR-08 | Generic login error | test_tc_40 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-41 | FR-08 | Missing token | test_tc_41 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-42 | FR-08 | Tampered token | test_tc_42 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-43 | FR-08 | Expired token | test_tc_43 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-44 | FR-08 | User cannot access admin | test_tc_44 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-45 | FR-08 | Admin access | test_tc_45 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-46 | FR-03 | Review ownership | test_tc_46 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-47 | FR-08 | Login throttling | test_tc_47 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+| TC-48 | FR-08 | Public registration cannot grant administrator privileges | test_tc_48 | Failed | #72 41e6e5f, 18 November catalog log above; unintegrated baseline |
+
+Functional result labels describe the stated baseline, not the latest unmerged feature branches. Parametrized test instances and TC IDs are counted separately. Partial means evidence exists but one or more acceptance conditions remain open.
 
 ## Non-functional traceability
 
 | Case | Requirement | Method and acceptance criterion | Result | Evidence |
 | --- | --- | --- | --- | --- |
 | NFR-T01 | NFR-01 | Staging with 10,000 synthetic facilities, record host and DB configuration; warm for 1 minute, run mixed nearby/filter requests with 50 clients for 5 minutes Mean and p95 each <250 ms; zero unexpected non-2xx responses; retain load report. Exclude external AI and tile traffic. | Not run | — |
-| NFR-T02 | NFR-03 | Exercise protected write/admin endpoints with absent, expired, tampered, USER and ADMIN tokens First three 401; USER admin access 403; ADMIN succeeds. No unauthorized writes. | Not run | — |
-| NFR-T03 | NFR-04 | Submit latitude 95, longitude 200, radius -50 and 50001, rating 0/6 and comment length 1001 Each returns 422 naming invalid input; stored state unchanged. This is a validation/security check, also functional. | Not run | — |
-| NFR-T04 | NFR-02 | Record 100 cache-hit requests and 20 healthy uncached requests; separately force provider timeout Cache p95 <100 ms; uncached p95 <8 s; timeout fallback by 10 s. Record environment and provider/mock separately. | Not run | — |
-| NFR-T05 | NFR-05 / NFR-06 | Test three viewport widths; keyboard-only map alternatives/details; axe/Lighthouse plus manual focus/contrast checks; 500-marker pan/zoom No horizontal overflow blocking actions; labels/focus usable; ≥30 FPS; Lighthouse accessibility ≥90; no serious/critical axe findings. Record throttling/hardware. | Not run | — |
+| NFR-T02 | NFR-03 | Exercise protected write/admin endpoints with absent, expired, tampered, USER and ADMIN tokens First three 401; USER admin access 403; ADMIN succeeds. No unauthorized writes. | Partial | Partial auth candidate evidence only: #51 18 real/isolated cases; full integrated protected endpoints pending. |
+| NFR-T03 | NFR-04 | Submit latitude 95, longitude 200, radius -50 and 50001, rating 0/6 and comment length 1001 Each returns 422 naming invalid input; stored state unchanged. This is a validation/security check, also functional. | Partial | Partial: 29 nearby safety checks passed on 19 November; rating/comment validation and stored-state acceptance on integrated DB pending. |
+| NFR-T04 | NFR-02 | Record 100 cache-hit requests and 20 healthy uncached requests; separately force provider timeout Cache p95 <100 ms; uncached p95 <8 s; timeout fallback by 10 s. Record environment and provider/mock separately. | Partial | Partial component evidence: 117 AI tests and 8 real Redis checks at #68 d9fa94df; specified 100/20 latency sample measurements pending. |
+| NFR-T05 | NFR-05 / NFR-06 | Test three viewport widths; keyboard-only map alternatives/details; axe/Lighthouse plus manual focus/contrast checks; 500-marker pan/zoom No horizontal overflow blocking actions; labels/focus usable; ≥30 FPS; Lighthouse accessibility ≥90; no serious/critical axe findings. Record throttling/hardware. | Partial | Partial: #65 edc8e020 mobile overflow fixed, keyboard/axe checks above; Lighthouse, map alternatives, FPS and live acceptance pending. |
 | NFR-T06 | NFR-07 | Disable AI then perform search/filter/details; monitor public API each minute for a calendar month Core requests continue; AI unavailable message appears. Availability ≥99% measured separately; short tests do not prove monthly uptime. | Not run | — |
 | NFR-T07 | NFR-04 / NFR-08 | Seed synthetic email/name/phone in reviews; capture AI request; deny location permission; delete account; inspect public responses and storage PII absent from AI request; no unconsented stored location; account identifiers removed and review text redacted where needed; hashes/secrets absent from responses. | Not run | — |
-| NFR-T08 | NFR-09 | Run implementation lint, tests, build and branch coverage report All implementation checks pass and backend coverage ≥80%. Requirements red tests are evidence of pending implementation, not a passing implementation gate. | Not run | — |
+| NFR-T08 | NFR-09 | Run implementation lint, tests, build and branch coverage report All implementation checks pass and backend coverage ≥80%. Requirements red tests are evidence of pending implementation, not a passing implementation gate. | Partial | Partial current-baseline measurement: 28/31 lines and 2/2 branches, combined 90.91%; full integrated source/lint acceptance pending. |
 | NFR-T09 | NFR-10 | Switch UI between Turkish and English across map, auth, errors and dashboard Labels/messages switch without losing filters; Turkish AI text remains explicitly identified. | Not run | — |
 
 ## Defects and retest
 
 Record the affected requirement, reproduction steps, expected and observed results, owner, fix commit and retest evidence. Include the coverage report and its source scope, tools and exclusions. Keep passwords, tokens, and raw personal data out of evidence.
+
+| Finding | Requirement and owner | Status and retest |
+| --- | --- | --- |
+| Shared session mismatch | FR-03/08, Furkan and Onur | Open. Shared saveSession writes smartloo.session; #73 f61de4f reads different keys and sees no token. Fix required before authenticated review UI acceptance. [Reproduction](https://github.com/akcedia/SmartLoo/pull/73#issuecomment-6985916125). |
+| Review ownership mismatch | FR-03 / REQ-SEC-05, Fırat and Furkan | Open. #67 8c5d58f author GET returns is_own=false; #73 expects user_id. Agree private ownership/permission fields and retest author, other USER, ADMIN and guest. [Reproduction](https://github.com/akcedia/SmartLoo/pull/67#issuecomment-6985969912). |
+| 360 px dashboard overflow | NFR-T05, Onur | Fixed for component scope. #65 edc8e020 document scroll width is 345 at 360 px viewport, matching client width. No horizontal overflow at 768/1920 either. Contrast SVG target review 5.958:1; axe incomplete remains documented. [19 November record](QA-2026-11-19.md). |
+| Windows loopback mismatch | Local environment, Yusuf; auth store coordination Fırat | Nearby default and example process configuration now use 127.0.0.1. Driver-boundary default and override checks pass. Real latency not measured; unmerged auth store not changed. [19 November record](QA-2026-11-19.md). |
+
+## Delivery decision and remaining dependencies
+
+The daily independent scope is ready for review. #60 remains open because full integrated acceptance is pending. #72 requires Özgür's review and merge. Final feature merges must retain the real-DB gates and pass them on their final revisions. Integrated routes, shared session/review ownership fixes and the durable AI writer coordinator remain with their feature owners. SonarQube access is still pending Özgür. Real-DB performance, complete security/privacy acceptance and the shared fixed-revision demo were not started on 19 November because their prerequisites are missing.
+
+The eight-page PDF is a review snapshot generated from this Markdown. Review the linked daily records for commands, environments and source evidence. The final PDF must be regenerated after pending results are available and reviewed before the course submission.
