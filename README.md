@@ -1,6 +1,6 @@
 # SmartLoo
 
-Weekly integration candidate. The admin panel uses labelled sample data. API features still return 501; no complete map/search demo is claimed.
+The nearby search API uses PostGIS. The admin panel uses labelled sample data. The shared local environment also starts MongoDB and Redis for integration work.
 
 ## Shared layout
 - `src/`: FastAPI application factory (`src.app:create_app`). Preserve the existing test injection interface.
@@ -10,7 +10,7 @@ Weekly integration candidate. The admin panel uses labelled sample data. API fea
 - `docs/DESIGN.MD`: architecture and decisions.
 
 ## Local setup
-Use Python 3.11, Node 20 and Docker Compose. From repository root:
+Use Python 3.11, Node 24 and Docker Compose. From repository root:
 ```sh
 cp .env.example .env
 docker compose up -d --wait
@@ -28,6 +28,18 @@ npm run dev
 The acceptance baseline currently fails on unimplemented 501 responses. Do not interpret the baseline job's permitted failure as implemented features. Frontend and SQL checks are blocking CI jobs. Use `npm run build` for the frontend build.
 
 Root docker-compose.yml is the shared environment; the standalone db/docker-compose.yml is retained for the original contribution. Do not run both at once. Credentials are local development examples only. Changing DB env values does not alter an existing volume's initialized account.
+
+## Shared service checks
+
+Run `docker compose up -d --wait` from the repository root, then inspect `docker compose ps` for service health. Run the PostGIS migration and synthetic seed commands in the nearby search section below. Use `docker compose logs SERVICE` for startup issues and `docker compose down` to stop the services while preserving database volumes.
+
+| Service | Default local port | Health check |
+| --- | --- | --- |
+| PostGIS | 5432 | `pg_isready` over TCP |
+| MongoDB | 27017 | `mongosh` ping |
+| Redis | 6379 | `redis-cli ping` |
+
+The published ports bind to loopback. To avoid a port conflict, change the relevant port in `.env` and update the connection settings in the shell that runs the application or tests. For the MongoDB tests proposed in #50, set `SMARTLOO_MONGO_URL` to the corresponding `mongodb://127.0.0.1:<port>` URL. Keep credentials and provider keys in the local environment.
 
 ## Team workflow
 Start from current main, use a feature branch, reference the issue in a small PR, include actual verification results, and obtain another member's review. Coordinate changes to env names, package files and API contracts. No main merge is implied by this weekly review.
@@ -61,10 +73,21 @@ Fixtures are synthetic test facilities, not real public toilet data.
 The backend reads SMARTLOO_DB_HOST, SMARTLOO_DB_PORT,
 SMARTLOO_DB_NAME, SMARTLOO_DB_USER and SMARTLOO_DB_PASSWORD
 from the process environment. Defaults match the local Docker setup:
-localhost:5432, database/user smartloo, password smartloo-dev-only.
+127.0.0.1:5432, database/user smartloo, password smartloo-dev-only.
 
 These defaults are for local development only.
 The backend does not automatically load a .env file.
+
+Use the IPv4 loopback address for the host process because Compose publishes
+the services on 127.0.0.1. On Windows, localhost can resolve to ::1 first and
+delay the connection before falling back. To override an existing shell setting:
+
+```powershell
+$env:SMARTLOO_DB_HOST = "127.0.0.1"
+```
+
+The nearby store uses this default. Other feature stores must use the same
+process setting when integrated; this change does not update unmerged auth code.
 
 ### Run the API
 
@@ -134,12 +157,11 @@ No match returns `[]`. Naive datetimes, `start >= end` or a non-UUID facility id
 `ValueError`; a MongoDB failure raises `ReviewStoreError`, which the route should map to 503.
 `ensure_review_indexes()` creates the one-review-per-user-and-facility index (TC-32).
 
-MongoDB and `pymongo` are not yet part of the shared `docker-compose.yml` and
-`requirements-test.txt`; adding them is left to the integration step. Local check:
+MongoDB and PyMongo are included in the shared Compose and Python dependencies. Local check:
 
 ```powershell
-docker run -d --name smartloo-mongo-test -p 27017:27017 mongo:7.0
-.\.venv\Scripts\python.exe -m pip install pymongo==4.10.1
+docker compose up -d --wait mongo
+.\.venv\Scripts\python.exe -m pip install -r requirements-test.txt
 $env:SMARTLOO_TEST_MONGO = "1"
 .\.venv\Scripts\python.exe -m pytest tests/test_review_scores_mongo.py -q
 ```
