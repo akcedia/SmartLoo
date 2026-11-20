@@ -4,6 +4,7 @@ import { formatScore } from "./KpiCards.jsx";
 const STATUS_LABELS = { ACTIVE: "Aktif", CLOSED: "Kapalı", MAINTENANCE: "Bakımda" };
 
 export default function FacilityTable({ rows }) {
+  if (rows === null) return <p className="admin-empty">Sunucu bu yanıtta tesis listesini göndermedi.</p>;
   if (rows.length === 0) return <p className="admin-empty">Bu seçimde tesis yok.</p>;
   return (
     <div className="admin-table-wrap">

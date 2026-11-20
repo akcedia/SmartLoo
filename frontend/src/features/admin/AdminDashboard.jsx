@@ -37,6 +37,50 @@ export function formatDateTr(date) {
   return `${d}.${m}.${y}`;
 }
 
+const SERVER_FIELD_MESSAGES = {
+  from: "Sunucu başlangıç tarihini kabul etmedi.",
+  to: "Sunucu bitiş tarihini kabul etmedi.",
+  district: "Sunucu ilçe seçimini kabul etmedi.",
+};
+
+// 422 field errors from the server, shown next to the matching filter control.
+export function serverFilterErrors(error) {
+  if (error?.status !== 422) return {};
+  return Object.fromEntries(
+    Object.keys(error.fieldErrors ?? {})
+      .filter((field) => field in SERVER_FIELD_MESSAGES)
+      .map((field) => [field, SERVER_FIELD_MESSAGES[field]]),
+  );
+}
+
+// Everything below the filters, driven only by the request state and the API
+// response, so each state can be rendered and tested from contract examples.
+export function DashboardContent({ status, data, error, onRetry, adapter, query }) {
+  if (status === "loading" && !data) return <SkeletonPanel />;
+  if (status === "error") return <ErrorPanel error={error} onRetry={onRetry} />;
+  if (!data) return null;
+
+  const hasReviews = data.review_count > 0;
+  return (
+    <div className={status === "loading" ? "admin-content admin-content--stale" : "admin-content"} aria-busy={status === "loading"}>
+      {status === "loading" && <LoadingPanel />}
+      <KpiCards data={data} />
+      {!hasReviews && <NoDataPanel hasFacilities={data.facilities === null || data.facilities.length > 0} />}
+      <div className="admin-grid">
+        <section className="admin-panel" aria-labelledby="trend-title">
+          <h2 id="trend-title">Hijyen trendi</h2>
+          <TrendChart trend={data.trend} threshold={data.critical_threshold} />
+        </section>
+        <section className="admin-panel" aria-labelledby="facilities-title">
+          <h2 id="facilities-title">Tesisler</h2>
+          <FacilityTable rows={data.facilities} />
+        </section>
+      </div>
+      <ExportButtons adapter={adapter} filters={query} disabled={status === "loading"} />
+    </div>
+  );
+}
+
 export default function AdminDashboard({ adapter: injectedAdapter }) {
   const sample = useSampleAdapter();
   const adapter = injectedAdapter ?? sample.adapter;
@@ -59,8 +103,6 @@ export default function AdminDashboard({ adapter: injectedAdapter }) {
     sample.setScenario(value);
     reload();
   }
-
-  const hasData = data && data.review_count > 0;
 
   return (
     <div className="admin">
@@ -100,7 +142,7 @@ export default function AdminDashboard({ adapter: injectedAdapter }) {
           </aside>
         )}
 
-        <FilterBar {...filters} errors={errors} onChange={handleFilterChange} />
+        <FilterBar {...filters} errors={{ ...serverFilterErrors(error), ...errors }} onChange={handleFilterChange} />
 
         {valid && (
           <p className="admin-selection" aria-live="polite">
@@ -110,25 +152,8 @@ export default function AdminDashboard({ adapter: injectedAdapter }) {
         )}
 
         {!valid && <p className="admin-empty">Geçerli bir tarih aralığı seçildiğinde veriler yüklenecek.</p>}
-        {valid && status === "loading" && !data && <SkeletonPanel />}
-        {valid && status === "error" && <ErrorPanel error={error} onRetry={reload} />}
-        {valid && data && status !== "error" && (
-          <div className={status === "loading" ? "admin-content admin-content--stale" : "admin-content"} aria-busy={status === "loading"}>
-            {status === "loading" && <LoadingPanel />}
-            <KpiCards data={data} />
-            {!hasData && <NoDataPanel />}
-            <div className="admin-grid">
-              <section className="admin-panel" aria-labelledby="trend-title">
-                <h2 id="trend-title">Hijyen trendi</h2>
-                <TrendChart trend={data.trend} threshold={data.critical_threshold} />
-              </section>
-              <section className="admin-panel" aria-labelledby="facilities-title">
-                <h2 id="facilities-title">Tesisler</h2>
-                <FacilityTable rows={data.facilities} />
-              </section>
-            </div>
-            <ExportButtons adapter={adapter} filters={query} disabled={status === "loading"} />
-          </div>
+        {valid && (
+          <DashboardContent status={status} data={data} error={error} onRetry={reload} adapter={adapter} query={query} />
         )}
       </main>
     </div>

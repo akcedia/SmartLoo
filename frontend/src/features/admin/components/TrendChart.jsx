@@ -18,6 +18,9 @@ export function chartGeometry(width, days) {
 // Daily mean trend. Days without reviews are gaps, never drawn as 0.
 export default function TrendChart({ trend, threshold = CRITICAL_THRESHOLD }) {
   const [ref, width] = useElementWidth(640);
+  if (trend === null) {
+    return <p className="admin-empty">Sunucu bu yanıtta günlük trendi göndermedi.</p>;
+  }
   const points = trend.filter((d) => d.average_cleanliness !== null);
   if (points.length === 0) {
     return <p className="admin-empty">Bu seçim için trend verisi yok.</p>;

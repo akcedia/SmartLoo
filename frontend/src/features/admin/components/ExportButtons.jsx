@@ -11,7 +11,26 @@ function download({ filename, mimeType, body }) {
   URL.revokeObjectURL(url);
 }
 
+export function exportErrorMessage(format, error) {
+  const label = format.toUpperCase();
+  switch (error?.status) {
+    case 401:
+      return `${label} indirilemedi: oturumunuzun süresi doldu. Yeniden giriş yapın.`;
+    case 403:
+      return `${label} indirilemedi: bu işlem için yönetici yetkisi gerekir.`;
+    case 422:
+      return `${label} indirilemedi: seçilen filtreler geçersiz.`;
+    case 501:
+      return `${label} dışa aktarımı henüz backend'de uygulanmadı.`;
+    case 0:
+      return `${label} indirilemedi: sunucuya ulaşılamadı.`;
+    default:
+      return `${label} indirilemedi: sunucu hatası. Hiçbir dosya oluşturulmadı; tekrar deneyin.`;
+  }
+}
+
 // Export always sends the filters currently on screen (same selection as the KPIs).
+// A failed request never produces a file.
 export default function ExportButtons({ adapter, filters, disabled }) {
   const [status, setStatus] = useState({ busy: null, error: null });
 
@@ -21,7 +40,7 @@ export default function ExportButtons({ adapter, filters, disabled }) {
       download(await adapter.fetchExport(filters, format));
       setStatus({ busy: null, error: null });
     } catch (error) {
-      setStatus({ busy: null, error: `${format.toUpperCase()} dışa aktarılamadı: ${error.message}` });
+      setStatus({ busy: null, error: exportErrorMessage(format, error) });
     }
   }
 
