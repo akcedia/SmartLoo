@@ -1,15 +1,13 @@
 """SmartLoo FastAPI application.
 
-Nearby search and accounts use PostgreSQL/PostGIS by default.
-Tests can explicitly inject an isolated search provider; passing state
-switches accounts to an in-memory double over that state.
-Registration, sign-in and review CRUD are implemented; reviews use MongoDB
-with aggregates in PostgreSQL. Other protected routes check the token and
-role, then the feature itself still returns 501.
+Nearby search, facility details and accounts use PostgreSQL/PostGIS.
+Reviews use MongoDB with aggregates in PostgreSQL. Tests can inject
+isolated accounts, reviews and nearby search. Other features remain pending.
 """
 
 import time
 from copy import deepcopy
+from uuid import UUID
 
 import psycopg
 from fastapi import Depends, FastAPI, HTTPException, Query
@@ -17,7 +15,7 @@ from fastapi.responses import JSONResponse
 
 from src.auth import PostgresAccounts, RepositoryAccounts, current_user, require_admin
 from src.auth import router as auth_router
-from src.nearby_store import find_nearby
+from src.nearby_store import find_nearby, find_toilet
 from src.review_scores import ReviewStoreError
 from src.reviews import MongoReviews, PostgresToilets, RepositoryReviews, RepositoryToilets, ReviewService
 from src.reviews import router as reviews_router
@@ -77,12 +75,24 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
 
         return {"count": len(rows), "results": rows}
 
+    @app.get("/api/v1/toilets/{toilet_id}")
+    def toilet_detail(toilet_id: UUID):
+        try:
+            toilet = find_toilet(toilet_id)
+        except (psycopg.OperationalError, psycopg.InterfaceError) as exc:
+            raise HTTPException(
+                status_code=503,
+                detail="Database temporarily unavailable",
+            ) from exc
+        if toilet is None:
+            raise HTTPException(status_code=404, detail="Toilet not found")
+        return toilet
+
     async def pending():
         return JSONResponse(status_code=501, content={"detail": "Feature not implemented"})
 
     public = [
         ("/", ["GET"]),
-        ("/api/v1/toilets/{toilet_id}", ["GET"]),
         ("/api/v1/toilets/{toilet_id}/summary", ["GET"]),
         ("/api/v1/recommendations", ["GET"]),
     ]

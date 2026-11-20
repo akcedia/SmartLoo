@@ -26,6 +26,16 @@ Proposed in [#28](https://github.com/akcedia/SmartLoo/issues/28#issuecomment-640
 
 ## Review service (`src/reviews.py`)
 
+### Viewer permissions
+
+`GET /toilets/{toilet_id}/reviews` is public. With a valid Bearer token it resolves
+the current account and returns `is_own`, `can_edit` and `can_delete` for that
+viewer. An author can edit/delete their review. An ADMIN can delete another
+author's review. Guests and other users cannot change it. Responses omit
+`user_id`. A supplied invalid, expired or deleted-account token returns 401.
+
+The write endpoints enforce their own permissions independently of these flags.
+
 `ReviewService` is created once as `app.state.reviews`; its router is included in `src/app.py` (Özgür owns that file; the change is two lines). Other modules call the service, they do not reimplement it.
 
 | Method | Route | Results |

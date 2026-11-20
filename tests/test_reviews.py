@@ -120,6 +120,35 @@ def test_public_list_shows_anonymous_author(env):
     assert client.get("/api/v1/toilets/00000000-0000-4000-8000-999999999999/reviews").status_code == 404
 
 
+@pytest.mark.parametrize("user,role,expected", [
+    (None, None, (False, False, False)),
+    (U, "USER", (True, True, True)),
+    (V, "USER", (False, False, False)),
+    (ADMIN, "ADMIN", (False, False, True)),
+])
+def test_list_reports_verified_viewer_permissions_without_user_id(env, user, role, expected):
+    client, _, _ = env
+    created = post(client, comment="Temiz").json()
+    headers = token(user, role) if user else {}
+    response = client.get(f"/api/v1/toilets/{A}/reviews", headers=headers)
+    assert response.status_code == 200, response.text
+    result = response.json()["results"][0]
+    assert result["id"] == created["id"]
+    assert (result["is_own"], result["can_edit"], result["can_delete"]) == expected
+    assert "user_id" not in result
+
+
+def test_list_rejects_tampered_and_deleted_account_tokens(env):
+    client, store, _ = env
+    post(client)
+    url = f"/api/v1/toilets/{A}/reviews"
+    invalid = {"Authorization": token(U)["Authorization"] + "tampered"}
+    assert client.get(url, headers=invalid).status_code == 401
+    del store["users"][U]
+    assert client.get(url, headers=token(U)).status_code == 401
+    assert client.get(url).status_code == 200
+
+
 def test_failed_aggregate_update_undoes_the_review(env, monkeypatch):
     client, store, app = env
     kept = post(client, user=V, cleanliness_score=2).json()["id"]

@@ -81,6 +81,12 @@ def test_review_lifecycle_keeps_postgres_aggregates_and_revision(app):
 
         listing = client.get(url).json()
         assert listing["count"] == 2 and {r["author"] for r in listing["results"]} == {"Ali", "Veli"}
+        owned = client.get(url, headers=ali_auth).json()["results"]
+        own_review = next(review for review in owned if review["id"] == review_id)
+        assert own_review["is_own"] and own_review["can_edit"] and own_review["can_delete"]
+        assert all("user_id" not in review for review in owned)
+        other_review = next(review for review in owned if review["id"] != review_id)
+        assert not other_review["is_own"] and not other_review["can_edit"] and not other_review["can_delete"]
 
         assert client.delete(f"/api/v1/reviews/{review_id}", headers=ali_auth).status_code == 204
         row = toilet_row()

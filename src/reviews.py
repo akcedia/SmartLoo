@@ -18,9 +18,10 @@ import uuid
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
+from fastapi.security import HTTPAuthorizationCredentials
 from pydantic import BaseModel, Field, StrictInt, field_validator, model_validator
 
-from src.auth import Principal, current_user
+from src.auth import Principal, bearer, current_user
 from src.db import connect
 from src.review_scores import ReviewStoreError, ensure_review_indexes, review_collection
 
@@ -239,6 +240,7 @@ class ReviewService:
 
     def _public(self, doc, principal=None):
         author = self.accounts.get(doc["user_id"]) if doc.get("user_id") else None
+        is_own = principal is not None and doc.get("user_id") == principal.sub
         return {
             "id": doc["id"],
             "toilet_id": doc["toilet_id"],
@@ -248,7 +250,9 @@ class ReviewService:
             "tags": doc.get("tags") or [],
             "created_at": doc.get("created_at"),
             "updated_at": doc.get("updated_at"),
-            "is_own": principal is not None and doc.get("user_id") == principal.sub,
+            "is_own": is_own,
+            "can_edit": is_own,
+            "can_delete": is_own or (principal is not None and principal.role == "ADMIN"),
         }
 
     def _commit(self, toilet_id, undo):
@@ -262,10 +266,10 @@ class ReviewService:
                 pass  # MongoDB keeps the change; reconcile() brings the aggregates back in line
             raise HTTPException(status_code=503, detail=INCONSISTENT_MESSAGE) from exc
 
-    def list(self, toilet_id, limit=20, offset=0):
+    def list(self, toilet_id, limit=20, offset=0, principal=None):
         key = self._toilet(toilet_id)
         docs = self.reviews.by_toilet(key)
-        return {"count": len(docs), "results": [self._public(d) for d in docs[offset:offset + limit]]}
+        return {"count": len(docs), "results": [self._public(d, principal) for d in docs[offset:offset + limit]]}
 
     def create(self, principal, toilet_id, payload):
         key = self._toilet(toilet_id, for_review=True)
@@ -317,10 +321,18 @@ class ReviewService:
 router = APIRouter(prefix="/api/v1")
 
 
+def optional_user(request: Request,
+                  credentials: HTTPAuthorizationCredentials | None = Depends(bearer)):
+    if credentials is None:
+        return None
+    return current_user(request, credentials)
+
+
 @router.get("/toilets/{toilet_id}/reviews")
 def list_reviews(toilet_id: str, request: Request,
-                 limit: int = Query(20, ge=1, le=100), offset: int = Query(0, ge=0)):
-    return request.app.state.reviews.list(toilet_id, limit, offset)
+                 limit: int = Query(20, ge=1, le=100), offset: int = Query(0, ge=0),
+                 principal: Principal | None = Depends(optional_user)):
+    return request.app.state.reviews.list(toilet_id, limit, offset, principal)
 
 
 @router.post("/toilets/{toilet_id}/reviews", status_code=201)
