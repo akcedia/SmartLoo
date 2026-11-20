@@ -94,6 +94,8 @@ The [#71 required CI](https://github.com/akcedia/SmartLoo/actions/runs/447874093
 
 The merged backend supplies ownership and permissions to the map and wires live analytics/export. The server date limit and JSON filename header are implemented. TC-34 is still 501 on this main revision. The author of [#75](https://github.com/akcedia/SmartLoo/pull/75) reports TC-34 passing on the open account-deletion branch. Integrated AI, SonarQube, staging load, remaining privacy and accessibility checks and formal submission stay open.
 
+The documentation-only [#76 verification](https://github.com/akcedia/SmartLoo/pull/76) used the same merged application and test source as main 2ac2a60e. The five [required DB suites](https://github.com/akcedia/SmartLoo/actions/runs/44795336948) passed 104 checks, and the [live map](https://github.com/akcedia/SmartLoo/actions/runs/44795336960) and [live admin](https://github.com/akcedia/SmartLoo/actions/runs/44795336830) passed 10 checks. All seven suites had zero failures, errors and skips. The separate non-blocking acceptance catalog still contains failures.
+
 ## Functional traceability
 
 Sources: [requirements](../REQUIREMENTS.MD) and [test catalog](../../tests/requirements_cases.json).
