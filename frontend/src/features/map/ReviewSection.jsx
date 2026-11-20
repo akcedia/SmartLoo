@@ -10,10 +10,31 @@ import {
 
 const MAX_COMMENT_LENGTH = 1000;
 
-function formatReviewAuthor(review) {
+function isReviewOwnedByUser(review, currentUser) {
+  if (!review || !currentUser) return false;
+  if (review.is_own === true || review.can_edit === true) return true;
+  if (review.is_own === false) return false;
+  return (
+    review.user_id !== null &&
+    review.user_id !== undefined &&
+    String(review.user_id) === currentUser.id
+  );
+}
+
+function canDeleteReview(review, currentUser) {
+  if (!review || !currentUser) return false;
+  if (review.can_delete === true) return true;
+  return isReviewOwnedByUser(review, currentUser) || currentUser.role === "ADMIN";
+}
+
+function formatReviewAuthor(review, isOwner) {
   if (review.author) return review.author;
   if (review.display_name) return review.display_name;
-  if (review.user_id === null || review.user_id === undefined) return "Anonim";
+  if (isOwner) return "Sizin Yorumunuz";
+  if (review.is_anonymous === true) return "Anonim";
+  if ("user_id" in review && (review.user_id === null || review.user_id === undefined)) {
+    return "Anonim";
+  }
   return "Kayıtlı Kullanıcı";
 }
 
@@ -94,9 +115,7 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
   }, [toiletId]);
 
   const existingUserReview = currentUser
-    ? reviews.find(
-        (rev) => rev.user_id !== null && rev.user_id !== undefined && String(rev.user_id) === currentUser.id
-      ) || null
+    ? reviews.find((rev) => isReviewOwnedByUser(rev, currentUser)) || null
     : null;
 
   const isEditing = Boolean(editingReviewId);
@@ -468,12 +487,8 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
       {!loading && !loadError && reviews.length > 0 && (
         <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "8px" }}>
           {reviews.map((rev) => {
-            const isOwner =
-              Boolean(currentUser) &&
-              rev.user_id !== null &&
-              rev.user_id !== undefined &&
-              String(rev.user_id) === currentUser.id;
-            const canDelete = isOwner || currentUser?.role === "ADMIN";
+            const isOwner = isReviewOwnedByUser(rev, currentUser);
+            const canDelete = canDeleteReview(rev, currentUser);
             const dateLabel = formatReviewDate(rev.updated_at || rev.created_at);
 
             return (
@@ -489,7 +504,7 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "6px" }}>
                   <strong style={{ color: "#0f172a", fontSize: "12px" }}>
-                    {formatReviewAuthor(rev)}
+                    {formatReviewAuthor(rev, isOwner)}
                   </strong>
                   <span style={{ fontSize: "12px", fontWeight: "600", color: "#1d4ed8" }}>
                     {rev.cleanliness_score} / 5

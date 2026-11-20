@@ -283,4 +283,46 @@ describe("Map detail, review and AI components static render tests", () => {
     expect(openGuestRecHtml).toContain("AI Tesis Önerileri (En Fazla 3)");
     expect(openGuestRecHtml).toContain("Giriş Yap");
   });
-}); 
+
+  it("supports shared smartloo.session JWT payload and expired token invalidation", () => {
+    const encodePayload = (obj) =>
+      Buffer.from(JSON.stringify(obj))
+        .toString("base64")
+        .replace(/=/g, "")
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_");
+
+    const validExp = Math.floor(Date.now() / 1000) + 3600;
+    const validJwt = `header.${encodePayload({
+      sub: "42",
+      role: "user",
+      email: "onur.shared@smartloo.local",
+      exp: validExp,
+    })}.sig`;
+
+    const storage = createMockSessionStorage({
+      "smartloo.session": JSON.stringify({
+        token: validJwt,
+        email: "onur.shared@smartloo.local",
+      }),
+    });
+    globalThis.window = { sessionStorage: storage, location: { pathname: "/", search: "" } };
+
+    expect(getCurrentSessionUser()).toEqual({
+      id: "42",
+      role: "USER",
+      email: "onur.shared@smartloo.local",
+      displayName: "",
+    });
+
+    const expiredJwt = `header.${encodePayload({
+      sub: "42",
+      role: "USER",
+      exp: Math.floor(Date.now() / 1000) - 60,
+    })}.sig`;
+    storage.setItem("smartloo.session", JSON.stringify({ token: expiredJwt }));
+
+    expect(getCurrentSessionUser()).toBeNull();
+    expect(storage.getItem("smartloo.session")).toBeNull();
+  });
+});; 
