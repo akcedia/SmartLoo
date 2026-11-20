@@ -104,6 +104,9 @@ class RepositoryReviews:
         return next((dict(d) for d in self.docs.values()
                      if d["toilet_id"] == toilet_id and d.get("user_id") == user_id), None)
 
+    def by_user(self, user_id):
+        return [dict(d) for d in self.docs.values() if d.get("user_id") == user_id]
+
     def insert(self, doc):
         if self.find_user_review(doc["toilet_id"], doc["user_id"]):
             raise DuplicateReview
@@ -151,6 +154,9 @@ class MongoReviews:
 
     def find_user_review(self, toilet_id, user_id):
         return self._call(lambda c: c.find_one({"toilet_id": toilet_id, "user_id": user_id}, {"_id": 0}))
+
+    def by_user(self, user_id):
+        return self._call(lambda c: list(c.find({"user_id": user_id}, {"_id": 0})))
 
     def insert(self, doc):
         self._call(lambda c: c.insert_one(dict(doc)))
@@ -222,8 +228,14 @@ class PostgresToilets:
                                 (toilet_id,)).fetchone()["review_version"]
 
 
-def redact(text):
-    return PII_PATTERN.sub("[removed]", text) if text else text
+def redact(text, personal_terms=()):
+    """Replace known personal terms (e.g. the author's email and display name), then any email or phone."""
+    if not text:
+        return text
+    for term in personal_terms:
+        if term and term.strip():
+            text = re.sub(re.escape(term.strip()), "[removed]", text, flags=re.IGNORECASE)
+    return PII_PATTERN.sub("[removed]", text)
 
 
 class ReviewService:
@@ -388,6 +400,24 @@ class ReviewService:
                              "comment": redact(row["comment"]), "created_at": row.get("created_at")}
                             for row in documents],
             }
+
+    def anonymize_author(self, user_id, personal_terms=()):
+        """FR-10: detach and redact every review of an account being deleted.
+
+        Each review changes under its facility guard like any other edit: the score stays, so the
+        aggregates do not move, but review_version is bumped and old AI summaries become stale.
+        Already anonymized reviews no longer match user_id, so a retry continues where it stopped.
+        """
+        for doc in self.reviews.by_user(user_id):
+            key = doc["toilet_id"]
+            with self.coordination.guard(key) as session:
+                self._ready(session)
+                old = self.reviews.get(doc["id"])
+                if old is None or old.get("user_id") != user_id:
+                    continue
+                new = {**old, "user_id": None, "is_anonymized": True,
+                       "comment": redact(old.get("comment"), personal_terms)}
+                self._change(session, key, old["id"], old, lambda: self.reviews.replace(new))
 
     def reconcile(self, toilet_id):
         """Restore an interrupted mutation and clear its marker exactly once."""
