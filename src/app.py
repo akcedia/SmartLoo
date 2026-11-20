@@ -15,7 +15,7 @@ from fastapi.responses import JSONResponse
 
 from src.auth import PostgresAccounts, RepositoryAccounts, current_user, require_admin
 from src.auth import router as auth_router
-from src.nearby_store import find_nearby, find_toilet
+from src.nearby_store import find_nearby, find_toilet, find_ibb_facilities
 from src.review_scores import ReviewStoreError
 from src.reviews import MongoReviews, PostgresToilets, RepositoryReviews, RepositoryToilets, ReviewService
 from src.reviews import router as reviews_router
@@ -94,6 +94,16 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
             ) from exc
 
         return {"count": len(rows), "results": rows}
+
+    @app.get("/api/v1/toilets")
+    def ibb_directory(open_now: bool = False, has_disabled_access: bool | None = None,
+                      has_baby_changing: bool | None = None, is_free: bool | None = None):
+        rows = find_ibb_facilities(open_now, has_disabled_access, has_baby_changing, is_free)
+        return {"count": len(rows), "results": rows, "source": {
+            "name": "İstanbul Büyükşehir Belediyesi Açık Veri Portalı",
+            "url": "https://data.ibb.gov.tr/dataset/sehir-tuvaletleri-veri-seti",
+            "license": "https://data.ibb.gov.tr/license",
+        }}
 
     @app.get("/api/v1/toilets/{toilet_id}")
     def toilet_detail(toilet_id: UUID):

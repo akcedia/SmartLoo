@@ -45,7 +45,7 @@ def _numeric_key(value):
     return Decimal(str(value)).normalize()
 
 
-def normalize_geojson(document):
+def normalize_geojson(document, *, allowed_statuses=("Aktif", "Pasif")):
     errors, candidates, warnings = [], [], []
 
     def error(index, field, code, message):
@@ -121,7 +121,7 @@ def normalize_geojson(document):
                 raw[field] = value
         status = properties.get("TUVALET_DURUM")
         # Known labels are retained only; even these are NOT approved SQL maps.
-        if isinstance(status, str) and status not in ("Aktif", "Pasif"):
+        if isinstance(status, str) and status not in allowed_statuses:
             error(index, "properties.TUVALET_DURUM", "UNRESOLVED_STATUS", "Source status requires an approved mapping/calendar.")
         if len(errors) != start_errors:
             continue
