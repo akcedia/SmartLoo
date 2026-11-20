@@ -14,7 +14,7 @@ def find_nearby(
     is_free=None,
 ):
     with psycopg.connect(
-        host=os.getenv("SMARTLOO_DB_HOST", "localhost"),
+        host=os.getenv("SMARTLOO_DB_HOST", "127.0.0.1"),
         port=int(os.getenv("SMARTLOO_DB_PORT", "5432")),
         dbname=os.getenv("SMARTLOO_DB_NAME", "smartloo"),
         user=os.getenv("SMARTLOO_DB_USER", "smartloo"),
