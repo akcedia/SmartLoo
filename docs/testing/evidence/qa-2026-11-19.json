@@ -1,0 +1,191 @@
+{
+  "date": "2026-11-19",
+  "owner": "selim-aksu",
+  "qa_base": "41e6e5fb2f674635ebefb1f6c900266ce70f85f0",
+  "a11y_revision": "edc8e020f021743c0e123598dfdaae1fd8ded4b4",
+  "nearby_tests": {
+    "new_safety_passed": 29,
+    "existing_contract_passed": 10,
+    "failed": 0,
+    "skipped": 0,
+    "deselected": 42,
+    "scope": "isolated TestClient and mocked driver boundary; no real DB"
+  },
+  "coverage": {
+    "tool": "coverage 7.10.7",
+    "totals": {
+      "covered_lines": 28,
+      "num_statements": 31,
+      "percent_covered": 90.9090909090909,
+      "percent_covered_display": "91",
+      "missing_lines": 3,
+      "excluded_lines": 0,
+      "num_branches": 2,
+      "num_partial_branches": 0,
+      "covered_branches": 2,
+      "missing_branches": 0
+    },
+    "scope": [
+      "src/app.py",
+      "src/nearby_store.py"
+    ],
+    "exclusions": "SQL, frontend, tests, real-DB IO and all unmerged features"
+  },
+  "browser": {
+    "revision": "edc8e020f021743c0e123598dfdaae1fd8ded4b4",
+    "checks": [
+      {
+        "screen": "sample-admin",
+        "width": 360,
+        "metrics": {
+          "client": 345,
+          "contrastTargets": [
+            {
+              "background": "rgb(255, 255, 255)",
+              "color": "rgb(29, 36, 51)",
+              "fill": "rgb(91, 100, 117)",
+              "fontSize": "11px",
+              "tag": "text",
+              "text": "1"
+            },
+            {
+              "background": "rgb(255, 255, 255)",
+              "color": "rgb(29, 36, 51)",
+              "fill": "rgb(91, 100, 117)",
+              "fontSize": "11px",
+              "tag": "text",
+              "text": "2"
+            },
+            {
+              "background": "rgb(255, 255, 255)",
+              "color": "rgb(29, 36, 51)",
+              "fill": "rgb(91, 100, 117)",
+              "fontSize": "11px",
+              "tag": "text",
+              "text": "3"
+            },
+            {
+              "background": "rgb(255, 255, 255)",
+              "color": "rgb(29, 36, 51)",
+              "fill": "rgb(91, 100, 117)",
+              "fontSize": "11px",
+              "tag": "text",
+              "text": "4"
+            },
+            {
+              "background": "rgb(255, 255, 255)",
+              "color": "rgb(29, 36, 51)",
+              "fill": "rgb(91, 100, 117)",
+              "fontSize": "11px",
+              "tag": "text",
+              "text": "5"
+            },
+            {
+              "background": "rgb(255, 255, 255)",
+              "color": "rgb(29, 36, 51)",
+              "fill": "rgb(91, 100, 117)",
+              "fontSize": "11px",
+              "tag": "text",
+              "text": "10-21"
+            },
+            {
+              "background": "rgb(255, 255, 255)",
+              "color": "rgb(29, 36, 51)",
+              "fill": "rgb(91, 100, 117)",
+              "fontSize": "11px",
+              "tag": "text",
+              "text": "10-29"
+            },
+            {
+              "background": "rgb(255, 255, 255)",
+              "color": "rgb(29, 36, 51)",
+              "fill": "rgb(91, 100, 117)",
+              "fontSize": "11px",
+              "tag": "text",
+              "text": "11-06"
+            },
+            {
+              "background": "rgb(255, 255, 255)",
+              "color": "rgb(29, 36, 51)",
+              "fill": "rgb(91, 100, 117)",
+              "fontSize": "11px",
+              "tag": "text",
+              "text": "11-14"
+            }
+          ],
+          "scrollWidth": 345,
+          "viewport": 360
+        },
+        "axe": "{\"version\":\"4.11.0\",\"url\":\"/admin\",\"passes\":20,\"incomplete\":[{\"id\":\"color-contrast\",\"impact\":\"serious\"}],\"violations\":[]}"
+      },
+      {
+        "screen": "sample-admin",
+        "width": 768,
+        "metrics": {
+          "client": 753,
+          "scrollWidth": 753,
+          "viewport": 768
+        }
+      },
+      {
+        "screen": "sample-admin",
+        "width": 1920,
+        "metrics": {
+          "client": 1905,
+          "scrollWidth": 1905,
+          "viewport": 1920
+        }
+      },
+      {
+        "screen": "registration",
+        "width": 360,
+        "axe": "{\"version\":\"4.11.0\",\"url\":\"/register\",\"passes\":15,\"incomplete\":[],\"violations\":[]}"
+      }
+    ],
+    "keyboard": [
+      {
+        "active": "password",
+        "step": "tab-to-password",
+        "type": "password"
+      },
+      {
+        "step": "tab-to-submit",
+        "tag": "BUTTON",
+        "text": "GiriÅŸ yap"
+      },
+      {
+        "active": "email",
+        "invalid": "true",
+        "step": "empty-form"
+      },
+      {
+        "step": "registration-heading",
+        "tag": "H1",
+        "text": "KayÄ±t ol"
+      },
+      {
+        "step": "account-tab",
+        "tag": "A",
+        "text": "HesabÄ±m"
+      },
+      {
+        "expanded": "false",
+        "step": "account-escape",
+        "tag": "BUTTON",
+        "text": "QAqaKullanÄ±cÄ±â–¾"
+      }
+    ]
+  },
+  "contrast": {
+    "foreground": "#5b6475",
+    "background": "#ffffff",
+    "ratio": 5.958175744429756,
+    "target": "SVG axis labels only",
+    "axe_incomplete_retained": true
+  },
+  "blocked_not_started": [
+    "integrated auth/review/analytics/AI demo",
+    "live-DB load test",
+    "SonarQube analysis"
+  ]
+}
