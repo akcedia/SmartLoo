@@ -1,12 +1,11 @@
 // Administration > Analytics tab (FR-06, FR-07 export).
-// Runs on the labelled sample adapter until the backend endpoints exist.
-// Hiding this route from non-admins is UX only; the backend must enforce RBAC.
+// Live data comes in through `adapter` (AdminRoute). Without one it falls back to the
+// labelled sample adapter for UI review. Hiding this route is UX only; the backend enforces RBAC.
 
 import { useMemo, useRef, useState } from "react";
-import { createSampleAdapter, sampleSessionFor, SCENARIOS } from "./api/sampleAdapter.js";
+import { createSampleAdapter, SCENARIOS } from "./api/sampleAdapter.js";
 import { presetRange, validateRange } from "./api/dateRange.js";
 import { useDashboardData } from "./useDashboardData.js";
-import AccountMenu from "./components/AccountMenu.jsx";
 import FilterBar from "./components/FilterBar.jsx";
 import KpiCards from "./components/KpiCards.jsx";
 import TrendChart from "./components/TrendChart.jsx";
@@ -38,10 +37,53 @@ export function formatDateTr(date) {
   return `${d}.${m}.${y}`;
 }
 
-export default function AdminDashboard({ adapter: injectedAdapter, session: injectedSession }) {
+const SERVER_FIELD_MESSAGES = {
+  from: "Sunucu başlangıç tarihini kabul etmedi.",
+  to: "Sunucu bitiş tarihini kabul etmedi.",
+  district: "Sunucu ilçe seçimini kabul etmedi.",
+};
+
+// 422 field errors from the server, shown next to the matching filter control.
+export function serverFilterErrors(error) {
+  if (error?.status !== 422) return {};
+  return Object.fromEntries(
+    Object.keys(error.fieldErrors ?? {})
+      .filter((field) => field in SERVER_FIELD_MESSAGES)
+      .map((field) => [field, SERVER_FIELD_MESSAGES[field]]),
+  );
+}
+
+// Everything below the filters, driven only by the request state and the API
+// response, so each state can be rendered and tested from contract examples.
+export function DashboardContent({ status, data, error, onRetry, adapter, query }) {
+  if (status === "loading" && !data) return <SkeletonPanel />;
+  if (status === "error") return <ErrorPanel error={error} onRetry={onRetry} />;
+  if (!data) return null;
+
+  const hasReviews = data.review_count > 0;
+  return (
+    <div className={status === "loading" ? "admin-content admin-content--stale" : "admin-content"} aria-busy={status === "loading"}>
+      {status === "loading" && <LoadingPanel />}
+      <KpiCards data={data} />
+      {!hasReviews && <NoDataPanel hasFacilities={data.facilities === null || data.facilities.length > 0} />}
+      <div className="admin-grid">
+        <section className="admin-panel" aria-labelledby="trend-title">
+          <h2 id="trend-title">Hijyen trendi</h2>
+          <TrendChart trend={data.trend} threshold={data.critical_threshold} />
+        </section>
+        <section className="admin-panel" aria-labelledby="facilities-title">
+          <h2 id="facilities-title">Tesisler</h2>
+          <FacilityTable rows={data.facilities} />
+        </section>
+      </div>
+      <ExportButtons adapter={adapter} filters={query} disabled={status === "loading"} />
+    </div>
+  );
+}
+
+export default function AdminDashboard({ adapter: injectedAdapter }) {
   const sample = useSampleAdapter();
   const adapter = injectedAdapter ?? sample.adapter;
-  const session = injectedAdapter ? injectedSession ?? null : sampleSessionFor(sample.scenario);
 
   const [filters, setFilters] = useState(() => ({ district: "", preset: "last30", ...presetRange("last30") }));
   const errors = validateRange(filters);
@@ -62,22 +104,8 @@ export default function AdminDashboard({ adapter: injectedAdapter, session: inje
     reload();
   }
 
-  const hasData = data && data.review_count > 0;
-
   return (
     <div className="admin">
-      <header className="admin-topbar">
-        <a className="admin-brand" href="#/">
-          <span className="admin-brand-mark" aria-hidden="true">SL</span>
-          SmartLoo
-        </a>
-        <nav className="admin-topnav" aria-label="Ana menü">
-          <a href="#/">Harita</a>
-          <a href="#/admin" aria-current="page">Yönetim</a>
-        </nav>
-        <AccountMenu session={session} />
-      </header>
-
       <main className="admin-main">
         <div className="admin-heading">
           <h1>Yönetim Paneli</h1>
@@ -100,8 +128,8 @@ export default function AdminDashboard({ adapter: injectedAdapter, session: inje
           <aside className="admin-sample-banner" role="note">
             <div>
               <strong className="admin-sample-label">ÖRNEK VERİ</strong>
-              Bu ekran backend'e bağlı değildir. Tesis adları, puanlar ve tarihler arayüz incelemesi için
-              uydurulmuştur. Yetkilendirme (RBAC) uygulanmamıştır.
+              Bu ekran backend'e bağlı değildir (VITE_ADMIN_DATA=sample). Tesis adları, puanlar ve tarihler
+              arayüz incelemesi için uydurulmuştur. Bu modda oturum ve yetki denetimi uygulanmaz.
             </div>
             <label>
               Demo senaryosu
@@ -114,7 +142,7 @@ export default function AdminDashboard({ adapter: injectedAdapter, session: inje
           </aside>
         )}
 
-        <FilterBar {...filters} errors={errors} onChange={handleFilterChange} />
+        <FilterBar {...filters} errors={{ ...serverFilterErrors(error), ...errors }} onChange={handleFilterChange} />
 
         {valid && (
           <p className="admin-selection" aria-live="polite">
@@ -124,25 +152,8 @@ export default function AdminDashboard({ adapter: injectedAdapter, session: inje
         )}
 
         {!valid && <p className="admin-empty">Geçerli bir tarih aralığı seçildiğinde veriler yüklenecek.</p>}
-        {valid && status === "loading" && !data && <SkeletonPanel />}
-        {valid && status === "error" && <ErrorPanel error={error} onRetry={reload} />}
-        {valid && data && status !== "error" && (
-          <div className={status === "loading" ? "admin-content admin-content--stale" : "admin-content"} aria-busy={status === "loading"}>
-            {status === "loading" && <LoadingPanel />}
-            <KpiCards data={data} />
-            {!hasData && <NoDataPanel />}
-            <div className="admin-grid">
-              <section className="admin-panel" aria-labelledby="trend-title">
-                <h2 id="trend-title">Hijyen trendi</h2>
-                <TrendChart trend={data.trend} threshold={data.critical_threshold} />
-              </section>
-              <section className="admin-panel" aria-labelledby="facilities-title">
-                <h2 id="facilities-title">Tesisler</h2>
-                <FacilityTable rows={data.facilities} />
-              </section>
-            </div>
-            <ExportButtons adapter={adapter} filters={query} disabled={status === "loading"} />
-          </div>
+        {valid && (
+          <DashboardContent status={status} data={data} error={error} onRetry={reload} adapter={adapter} query={query} />
         )}
       </main>
     </div>

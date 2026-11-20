@@ -10,7 +10,8 @@ export default function KpiCards({ data }) {
   const threshold = data.critical_threshold ?? CRITICAL_THRESHOLD;
 
   return (
-    <section className="admin-kpis" aria-label="Özet göstergeler">
+    <section className="admin-kpis" aria-labelledby="kpi-title">
+      <h2 id="kpi-title" className="admin-sr">Özet göstergeler</h2>
       <div className={`admin-card${data.critical_alert ? " admin-card--critical" : ""}`}>
         <h3>Ortalama hijyen</h3>
         {average === null ? (
@@ -34,7 +35,8 @@ export default function KpiCards({ data }) {
             <small>({ratio.active}/{ratio.total})</small>
           </p>
         ) : (
-          <p className="admin-kpi admin-kpi--empty">Bilinmiyor</p>
+          // null means either no matched facility or unknown status data (contract §2.1, §2.3).
+          <p className="admin-kpi admin-kpi--empty">{data.facilities?.length === 0 ? "Tesis yok" : "Bilinmiyor"}</p>
         )}
         <p className="admin-card-note">İdari durum (ACTIVE); anlık doluluk değildir</p>
       </div>

@@ -5,9 +5,10 @@
   --admin-text: #1d2433;
   --admin-muted: #5b6475;
   --admin-border: #dde2ea;
-  --admin-accent: #1f6feb;
+  --admin-accent: #1a63d6;
   --admin-accent-soft: #e8f0fe;
-  --admin-ok: #1a7f37;
+  --admin-ok: #18752f;
+  --admin-input-border: #868fa0; /* 3.26:1 against white, WCAG 1.4.11 */
   --admin-critical: #b42318;
   --admin-critical-bg: #fef3f2;
   --admin-sample-bg: #fff8e1;
@@ -19,8 +20,6 @@
   --admin-gap: clamp(10px, 2.5vw, 16px);
   --admin-touch: 36px;
 
-  min-height: 100vh;
-  min-height: 100dvh;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   color: var(--admin-text);
   background: var(--admin-bg);
@@ -42,143 +41,9 @@ body { margin: 0; }
   cursor: pointer;
   transition: background 0.15s, box-shadow 0.15s;
 }
-.admin button:hover:not(:disabled) { background: #1958c4; }
+.admin button:hover:not(:disabled) { background: #1550b0; }
 .admin button:disabled { opacity: 0.55; cursor: not-allowed; }
 .admin :focus-visible { outline: 3px solid var(--admin-accent); outline-offset: 2px; }
-
-/* Top bar */
-.admin-topbar {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  gap: clamp(12px, 3vw, 24px);
-  /* Safe-area insets keep content clear of notches and rounded corners. */
-  padding: max(8px, env(safe-area-inset-top)) max(var(--admin-gutter), env(safe-area-inset-right))
-    8px max(var(--admin-gutter), env(safe-area-inset-left));
-  background: var(--admin-surface);
-  border-bottom: 1px solid var(--admin-border);
-  box-shadow: var(--admin-shadow);
-}
-.admin .admin-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 700;
-  font-size: 1.1rem;
-  color: var(--admin-text);
-  text-decoration: none;
-}
-.admin-brand-mark {
-  display: inline-grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 8px;
-  background: var(--admin-accent);
-  color: #fff;
-  font-size: 0.8rem;
-}
-.admin-topnav { display: flex; gap: 4px; flex: 1; }
-.admin-topnav a {
-  padding: 6px 10px;
-  border-radius: 6px;
-  color: var(--admin-muted);
-  text-decoration: none;
-  font-weight: 500;
-}
-.admin-topnav a:hover { background: var(--admin-bg); color: var(--admin-text); }
-.admin-topnav a[aria-current="page"] { color: var(--admin-accent); background: var(--admin-accent-soft); }
-
-/* Account menu */
-.admin-account { position: relative; }
-.admin .admin-account-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 10px 4px 4px;
-  background: var(--admin-surface);
-  color: var(--admin-text);
-  border: 1px solid var(--admin-border);
-  border-radius: 999px;
-}
-.admin .admin-account-button:hover { background: var(--admin-bg); }
-.admin-avatar {
-  display: inline-grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--admin-accent-soft);
-  color: var(--admin-accent);
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-.admin-account-name { font-weight: 500; }
-.admin-role-badge {
-  font-size: 0.72rem;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: var(--admin-bg);
-  color: var(--admin-muted);
-}
-.admin-caret { color: var(--admin-muted); font-size: 0.8rem; }
-.admin-account-menu {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 6px);
-  min-width: 240px;
-  display: flex;
-  flex-direction: column;
-  padding: 6px;
-  background: var(--admin-surface);
-  border: 1px solid var(--admin-border);
-  border-radius: var(--admin-radius);
-  box-shadow: 0 8px 24px rgba(16, 24, 40, 0.12);
-}
-.admin-account-menu a,
-.admin .admin-account-menu button {
-  display: block;
-  text-align: left;
-  padding: 8px 10px;
-  border: 0;
-  border-radius: 6px;
-  background: none;
-  color: var(--admin-text);
-  text-decoration: none;
-}
-.admin-account-menu a:hover { background: var(--admin-bg); }
-.admin-account-status {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  margin: 0 0 4px;
-  padding: 8px 10px;
-  font-size: 0.85rem;
-  color: var(--admin-muted);
-  border-bottom: 1px solid var(--admin-border);
-}
-.admin-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--admin-ok); }
-.admin-sample-tag {
-  font-size: 0.7rem;
-  font-weight: 600;
-  padding: 1px 6px;
-  border-radius: 4px;
-  background: var(--admin-sample-bg);
-  border: 1px solid var(--admin-sample-border);
-  color: var(--admin-text);
-}
-.admin-account-note { margin: 4px 10px 6px; font-size: 0.75rem; color: var(--admin-muted); }
-.admin .admin-signin {
-  padding: 6px 14px;
-  border-radius: 8px;
-  border: 1px solid var(--admin-accent);
-  text-decoration: none;
-  font-weight: 500;
-}
 
 /* Page */
 .admin-main {
@@ -211,7 +76,7 @@ body { margin: 0; }
 }
 .admin-sample-label { margin-right: 6px; }
 .admin-sample-banner label { display: inline-flex; gap: 8px; align-items: center; font-weight: 600; }
-.admin-sample-banner select { font: inherit; padding: 4px 6px; border-radius: 6px; border: 1px solid var(--admin-border); }
+.admin-sample-banner select { font: inherit; padding: 4px 6px; border-radius: 6px; border: 1px solid var(--admin-input-border); }
 
 .admin-filters {
   display: flex;
@@ -230,7 +95,7 @@ body { margin: 0; }
   font: inherit;
   font-weight: 400;
   padding: 7px 9px;
-  border: 1px solid var(--admin-border);
+  border: 1px solid var(--admin-input-border);
   border-radius: 8px;
   background: var(--admin-surface);
 }
@@ -391,12 +256,18 @@ body { margin: 0; }
   .admin-spinner, .admin-skeleton span { animation: none; }
 }
 
+/* Visually hidden, still read by assistive technology. Wrap tables in a div with
+   this class: a table ignores width:1px and would widen the page (#65 QA, 360 px). */
 .admin-sr {
   position: absolute;
   width: 1px;
   height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
   overflow: hidden;
   clip: rect(0 0 0 0);
+  clip-path: inset(50%);
   white-space: nowrap;
 }
 
@@ -438,30 +309,13 @@ body { margin: 0; }
   }
 }
 
-/* Top bar: hide secondary items when the viewport is narrow. */
-@media (max-width: 640px) {
-  .admin-topnav { display: none; }
-  .admin-account { margin-left: auto; }
-  .admin-account-name { display: none; }
-  .admin-account-menu { right: -8px; max-width: calc(100vw - 2 * var(--admin-gutter)); }
-}
-
-/* Short landscape phones: free vertical space by not pinning the top bar. */
-@media (orientation: landscape) and (max-height: 500px) {
-  .admin-topbar { position: static; }
-}
-
 /* Touch screens: 44px targets and 16px inputs (prevents iOS zoom on focus). */
 @media (pointer: coarse) {
   .admin { --admin-touch: 44px; }
   .admin button,
   .admin select,
   .admin input[type="date"],
-  .admin-radio,
-  .admin-account-menu a,
-  .admin .admin-signin,
-  .admin-topnav a { min-height: var(--admin-touch); box-sizing: border-box; }
-  .admin-account-menu a { display: flex; align-items: center; }
+  .admin-radio { min-height: var(--admin-touch); box-sizing: border-box; }
   .admin select,
   .admin input[type="date"] { font-size: 16px; }
 }
