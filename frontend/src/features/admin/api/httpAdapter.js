@@ -1,55 +1,50 @@
-// HTTP adapter for the real admin analytics endpoints.
-// NOT WIRED IN YET: both endpoints still return 501 and auth (#23/#24 follow-ups)
-// does not issue tokens. Kept here so the request shape is reviewed together
-// with docs/contracts/admin-analytics-api.md.
+// Live adapter for the admin analytics endpoints, built on the shared API client
+// (Bearer token, 401 session handling). The backend enforces ADMIN (401/403).
 
-import { AdminApiError, EXPORT_PATH, SUMMARY_PATH } from "./contract.js";
+import { EXPORT_PATH, SUMMARY_PATH } from "./contract.js";
 
-export function buildQuery({ district, from, to }, format) {
-  const params = new URLSearchParams();
-  if (format) params.set("format", format);
-  if (district) params.set("district", district);
-  if (from) params.set("from", from);
-  if (to) params.set("to", to);
-  return params.toString();
+export function queryParams({ district, from, to }, format) {
+  const params = {};
+  if (format) params.format = format;
+  if (district) params.district = district;
+  if (from) params.from = from;
+  if (to) params.to = to;
+  return params;
 }
 
-async function request(baseUrl, path, query, getToken, signal) {
-  const token = getToken?.();
-  const response = await fetch(`${baseUrl}${path}?${query}`, {
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
-    signal,
-  });
-  if (!response.ok) {
-    let detail = null;
+export function buildQuery(filters, format) {
+  return new URLSearchParams(queryParams(filters, format)).toString();
+}
+
+// HTTP headers cannot carry raw non-ASCII, so a name such as "Kadıköy" arrives as
+// RFC 5987 filename*=UTF-8''…; prefer it over the plain ASCII filename.
+export function filenameFrom(contentDisposition, fallback) {
+  const header = contentDisposition ?? "";
+  const encoded = /filename\*=UTF-8''([^;]+)/i.exec(header);
+  if (encoded) {
     try {
-      detail = (await response.json()).detail ?? null;
+      return decodeURIComponent(encoded[1].trim());
     } catch {
-      // Non-JSON error body.
+      // Fall through to the plain filename.
     }
-    throw new AdminApiError(response.status, response.statusText || "İstek başarısız", detail);
   }
-  return response;
+  const plain = /filename="?([^";]+)"?/i.exec(header);
+  return plain ? plain[1] : fallback;
 }
 
-function filenameFrom(response, fallback) {
-  const match = /filename="?([^";]+)"?/.exec(response.headers.get("Content-Disposition") ?? "");
-  return match ? match[1] : fallback;
-}
-
-export function createHttpAdapter({ baseUrl = "", getToken }) {
+export function createHttpAdapter({ client }) {
   return {
     isSample: false,
 
-    async fetchSummary(filters, { signal } = {}) {
-      const res = await request(baseUrl, SUMMARY_PATH, buildQuery(filters), getToken, signal);
-      return res.json();
+    fetchSummary(filters, { signal } = {}) {
+      return client.request(SUMMARY_PATH, { query: queryParams(filters), signal });
     },
 
+    // Error statuses throw before a file is created, so an error body is never saved as a report.
     async fetchExport(filters, format, { signal } = {}) {
-      const res = await request(baseUrl, EXPORT_PATH, buildQuery(filters, format), getToken, signal);
+      const res = await client.request(EXPORT_PATH, { query: queryParams(filters, format), signal, raw: true });
       return {
-        filename: filenameFrom(res, `smartloo-hygiene.${format}`),
+        filename: filenameFrom(res.headers.get("Content-Disposition"), `smartloo-hygiene.${format}`),
         mimeType: res.headers.get("Content-Type") ?? "application/octet-stream",
         body: await res.blob(),
       };

@@ -1,17 +1,25 @@
 """SmartLoo FastAPI application.
 
-Nearby search uses PostgreSQL/PostGIS by default.
-Tests can explicitly inject an isolated search provider.
-Other feature routes remain pending and return 501.
+Nearby search, facility details and accounts use PostgreSQL/PostGIS.
+Reviews use MongoDB with aggregates in PostgreSQL. Tests can inject
+isolated accounts, reviews and nearby search. Other features remain pending.
 """
 
+import time
 from copy import deepcopy
+from uuid import UUID
 
 import psycopg
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.responses import JSONResponse
 
-from src.nearby_store import find_nearby
+from src.auth import PostgresAccounts, RepositoryAccounts, current_user, require_admin
+from src.auth import router as auth_router
+from src.nearby_store import find_nearby, find_toilet
+from src.review_scores import ReviewStoreError
+from src.reviews import MongoReviews, PostgresToilets, RepositoryReviews, RepositoryToilets, ReviewService
+from src.reviews import router as reviews_router
+from src.review_ai_coordinator import ReviewAICoordinator
 
 
 def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None):
@@ -22,6 +30,26 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
     app.state.nearby_search = (
         nearby_search if nearby_search is not None else find_nearby
     )
+    app.state.accounts = (
+        RepositoryAccounts(app.state.repository) if state is not None else PostgresAccounts()
+    )
+    app.state.clock = time.time
+    if state is not None:
+        reviews, toilets = RepositoryReviews(app.state.repository), RepositoryToilets(app.state.repository)
+    else:
+        reviews, toilets = MongoReviews(), PostgresToilets()
+    app.state.reviews = ReviewService(reviews, toilets, app.state.accounts)
+    app.state.review_ai_coordinator = ReviewAICoordinator(app.state.reviews)
+    app.include_router(auth_router)
+    app.include_router(reviews_router)
+
+    @app.exception_handler(psycopg.OperationalError)
+    @app.exception_handler(psycopg.InterfaceError)
+    @app.exception_handler(psycopg.errors.QueryCanceled)
+    @app.exception_handler(psycopg.errors.LockNotAvailable)
+    @app.exception_handler(ReviewStoreError)
+    async def database_unavailable(request, exc):
+        return JSONResponse(status_code=503, content={"detail": "Database temporarily unavailable"})
 
     @app.get("/api/v1/toilets/nearby")
     def nearby(
@@ -51,26 +79,40 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
 
         return {"count": len(rows), "results": rows}
 
+    @app.get("/api/v1/toilets/{toilet_id}")
+    def toilet_detail(toilet_id: UUID):
+        try:
+            toilet = find_toilet(toilet_id)
+        except (psycopg.OperationalError, psycopg.InterfaceError) as exc:
+            raise HTTPException(
+                status_code=503,
+                detail="Database temporarily unavailable",
+            ) from exc
+        if toilet is None:
+            raise HTTPException(status_code=404, detail="Toilet not found")
+        return toilet
+
     async def pending():
         return JSONResponse(status_code=501, content={"detail": "Feature not implemented"})
 
-    routes = [
+    public = [
         ("/", ["GET"]),
-        ("/api/v1/toilets/suggest", ["POST"]),
-        ("/api/v1/toilets/{toilet_id}", ["GET"]),
-        ("/api/v1/toilets/{toilet_id}/reviews", ["GET", "POST"]),
         ("/api/v1/toilets/{toilet_id}/summary", ["GET"]),
-        ("/api/v1/reviews/{review_id}", ["PATCH", "DELETE"]),
         ("/api/v1/recommendations", ["GET"]),
-        ("/api/v1/auth/register", ["POST"]),
-        ("/api/v1/auth/login", ["POST"]),
+    ]
+    signed_in = [
+        ("/api/v1/toilets/suggest", ["POST"]),
         ("/api/v1/users/me", ["DELETE"]),
+    ]
+    admin = [
         ("/api/v1/admin/suggestions/{suggestion_id}", ["PATCH"]),
         ("/api/v1/admin/toilets/{toilet_id}", ["PATCH"]),
         ("/api/v1/admin/metrics/summary", ["GET"]),
         ("/api/v1/admin/import", ["POST"]),
         ("/api/v1/admin/analytics/export", ["GET"]),
     ]
-    for path, methods in routes:
-        app.add_api_route(path, pending, methods=methods)
+    for routes, guard in ((public, []), (signed_in, [Depends(current_user)]),
+                          (admin, [Depends(require_admin)])):
+        for path, methods in routes:
+            app.add_api_route(path, pending, methods=methods, dependencies=guard)
     return app

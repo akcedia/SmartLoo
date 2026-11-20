@@ -1,28 +1,50 @@
 # SmartLoo frontend
 
-> **Provisional host.** The shared React skeleton is owned by #23. Until it lands, this
-> folder contains only a minimal Vite + React host so the admin panel (#29) can run.
-> When #23 is merged, `src/features/admin/` moves into the shared app unchanged and this
-> `package.json` / `vite.config.js` are replaced by the shared ones (agree with Özgür/Furkan).
+One React app for every screen: one header, one router and one session.
 
 ## Run
 
 ```bash
 cd frontend
 npm install
-npm run dev     # http://localhost:5173
-npm test        # unit tests for metrics, dates, export and sample adapter
+npm run dev     # http://localhost:5173, /api is proxied to http://localhost:8000
+npm test        # unit and static-render tests (no browser needed)
+npm run build
 ```
 
-## Admin analytics panel (`src/features/admin/`)
+Start the FastAPI backend on port 8000 for live data (see the root README). Set
+`VITE_API_BASE_URL` only when the API is served from another origin.
 
-| Path | Purpose |
-|---|---|
-| `AdminDashboard.jsx` | Analytics tab of the Administration screen (FR-06, FR-07 export). Proposed route: `/admin`. |
-| `api/contract.js` | Endpoint paths, threshold, export columns — mirrors [the API contract](../docs/contracts/admin-analytics-api.md). |
-| `api/sampleAdapter.js` | **Sample data**, labelled on screen. Includes a demo scenario switch for loading / 500 / 401 / 403 states. |
-| `api/httpAdapter.js` | Real endpoint adapter. **Not wired in** — the endpoints still return 501. |
-| `api/metrics.js` | Reference aggregation used by the sample adapter (review-weighted mean, null for no data). |
+## Structure and ownership (#55)
 
-What is **not** done here: live backend integration, authentication, and RBAC. Hiding the
-admin route is not security — the backend must return 401/403.
+| Path | Purpose | Owner |
+|---|---|---|
+| `src/main.jsx`, `src/app/` | Entry, routes (`/`, `/sign-in`, `/register`, `/account`, `/admin`), header, account menu | Onur (with Furkan) |
+| `src/shared/http/apiClient.js` | Shared HTTP client: Bearer token, `ApiError`, FastAPI 422 field errors, one 401 handler | Onur |
+| `src/shared/session/` | `SessionProvider` / `useSession()`: sign-in, register, sign-out, 60-minute expiry | Onur |
+| `src/features/auth/` | Sign In, Register, Account screens and the `RequireRole` screen gate (FR-08) | Onur |
+| `src/features/admin/` | Admin analytics and export (FR-06, FR-07) | Onur |
+| `src/app/HomeRoute.jsx` → map | Discovery map, details and reviews plug into `/` | Furkan |
+
+Feature components call the backend through the session's client:
+
+```jsx
+const { session, api } = useSession();
+const data = await api.request("/api/v1/toilets/nearby", { query: { lat, lon, radius }, auth: false });
+```
+
+## Session rules
+
+- `POST /api/v1/auth/login` returns a 60-minute JWT. Role and expiry are read from its claims for display only; the backend checks every protected call.
+- The token is kept in `sessionStorage` (survives a reload, cleared when the tab closes), never in `localStorage` or cookies. It is dropped at `exp`.
+- Any 401 for a request that carried the token ends the session everywhere and asks the user to sign in again. 403 shows an access message and keeps the session.
+- Signing out clears the token locally. FR-08 has no server-side logout.
+
+## Admin data modes
+
+| Mode | How | Behaviour |
+|---|---|---|
+| Live (default) | `npm run dev` | Requires a real ADMIN session; calls `GET /api/v1/admin/metrics/summary` and `/analytics/export`. No demo controls. Until the backend implements them, the panel shows “not ready (501)”. |
+| Sample | `VITE_ADMIN_DATA=sample npm run dev` | Labelled sample adapter for UI review without a backend. Applies no session or role checks and is never used in the live flow. |
+
+Hiding a screen is not security: the backend must return 401/403.
