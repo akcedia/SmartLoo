@@ -1,9 +1,9 @@
-# Admin analytics API contract (draft)
+# Admin analytics API contract (integration candidate)
 
-Owner: Onur Arda Buldağ (issue [#29](https://github.com/akcedia/SmartLoo/issues/29)). Backend reviewer: Özgür Kılıç. Version 0.2, 11 November 2026.
+Owner: Onur Arda Buldağ (issue [#29](https://github.com/akcedia/SmartLoo/issues/29)). Backend reviewer: Özgür Kılıç. Version 0.3, 20 November 2026.
 Covers FR-06 and FR-07 export. Baseline: [REQUIREMENTS.MD §3.6, §3.7, §8](../REQUIREMENTS.MD), [dashboard-import-export.md](../analysis/behavior/dashboard-import-export.md), [UI Spec Lite — Administration](../analysis/ui-spec-lite.md).
 
-**Status: Draft for frontend/backend review.** Fields marked *required* are fixed by the requirements and the HTTP contract tests (TC-09, TC-10, TC-24, TC-25). Fields marked *proposed* describe the panel contract for joint review. Both endpoints currently return 501 in [src/app.py](../../src/app.py).
+**Status: Implemented and locally verified in PR #71; review and main merge pending.** Fields marked *required* are fixed by the requirements and the HTTP contract tests (TC-09, TC-10, TC-24, TC-25). Fields marked *proposed* describe the panel contract for joint review. Both endpoints are wired to real auth and stores in [src/app.py](../../src/app.py) on this branch.
 
 ## 1. Shared rules
 
@@ -16,7 +16,7 @@ Covers FR-06 and FR-07 export. Baseline: [REQUIREMENTS.MD §3.6, §3.7, §8](../
 | `from`, `to` | `YYYY-MM-DD` calendar dates, both **inclusive**, interpreted in **Europe/Istanbul**. Implemented as the half-open interval `[from 00:00, (to + 1 day) 00:00)` Istanbul time. | §3.6 |
 | Date field | Filter applies to `Review.created_at`. | D-5 resolved |
 | Defaults | If both dates are omitted, use today and the previous 29 Istanbul calendar days. For the last-seven-days preset, send today and the previous six days. If only one boundary is supplied, return 422 and identify the missing boundary. | §3.6, §5 |
-| Invalid input | Non-date strings, `from > to`, or more than 366 inclusive calendar days → 422 with the canonical FastAPI validation body naming the field. | §1 decision table, Q2 |
+| Invalid input | Non-date strings, `from > to`, or more than **366 inclusive calendar days** → 422 with the canonical FastAPI validation body naming the field (`to` for an oversized range). | §1 decision table |
 | Unknown district | 200 with zero matching facilities and the no-data review metrics. Echo the selected dates and district. | §5 |
 
 ### Boundary example
@@ -119,7 +119,7 @@ No further operational columns are added; values the system does not have are no
 ### 3.2 CSV
 
 - `Content-Type: text/csv; charset=utf-8`, body starts with UTF-8 BOM (`EF BB BF`), RFC 4180 quoting, CRLF line endings.
-- `Content-Disposition: attachment; filename="smartloo-hygiene-<district|all>-<from>_<to>.csv"` (*proposed filename pattern*).
+- `Content-Disposition: attachment; filename="smartloo-hygiene-<district|all>-<from>_<to>.csv"` plus RFC 5987 `filename*=UTF-8''…` for Turkish characters; the plain filename is ASCII.
 
 ```csv
 facility_id,district,hygiene_score,open_issues_count,last_cleaned_at
@@ -128,7 +128,7 @@ facility_id,district,hygiene_score,open_issues_count,last_cleaned_at
 
 ### 3.3 JSON
 
-`Content-Type: application/json`. `results` is required (TC-24); `filters` and `count` are proposed.
+`Content-Type: application/json`. The same attachment filename and RFC 5987 rules as CSV apply, with `.json`. `results` is required (TC-24); `filters` and `count` are proposed.
 
 ```json
 {
@@ -155,7 +155,7 @@ facility_id,district,hygiene_score,open_issues_count,last_cleaned_at
 | ID | Topic | Decision for the initial integration |
 |---|---|---|
 | Q1 | Default dates | Today and the previous 29 calendar days in Istanbul. |
-| Q2 | Interval validation | At most 366 inclusive calendar days per query (proposed by the backend owner in #58, accepted for the panel). A longer interval returns 422 naming `to`. The panel checks the same limit before sending; server enforcement is pending in #71. |
+| Q2 | Interval validation | Maximum **366 inclusive calendar days**; 367 or more → 422 on `to`, before store access. Agreed by Onur on 18 November in #58 and enforced by PR #71. |
 | Q3 | Unknown district | 200 with zero matching facilities. |
 | Q4 | District list | Keep the static Istanbul list for the demo. A source-backed list remains open. |
 | Q5 | Summary shape | One response contains `trend` and `facilities`. |
@@ -170,6 +170,57 @@ Select facility metadata and administrative status in PostgreSQL. Select individ
 
 ## 6. Not covered / not claimed
 
-- Both endpoints still return 501. The panel runs on a clearly labelled **sample adapter**; there is no live backend integration in this task (tracked separately).
-- Authentication and RBAC are not implemented. The panel's role switch is a demo control, not security.
+- Both routes are integrated on this branch with PostgreSQL, the #50 MongoDB score projection, and the shared ADMIN guard. Local integration evidence does not claim main merge or final project acceptance.
+- The live `/admin` route uses the shared real session; the sample adapter remains an explicitly labelled opt-in mode. Account deletion, AI and external data import are separate deliveries.
 - Import (`POST /api/v1/admin/import`), moderation and facility status tabs are out of scope for #29.
+## 7. Stable reads and verification (20 November)
+
+The application holds the review writer's advisory locks for every selected
+facility while reading and calculating scores. A busy writer or durable
+`writing` / `repair_required` marker returns **503**, without a report download.
+This prevents transient Mongo changes from being presented as completed reviews.
+All selection locks use one SQL connection, including 500-facility selections;
+no connection is opened per facility. Each response is a coherent read. Separate
+summary/export requests reuse the same filters; a completed intervening review
+change may naturally change the next response.
+
+Production readers use SQL metadata and `read_review_scores` from #50. Only the
+score projection is read; no comment text or author identity enters analytics.
+Tests with injected state use isolated repository readers and the same guard.
+New import/status writers must coordinate with this guard when integrated.
+
+Validation on Windows / Python 3.13 / Node 26.13.0, main `453f3e2` plus this branch:
+
+- 39 required analytics tests: 22 unit/guard cases, 12 real PostgreSQL/Mongo
+  integration cases and TC-09/10/24/25/45; zero failures/errors/skips.
+- Existing auth/review/detail/search/Mongo regression suite: 99 passed.
+- Frontend: 94 tests and production build passed.
+- Mounted live ADMIN screen: real JWT/HTTP/PostGIS/Mongo review create/edit/delete
+  changes KPI/alert and CSV/JSON; download anchor names checked in jsdom, actual
+  response bytes checked independently. No mock analytics response is used.
+- Actual in-app browser: real sign-in to `/admin`, Kadıköy mean **4.20 / 5 reviews**
+  (A=5,5,5,5; B=1), unreviewed facilities retained, Adalar null/0 and no facilities.
+  Both downloaded files had the Turkish filename; 7 matching district rows and
+  identical scores were independently compared. CSV BOM/CRLF verified.
+- Browser and integration test accounts/reviews/facilities were synthetic and
+  private, and were removed afterwards. Actual municipal data is a separate task.
+
+Required GitHub job `analytics-integration / verify` starts real SQL/Mongo and
+rejects fewer than 39 passing cases or any skipped/error/failed test. The separate
+`Admin panel live integration` workflow runs the mounted UI and requires its
+JUnit evidence. These workflows are included for review; local success does not
+claim they have already run on this commit or are required by branch protection.
+
+Reproduce after migrations and `frontend/npm ci`, using your dedicated test DB
+ports and the existing `SMARTLOO_DB_*` / `SMARTLOO_MONGO_URL` variables:
+
+```powershell
+$env:SMARTLOO_TEST_POSTGIS = '1'
+$env:SMARTLOO_TEST_MONGO = '1'
+python -m pytest tests/test_admin_analytics.py tests/test_admin_analytics_integration.py tests/test_requirements.py -q -k 'admin_analytics or tc_09 or tc_10 or tc_24 or tc_25 or tc_45'
+python scripts/check_map_reviews_live.py --suite analytics
+```
+
+Remaining frontend contract/accessibility refinements are #64/#65; this PR does
+not silently merge their branches or mark #61/#58 complete. Mobile, NVDA and
+performance acceptance remain separate checks.

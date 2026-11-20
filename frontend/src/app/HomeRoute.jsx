@@ -5,6 +5,8 @@
 
 import { lazy, Suspense } from "react";
 
+import { MapApiProvider } from "../features/map/MapApiProvider.jsx";
+
 const SearchPage = lazy(() => import("../features/map/SearchPage.jsx"));
 
 export default function HomeRoute() {
@@ -12,7 +14,7 @@ export default function HomeRoute() {
     <main className="app-home">
       <h1 className="app-sr">Harita</h1>
       <Suspense fallback={<p className="app-page app-muted" role="status">Harita yükleniyor…</p>}>
-        <SearchPage />
+        <MapApiProvider><SearchPage /></MapApiProvider>
       </Suspense>
     </main>
   );

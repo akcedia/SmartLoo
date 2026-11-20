@@ -14,11 +14,14 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
-function RecenterMap({ center }) {
+function RecenterMap({ center, citywide, toilets }) {
   const map = useMap();
   useEffect(() => {
-    map.setView([center.lat, center.lon]);
-  }, [center.lat, center.lon, map]);
+    if (citywide) {
+      if (toilets.length) map.fitBounds(toilets.map(t => [t.latitude, t.longitude]), {padding:[30,30], maxZoom:14});
+      else map.setView([41.05, 29.0], 10);
+    } else map.setView([center.lat, center.lon], 15);
+  }, [center.lat, center.lon, citywide, toilets, map]);
   return null;
 }
 
@@ -41,6 +44,7 @@ function MapInteractionHandler({ searchCenter, onClearSelection, onMapMoved }) {
 }
 
 export default function MapView({
+  citywide = false,
   searchCenter,
   userLocation,
   radius,
@@ -54,7 +58,7 @@ export default function MapView({
 }) {
   return (
     <div style={{ position: "relative", height: "100%", width: "100%" }}>
-      {pendingCenter && (
+      {!citywide && pendingCenter && (
         <button
           type="button"
           onClick={onSearchThisArea}
@@ -88,18 +92,18 @@ export default function MapView({
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <RecenterMap center={searchCenter} />
-        <MapInteractionHandler
+        <RecenterMap center={searchCenter} citywide={citywide} toilets={toilets} />
+        {!citywide && <MapInteractionHandler
           searchCenter={searchCenter}
           onClearSelection={onClearSelection}
           onMapMoved={onMapMoved}
-        />
+        />}
 
-        <Circle
+        {!citywide && <Circle
           center={[searchCenter.lat, searchCenter.lon]}
           radius={radius}
           pathOptions={{ color: "#2563eb", fillOpacity: 0.08 }}
-        />
+        />}
 
         {hasLocationPermission && userLocation && (
           <Marker position={[userLocation.lat, userLocation.lon]}>
@@ -110,6 +114,8 @@ export default function MapView({
         {toilets.map((toilet) => (
           <Marker
             key={toilet.id}
+            alt={toilet.name}
+            title={toilet.name}
             position={[toilet.latitude, toilet.longitude]}
             eventHandlers={{
               click: () => onSelectToilet(toilet),
@@ -119,4 +125,4 @@ export default function MapView({
       </MapContainer>
     </div>
   );
-} 
+}

@@ -29,7 +29,7 @@ The system shall store each public toilet with the following fields:
 | `has_baby_changing` | boolean | Nullable; unknown when absent |
 | `is_free` | boolean | Nullable; unknown when absent |
 | `opening_hours` | string, nullable | |
-| `status` | enum | `ACTIVE`, `CLOSED`, `MAINTENANCE`; default `ACTIVE` |
+| `status` | enum | `ACTIVE`, `CLOSED`, `MAINTENANCE`; default `ACTIVE` for ordinary records. External unknown/seasonal state is nullable (21 November integration decision); NULL is not open-now |
 | `average_cleanliness` | decimal (1–5), nullable | Derived from reviews (see REQ-DB-05) |
 | `review_count` | integer | Derived, default 0 |
 | `created_at`, `updated_at` | timestamp | Set by the system |
