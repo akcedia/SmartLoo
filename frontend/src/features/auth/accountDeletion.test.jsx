@@ -48,9 +48,9 @@ describe("account deletion request (FR-10, TC-34)", () => {
     expect(onUnauthorized).toHaveBeenCalledOnce();
   });
 
-  it("says the account was not deleted for 501 and network errors", () => {
-    expect(deletionErrorMessage({ status: 501 })).toMatch(/silinmedi/);
-    expect(deletionErrorMessage({ status: 0 })).toMatch(/silinmedi/);
+  it("does not claim a deletion outcome for 501 and lost responses", () => {
+    expect(deletionErrorMessage({ status: 501 })).toMatch(/onaylamadı/);
+    expect(deletionErrorMessage({ status: 0 })).toMatch(/onaylanmadı/);
   });
 });
 

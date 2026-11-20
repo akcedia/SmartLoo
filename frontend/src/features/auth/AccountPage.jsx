@@ -73,7 +73,7 @@ export default function AccountPage({ initialStep = "idle" }) {
         <ul className="app-list">
           <li>E-posta adresiniz, görünen adınız ve parola özetiniz kalıcı olarak silinir.</li>
           <li>Yorumlarınız silinmez; “Anonim” olarak görünür ve puanlar istatistiklerde kalır.</li>
-          <li>Yorum metinlerinizdeki e-posta, telefon gibi kişisel bilgiler temizlenir.</li>
+          <li>Yorum metinlerinizdeki görünen adınız, e-posta adresleri ve tanınan telefon numaraları temizlenir.</li>
           <li>Bu işlem geri alınamaz. Mevcut oturumunuz hemen geçersiz olur.</li>
         </ul>
 

@@ -18,9 +18,9 @@ export function deletionErrorMessage(error) {
     case 401:
       return "Oturumunuz geçersiz veya süresi dolmuş. Hesabınızı silmek için yeniden giriş yapın.";
     case 501:
-      return "Hesap silme henüz backend'de uygulanmadı. Hesabınız silinmedi.";
+      return "Hesap silme şu anda kullanılamıyor. Sunucu silme işlemini onaylamadı.";
     case 0:
-      return "Sunucuya ulaşılamadı. Hesabınız silinmedi; bağlantınızı kontrol edip tekrar deneyin.";
+      return "Sunucudan yanıt alınamadı; silme işlemi onaylanmadı. Bağlantınızı kontrol edip yeniden deneyin.";
     default:
       return "Hesap silme tamamlanamadı ve sunucu tarafından onaylanmadı. Hesabınızın silindiğini varsaymayın; tekrar deneyin.";
   }

@@ -18,7 +18,7 @@ function adapterWith(responder) {
 
 describe("live admin adapter", () => {
   it("requests the summary with the selected filters and the session token", async () => {
-    const { adapter, calls } = adapterWith(() => Response.json({ review_count: 0, average_cleanliness: null }));
+    const { adapter, calls } = adapterWith(() => Response.json({ review_count: 0, average_cleanliness: null, critical_alert: false }));
     const data = await adapter.fetchSummary(filters);
     expect(adapter.isSample).toBe(false);
     expect(data.average_cleanliness).toBeNull();
@@ -46,6 +46,14 @@ describe("live admin adapter", () => {
       const { adapter } = adapterWith(() => Response.json({ detail: "x" }, { status }));
       await expect(adapter.fetchExport(filters, "json")).rejects.toMatchObject({ status });
     }
+  });
+
+  it("names a download without Content-Disposition after the selection", async () => {
+    const { adapter } = adapterWith(() => Response.json({ count: 0, results: [] }));
+    const file = await adapter.fetchExport(filters, "json");
+    expect(file.filename).toBe("smartloo-hygiene-Kadıköy-2026-11-01_2026-11-07.json");
+    const all = await adapter.fetchExport({ district: null, from: "2026-11-01", to: "2026-11-07" }, "json");
+    expect(all.filename).toBe("smartloo-hygiene-all-2026-11-01_2026-11-07.json");
   });
 
   it("reads plain and RFC 5987 filenames", () => {
