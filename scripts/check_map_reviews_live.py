@@ -5,6 +5,7 @@ connection variables. Requires frontend npm ci. Provisions only a private facili
 three accounts and a unique Mongo database; removes them in finally.
 """
 import os
+import argparse
 from pathlib import Path
 import shutil
 import socket
@@ -18,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 
-def main():
+def main(suite="reviews"):
     if os.getenv("SMARTLOO_TEST_POSTGIS") != "1" or os.getenv("SMARTLOO_TEST_MONGO") != "1":
         raise SystemExit("Explicit test database opt-in required")
     import pymongo
@@ -75,7 +76,8 @@ def main():
         npm = shutil.which("npm.cmd" if os.name == "nt" else "npm")
         if not npm:
             raise RuntimeError("npm is required")
-        command = [npm, "test", "--", "src/features/map/reviewSession.test.jsx"]
+        command = ([npm, "test", "--", "--config", "vitest.admin-live.config.js"] if suite == "analytics"
+                   else [npm, "test", "--", "src/features/map/reviewSession.test.jsx"])
         if env.get("SMARTLOO_MAP_JUNIT"):
             command.extend(["--reporter=default", "--reporter=junit", f"--outputFile={env['SMARTLOO_MAP_JUNIT']}"])
         result = subprocess.run(command,
@@ -100,4 +102,6 @@ def main():
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--suite", choices=("reviews", "analytics"), default="reviews")
+    raise SystemExit(main(parser.parse_args().suite))

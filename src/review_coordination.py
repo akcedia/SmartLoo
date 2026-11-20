@@ -4,7 +4,7 @@ import json
 import threading
 import time
 import uuid
-from contextlib import contextmanager
+from contextlib import ExitStack, contextmanager
 from contextvars import ContextVar
 from copy import deepcopy
 from datetime import datetime
@@ -18,6 +18,10 @@ def document_json(document):
     if document is None:
         return None
     return json.loads(json.dumps(document, default=lambda value: value.isoformat()))
+
+
+def review_lock_key(toilet_id):
+    return uuid.UUID(toilet_id).int % (2 ** 63)
 
 
 class MemoryReviewCoordination:
@@ -52,6 +56,17 @@ class MemoryReviewCoordination:
             "average_cleanliness": row.get("average_cleanliness"),
             "operation": deepcopy(self.pending_operations.get(toilet_id)),
         }
+
+    @contextmanager
+    def snapshot_guard(self, toilet_ids):
+        """Keep the whole analytics selection stable; never wait while holding another lock."""
+        with ExitStack() as stack:
+            for toilet_id in sorted(set(toilet_ids)):
+                session = stack.enter_context(self.guard(toilet_id, wait=False))
+                if session is None or session.pending():
+                    yield False
+                    return
+            yield True
 
 
 class MemoryReviewSession:
@@ -106,7 +121,7 @@ class PostgresReviewCoordination:
         with connect() as connection:
             connection.autocommit = True
             connection.execute("SET statement_timeout = '5s'")
-            key = uuid.UUID(toilet_id).int % (2 ** 63)
+            key = review_lock_key(toilet_id)
             deadline = time.monotonic() + (2 if wait else 0)
             while True:
                 acquired = connection.execute(
@@ -126,6 +141,34 @@ class PostgresReviewCoordination:
                 self.current.reset(token)
                 # Closing this dedicated connection releases its session lock even after errors.
                 connection.close()
+
+    @contextmanager
+    def snapshot_guard(self, toilet_ids):
+        """Lock an entire selection on ONE SQL session, including large citywide reads.
+
+        Uses the writer's advisory-lock keys. No per-facility connection pool
+        growth; connection close releases every acquired lock on all exits.
+        """
+        ids = sorted(set(toilet_ids))
+        if not ids:
+            yield True
+            return
+        with connect() as connection:
+            connection.autocommit = True
+            connection.execute("SET statement_timeout = '5s'")
+            keys = sorted({review_lock_key(key) for key in ids})
+            acquired = connection.execute(
+                """SELECT bool_and(pg_try_advisory_lock(lock_key)) AS acquired
+                   FROM unnest(%s::bigint[]) AS keys(lock_key)""", (keys,),
+            ).fetchone()["acquired"]
+            if not acquired:
+                yield False
+                return
+            pending = connection.execute(
+                "SELECT EXISTS(SELECT 1 FROM review_operations WHERE toilet_id = ANY(%s::uuid[])) AS pending",
+                (ids,),
+            ).fetchone()["pending"]
+            yield not pending
 
     def metadata(self, toilet_id):
         with connect() as connection:
