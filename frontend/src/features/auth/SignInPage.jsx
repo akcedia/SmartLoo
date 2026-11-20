@@ -1,9 +1,10 @@
 // Sign In screen (UI Spec Lite, FR-08). POST /api/v1/auth/login via the shared session.
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useSession } from "../../shared/session/SessionProvider.jsx";
 import { Link, navigate, safeReturnPath } from "../../app/router.jsx";
 import FormField from "./FormField.jsx";
+import { useFocusFirstError } from "./useFocusFirstError.js";
 import { authErrorMessage, validateSignIn } from "./validation.js";
 
 export default function SignInPage({ search = "" }) {
@@ -16,6 +17,9 @@ export default function SignInPage({ search = "" }) {
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  const formRef = useRef(null);
+  useFocusFirstError(formRef, attempt);
 
   if (session) {
     return (
@@ -34,7 +38,10 @@ export default function SignInPage({ search = "" }) {
     const found = validateSignIn(form);
     setErrors(found);
     setFormError(null);
-    if (Object.keys(found).length) return;
+    if (Object.keys(found).length) {
+      setAttempt((n) => n + 1);
+      return;
+    }
     setBusy(true);
     try {
       await signIn(form.email, form.password);
@@ -44,6 +51,7 @@ export default function SignInPage({ search = "" }) {
       setFormError(authErrorMessage(error, "sign-in"));
       setForm((f) => ({ ...f, password: "" }));
       setBusy(false);
+      setAttempt((n) => n + 1);
     }
   }
 
@@ -53,7 +61,7 @@ export default function SignInPage({ search = "" }) {
       {registered && (
         <p className="app-alert app-alert--ok" role="status">Hesabınız oluşturuldu. Şimdi giriş yapabilirsiniz.</p>
       )}
-      <form className="app-form" onSubmit={handleSubmit} noValidate aria-busy={busy}>
+      <form ref={formRef} className="app-form" onSubmit={handleSubmit} noValidate aria-busy={busy}>
         {formError && <p className="app-alert app-alert--error" role="alert">{formError}</p>}
         <FormField label="E-posta" type="email" name="email" autoComplete="email" value={form.email} onChange={set("email")} error={errors.email} required />
         <FormField label="Parola" type="password" name="password" autoComplete="current-password" value={form.password} onChange={set("password")} error={errors.password} required />

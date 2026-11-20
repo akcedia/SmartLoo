@@ -2,7 +2,7 @@
 // Route ownership (#55/#58): entry, routing and the session client are Onur's;
 // map, details and review components are Furkan's and plug into "/".
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { SessionProvider, useSession } from "../shared/session/SessionProvider.jsx";
 import { Link, useLocation } from "./router.jsx";
 import AccountMenu from "./AccountMenu.jsx";
@@ -53,21 +53,40 @@ function Notice() {
   );
 }
 
+// After client-side navigation, move focus to the new page's heading so keyboard
+// and screen-reader users start at the new content (no full page load happens).
+export function focusPageHeading(root) {
+  const target = root?.querySelector("h1") ?? root;
+  if (!target) return;
+  if (!target.hasAttribute("tabindex")) target.setAttribute("tabindex", "-1");
+  target.focus({ preventScroll: true });
+}
+
 function Routes() {
   const { path, search } = useLocation();
   const route = routeFor(path);
+  const mainRef = useRef(null);
+  const firstRender = useRef(true);
 
   useEffect(() => {
     const titles = { home: "Harita", "sign-in": "Giriş yap", register: "Kayıt ol", account: "Hesabım", admin: "Yönetim", "not-found": "Sayfa bulunamadı" };
     document.title = `${titles[route]} · SmartLoo`;
   }, [route]);
 
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    focusPageHeading(mainRef.current);
+  }, [path]);
+
   return (
     <div className={route === "home" ? "app app--full" : "app"}>
       <a className="app-skip" href="#main">İçeriğe geç</a>
       <Header path={path} />
       <Notice />
-      <div id="main" tabIndex={-1}>
+      <div id="main" tabIndex={-1} ref={mainRef}>
         {route === "home" && <HomeRoute />}
         {route === "sign-in" && <SignInPage search={search} />}
         {route === "register" && <RegisterPage />}

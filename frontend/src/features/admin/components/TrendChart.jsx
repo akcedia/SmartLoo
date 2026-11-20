@@ -76,6 +76,28 @@ export default function TrendChart({ trend, threshold = CRITICAL_THRESHOLD }) {
         )}
       </svg>
       <figcaption>Günlük ortalama (1–5). Kesikli çizgi: {threshold} kritik eşik. Değerlendirme olmayan günler boş bırakılır.</figcaption>
+      {/* The chart is an image to assistive technology; this table carries the same data as text. */}
+      <div className="admin-sr">
+      <table>
+        <caption>Günlük hijyen ortalamaları ({trend.length - points.length} gün değerlendirmesiz)</caption>
+        <thead>
+          <tr>
+            <th scope="col">Tarih</th>
+            <th scope="col">Ortalama</th>
+            <th scope="col">Değerlendirme</th>
+          </tr>
+        </thead>
+        <tbody>
+          {points.map((d) => (
+            <tr key={d.date}>
+              <th scope="row">{d.date}</th>
+              <td>{d.average_cleanliness.toFixed(2)}{d.average_cleanliness < threshold ? " (kritik)" : ""}</td>
+              <td>{d.review_count}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      </div>
     </figure>
   );
 }
