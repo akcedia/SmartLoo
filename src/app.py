@@ -13,6 +13,7 @@ import psycopg
 from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.responses import JSONResponse
 
+from src.accounts import router as accounts_router
 from src.auth import PostgresAccounts, RepositoryAccounts, current_user, require_admin
 from src.auth import router as auth_router
 from src.nearby_store import find_nearby, find_toilet, find_ibb_facilities
@@ -44,6 +45,7 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
     app.state.review_ai_coordinator = ReviewAICoordinator(app.state.reviews)
     app.include_router(auth_router)
     app.include_router(reviews_router)
+    app.include_router(accounts_router)
     app.state.analytics_read_facilities = (
         (lambda district: analytics_store.repository_facilities(app.state.repository, district))
         if state is not None else analytics_store.read_facilities
@@ -128,7 +130,6 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
     ]
     signed_in = [
         ("/api/v1/toilets/suggest", ["POST"]),
-        ("/api/v1/users/me", ["DELETE"]),
     ]
     admin = [
         ("/api/v1/admin/suggestions/{suggestion_id}", ["PATCH"]),

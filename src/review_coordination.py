@@ -4,7 +4,7 @@ import json
 import threading
 import time
 import uuid
-from contextlib import ExitStack, contextmanager
+from contextlib import ExitStack, contextmanager, nullcontext
 from contextvars import ContextVar
 from copy import deepcopy
 from datetime import datetime
@@ -57,6 +57,10 @@ class MemoryReviewCoordination:
             "operation": deepcopy(self.pending_operations.get(toilet_id)),
         }
 
+    def pending_for_author(self, user_id):
+        return any(op.get("author_id") == user_id or (op.get("before_document") or {}).get("user_id") == user_id
+                   for op in self.pending_operations.values())
+
     @contextmanager
     def snapshot_guard(self, toilet_ids):
         """Keep the whole analytics selection stable; never wait while holding another lock."""
@@ -79,11 +83,12 @@ class MemoryReviewSession:
     def pending(self):
         return deepcopy(self.coordination.pending_operations.get(self.toilet_id))
 
-    def begin(self, review_id, before):
+    def begin(self, review_id, before, author_id=None):
         if self.pending() is not None:
             raise RuntimeError("Review repair required")
         operation = {
             "operation_id": str(uuid.uuid4()), "review_id": review_id,
+            "author_id": author_id or (before or {}).get("user_id"),
             "before_document": document_json(before), "state": "writing",
         }
         self.coordination.pending_operations[self.toilet_id] = operation
@@ -112,13 +117,20 @@ class MemoryReviewSession:
 
 
 class PostgresReviewCoordination:
-    def __init__(self):
+    def __init__(self, connection_provider=lambda: None):
         self.current = ContextVar(f"review-session-{id(self)}", default=None)
+        self.connection_provider = connection_provider
+
+    def pending_for_author(self, user_id):
+        with connect() as conn:
+            return conn.execute("""SELECT EXISTS(SELECT 1 FROM review_operations
+                WHERE author_id=%s OR before_document->>'user_id'=%s) AS pending""", (user_id, user_id)).fetchone()["pending"]
 
     @contextmanager
     def guard(self, toilet_id, wait=True):
         # Dedicated session owns the advisory lock across marker and aggregate commits.
-        with connect() as connection:
+        active = self.connection_provider()
+        with (nullcontext(active) if active is not None else connect()) as connection:
             connection.autocommit = True
             connection.execute("SET statement_timeout = '5s'")
             key = review_lock_key(toilet_id)
@@ -140,7 +152,10 @@ class PostgresReviewCoordination:
             finally:
                 self.current.reset(token)
                 # Closing this dedicated connection releases its session lock even after errors.
-                connection.close()
+                if active is None:
+                    connection.close()
+                elif not connection.closed:
+                    connection.execute("SELECT pg_advisory_unlock(%s)", (key,))
 
     @contextmanager
     def snapshot_guard(self, toilet_ids):
@@ -199,12 +214,12 @@ class PostgresReviewSession:
                FROM review_operations WHERE toilet_id = %s""", (self.toilet_id,),
         ).fetchone()
 
-    def begin(self, review_id, before):
+    def begin(self, review_id, before, author_id=None):
         operation_id = str(uuid.uuid4())
         self.connection.execute(
-            """INSERT INTO review_operations (toilet_id, operation_id, review_id, before_document)
-               VALUES (%s, %s, %s, %s)""",
-            (self.toilet_id, operation_id, review_id, Jsonb(document_json(before))),
+            """INSERT INTO review_operations (toilet_id, operation_id, review_id, before_document, author_id)
+               VALUES (%s, %s, %s, %s, %s)""",
+            (self.toilet_id, operation_id, review_id, Jsonb(document_json(before)), author_id or (before or {}).get("user_id")),
         )
         return self.pending()
 

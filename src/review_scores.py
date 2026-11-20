@@ -44,6 +44,9 @@ def ensure_review_indexes(collection):
         name="one_review_per_user_and_toilet",
     )
     collection.create_index([("toilet_id", 1), ("created_at", 1)], name="reviews_by_toilet_and_time")
+    # Account deletion finds all reviews of one author (FR-10).
+    collection.create_index([("user_id", 1)], name="reviews_by_user",
+                            partialFilterExpression={"user_id": {"$type": "string"}})
 
 
 def _utc(value, name):
