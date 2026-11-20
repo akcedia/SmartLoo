@@ -12,6 +12,7 @@ RepositoryToilets over the in-memory state; the API uses MongoReviews and Postgr
 
 import re
 import uuid
+from functools import wraps
 from contextlib import nullcontext
 from datetime import datetime, timezone
 
@@ -238,12 +239,27 @@ def redact(text, personal_terms=()):
     return PII_PATTERN.sub("[removed]", text)
 
 
+def account_guarded(method):
+    """Account locks precede facility locks, including ADMIN deletion of another author."""
+    @wraps(method)
+    def guarded(self, principal, *args, **kwargs):
+        owner = self._review(args[0]).get("user_id") if method.__name__ != "create" else None
+        ids = sorted({principal.sub, *([owner] if owner else [])})
+        with self.accounts.guard(ids) as users:
+            actor = users[principal.sub]
+            if actor is None:
+                raise HTTPException(status_code=401, detail="Invalid or expired token")
+            return method(self, Principal(sub=principal.sub, role=actor["role"]), *args, **kwargs)
+    return guarded
+
+
 class ReviewService:
     def __init__(self, reviews, toilets, accounts):
         self.reviews, self.toilets, self.accounts = reviews, toilets, accounts
         self.coordination = (
             MemoryReviewCoordination(toilets.repository)
-            if isinstance(toilets, RepositoryToilets) else PostgresReviewCoordination()
+            if isinstance(toilets, RepositoryToilets) else PostgresReviewCoordination(
+                connection_provider=lambda: accounts.active_connection.get())
         )
 
     def _ready(self, session):
@@ -315,8 +331,8 @@ class ReviewService:
             toilet_id, self.reviews.scores, connection=session.connection,
         ))
 
-    def _change(self, session, toilet_id, review_id, before, write):
-        operation = session.begin(review_id, before)
+    def _change(self, session, toilet_id, review_id, before, write, author_id=None):
+        operation = session.begin(review_id, before, author_id=author_id)
         try:
             write()
             self._commit(toilet_id)
@@ -333,6 +349,7 @@ class ReviewService:
             docs = self.reviews.by_toilet(key)
             return {"count": len(docs), "results": [self._public(d, principal) for d in docs[offset:offset + limit]]}
 
+    @account_guarded
     def create(self, principal, toilet_id, payload):
         key = self._toilet(toilet_id, for_review=True)
         with self.coordination.guard(key) as session:
@@ -344,9 +361,10 @@ class ReviewService:
             doc = {"id": str(uuid.uuid4()), "toilet_id": key, "user_id": principal.sub,
                    "cleanliness_score": payload.cleanliness_score, "comment": payload.comment,
                    "tags": payload.tags, "is_anonymized": False, "created_at": now, "updated_at": now}
-            self._change(session, key, doc["id"], None, lambda: self.reviews.insert(doc))
+            self._change(session, key, doc["id"], None, lambda: self.reviews.insert(doc), author_id=principal.sub)
             return self._public(self.reviews.get(doc["id"]), principal)
 
+    @account_guarded
     def update(self, principal, review_id, patch):
         old = self._review(review_id)
         with self.coordination.guard(old["toilet_id"]) as session:
@@ -359,6 +377,7 @@ class ReviewService:
             self._change(session, old["toilet_id"], review_id, old, lambda: self.reviews.replace(new))
             return self._public(self.reviews.get(review_id), principal)
 
+    @account_guarded
     def delete(self, principal, review_id):
         old = self._review(review_id)
         with self.coordination.guard(old["toilet_id"]) as session:

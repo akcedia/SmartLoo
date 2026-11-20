@@ -2,7 +2,7 @@
 
 Owner: Fırat Karadoğan ([#56](https://github.com/akcedia/SmartLoo/issues/56), [#51](https://github.com/akcedia/SmartLoo/pull/51)). For the shared session client (Onur, Furkan) and protected backend routes (Özgür). Examples below are real responses from `src/auth.py`; values such as ids and tokens differ per run.
 
-**Status.** Implemented and tested with PostgreSQL. Review, suggestion and account-deletion routes check the token and then still return 501 until those features land.
+**Status.** Implemented and tested with PostgreSQL. Review CRUD and account deletion are implemented; suggestion submission remains separate integration work.
 
 ## Register
 
@@ -72,6 +72,28 @@ def summary(admin: Principal = Depends(require_admin)): ...   # admin.sub, admin
 | 503 | `{"detail": "..."}` | A review could not be anonymized consistently. The account is **not** deleted yet; retry the same request. |
 
 Client: after 204, clear the stored token and return to the map as a guest. Ask for confirmation before calling; there is no undo.
+
+Account deletion and review mutations acquire the same account guard before any
+facility guard. They recheck account existence and current role under that guard;
+an already validated request cannot write after account removal. PostgreSQL uses
+one session for both guards and the review journal. Migration 007 records the
+author even for a pending creation with no before-document. A pending author
+operation blocks deletion across application restarts, including when Mongo has
+already lost the author link. Repair the affected facility with the review
+service's `reconcile()` before retrying in that case.
+
+The SQL account/sign-in-history transaction runs only after all author documents
+and recovery records are cleared. Completed anonymizations stay completed on a
+later failure; retry skips them. No Mongo cleanup runs after account removal.
+This endpoint does not implement suggestion cleanup for a future suggestion store.
+
+Verification on 21 November (Python 3.13, PostGIS 16-3.4, MongoDB 7):
+the required deletion suite runs 8 isolated cases, 6 real-database cases and
+TC-34, with 15 passed and zero failures/errors/skips. Cases cover stale
+prevalidated writes, pending creation before Mongo insertion, failed compensation
+across app instances, SQL deletion rollback and actual server-side session loss.
+The shared backend regression suite also passed all 133 cases without skips.
+CI runs deletion as a required database suite and rejects skipped/incomplete runs.
 
 ## Demo accounts
 

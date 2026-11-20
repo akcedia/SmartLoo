@@ -11,6 +11,10 @@ RepositoryAccounts, an isolated in-memory double over the test state.
 import os
 import re
 import uuid
+import threading
+import time
+from contextlib import contextmanager
+from contextvars import ContextVar
 from dataclasses import dataclass
 from datetime import datetime, timezone
 
@@ -103,6 +107,21 @@ class RepositoryAccounts:
     def __init__(self, repository):
         self.users = repository.setdefault("users", {})
         self.failures = repository.setdefault("login_attempts", [])
+        self.locks = repository.setdefault("account_locks", {})
+
+    @contextmanager
+    def guard(self, user_ids):
+        locks = []
+        try:
+            for key in sorted(set(user_ids)):
+                lock = self.locks.setdefault(key, threading.Lock())
+                if not lock.acquire(timeout=2):
+                    raise HTTPException(status_code=503, detail="Account operation in progress")
+                locks.append(lock)
+            yield {key: self.get(key) for key in user_ids}
+        finally:
+            for lock in reversed(locks):
+                lock.release()
 
     def find_by_email(self, email):
         return next((u for u in self.users.values() if u["email"].lower() == email), None)
@@ -131,6 +150,28 @@ class RepositoryAccounts:
 
 
 class PostgresAccounts:
+    def __init__(self):
+        self.active_connection = ContextVar(f"account-connection-{id(self)}", default=None)
+
+    @contextmanager
+    def guard(self, user_ids):
+        # Same SQL session is reused by the facility journal. Losing it releases
+        # both account and facility locks; the durable author marker still blocks deletion.
+        with connect() as conn:
+            conn.autocommit = True
+            token = self.active_connection.set(conn)
+            try:
+                for key in sorted(set(user_ids)):
+                    deadline = time.monotonic() + 2
+                    while not conn.execute("SELECT pg_try_advisory_lock(560075,%s) AS acquired",
+                                           (uuid.UUID(key).int % (2 ** 31),)).fetchone()["acquired"]:
+                        if time.monotonic() >= deadline:
+                            raise HTTPException(status_code=503, detail="Account operation in progress")
+                        time.sleep(.02)
+                yield {key: conn.execute("SELECT * FROM users WHERE id=%s", (key,)).fetchone() for key in user_ids}
+            finally:
+                self.active_connection.reset(token)
+                conn.close()
     def find_by_email(self, email):
         with connect() as conn:
             return conn.execute("SELECT * FROM users WHERE email = %s", (email,)).fetchone()
@@ -170,9 +211,12 @@ class PostgresAccounts:
 
     def delete(self, user_id, email):
         """Remove the account row (email, display name, password hash) and its sign-in history."""
-        with connect() as conn:
-            conn.execute("DELETE FROM login_failures WHERE email = %s", (email,))
-            conn.execute("DELETE FROM users WHERE id = %s", (user_id,))
+        from contextlib import nullcontext
+        active = self.active_connection.get()
+        with (nullcontext(active) if active is not None else connect()) as conn:
+            with conn.transaction():
+                conn.execute("DELETE FROM login_failures WHERE email = %s", (email,))
+                conn.execute("DELETE FROM users WHERE id = %s", (user_id,))
 
 
 def signing_key(request):
