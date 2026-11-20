@@ -66,11 +66,17 @@ export function ErrorPanel({ error, onRetry }) {
   );
 }
 
-export function NoDataPanel() {
+// A successful empty result. Distinct from ErrorPanel: a failed query never lands here.
+export function NoDataPanel({ hasFacilities = true }) {
   return (
     <div className="admin-status" role="status">
       <h2>Veri yok</h2>
-      <p>Seçilen ilçe ve tarih aralığında değerlendirme bulunmuyor. Ortalama gösterilmez (0 değildir); ilçeyi ya da dönemi değiştirin.</p>
+      <p>
+        {hasFacilities
+          ? "Seçilen tarih aralığında bu tesisler için değerlendirme bulunmuyor."
+          : "Seçilen ilçede eşleşen tesis yok."}{" "}
+        Ortalama gösterilmez (0 değildir); ilçeyi ya da dönemi değiştirin.
+      </p>
     </div>
   );
 }

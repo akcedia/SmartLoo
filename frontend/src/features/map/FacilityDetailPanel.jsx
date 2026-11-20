@@ -48,8 +48,9 @@ export default function FacilityDetailPanel({
         position: "absolute",
         top: "16px",
         right: "16px",
-        width: "min(360px, calc(100vw - 32px))",
-        maxHeight: "calc(100vh - 110px)",
+        width: "min(360px, calc(100% - 32px))",
+        maxHeight: "calc(100% - 32px)",
+        boxSizing: "border-box",
         overflowY: "auto",
         background: "#ffffff",
         padding: "16px",
@@ -68,7 +69,7 @@ export default function FacilityDetailPanel({
           gap: "8px",
         }}
       >
-        <h3 style={{ margin: 0, fontSize: "16px", color: "#0f172a" }}>
+        <h3 style={{ margin: 0, fontSize: "16px", color: "#0f172a", overflowWrap: "anywhere" }}>
           {merged.name}
         </h3>
         <button
@@ -219,5 +220,5 @@ export default function FacilityDetailPanel({
         </>
       )}
     </aside>
-  ); 
+  );
 }

@@ -25,6 +25,14 @@ export function buildSignInUrl(nextPath) {
 export const apiRequest = createApiClient({ getToken: getStoredAccessToken }).request;
 
 export function createToiletApi(request = apiRequest) {
+  async function fetchIbbToilets({ filters, signal }) {
+    const query = {};
+    for (const field of ["open_now", "has_disabled_access", "has_baby_changing"]) {
+      if (filters[field]) query[field] = true;
+    }
+    if (filters.pricing !== "all") query.is_free = filters.pricing === "free";
+    return request("/api/v1/toilets", { query, auth: false, signal });
+  }
   async function fetchNearbyToilets({ lat, lon, radius, filters, signal }) {
     const params = new URLSearchParams({
       lat: String(lat),
@@ -142,7 +150,7 @@ export function createToiletApi(request = apiRequest) {
       message: data?.message || data?.reason || "",
     };
   }
-  return { fetchNearbyToilets, fetchToiletDetail, fetchToiletReviews, createToiletReview, updateReview, deleteReview, fetchToiletAiSummary, fetchAiRecommendations };
+  return { fetchIbbToilets, fetchNearbyToilets, fetchToiletDetail, fetchToiletReviews, createToiletReview, updateReview, deleteReview, fetchToiletAiSummary, fetchAiRecommendations };
 }
 
 export const { fetchNearbyToilets, fetchToiletDetail, fetchToiletReviews, createToiletReview, updateReview, deleteReview, fetchToiletAiSummary, fetchAiRecommendations } = createToiletApi();

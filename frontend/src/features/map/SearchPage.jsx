@@ -6,14 +6,15 @@ import AiRecommendationsPanel from "./AiRecommendationsPanel.jsx";
 
 const DEFAULT_CENTER = { lat: 41.0, lon: 29.0 };
 const INITIAL_FILTERS = {
-  open_now: true,
+  open_now: false,
   has_disabled_access: false,
   has_baby_changing: false,
   pricing: "all", // "all" | "free" | "paid"
 };
 
 export default function SearchPage({ onSwitchToAdmin }) {
-  const { fetchNearbyToilets, fetchToiletDetail } = useMapApi();
+  const { fetchIbbToilets, fetchNearbyToilets, fetchToiletDetail } = useMapApi();
+  const [citywide, setCitywide] = useState(true);
   const [searchCenter, setSearchCenter] = useState(DEFAULT_CENTER);
   const [userLocation, setUserLocation] = useState(null);
   const [locationStatus, setLocationStatus] = useState("pending"); // "pending" | "granted" | "denied"
@@ -60,7 +61,7 @@ export default function SearchPage({ onSwitchToAdmin }) {
     setLoading(true);
     setError("");
 
-    fetchNearbyToilets({
+    (citywide ? fetchIbbToilets : fetchNearbyToilets)({
       lat: searchCenter.lat,
       lon: searchCenter.lon,
       radius,
@@ -87,7 +88,7 @@ export default function SearchPage({ onSwitchToAdmin }) {
       });
 
     return () => controller.abort();
-  }, [searchCenter, radius, filters, retryToken]);
+  }, [searchCenter, radius, filters, retryToken, citywide, fetchIbbToilets, fetchNearbyToilets]);
 
   const selectedToiletId = selectedToilet?.id ?? null;
 
@@ -160,13 +161,17 @@ export default function SearchPage({ onSwitchToAdmin }) {
       <header style={{ padding: "12px 16px", background: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center" }}>
           <strong style={{ fontSize: "18px", color: "#0f172a" }}>SmartLoo</strong>
+          <button type="button" aria-pressed={citywide} onClick={() => { setCitywide(true); setPendingCenter(null); }}>
+            İstanbul’daki İBB tesisleri
+          </button>
+          <button type="button" aria-pressed={!citywide} onClick={() => setCitywide(false)}>Yakınımda ara</button>
 
           <label style={{ fontSize: "14px" }}>
             Yarıçap:{" "}
             <select
               aria-label="Arama yarıçapı"
               value={radius}
-              onChange={(e) => setRadius(Number(e.target.value))}
+              onChange={(e) => { setRadius(Number(e.target.value)); setCitywide(false); }}
               style={{ padding: "5px 8px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
             >
               <option value={250}>250 m</option>
@@ -281,8 +286,8 @@ export default function SearchPage({ onSwitchToAdmin }) {
           )}
 
           <span style={{ marginLeft: "auto", fontSize: "13px", color: "#475569" }}>
-            <strong>Yarıçap:</strong> {radius} m · <strong>Merkez:</strong> {searchCenter.lat.toFixed(3)}, {searchCenter.lon.toFixed(3)} ·{" "}
-            {loading ? "Yükleniyor..." : `${toilets.length} tesis`}
+            {citywide ? "İstanbul geneli · " : `Yarıçap: ${radius} m · Merkez: ${searchCenter.lat.toFixed(3)}, ${searchCenter.lon.toFixed(3)} · `}
+            {loading ? "Yükleniyor..." : `${toilets.length} ${citywide ? "İBB kaydı" : "tesis"}`}
           </span>
 
           {onSwitchToAdmin && (
@@ -304,13 +309,18 @@ export default function SearchPage({ onSwitchToAdmin }) {
           )}
         </div>
 
-        {locationStatus === "pending" && (
+        <p style={{margin:"8px 0 0", fontSize:"12px"}}>
+          Kaynak: <a href="https://data.ibb.gov.tr/dataset/sehir-tuvaletleri-veri-seti" target="_blank" rel="noreferrer">İBB Açık Veri Portalı</a>
+          {" · "}<a href="https://data.ibb.gov.tr/license" target="_blank" rel="noreferrer">İBB Açık Veri Lisansı</a>
+          {" · Açılış saati, ücret ve olanaklar kaynakta yoksa bilinmiyor gösterilir."}
+        </p>
+        {!citywide && locationStatus === "pending" && (
           <div style={{ marginTop: "8px", fontSize: "13px", color: "#1e40af", background: "#eff6ff", padding: "6px 10px", borderRadius: "4px" }}>
             Konum izni bekleniyor... Şimdilik varsayılan merkez (41.0, 29.0) gösteriliyor.
           </div>
         )}
 
-        {locationStatus === "denied" && (
+        {!citywide && locationStatus === "denied" && (
           <div style={{ marginTop: "8px", fontSize: "13px", color: "#92400e", background: "#fef3c7", padding: "6px 10px", borderRadius: "4px" }}>
             Konum izni reddedildi. Varsayılan veya seçilen harita merkezi kullanılıyor; kullanıcı mesafesi gösterilmez.
           </div>
@@ -331,13 +341,14 @@ export default function SearchPage({ onSwitchToAdmin }) {
 
         {!loading && !error && toilets.length === 0 && (
           <div style={{ marginTop: "8px", fontSize: "13px", color: "#1e40af", background: "#dbeafe", padding: "6px 10px", borderRadius: "4px" }}>
-            Bu bölgede seçili kriterlere uygun tuvalet bulunamadı. Yarıçapı artırmayı, haritayı kaydırmayı veya filtreleri temizlemeyi deneyin.
+            {citywide ? "Seçili filtrelere uygun İBB kaydı bulunamadı. Filtreleri temizlemeyi deneyin." : "Bu bölgede seçili kriterlere uygun tuvalet bulunamadı. Yarıçapı artırmayı, haritayı kaydırmayı veya filtreleri temizlemeyi deneyin."}
           </div>
         )}
       </header>
 
       <div style={{ position: "relative", flex: 1 }}>
         <MapView
+          citywide={citywide}
           searchCenter={searchCenter}
           userLocation={userLocation}
           radius={radius}
@@ -365,7 +376,7 @@ export default function SearchPage({ onSwitchToAdmin }) {
           loading={detailLoading}
           error={detailError}
           notFound={detailNotFound}
-          hasLocationPermission={hasLocationPermission}
+          hasLocationPermission={!citywide && hasLocationPermission}
           summaryRefreshKey={detailRetryToken}
           onRetry={() => setDetailRetryToken((c) => c + 1)}
           onReviewsMutated={() => setDetailRetryToken((c) => c + 1)}

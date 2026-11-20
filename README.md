@@ -199,8 +199,8 @@ def summary(admin: Principal = Depends(require_admin)):
 
 `current_user` returns 401 for a missing, tampered or expired token, or when the
 account no longer exists. `require_admin` additionally returns 403 for a valid
-USER. Review, suggestion and account-deletion routes now check the token, then
-still return 501 until those features exist. There is no admin registration
+USER. Reviews are implemented. Suggestion and account-deletion routes check
+the token, then return 501 until their implementations are integrated. There is no admin registration
 route; promote a local test account with SQL:
 
 ```powershell
@@ -216,5 +216,26 @@ $env:SMARTLOO_TEST_POSTGIS = "1"
 ```
 
 Verified locally on 13 November 2026: 13 isolated FR-08 cases and 9 PostgreSQL cases passed.
-TC-45 (admin analytics 200), TC-46 (review ownership) and TC-34 (account deletion)
-need the analytics, review and deletion features and still fail.
+TC-45 (admin analytics 200) and TC-46 (review ownership) are now implemented;
+TC-34 (account deletion) remains pending.
+
+## Admin analytics and CSV/JSON export (#61, PR #71)
+
+`GET /api/v1/admin/metrics/summary` and `GET /api/v1/admin/analytics/export`
+are connected to the shared ADMIN guard, PostgreSQL facility metadata and the
+#50 Mongo review-score reader. The live `/admin` panel uses these endpoints.
+Both reuse inclusive Istanbul dates (default 30, maximum 366 calendar days),
+exact district and individual-review weighting. No reviews means null/0; store
+failure or a busy/pending review operation means 503, with no download.
+CSV has UTF-8 BOM and CRLF; both formats have RFC 5987 Turkish filenames.
+See [the analytics contract and verification](docs/contracts/admin-analytics-api.md).
+
+## Real İBB source map (integration candidate)
+
+The default map now offers the complete persisted İBB directory and a separate
+nearby view. Missing source hours/amenities/prices remain unknown. The directory
+is populated explicitly through reviewed, file-bound CLI import plans, never on
+app startup. See [source, identity, commands and verification](docs/integration/ibb-normalization.md#21-november-integration-decision-and-delivery).
+Apply migration 006 and run the documented import before expecting real source
+points; the ordinary shared Compose setup does not silently download municipal
+records or erase synthetic fixtures. Source/license attribution stays visible.

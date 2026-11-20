@@ -104,14 +104,16 @@ def test_generic_401_and_throttling(client, email):
 def test_guards_return_401_then_403(client, email):
     register(client, email)
     token = login(client, email).json()["access_token"]
-    admin_route = "/api/v1/admin/metrics/summary"
-    assert client.get(admin_route).status_code == 401
-    assert client.get(admin_route, headers=bearer(token + "x")).status_code == 401
-    assert client.get(admin_route, headers=bearer(token)).status_code == 403
+    # Use the still-pending import route: this auth-only suite starts SQL, not
+    # MongoDB. Real analytics success is verified by its own two-store suite.
+    admin_route = "/api/v1/admin/import"
+    assert client.post(admin_route).status_code == 401
+    assert client.post(admin_route, headers=bearer(token + "x")).status_code == 401
+    assert client.post(admin_route, headers=bearer(token)).status_code == 403
     with connect() as conn:
         conn.execute("UPDATE users SET role = 'ADMIN' WHERE email = %s", (email,))
-    # The guard passes; the analytics feature itself is not implemented yet.
-    assert client.get(admin_route, headers=bearer(token)).status_code == 501
+    # The guard passes; import itself remains unimplemented.
+    assert client.post(admin_route, headers=bearer(token)).status_code == 501
 
 
 def test_72_byte_limit_without_truncation(client, email):
