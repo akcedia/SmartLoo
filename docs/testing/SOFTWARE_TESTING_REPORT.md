@@ -78,6 +78,14 @@ The existing [18 November catalog log](https://github.com/akcedia/SmartLoo/actio
 
 The PDF accompanying this report is a review draft with pending acceptance visible. Final integrated evidence and Özgür's review remain required before submission.
 
+## 20 November review handoff
+
+Independent QA on #73 `25da0b91` (Windows, Node 26.13.1, Vitest 2.1.8, Vite 5.4.11): all 47 repository tests and the production build passed. Seven additional React/jsdom checks using the actual #62 session writer and synthetic HTTP responses passed. The map recognizes a signed-in user, includes the bearer header on review reads and shows edit/delete controls when ownership or permission fields allow them. Guest and expired sessions have no bearer header. A fixture matching the current #67 response (`is_own: false`, no owner ID or permission fields) still leaves an actual owner without controls. [20 November QA record](QA-2026-11-20.md).
+
+[Onur's frontend evidence in #74](https://github.com/akcedia/SmartLoo/blob/7edf6f72e1af55dfb1d8cb3d081b0b47dbb7c93b/docs/testing/evidence/frontend-session-admin-2026-11-20.md) records an attributed local integration run on open branches with local route wiring, PostGIS 16-3.4, MongoDB 7.0, real JWT and synthetic reviews. A USER submitted a review from the map and the ADMIN panel showed a 2.33 mean and critical warning. Review create/edit/delete updated the panel and CSV. CSV and JSON respected the selection. Local integration evidence supports TC-04/09/10/24/25/40/41/42/44/45/48; the matrix retains the earlier baseline result. TC-34 still returned 501, and browser registration 409 and in-browser token expiry were not exercised in that run. This work used #73 f61de4f plus a temporary session patch. The regression above tested the later published fix separately.
+
+Still open: shared `main` verification, #67 ownership metadata, the #71 server date-range limit and JSON filename header, the final AI service connection, SonarQube access, staging load measurements and remaining accessibility checks. The review PDF includes these pending results.
+
 ## Functional traceability
 
 Sources: [requirements](../REQUIREMENTS.MD) and [test catalog](../../tests/requirements_cases.json).
@@ -155,8 +163,8 @@ Record the affected requirement, reproduction steps, expected and observed resul
 
 | Finding | Requirement and owner | Status and retest |
 | --- | --- | --- |
-| Shared session mismatch | FR-03/08, Furkan and Onur | Open. Shared saveSession writes smartloo.session; #73 f61de4f reads different keys and sees no token. Fix required before authenticated review UI acceptance. [Reproduction](https://github.com/akcedia/SmartLoo/pull/73#issuecomment-6985916125). |
-| Review ownership mismatch | FR-03 / REQ-SEC-05, Fırat and Furkan | Open. #67 8c5d58f author GET returns is_own=false; #73 expects user_id. Agree private ownership/permission fields and retest author, other USER, ADMIN and guest. [Reproduction](https://github.com/akcedia/SmartLoo/pull/67#issuecomment-6985969912). |
+| Shared session mismatch | FR-03/08, Furkan and Onur | Component retest passed on #73 25da0b91 with the #62 session writer. Main integration remains pending. [Fix](https://github.com/akcedia/SmartLoo/pull/73#issuecomment-7036100900). |
+| Review ownership mismatch | FR-03 / REQ-SEC-05, Fırat and Furkan | #73 25da0b91 shows controls with affirmative metadata. #67 8c5d58f still returns is_own=false for the author. Retest live author, other USER, ADMIN and guest after backend correction. |
 | 360 px dashboard overflow | NFR-T05, Onur | Fixed for component scope. #65 edc8e020 document scroll width is 345 at 360 px viewport, matching client width. No horizontal overflow at 768/1920 either. Contrast SVG target review 5.958:1; axe incomplete remains documented. [19 November record](QA-2026-11-19.md). |
 | Windows loopback mismatch | Local environment, Yusuf; auth store coordination Fırat | Nearby default and example process configuration now use 127.0.0.1. Driver-boundary default and override checks pass. Real latency not measured; unmerged auth store not changed. [19 November record](QA-2026-11-19.md). |
 
@@ -164,4 +172,4 @@ Record the affected requirement, reproduction steps, expected and observed resul
 
 The daily independent scope is ready for review. #60 remains open because full integrated acceptance is pending. #72 requires Özgür's review and merge. Final feature merges must retain the real-DB gates and pass them on their final revisions. Integrated routes, shared session/review ownership fixes and the durable AI writer coordinator remain with their feature owners. SonarQube access is still pending Özgür. Real-DB performance, complete security/privacy acceptance and the shared fixed-revision demo were not started on 19 November because their prerequisites are missing.
 
-The eight-page PDF is a review snapshot generated from this Markdown. Review the linked daily records for commands, environments and source evidence. The final PDF must be regenerated after pending results are available and reviewed before the course submission.
+The PDF is a review snapshot generated from this Markdown. Review the linked daily records for commands, environments and source evidence. The final PDF must be regenerated after pending results are available and reviewed before the course submission.
