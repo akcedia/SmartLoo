@@ -5,13 +5,58 @@ on:
   pull_request:
     branches: [main, weekly-review-2026-10-24]
 jobs:
+  integration-suites:
+    runs-on: ubuntu-latest
+    outputs:
+      mongo: ${{ steps.detect.outputs.mongo }}
+      auth: ${{ steps.detect.outputs.auth }}
+      detail: ${{ steps.detect.outputs.detail }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Detect implemented database suites
+        id: detect
+        env:
+          PREVIOUS: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          present_or_removed() {
+            test -f "$1" || git cat-file -e "$PREVIOUS:$1" 2>/dev/null
+          }
+          for suite in mongo auth detail; do
+            required=false
+            case "$suite" in
+              mongo) if present_or_removed tests/test_review_scores_mongo.py; then required=true; fi ;;
+              auth) if present_or_removed tests/test_auth_postgres.py || present_or_removed tests/test_auth_password_bytes.py; then required=true; fi ;;
+              detail) if present_or_removed tests/test_toilet_detail.py; then required=true; fi ;;
+            esac
+            echo "$suite=$required" >> "$GITHUB_OUTPUT"
+          done
+  mongo-integration:
+    needs: integration-suites
+    if: needs.integration-suites.outputs.mongo == 'true'
+    uses: ./.github/workflows/required-db.yml
+    with:
+      suite: mongo
+  auth-integration:
+    needs: integration-suites
+    if: needs.integration-suites.outputs.auth == 'true'
+    uses: ./.github/workflows/required-db.yml
+    with:
+      suite: auth
+  detail-integration:
+    needs: integration-suites
+    if: needs.integration-suites.outputs.detail == 'true'
+    uses: ./.github/workflows/required-db.yml
+    with:
+      suite: detail
   frontend:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
           cache: npm
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
@@ -62,6 +107,9 @@ jobs:
           python -m pytest tests/test_requirements.py
           -k "tc_01 or tc_02 or tc_03 or tc_11 or tc_12 or tc_13 or tc_14"
           -q
+
+      - name: Run nearby input and failure safety checks
+        run: python -m pytest tests/test_nearby_safety.py -q
 
       - name: Start PostGIS
         run: docker compose up -d --wait postgis
