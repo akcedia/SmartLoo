@@ -1,8 +1,8 @@
+import { useMapApi } from "./MapApiProvider.jsx";
 import React, { useEffect, useState } from "react";
 import MapView from "./MapView.jsx";
 import FacilityDetailPanel from "./FacilityDetailPanel.jsx";
 import AiRecommendationsPanel from "./AiRecommendationsPanel.jsx";
-import { fetchNearbyToilets, fetchToiletDetail } from "./toiletApi.js";
 
 const DEFAULT_CENTER = { lat: 41.0, lon: 29.0 };
 const INITIAL_FILTERS = {
@@ -13,6 +13,7 @@ const INITIAL_FILTERS = {
 };
 
 export default function SearchPage({ onSwitchToAdmin }) {
+  const { fetchNearbyToilets, fetchToiletDetail } = useMapApi();
   const [searchCenter, setSearchCenter] = useState(DEFAULT_CENTER);
   const [userLocation, setUserLocation] = useState(null);
   const [locationStatus, setLocationStatus] = useState("pending"); // "pending" | "granted" | "denied"
@@ -373,4 +374,4 @@ export default function SearchPage({ onSwitchToAdmin }) {
       </div>
     </div>
   );
-} 
+}

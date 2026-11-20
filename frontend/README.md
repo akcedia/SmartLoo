@@ -48,3 +48,46 @@ const data = await api.request("/api/v1/toilets/nearby", { query: { lat, lon, ra
 | Sample | `VITE_ADMIN_DATA=sample npm run dev` | Labelled sample adapter for UI review without a backend. Applies no session or role checks and is never used in the live flow. |
 
 Hiding a screen is not security: the backend must return 401/403.
+
+# Harita ve yorum entegrasyonu — 20 Kasım 2026
+
+`HomeRoute` içindeki `MapApiProvider`, harita/detay/yorum/AI ekranlarına ortak
+`SessionProvider` oturumunu ve HTTP istemcisini verir. Ayrı token depolama ya da
+JWT ayrıştırma kullanılmaz. Token içeren bir isteğe 401 gelirse üst menü ve
+yorum formu birlikte misafir durumuna döner; 403 oturumu kapatmaz. Tarayıcı
+depolaması kapalıyken bellekteki ortak oturum da kullanılabilir.
+
+Yerel doğrulama (Windows, Node 26.13.0, main `4050605` + PR #73 `25da0b9`):
+
+- `npm test`: 94 geçti, sıfır başarısız/atlanan; `npm run build`: başarılı.
+- Gerçek FastAPI HTTP + PostGIS + MongoDB ve gerçek JWT ile monte edilmiş React
+  testi: 9 geçti, sıfır başarısız/hata/atlanan. Bunların 8'i normal arayüz
+  paketinde de bulunur; toplam 95 farklı testtir.
+- Yorum ekleme/düzenleme/silme, başka USER için 403, ADMIN için yalnız silme
+  görünürlüğü, detay puanının yenilenmesi, son yorum silinince null/0 ve gerçek
+  sunucunun reddettiği JWT sonrası ortak oturumun kapanması doğrulandı.
+
+Canlı entegrasyonu yeniden çalıştırmak için önce ortak test ortamını kurup
+migration'ları uygulayın ve `frontend` içinde `npm ci` çalıştırın. Node 24.15+
+veya 26, ortak Python bağımlılıkları ve ayrı test veritabanları gerekir.
+Depo kökünden, kendi test portlarınızla:
+
+```powershell
+$env:SMARTLOO_TEST_POSTGIS = '1'
+$env:SMARTLOO_TEST_MONGO = '1'
+$env:SMARTLOO_DB_HOST = '127.0.0.1'
+$env:SMARTLOO_DB_PORT = '5436'
+$env:SMARTLOO_MONGO_URL = 'mongodb://127.0.0.1:27019'
+python scripts/check_map_reviews_live.py
+```
+
+Kontrol kendi tesisini, üç hesabını ve geçici MongoDB veritabanını oluşturup
+sonunda temizler. `SMARTLOO_MAP_JUNIT` verilirse JUnit çıktısı da yazar.
+`Map review live integration` iş akışı aynı kontrolü temiz GitHub ortamında
+çalıştırır ve en az 9 başarılı, sıfır atlanan test ister. Dal korumasına yeni
+zorunlu kontrol eklenmesi bu değişikliğe dahil değildir.
+
+Bu kanıt jsdom üzerinde etkileşim ve gerçek HTTP/veritabanı entegrasyonudur;
+mobil/klavye tarayıcı kabulü değildir. AI uçları henüz main'de 501 döner ve
+ekran kullanılamama mesajı gösterir. Gerçek model, öneriler ve İBB veri aktarımı
+ayrı kalan işlerdir; bu değişiklik #57/#56'nın tamamını kapatmaz.

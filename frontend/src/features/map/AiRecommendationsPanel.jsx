@@ -1,9 +1,6 @@
+import { useMapApi } from "./MapApiProvider.jsx";
 import React, { useEffect, useState } from "react";
-import {
-  buildSignInUrl,
-  fetchAiRecommendations,
-  getCurrentSessionUser,
-} from "./toiletApi.js";
+import { buildSignInUrl } from "./toiletApi.js";
 
 export default function AiRecommendationsPanel({
   isOpen,
@@ -13,6 +10,7 @@ export default function AiRecommendationsPanel({
   onSelectToilet,
   onClose,
 }) {
+  const { fetchAiRecommendations, getCurrentSessionUser } = useMapApi();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [fallbackMessage, setFallbackMessage] = useState("");
@@ -205,4 +203,4 @@ export default function AiRecommendationsPanel({
       )}
     </aside>
   );
-} 
+}

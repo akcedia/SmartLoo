@@ -1,5 +1,5 @@
+import { useMapApi } from "./MapApiProvider.jsx";
 import React, { useEffect, useState } from "react";
-import { fetchToiletAiSummary } from "./toiletApi.js";
 
 const RECOMMENDATION_BADGES = {
   recommended: {
@@ -35,6 +35,7 @@ function formatGeneratedAt(isoDate) {
 }
 
 export default function AiSummaryBox({ toiletId, refreshKey = 0 }) {
+  const { fetchToiletAiSummary } = useMapApi();
   const [summaryData, setSummaryData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -196,4 +197,4 @@ export default function AiSummaryBox({ toiletId, refreshKey = 0 }) {
       )}
     </section>
   );
-} 
+}

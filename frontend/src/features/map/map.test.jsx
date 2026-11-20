@@ -1,4 +1,6 @@
 import React from "react";
+import { fakeJwt } from "../../shared/session/testJwt.js";
+const sharedToken = (sub, role = "USER") => fakeJwt({ sub, role, exp: Math.floor(Date.now() / 1000) + 3600 });
 import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import AiRecommendationsPanel from "./AiRecommendationsPanel.jsx";
@@ -101,10 +103,7 @@ describe("toiletApi unit & contract tests", () => {
 
   it("reads session user from sessionStorage and sends Bearer token for review CRUD", async () => {
     const storage = createMockSessionStorage({
-      smartloo_session: JSON.stringify({
-        token: "tok-test-123",
-        user: { id: "user-7", role: "USER", email: "furkan@smartloo.local" },
-      }),
+      "smartloo.session": JSON.stringify({ token: sharedToken("user-7"), email: "furkan@smartloo.local" }),
     });
     globalThis.window = { sessionStorage: storage, location: { pathname: "/", search: "" } };
 
@@ -126,7 +125,7 @@ describe("toiletApi unit & contract tests", () => {
     const [postUrl, postOpts] = globalThis.fetch.mock.calls[0];
     expect(postUrl).toBe("/api/v1/toilets/5/reviews");
     expect(postOpts.method).toBe("POST");
-    expect(postOpts.headers.Authorization).toBe("Bearer tok-test-123");
+    expect(postOpts.headers.Authorization).toBe(`Bearer ${JSON.parse(storage.getItem("smartloo.session")).token}`);
     expect(JSON.parse(postOpts.body)).toEqual({ cleanliness_score: 5, comment: "Çok temiz" });
 
     await updateReview(10, { cleanliness_score: 4, comment: "Güncellendi" });
@@ -255,10 +254,7 @@ describe("Map detail, review and AI components static render tests", () => {
 
     globalThis.window = {
       sessionStorage: createMockSessionStorage({
-        smartloo_session: JSON.stringify({
-          token: "tok-user-1",
-          user: { id: "u-1", role: "USER" },
-        }),
+        "smartloo.session": JSON.stringify({ token: sharedToken("u-1"), email: "u1@smartloo.local" }),
       }),
       location: { pathname: "/", search: "" },
     };
@@ -325,4 +321,4 @@ describe("Map detail, review and AI components static render tests", () => {
     expect(getCurrentSessionUser()).toBeNull();
     expect(storage.getItem("smartloo.session")).toBeNull();
   });
-});; 
+});;

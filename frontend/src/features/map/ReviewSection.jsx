@@ -1,12 +1,6 @@
+import { useMapApi } from "./MapApiProvider.jsx";
 import React, { useEffect, useState } from "react";
-import {
-  buildSignInUrl,
-  createToiletReview,
-  deleteReview,
-  fetchToiletReviews,
-  getCurrentSessionUser,
-  updateReview,
-} from "./toiletApi.js";
+import { buildSignInUrl } from "./toiletApi.js";
 
 const MAX_COMMENT_LENGTH = 1000;
 
@@ -70,6 +64,7 @@ function mapReviewError(err) {
 }
 
 export default function ReviewSection({ toiletId, onReviewsMutated }) {
+  const { createToiletReview, deleteReview, fetchToiletReviews, getCurrentSessionUser, updateReview } = useMapApi();
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState("");
@@ -104,7 +99,7 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
       });
 
     return () => controller.abort();
-  }, [toiletId, reloadToken]);
+  }, [toiletId, reloadToken, currentUser?.id, fetchToiletReviews]);
 
   useEffect(() => {
     setEditingReviewId(null);
@@ -112,7 +107,7 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
     setComment("");
     setActionError("");
     setActionSuccess("");
-  }, [toiletId]);
+  }, [toiletId, currentUser?.id]);
 
   const existingUserReview = currentUser
     ? reviews.find((rev) => isReviewOwnedByUser(rev, currentUser)) || null
@@ -578,4 +573,4 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
       )}
     </section>
   );
-} 
+}
