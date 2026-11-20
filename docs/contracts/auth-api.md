@@ -61,6 +61,18 @@ from src.auth import Principal, current_user, require_admin
 def summary(admin: Principal = Depends(require_admin)): ...   # admin.sub, admin.role
 ```
 
+## Delete my account (FR-10)
+
+`DELETE /api/v1/users/me` with `Authorization: Bearer <access_token>`.
+
+| Status | Body | Meaning |
+| --- | --- | --- |
+| 204 | none | Account row (email, display name, password hash) and sign-in history removed. Reviews stay with `user_id = null`, shown as `"Anonymous"`; their text has the author's email, display name and any email or phone number replaced by `[removed]`. Scores are kept, so averages do not change; each affected toilet's `review_version` moves, so old AI summaries are not reused. |
+| 401 | `{"detail": "Authentication required"}` / `{"detail": "Invalid or expired token"}` | No token, or the account is already deleted. The old token stops working immediately. |
+| 503 | `{"detail": "..."}` | A review could not be anonymized consistently. The account is **not** deleted yet; retry the same request. |
+
+Client: after 204, clear the stored token and return to the map as a guest. Ask for confirmation before calling; there is no undo.
+
 ## Demo accounts
 
 There is no public admin registration. Register normally, then promote the account in the local database:
