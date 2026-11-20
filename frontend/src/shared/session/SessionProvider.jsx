@@ -57,9 +57,12 @@ export function SessionProvider({ children, initialSession, fetchImpl }) {
   // There is no server-side logout in FR-08: signing out drops the token here.
   const signOut = useCallback(() => update(null, "Çıkış yaptınız."), [update]);
 
+  // Ends the session with a custom notice, e.g. after the account was deleted.
+  const endSession = useCallback((message) => update(null, message), [update]);
+
   const value = useMemo(
-    () => ({ session, notice, clearNotice: () => setNotice(null), api, signIn, register, signOut, expire }),
-    [session, notice, api, signIn, register, signOut, expire],
+    () => ({ session, notice, clearNotice: () => setNotice(null), api, signIn, register, signOut, endSession, expire }),
+    [session, notice, api, signIn, register, signOut, endSession, expire],
   );
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 }

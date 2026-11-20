@@ -281,6 +281,31 @@ body { margin: 0; }
 .app .app-button--secondary { background: var(--app-surface); color: var(--app-accent); }
 .app-button--secondary:hover:not(:disabled) { background: var(--app-accent-soft); }
 
+.app-button--danger,
+.app .app-button--danger { background: var(--app-critical); border-color: var(--app-critical); color: #fff; }
+.app-button--danger:hover:not(:disabled) { background: #912018; }
+
+.app-danger-zone {
+  margin-top: 28px;
+  padding: clamp(16px, 4vw, 20px);
+  background: var(--app-surface);
+  border: 1px solid #f4b4ae;
+  border-radius: var(--app-radius);
+}
+.app-danger-zone h2 { margin: 0 0 8px; font-size: 1.1rem; color: var(--app-critical); }
+.app-list { margin: 0 0 16px; padding-left: 20px; display: grid; gap: 4px; }
+.app-confirm {
+  margin-top: 12px;
+  padding: 14px;
+  border: 2px solid var(--app-critical);
+  border-radius: 8px;
+  background: var(--app-critical-bg);
+}
+.app-confirm h3 { margin: 0 0 6px; font-size: 1rem; }
+.app-confirm p { margin: 0 0 12px; overflow-wrap: anywhere; }
+.app-confirm-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.app-confirm-actions .app-button { flex: 1 1 160px; }
+
 .app-alert {
   margin: 0 0 4px;
   padding: 12px 14px;
