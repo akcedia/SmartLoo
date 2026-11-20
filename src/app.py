@@ -20,6 +20,8 @@ from src.review_scores import ReviewStoreError
 from src.reviews import MongoReviews, PostgresToilets, RepositoryReviews, RepositoryToilets, ReviewService
 from src.reviews import router as reviews_router
 from src.review_ai_coordinator import ReviewAICoordinator
+from src.admin_analytics import create_analytics_router
+from src import analytics_store
 
 
 def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None):
@@ -42,6 +44,20 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
     app.state.review_ai_coordinator = ReviewAICoordinator(app.state.reviews)
     app.include_router(auth_router)
     app.include_router(reviews_router)
+    app.state.analytics_read_facilities = (
+        (lambda district: analytics_store.repository_facilities(app.state.repository, district))
+        if state is not None else analytics_store.read_facilities
+    )
+    app.state.analytics_read_reviews = (
+        (lambda ids, start, end: analytics_store.repository_scores(app.state.repository, ids, start, end))
+        if state is not None else analytics_store.read_scores
+    )
+    app.include_router(create_analytics_router(
+        require_admin,
+        lambda district: app.state.analytics_read_facilities(district),
+        lambda ids, start, end: app.state.analytics_read_reviews(ids, start, end),
+        app.state.reviews.coordination.snapshot_guard,
+    ))
 
     @app.exception_handler(psycopg.OperationalError)
     @app.exception_handler(psycopg.InterfaceError)
@@ -107,9 +123,7 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
     admin = [
         ("/api/v1/admin/suggestions/{suggestion_id}", ["PATCH"]),
         ("/api/v1/admin/toilets/{toilet_id}", ["PATCH"]),
-        ("/api/v1/admin/metrics/summary", ["GET"]),
         ("/api/v1/admin/import", ["POST"]),
-        ("/api/v1/admin/analytics/export", ["GET"]),
     ]
     for routes, guard in ((public, []), (signed_in, [Depends(current_user)]),
                           (admin, [Depends(require_admin)])):

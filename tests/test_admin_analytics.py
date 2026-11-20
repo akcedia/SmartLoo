@@ -103,6 +103,7 @@ def test_export_has_same_selection_and_preserves_utf8(analytics):
     panel = client.get(SUMMARY, headers=ADMIN, params=params).json()
     export = client.get(EXPORT, headers=ADMIN, params={**params, "format": "json"})
     assert export.status_code == 200
+    assert "filename*=UTF-8''smartloo-hygiene-Kad%C4%B1k%C3%B6y-2026-10-01_2026-10-03.json" in export.headers["content-disposition"]
     data = export.json()
     assert data["filters"] == panel["filters"]
     assert data["count"] == 3
@@ -189,3 +190,32 @@ def test_store_failure_is_503_in_both_routes(analytics, store):
     analytics[store].side_effect = AnalyticsUnavailable("test store offline")
     assert client.get(SUMMARY, headers=ADMIN).status_code == 503
     assert client.get(EXPORT, headers=ADMIN, params={"format": "csv"}).status_code == 503
+
+
+@pytest.mark.parametrize("path,extra", [(SUMMARY, {}), (EXPORT, {"format": "json"}), (EXPORT, {"format": "csv"})])
+def test_inclusive_366_day_limit_before_store_access(analytics, path, extra):
+    client, reader, _, _ = analytics
+    allowed = client.get(path, headers=ADMIN, params={"from": "2024-01-01", "to": "2024-12-31", **extra})
+    assert allowed.status_code == 200
+    reader.reset_mock()
+    rejected = client.get(path, headers=ADMIN, params={"from": "2024-01-01", "to": "2025-01-01", **extra})
+    assert rejected.status_code == 422
+    assert rejected.json()["detail"][0]["loc"] == ["query", "to"]
+    reader.assert_not_called()
+
+
+def test_memory_snapshot_guard_rejects_pending_and_releases_partial_locks():
+    from src.review_coordination import MemoryReviewCoordination
+    state = {"toilets": {"a": {}, "b": {}}}
+    coordinator = MemoryReviewCoordination(state)
+    with coordinator.guard("b") as writer:
+        writer.begin("review", None)
+        with coordinator.snapshot_guard(["a", "b"]) as ready:
+            assert not ready
+    with coordinator.guard("a", wait=False) as released:
+        assert released is not None
+    with coordinator.snapshot_guard(["a", "b"]) as ready:
+        assert not ready  # durable pending marker remains after writer exits
+    state["review_operations"].clear()
+    with coordinator.snapshot_guard(["b", "a", "a"]) as ready:
+        assert ready

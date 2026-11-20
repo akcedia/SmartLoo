@@ -3,6 +3,7 @@
 import csv
 import re
 from collections import defaultdict
+from contextlib import nullcontext
 from dataclasses import dataclass
 from datetime import date, datetime, time, timedelta, timezone
 from io import StringIO
@@ -11,12 +12,17 @@ from urllib.parse import quote
 from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
+from fastapi.responses import JSONResponse
+import psycopg
+
+from src.review_scores import ReviewStoreError
 
 
 ISTANBUL = ZoneInfo("Europe/Istanbul")
 ONE_DAY = timedelta(days=1)
 CRITICAL_THRESHOLD = 3.5
 DATE_PATTERN = r"^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+MAX_CALENDAR_DAYS = 366
 EXPORT_COLUMNS = (
     "facility_id", "district", "hygiene_score", "open_issues_count", "last_cleaned_at",
 )
@@ -71,6 +77,9 @@ def _filters(
         end = _parse_date("to", to_date)
         if start > end:
             raise _invalid_date("to", to_date, "Must be on or after from")
+
+    if (end - start).days + 1 > MAX_CALENDAR_DAYS:
+        raise _invalid_date("to", to_date, "Inclusive date range must not exceed 366 calendar days")
 
     try:
         start_utc = datetime.combine(start, time.min, ISTANBUL).astimezone(timezone.utc)
@@ -160,27 +169,28 @@ def _export(summary, export_format):
         {key: facility.get(key) for key in EXPORT_COLUMNS}
         for facility in summary["facilities"]
     ]
+    filters = summary["filters"]
+    dates = f'{filters["from"]}_{filters["to"]}'
+    district = re.sub(r'[^\w -]', "_", filters["district"] or "all")
+    filename = f"smartloo-hygiene-{district}-{dates}.{export_format}"
+    fallback = f"smartloo-hygiene-{dates}.{export_format}"
+    if filename.isascii():
+        fallback = filename
+    headers = {"Content-Disposition": f'attachment; filename="{fallback}"; filename*=UTF-8\'\'{quote(filename)}'}
     if export_format == "json":
-        return {"filters": summary["filters"], "count": len(rows), "results": rows}
+        return JSONResponse({"filters": filters, "count": len(rows), "results": rows}, headers=headers)
 
     csv_text = StringIO(newline="")
     writer = csv.DictWriter(csv_text, fieldnames=EXPORT_COLUMNS)
     writer.writeheader()
     writer.writerows(rows)
-    filters = summary["filters"]
-    dates = f'{filters["from"]}_{filters["to"]}'
-    district = re.sub(r'[^\w -]', "_", filters["district"] or "all")
-    filename = f"smartloo-hygiene-{district}-{dates}.csv"
-    fallback = f"smartloo-hygiene-{dates}.csv"
-    if filename.isascii():
-        fallback = filename
     return Response(
         csv_text.getvalue().encode("utf-8-sig"), media_type="text/csv; charset=utf-8",
-        headers={"Content-Disposition": f'attachment; filename="{fallback}"; filename*=UTF-8\'\'{quote(filename)}'},
+        headers=headers,
     )
 
 
-def create_analytics_router(require_admin, read_facilities, read_reviews):
+def create_analytics_router(require_admin, read_facilities, read_reviews, selection_guard=None):
     """Build both routes with the app's admin guard and configured data stores.
 
     The review reader accepts (facility_ids, inclusive_start_utc, exclusive_end_utc).
@@ -192,10 +202,15 @@ def create_analytics_router(require_admin, read_facilities, read_reviews):
         try:
             facilities = read_facilities(filters.district)
             ids = [str(facility["id"]) for facility in facilities]
-            reviews = read_reviews(ids, filters.start_utc, filters.end_utc) if ids else []
-        except AnalyticsUnavailable as exc:
+            guard = selection_guard(ids) if selection_guard else nullcontext(True)
+            with guard as ready:
+                if not ready:
+                    raise AnalyticsUnavailable("Review selection is busy or requires repair")
+                reviews = read_reviews(ids, filters.start_utc, filters.end_utc) if ids else []
+                result = summarize_analytics(filters, facilities, reviews)
+        except (AnalyticsUnavailable, ReviewStoreError, psycopg.Error) as exc:
             raise HTTPException(status_code=503, detail="Analytics data temporarily unavailable") from exc
-        return summarize_analytics(filters, facilities, reviews)
+        return result
 
     @router.get("/metrics/summary")
     def summary(filters: AnalyticsFilters = Depends(_filters)):
