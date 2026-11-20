@@ -60,7 +60,7 @@ GitHub Actions on #62 (`main` base): frontend, database, nearby search and requi
 
 ## 4. Integrated local check (20 November)
 
-**Build.** A throw-away local branch merged `main` `87994f9`, #67 `8c5d58f` (auth, review reader and review service from Fırat), #71 `7fc1949` (analytics and export from Özgür), #62–#65, and #73 `f61de4f` with the session patch posted on #73. The two analytics routes were bound to #71 in a local `src/app.py` edit, as #71 describes for after #50/#51. None of this glue was pushed.
+**Build.** A throw-away local branch merged `main` `87994f9`, #67 `8c5d58f` (auth, review reader and review service from Fırat), #71 `7fc1949` (analytics and export from Özgür), #62–#65, and #73. The first run used #73 `f61de4f` with a local session patch; the second run used Furkan's fix `25da0b9`, which reads the shared `smartloo.session` itself, so the patch is no longer needed. The two analytics routes were bound to #71 in a local `src/app.py` edit, as #71 describes for after #50/#51. None of this glue was pushed.
 
 **Services.** Docker PostGIS 16-3.4 and MongoDB 7.0, migrations 001–004, the `main` facility fixtures, Python 3.13 with the repository's `requirements-test.txt`, Uvicorn, a random JWT secret per run and Vite with the `/api` proxy. Accounts were created through `POST /auth/register`; one was promoted to ADMIN in the local database. All reviews are synthetic.
 
@@ -74,7 +74,8 @@ GitHub Actions on #62 (`main` base): frontend, database, nearby search and requi
 | USER 1 edits own review to 4 | 4.5, 2 | 4.0 / 5.0 |
 | USER 2 deletes own review | 4.0, 1 | 4.0 / blank |
 | USER 2 rates F2 = 1 (browser panel refreshed) | 2.5, 2, **alert** | — |
-| USER 1 rates F2 = 2 from the map form (#73 + patch) | 2.33, 3, **alert**; F2 1.50 (kritik) | — |
+| USER 1 rates F2 = 2 from the map form (#73 `f61de4f` + local patch) | 2.33, 3, **alert**; F2 1.50 (kritik) | — |
+| USER 2 rates F1 = 3 from the map form (#73 `25da0b9`, no patch) | 2.50, 4, **alert**; F1 3.50 | — |
 
 Review API status codes in the same run: duplicate 409, editing someone else's review 403 (also for ADMIN), guest 401, score 6 → 422, CLOSED facility → 404.
 
@@ -90,8 +91,8 @@ Review API status codes in the same run: duplicate 409, editing someone else's r
 | Hidden trend table widened the page to 405 px at 360 px | QA on #65 | Onur | Fixed in #65 `68fad68`; QA retest passed |
 | JSON export downloaded as `smartloo-hygiene.json` (no `Content-Disposition`) | Integrated check | Onur (frontend fallback) / Özgür (header) | Frontend fixed in #64 `7a0f32c`; backend header open |
 | On Windows `localhost` resolves to `::1` first; each DB connection waited ~5 s (login 10.3 s, search 5 s) | Integrated check | Yusuf / Fırat | `127.0.0.1` defaults in #72 for the search reader; `src/db.py` in #67 still defaults to `localhost` |
-| Map read a different session key; signed-in users looked like guests | QA on #73 | Furkan (Onur patch) | Verified patch posted on #73; applies after #62 |
-| `is_own` is `false` for the review author | QA on #67, re-seen 20 Nov | Fırat | Open in #67 `8c5d58f` |
+| Map read a different session key; signed-in users looked like guests | QA on #73 | Furkan | Fixed in #73 `25da0b9`; retested in the browser against real services (201, panel updated) |
+| `is_own` is `false` for the review author, so the map shows no edit/delete for one's own review | QA on #67, re-seen 20 Nov with #73 `25da0b9` | Fırat | Open in #67 `8c5d58f` |
 | 366-day limit not enforced by the server (400 days → 200) | Integrated check | Özgür | Open in #71; panel already blocks it |
 
 ## 6. Not verified
