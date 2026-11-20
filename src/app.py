@@ -1,10 +1,8 @@
 """SmartLoo FastAPI application.
 
-Nearby search, facility details and accounts use PostgreSQL/PostGIS by default.
-Tests can explicitly inject an isolated search provider; passing state
-switches accounts to an in-memory double over that state.
-Registration and sign-in are implemented; other protected routes check
-the token and role before returning the pending feature response.
+Nearby search, facility details and accounts use PostgreSQL/PostGIS.
+Reviews use MongoDB with aggregates in PostgreSQL. Tests can inject
+isolated accounts, reviews and nearby search. Other features remain pending.
 """
 
 import time
@@ -18,6 +16,10 @@ from fastapi.responses import JSONResponse
 from src.auth import PostgresAccounts, RepositoryAccounts, current_user, require_admin
 from src.auth import router as auth_router
 from src.nearby_store import find_nearby, find_toilet
+from src.review_scores import ReviewStoreError
+from src.reviews import MongoReviews, PostgresToilets, RepositoryReviews, RepositoryToilets, ReviewService
+from src.reviews import router as reviews_router
+from src.review_ai_coordinator import ReviewAICoordinator
 
 
 def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None):
@@ -32,10 +34,20 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
         RepositoryAccounts(app.state.repository) if state is not None else PostgresAccounts()
     )
     app.state.clock = time.time
+    if state is not None:
+        reviews, toilets = RepositoryReviews(app.state.repository), RepositoryToilets(app.state.repository)
+    else:
+        reviews, toilets = MongoReviews(), PostgresToilets()
+    app.state.reviews = ReviewService(reviews, toilets, app.state.accounts)
+    app.state.review_ai_coordinator = ReviewAICoordinator(app.state.reviews)
     app.include_router(auth_router)
+    app.include_router(reviews_router)
 
     @app.exception_handler(psycopg.OperationalError)
     @app.exception_handler(psycopg.InterfaceError)
+    @app.exception_handler(psycopg.errors.QueryCanceled)
+    @app.exception_handler(psycopg.errors.LockNotAvailable)
+    @app.exception_handler(ReviewStoreError)
     async def database_unavailable(request, exc):
         return JSONResponse(status_code=503, content={"detail": "Database temporarily unavailable"})
 
@@ -85,14 +97,11 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
 
     public = [
         ("/", ["GET"]),
-        ("/api/v1/toilets/{toilet_id}/reviews", ["GET"]),
         ("/api/v1/toilets/{toilet_id}/summary", ["GET"]),
         ("/api/v1/recommendations", ["GET"]),
     ]
     signed_in = [
         ("/api/v1/toilets/suggest", ["POST"]),
-        ("/api/v1/toilets/{toilet_id}/reviews", ["POST"]),
-        ("/api/v1/reviews/{review_id}", ["PATCH", "DELETE"]),
         ("/api/v1/users/me", ["DELETE"]),
     ]
     admin = [

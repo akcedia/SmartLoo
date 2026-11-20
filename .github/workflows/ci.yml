@@ -11,6 +11,7 @@ jobs:
       mongo: ${{ steps.detect.outputs.mongo }}
       auth: ${{ steps.detect.outputs.auth }}
       detail: ${{ steps.detect.outputs.detail }}
+      reviews: ${{ steps.detect.outputs.reviews }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -23,12 +24,13 @@ jobs:
           present_or_removed() {
             test -f "$1" || git cat-file -e "$PREVIOUS:$1" 2>/dev/null
           }
-          for suite in mongo auth detail; do
+          for suite in mongo auth detail reviews; do
             required=false
             case "$suite" in
               mongo) if present_or_removed tests/test_review_scores_mongo.py; then required=true; fi ;;
               auth) if present_or_removed tests/test_auth_postgres.py || present_or_removed tests/test_auth_password_bytes.py; then required=true; fi ;;
               detail) if present_or_removed tests/test_toilet_detail.py; then required=true; fi ;;
+              reviews) if present_or_removed tests/test_reviews.py || present_or_removed tests/test_reviews_integration.py || present_or_removed tests/test_review_consistency.py; then required=true; fi ;;
             esac
             echo "$suite=$required" >> "$GITHUB_OUTPUT"
           done
@@ -50,6 +52,12 @@ jobs:
     uses: ./.github/workflows/required-db.yml
     with:
       suite: detail
+  reviews-integration:
+    needs: integration-suites
+    if: needs.integration-suites.outputs.reviews == 'true'
+    uses: ./.github/workflows/required-db.yml
+    with:
+      suite: reviews
   frontend:
     runs-on: ubuntu-latest
     steps:
