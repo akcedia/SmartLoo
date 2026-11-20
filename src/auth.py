@@ -125,6 +125,10 @@ class RepositoryAccounts:
     def record_failure(self, email, at):
         self.failures.append({"email": email, "at": at})
 
+    def delete(self, user_id, email):
+        self.users.pop(user_id, None)
+        self.failures[:] = [f for f in self.failures if f["email"] != email]
+
 
 class PostgresAccounts:
     def find_by_email(self, email):
@@ -163,6 +167,12 @@ class PostgresAccounts:
                 "INSERT INTO login_failures (email, failed_at) VALUES (%s, to_timestamp(%s))",
                 (email, at),
             )
+
+    def delete(self, user_id, email):
+        """Remove the account row (email, display name, password hash) and its sign-in history."""
+        with connect() as conn:
+            conn.execute("DELETE FROM login_failures WHERE email = %s", (email,))
+            conn.execute("DELETE FROM users WHERE id = %s", (user_id,))
 
 
 def signing_key(request):
