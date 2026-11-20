@@ -1,13 +1,10 @@
 """Review service for FR-03: list, create, edit and delete reviews with consistent toilet aggregates.
 
 Reviews live in MongoDB; average_cleanliness, review_count and review_version live on the
-PostgreSQL toilet row. Every change follows the same order:
-  1. write MongoDB;
-  2. in one PostgreSQL transaction: lock the toilet row, recompute mean and count from
-     MongoDB, increment review_version;
-  3. only then answer success.
-If step 2 fails, step 1 is undone and the request gets 503. Aggregates are recomputed rather
-than incremented, so repeating step 2 (reconcile) is always safe after an interrupted request.
+PostgreSQL toilet row. A shared per-facility guard covers Mongo changes, summary reads
+and publication. A durable rollback record is committed before Mongo changes. Aggregate,
+revision and removal of the operation record commit together. Interrupted operations
+block further writes and summary text until guarded recovery restores the prior document.
 
 Contract: docs/contracts/reviews-service.md. Tests inject RepositoryReviews and
 RepositoryToilets over the in-memory state; the API uses MongoReviews and PostgresToilets.
@@ -15,6 +12,7 @@ RepositoryToilets over the in-memory state; the API uses MongoReviews and Postgr
 
 import re
 import uuid
+from contextlib import nullcontext
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
@@ -24,6 +22,9 @@ from pydantic import BaseModel, Field, StrictInt, field_validator, model_validat
 from src.auth import Principal, bearer, current_user
 from src.db import connect
 from src.review_scores import ReviewStoreError, ensure_review_indexes, review_collection
+from src.review_coordination import (
+    MemoryReviewCoordination, PostgresReviewCoordination, document_json, restored_document,
+)
 
 # Proposed predefined labels (FR-03 names well-lit and no-soap as examples).
 ALLOWED_TAGS = ("clean", "dirty", "smelly", "well-lit", "no-soap", "no-paper", "no-water", "out-of-order")
@@ -111,6 +112,9 @@ class RepositoryReviews:
     def replace(self, doc):
         self.docs[doc["id"]] = {k: v.isoformat() if isinstance(v, datetime) else v for k, v in doc.items()}
 
+    def restore(self, doc):
+        self.replace(doc)
+
     def delete(self, review_id):
         self.docs.pop(review_id, None)
 
@@ -154,6 +158,9 @@ class MongoReviews:
     def replace(self, doc):
         self._call(lambda c: c.replace_one({"id": doc["id"]}, dict(doc)))
 
+    def restore(self, doc):
+        self._call(lambda c: c.replace_one({"id": doc["id"]}, dict(doc), upsert=True))
+
     def delete(self, review_id):
         self._call(lambda c: c.delete_one({"id": review_id}))
 
@@ -181,7 +188,7 @@ class RepositoryToilets:
         toilet = self.toilets.get(toilet_id)
         return {"id": toilet_id, "status": toilet.get("status", "ACTIVE")} if toilet else None
 
-    def recompute(self, toilet_id, scores_of):
+    def recompute(self, toilet_id, scores_of, connection=None):
         toilet = self.toilets[toilet_id]
         average, count = aggregates(scores_of(toilet_id))
         version = toilet.get("review_version", 0) + 1
@@ -198,10 +205,8 @@ class PostgresToilets:
             return conn.execute("SELECT id::text AS id, status::text AS status FROM toilets WHERE id = %s",
                                 (toilet_id,)).fetchone()
 
-    def recompute(self, toilet_id, scores_of):
-        # The row lock makes concurrent changes to one toilet recompute one after another; each
-        # reads MongoDB after its own write, so the last commit always sees every finished write.
-        with connect() as conn:
+    def recompute(self, toilet_id, scores_of, connection=None):
+        with (nullcontext(connection) if connection is not None else connect()) as conn:
             conn.execute("SELECT 1 FROM toilets WHERE id = %s FOR UPDATE", (toilet_id,))
             average, count = aggregates(scores_of(toilet_id))
             return conn.execute(
@@ -224,6 +229,42 @@ def redact(text):
 class ReviewService:
     def __init__(self, reviews, toilets, accounts):
         self.reviews, self.toilets, self.accounts = reviews, toilets, accounts
+        self.coordination = (
+            MemoryReviewCoordination(toilets.repository)
+            if isinstance(toilets, RepositoryToilets) else PostgresReviewCoordination()
+        )
+
+    def _ready(self, session):
+        if session is None or session.pending() is not None:
+            raise HTTPException(status_code=503, detail="Review update or recovery in progress")
+
+    def _restore(self, operation):
+        review_id = operation["review_id"]
+        before = operation["before_document"]
+        if before is None:
+            self.reviews.delete(review_id)
+        else:
+            # Upsert also restores a deleted document and makes repeated recovery idempotent.
+            self.reviews.restore(restored_document(before))
+        if document_json(self.reviews.get(review_id)) != before:
+            raise ReviewStoreError("Review rollback verification failed")
+
+    def _recover_failed_change(self, session, operation):
+        # A broken SQL session may have lost its advisory lock or committed its last
+        # transaction. Leave recovery to a new guarded session, without touching Mongo.
+        if session.connection is not None and session.connection.closed:
+            return
+        try:
+            pending = session.pending()
+            if pending is None or pending["operation_id"] != operation["operation_id"]:
+                return
+            self._restore(operation)
+            session.clear(operation["operation_id"])
+        except Exception:
+            try:
+                session.repair_required()
+            except Exception:
+                pass  # The pre-write durable record still blocks summary text and new writes.
 
     def _toilet(self, toilet_id, for_review=False):
         key = as_uuid(toilet_id)
@@ -255,67 +296,112 @@ class ReviewService:
             "can_delete": is_own or (principal is not None and principal.role == "ADMIN"),
         }
 
-    def _commit(self, toilet_id, undo):
-        """Recompute aggregates and bump the revision; on failure undo the MongoDB change."""
+    def _commit(self, toilet_id):
+        session = self.coordination.current.get()
+        operation = session.pending()
+        return session.finish(operation["operation_id"], lambda: self.toilets.recompute(
+            toilet_id, self.reviews.scores, connection=session.connection,
+        ))
+
+    def _change(self, session, toilet_id, review_id, before, write):
+        operation = session.begin(review_id, before)
         try:
-            return self.toilets.recompute(toilet_id, self.reviews.scores)
+            write()
+            self._commit(toilet_id)
         except Exception as exc:
-            try:
-                undo()
-            except Exception:
-                pass  # MongoDB keeps the change; reconcile() brings the aggregates back in line
+            self._recover_failed_change(session, operation)
+            if isinstance(exc, DuplicateReview):
+                raise HTTPException(status_code=409, detail=DUPLICATE_MESSAGE) from exc
             raise HTTPException(status_code=503, detail=INCONSISTENT_MESSAGE) from exc
 
     def list(self, toilet_id, limit=20, offset=0, principal=None):
         key = self._toilet(toilet_id)
-        docs = self.reviews.by_toilet(key)
-        return {"count": len(docs), "results": [self._public(d, principal) for d in docs[offset:offset + limit]]}
+        with self.coordination.guard(key) as session:
+            self._ready(session)
+            docs = self.reviews.by_toilet(key)
+            return {"count": len(docs), "results": [self._public(d, principal) for d in docs[offset:offset + limit]]}
 
     def create(self, principal, toilet_id, payload):
         key = self._toilet(toilet_id, for_review=True)
-        if self.reviews.find_user_review(key, principal.sub):
-            raise HTTPException(status_code=409, detail=DUPLICATE_MESSAGE)
-        now = datetime.now(timezone.utc)
-        doc = {"id": str(uuid.uuid4()), "toilet_id": key, "user_id": principal.sub,
-               "cleanliness_score": payload.cleanliness_score, "comment": payload.comment,
-               "tags": payload.tags, "is_anonymized": False, "created_at": now, "updated_at": now}
-        try:
-            self.reviews.insert(doc)
-        except DuplicateReview as exc:  # a concurrent request won the unique index
-            raise HTTPException(status_code=409, detail=DUPLICATE_MESSAGE) from exc
-        self._commit(key, undo=lambda: self.reviews.delete(doc["id"]))
-        return self._public(self.reviews.get(doc["id"]), principal)
+        with self.coordination.guard(key) as session:
+            self._ready(session)
+            self._toilet(key, for_review=True)
+            if self.reviews.find_user_review(key, principal.sub):
+                raise HTTPException(status_code=409, detail=DUPLICATE_MESSAGE)
+            now = datetime.now(timezone.utc)
+            doc = {"id": str(uuid.uuid4()), "toilet_id": key, "user_id": principal.sub,
+                   "cleanliness_score": payload.cleanliness_score, "comment": payload.comment,
+                   "tags": payload.tags, "is_anonymized": False, "created_at": now, "updated_at": now}
+            self._change(session, key, doc["id"], None, lambda: self.reviews.insert(doc))
+            return self._public(self.reviews.get(doc["id"]), principal)
 
     def update(self, principal, review_id, patch):
         old = self._review(review_id)
-        if old.get("user_id") != principal.sub:  # ADMIN may delete, not edit, another user's review
-            raise HTTPException(status_code=403, detail="Only the author can edit this review")
-        new = {**old, **{field: getattr(patch, field) for field in patch.model_fields_set},
-               "updated_at": datetime.now(timezone.utc)}
-        self.reviews.replace(new)
-        self._commit(old["toilet_id"], undo=lambda: self.reviews.replace(old))
-        return self._public(self.reviews.get(review_id), principal)
+        with self.coordination.guard(old["toilet_id"]) as session:
+            self._ready(session)
+            old = self._review(review_id)
+            if old.get("user_id") != principal.sub:
+                raise HTTPException(status_code=403, detail="Only the author can edit this review")
+            new = {**old, **{field: getattr(patch, field) for field in patch.model_fields_set},
+                   "updated_at": datetime.now(timezone.utc)}
+            self._change(session, old["toilet_id"], review_id, old, lambda: self.reviews.replace(new))
+            return self._public(self.reviews.get(review_id), principal)
 
     def delete(self, principal, review_id):
         old = self._review(review_id)
-        if old.get("user_id") != principal.sub and principal.role != "ADMIN":
-            raise HTTPException(status_code=403, detail="Only the author or an administrator can delete this review")
-        self.reviews.delete(review_id)
-        self._commit(old["toilet_id"], undo=lambda: self.reviews.insert(old))
+        with self.coordination.guard(old["toilet_id"]) as session:
+            self._ready(session)
+            old = self._review(review_id)
+            if old.get("user_id") != principal.sub and principal.role != "ADMIN":
+                raise HTTPException(status_code=403, detail="Only the author or an administrator can delete this review")
+            self._change(session, old["toilet_id"], review_id, old, lambda: self.reviews.delete(review_id))
 
     def eligible_for_summary(self, toilet_id, limit=50):
         """For the AI summary (Emir): newest commented reviews, PII redacted, no user identity."""
+        snapshot = self.read_summary_snapshot(toilet_id, limit)
+        if snapshot["state"] != "ready":
+            raise HTTPException(status_code=503, detail="Review update or recovery in progress")
+        return {"review_version": snapshot["review_version"], "reviews": snapshot["reviews"]}
+
+    def read_summary_snapshot(self, toilet_id, limit=50):
+        if type(limit) is not int or not 1 <= limit <= 50:
+            raise ValueError("Summary limit must be between 1 and 50")
         key = self._toilet(toilet_id)
-        docs = [d for d in self.reviews.by_toilet(key) if (d.get("comment") or "").strip()][:limit]
-        return {
-            "review_version": self.toilets.version(key),
-            "reviews": [{"id": d["id"], "cleanliness_score": d["cleanliness_score"],
-                         "comment": redact(d["comment"]), "created_at": d.get("created_at")} for d in docs],
-        }
+        with self.coordination.guard(key, wait=False) as session:
+            metadata = self.coordination.metadata(key)
+            operation = metadata["operation"]
+            state = "ready"
+            if session is None:
+                state = "busy"
+            elif operation is not None:
+                state = operation["state"]
+            documents = []
+            if state == "ready":
+                documents = [row for row in self.reviews.by_toilet(key) if (row.get("comment") or "").strip()][:limit]
+            return {
+                "protocol_version": 1, "toilet_id": key, "state": state,
+                "review_version": metadata["review_version"],
+                "operation_id": operation["operation_id"] if operation else None,
+                "review_count": metadata["review_count"],
+                "average_cleanliness": metadata["average_cleanliness"],
+                "reviews": [{"id": row["id"], "cleanliness_score": row["cleanliness_score"],
+                             "comment": redact(row["comment"]), "created_at": row.get("created_at")}
+                            for row in documents],
+            }
 
     def reconcile(self, toilet_id):
-        """Recompute one toilet's aggregates from MongoDB, e.g. after an interrupted request."""
-        return self.toilets.recompute(self._toilet(toilet_id), self.reviews.scores)
+        """Restore an interrupted mutation and clear its marker exactly once."""
+        key = self._toilet(toilet_id)
+        with self.coordination.guard(key) as session:
+            if session is None:
+                raise HTTPException(status_code=503, detail="Review recovery is busy")
+            operation = session.pending()
+            if operation is None:
+                return self.coordination.metadata(key)["review_version"]
+            self._restore(operation)
+            return session.finish(operation["operation_id"], lambda: self.toilets.recompute(
+                key, self.reviews.scores, connection=session.connection,
+            ))
 
 
 router = APIRouter(prefix="/api/v1")

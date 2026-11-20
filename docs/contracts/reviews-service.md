@@ -2,7 +2,7 @@
 
 Owner: Fırat Karadoğan ([#56](https://github.com/akcedia/SmartLoo/issues/56)). For Özgür (route registration, details, analytics) and Emir (AI summary). Data rules come from the [class model](../design/class/accounts-and-data.md) and [er-data-dictionary.md](../analysis/data/er-data-dictionary.md).
 
-**Status (17 November).** `read_review_scores()` ([#50](https://github.com/akcedia/SmartLoo/pull/50)), the review service and migration 004 are implemented and tested on real PostgreSQL + MongoDB. Facility details, the AI summary route and account deletion are not part of this change.
+**Status (20 November).** `read_review_scores()` is merged through [#50](https://github.com/akcedia/SmartLoo/pull/50). This branch implements review CRUD, viewer permissions and the guarded operation lifecycle (migrations 004/005). The AI bridge was tested with #68's actual consumer and real PostgreSQL/MongoDB/Redis using a synthetic provider and policies. Public AI routes, a live model and account deletion remain separate integration work.
 
 ## Implemented: scores for analytics
 
@@ -21,7 +21,7 @@ Proposed in [#28](https://github.com/akcedia/SmartLoo/issues/28#issuecomment-640
 
 - `toilets.review_version bigint NOT NULL DEFAULT 0` in PostgreSQL (migration 004, owned by Fırat).
 - Every successful review create, edit or delete, account deletion that touches a toilet's reviews, and closing a toilet increments it in the **same PostgreSQL transaction** that recalculates `average_cleanliness` and `review_count`.
-- The AI summary cache key includes it, e.g. `summary:{toilet_id}:v{review_version}:{lang}:{contract}:{policy}`. Emir reads the version before calling the provider and again before publishing; if it changed, the result is not published or cached.
+- The AI summary cache key includes it, e.g. `summary:{toilet_id}:v{review_version}:{lang}:{contract}:{policy}`. A shared guarded snapshot supplies the version, texts and true totals. The same guard checks ready state and version during final publication, including cache hits.
 - Old keys expire by their 6-hour TTL; nothing has to delete them, so a Redis outage cannot leave a stale summary marked current.
 
 ## Review service (`src/reviews.py`)
@@ -40,12 +40,13 @@ The write endpoints enforce their own permissions independently of these flags.
 
 | Method | Route | Results |
 | --- | --- | --- |
-| `list(toilet_id, limit=20, offset=0)` | `GET /toilets/{id}/reviews` | 200 `{count, results}`, newest first; each result `{id, toilet_id, author, cleanliness_score, comment, tags, created_at, updated_at, is_own}`; author is the display name or `"Anonymous"`; 404 unknown toilet |
+| `list(toilet_id, limit=20, offset=0, principal=None)` | `GET /toilets/{id}/reviews` | 200 `{count, results}`, newest first; each result includes viewer `is_own`, `can_edit`, `can_delete`; author is the display name or `"Anonymous"`; 404 unknown toilet; 503 while a review operation needs recovery |
 | `create(principal, toilet_id, ReviewIn)` | `POST /toilets/{id}/reviews` | 201 review; 401 guest; 404 toilet missing or `CLOSED`; 409 `"You have already reviewed this toilet. Edit your existing review."`; 422 score not an integer 1–5, comment over 1000 characters, unknown tag |
 | `update(principal, review_id, ReviewPatch)` | `PATCH /reviews/{id}` | 200 review; 403 not the author (also for ADMIN); 404; 422 empty or invalid change |
 | `delete(principal, review_id)` | `DELETE /reviews/{id}` | 204; 403 neither author nor ADMIN; 404 |
-| `eligible_for_summary(toilet_id, limit=50)` | for Emir | `{review_version, reviews: [{id, cleanliness_score, comment, created_at}]}`, newest first, only reviews with a comment, emails and phone numbers replaced by `[removed]`, no user ids |
-| `reconcile(toilet_id)` | maintenance | recompute one toilet's aggregates from MongoDB after an interrupted request |
+| `eligible_for_summary(toilet_id, limit=50)` | legacy summary reader | The existing `{review_version, reviews}` shape, with a guarded read; 503 when busy or dirty |
+| `read_summary_snapshot(toilet_id, limit=50)` | internal synchronous reader | Protocol 1 envelope with `ready/busy/writing/repair_required`, operation ID, real total count/average, version and at most 50 commented reviews; dirty states expose no text |
+| `reconcile(toilet_id)` | maintenance | Restore a pending mutation's prior document, recompute totals and advance the version once; repeating completed recovery returns the same version |
 
 Tags (proposal, FR-03 only names examples): `clean`, `dirty`, `smelly`, `well-lit`, `no-soap`, `no-paper`, `no-water`, `out-of-order`.
 
@@ -55,4 +56,75 @@ For details and analytics (Özgür): `average_cleanliness`, `review_count` and `
 
 Every successful change returns only after PostgreSQL has the new average, count and `review_version` (REQ-DB-05, TC-26, TC-35).
 
-**Consistency approach.** MongoDB is written first, then the PostgreSQL aggregates are **recomputed from MongoDB** for that toilet (not incremented), together with the version bump. Recomputing is idempotent, so a retry after any partial failure gives the same result. If the PostgreSQL step fails, the MongoDB change is undone (restore the previous document or delete the new one) and the request returns 503; no success is reported for a half-applied change.
+### Guarded writes and recovery
+
+Migration 005 adds `review_operations`. A dedicated PostgreSQL session acquires
+a facility advisory lock before validation and Mongo mutation. It commits an
+operation ID and private before-document first. Mongo changes next. The same SQL
+session atomically commits recomputed aggregates, one version increment and
+removal of the operation record. Lock acquisition waits at most two seconds;
+SQL statements use a five-second timeout.
+
+On failure, compensation restores the old Mongo document (or removes a newly
+created document), verifies it, then clears the marker under the same guard.
+If rollback fails or the SQL session is lost, the durable marker remains. New
+writes and public review listing return 503 while that facility requires repair.
+AI reads return no text and the last committed totals. Metadata-store failure
+remains an error. Private before-documents are never returned or logged.
+
+Recovery uses the same guard and the stored before-document. It restores and
+verifies Mongo, then atomically recomputes totals, advances the revision and
+clears the marker. A crash during recovery leaves the record for the next retry.
+After a completed recovery, retrying leaves the version unchanged.
+
+For a known affected facility, an operator can run from the repository root,
+with the normal database/Mongo environment configured:
+
+```sh
+python -c "from src.app import create_app; print(create_app().state.reviews.reconcile('FACILITY_UUID'))"
+```
+
+### AI publication integration
+
+`app.state.review_ai_coordinator` implements the async port proposed in #68.
+After #68 is integrated, pass it to `CoordinatedReviewRepository`. Its snapshot
+returns the actual #68 `SummarySnapshot`. Its publication method returns the
+actual `SummaryPublication`; busy, dirty and stale candidates never invoke the
+callback. Generated results and cache hits use the same path. OpenAI generation
+runs outside the guard; only bounded cache/response work runs inside it.
+
+The callback has a two-second budget. A worker owns the synchronous SQL session
+and guard; the callback runs on the caller's event loop. Cancellation waits for
+the worker to close its session. Windows requires no event-loop policy change.
+
+Future account anonymization, facility closure and direct Mongo analytics
+readers must honor this same guard/pending lifecycle when integrated. Those
+future paths are separate work from the review CRUD change. The downstream AI
+privacy/language/evidence policies remain required after initial redaction.
+
+### Verification of the guarded lifecycle
+
+Windows / Python 3.13, PostgreSQL/PostGIS 16-3.4, MongoDB 7.0:
+
+```sh
+SMARTLOO_TEST_POSTGIS=1 SMARTLOO_TEST_MONGO=1 python -m pytest tests/test_reviews.py tests/test_review_consistency.py tests/test_review_publication.py tests/test_reviews_integration.py -q
+```
+
+35 cases passed with zero failures/errors/skips. Seven use real PostgreSQL and
+MongoDB, including concurrent edit/delete, failed SQL plus failed undo, actual
+server-side session termination and failure after an SQL UPDATE before commit.
+The 28 isolated cases include cancellation, callback error, actual two-second
+publication deadline and repeat recovery. The publication unit tests stub only
+the external #68 envelope types. A separate run of 64 auth, detail, nearby,
+input-safety and Mongo score-reader regressions passed.
+
+A temporary integration composed #68 `d9fa94df`'s actual
+`CoordinatedReviewRepository` and `SummaryService` with this real coordinator,
+PostgreSQL, MongoDB and Redis 7.4. Generated output, cache hit/six-hour TTL,
+edit-during-generation rejection, busy suppression, publication cancellation,
+stale-version rejection and callback-error lock release passed. This run used
+the Windows default event loop and a synthetic provider/privacy/validator.
+It did not call OpenAI or validate public AI HTTP routes or production policies.
+
+The CI `reviews-integration` job starts both real databases and requires all
+35 review cases with no skips through the existing JUnit gate.

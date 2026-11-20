@@ -7,6 +7,8 @@ gets its aggregates reset afterwards, and the test accounts are deleted.
 import os
 import uuid
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timezone
+from threading import Event
 
 import pytest
 from fastapi.testclient import TestClient
@@ -16,7 +18,8 @@ pymongo = pytest.importorskip("pymongo")
 from src.app import create_app
 from src.auth import Principal
 from src.db import connect
-from src.reviews import ReviewIn
+from src.reviews import MongoReviews, PostgresToilets, ReviewIn, ReviewPatch, ReviewService
+from src.auth import PostgresAccounts
 
 pytestmark = pytest.mark.skipif(
     os.getenv("SMARTLOO_TEST_POSTGIS") != "1" or os.getenv("SMARTLOO_TEST_MONGO") != "1",
@@ -43,6 +46,7 @@ def app(monkeypatch):
     yield application
     pymongo.MongoClient(os.getenv("SMARTLOO_MONGO_URL", "mongodb://localhost:27017")).drop_database(db_name)
     with connect() as conn:
+        conn.execute("DELETE FROM review_operations WHERE toilet_id = %s", (A,))
         conn.execute("UPDATE toilets SET average_cleanliness = NULL, review_count = 0 WHERE id = %s", (A,))
         conn.execute("DELETE FROM users WHERE email = ANY(%s)", (emails,))
 
@@ -111,3 +115,121 @@ def test_concurrent_reviews_give_correct_aggregates(app):
         row = toilet_row()
         assert row["review_count"] == 8
         assert float(row["average_cleanliness"]) == round(sum(scores) / 8, 2)
+
+
+def test_real_dirty_window_blocks_summary_and_serializes_edit_delete(app, monkeypatch):
+    with TestClient(app) as client:
+        user, auth = sign_up(client, app, "Owner")
+        created = client.post(f"/api/v1/toilets/{A}/reviews", headers=auth,
+                              json={"cleanliness_score": 4, "comment": "Original"})
+        assert created.status_code == 201
+        review_id = created.json()["id"]
+        service = app.state.reviews
+        changed, release = Event(), Event()
+        recompute = service.toilets.recompute
+
+        def paused_recompute(*args, **kwargs):
+            changed.set()
+            assert release.wait(5), "Test did not release writer"
+            return recompute(*args, **kwargs)
+
+        monkeypatch.setattr(service.toilets, "recompute", paused_recompute)
+        principal = Principal(sub=user["id"], role="USER")
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            editing = pool.submit(service.update, principal, review_id,
+                                  ReviewPatch(cleanliness_score=1, comment="Edited"))
+            try:
+                assert changed.wait(5)
+                # Separate service/connections reproduce the multi-worker read.
+                reader = ReviewService(MongoReviews(), PostgresToilets(), PostgresAccounts())
+                snapshot = reader.read_summary_snapshot(A)
+                assert snapshot["state"] == "busy" and snapshot["reviews"] == []
+                assert snapshot["review_count"] == 1 and snapshot["average_cleanliness"] == 4
+                deleting = pool.submit(service.delete, principal, review_id)
+            finally:
+                release.set()
+            assert editing.result(timeout=10)["cleanliness_score"] == 1
+            deleting.result(timeout=10)
+        snapshot = reader.read_summary_snapshot(A)
+        assert snapshot["state"] == "ready" and snapshot["review_count"] == 0
+
+
+def test_real_failed_sql_and_undo_persist_repair_and_recover_once(app, monkeypatch):
+    with TestClient(app) as client:
+        _, auth = sign_up(client, app, "Repair")
+        service = app.state.reviews
+        start_version = toilet_row()["review_version"]
+
+        def broken(*args, **kwargs):
+            raise RuntimeError("Synthetic failure at real store boundary")
+
+        with monkeypatch.context() as patch:
+            patch.setattr(service.toilets, "recompute", broken)
+            patch.setattr(service.reviews, "delete", broken)
+            response = client.post(f"/api/v1/toilets/{A}/reviews", headers=auth,
+                                   json={"cleanliness_score": 1, "comment": "Uncommitted"})
+            assert response.status_code == 503
+        reader = ReviewService(MongoReviews(), PostgresToilets(), PostgresAccounts())
+        snapshot = reader.read_summary_snapshot(A)
+        assert snapshot["state"] == "repair_required" and snapshot["reviews"] == []
+        assert snapshot["review_count"] == 0 and snapshot["review_version"] == start_version
+        version = reader.reconcile(A)
+        assert version == start_version + 1 and reader.reconcile(A) == version
+        assert reader.read_summary_snapshot(A)["state"] == "ready"
+        assert reader.reviews.by_toilet(A) == []
+
+
+def test_pending_marker_survives_server_session_loss(app):
+    service = app.state.reviews
+    review_id = str(uuid.uuid4())
+    with service.coordination.guard(A) as writer:
+        writer.begin(review_id, None)
+        service.reviews.insert({
+            "id": review_id, "toilet_id": A, "user_id": None,
+            "cleanliness_score": 1, "comment": "Interrupted", "tags": [],
+            "created_at": datetime.now(timezone.utc),
+        })
+        pid = writer.connection.info.backend_pid
+        with connect() as other:
+            assert other.execute("SELECT pg_terminate_backend(%s) AS stopped", (pid,)).fetchone()["stopped"]
+
+    restarted = ReviewService(MongoReviews(), PostgresToilets(), PostgresAccounts())
+    snapshot = restarted.read_summary_snapshot(A)
+    assert snapshot["state"] == "writing" and snapshot["reviews"] == []
+    version = restarted.reconcile(A)
+    assert restarted.reconcile(A) == version
+    assert restarted.reviews.get(review_id) is None
+    assert restarted.read_summary_snapshot(A)["state"] == "ready"
+
+
+@pytest.mark.parametrize("operation", ["edit", "delete"])
+def test_failed_sql_transaction_rolls_back_aggregate_and_verifies_compensation(app, monkeypatch, operation):
+    with TestClient(app) as client:
+        _, auth = sign_up(client, app, "Atomic")
+        created = client.post(f"/api/v1/toilets/{A}/reviews", headers=auth,
+                              json={"cleanliness_score": 4, "comment": "Original"})
+        assert created.status_code == 201
+        review_id = created.json()["id"]
+        service = app.state.reviews
+        before = toilet_row()
+        recompute = service.toilets.recompute
+
+        def update_then_fail(*args, **kwargs):
+            recompute(*args, **kwargs)
+            raise RuntimeError("Synthetic failure after SQL UPDATE, before commit")
+
+        with monkeypatch.context() as patch:
+            patch.setattr(service.toilets, "recompute", update_then_fail)
+            if operation == "edit":
+                response = client.patch(f"/api/v1/reviews/{review_id}", headers=auth,
+                                        json={"cleanliness_score": 1})
+            else:
+                response = client.delete(f"/api/v1/reviews/{review_id}", headers=auth)
+            assert response.status_code == 503
+
+        assert toilet_row() == before
+        restored = service.reviews.get(review_id)
+        assert restored["cleanliness_score"] == 4 and restored["comment"] == "Original"
+        snapshot = service.read_summary_snapshot(A)
+        assert snapshot["state"] == "ready" and snapshot["operation_id"] is None
+        assert snapshot["review_version"] == before["review_version"]

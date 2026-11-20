@@ -19,6 +19,7 @@ from src.nearby_store import find_nearby, find_toilet
 from src.review_scores import ReviewStoreError
 from src.reviews import MongoReviews, PostgresToilets, RepositoryReviews, RepositoryToilets, ReviewService
 from src.reviews import router as reviews_router
+from src.review_ai_coordinator import ReviewAICoordinator
 
 
 def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None):
@@ -38,11 +39,14 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
     else:
         reviews, toilets = MongoReviews(), PostgresToilets()
     app.state.reviews = ReviewService(reviews, toilets, app.state.accounts)
+    app.state.review_ai_coordinator = ReviewAICoordinator(app.state.reviews)
     app.include_router(auth_router)
     app.include_router(reviews_router)
 
     @app.exception_handler(psycopg.OperationalError)
     @app.exception_handler(psycopg.InterfaceError)
+    @app.exception_handler(psycopg.errors.QueryCanceled)
+    @app.exception_handler(psycopg.errors.LockNotAvailable)
     @app.exception_handler(ReviewStoreError)
     async def database_unavailable(request, exc):
         return JSONResponse(status_code=503, content={"detail": "Database temporarily unavailable"})
