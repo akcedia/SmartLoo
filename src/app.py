@@ -1,17 +1,18 @@
 """SmartLoo FastAPI application.
 
-Nearby search uses PostgreSQL/PostGIS by default.
+Nearby search and facility details use PostgreSQL/PostGIS by default.
 Tests can explicitly inject an isolated search provider.
 Other feature routes remain pending and return 501.
 """
 
 from copy import deepcopy
+from uuid import UUID
 
 import psycopg
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import JSONResponse
 
-from src.nearby_store import find_nearby
+from src.nearby_store import find_nearby, find_toilet
 
 
 def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None):
@@ -51,13 +52,25 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
 
         return {"count": len(rows), "results": rows}
 
+    @app.get("/api/v1/toilets/{toilet_id}")
+    def toilet_detail(toilet_id: UUID):
+        try:
+            toilet = find_toilet(toilet_id)
+        except (psycopg.OperationalError, psycopg.InterfaceError) as exc:
+            raise HTTPException(
+                status_code=503,
+                detail="Database temporarily unavailable",
+            ) from exc
+        if toilet is None:
+            raise HTTPException(status_code=404, detail="Toilet not found")
+        return toilet
+
     async def pending():
         return JSONResponse(status_code=501, content={"detail": "Feature not implemented"})
 
     routes = [
         ("/", ["GET"]),
         ("/api/v1/toilets/suggest", ["POST"]),
-        ("/api/v1/toilets/{toilet_id}", ["GET"]),
         ("/api/v1/toilets/{toilet_id}/reviews", ["GET", "POST"]),
         ("/api/v1/toilets/{toilet_id}/summary", ["GET"]),
         ("/api/v1/reviews/{review_id}", ["PATCH", "DELETE"]),
