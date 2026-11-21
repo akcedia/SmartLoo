@@ -25,8 +25,30 @@ result without caching; it never supplies revision authority.
 
 No AI profile is enabled by default. With no configured provider, the route
 returns `summary: null`, an unavailability/minimum-count message and the real
-review count/average. It does not manufacture an AI summary. The recommendations
-route remains separate pending work.
+review count/average. It does not manufacture an AI summary.
+
+## Nearby recommendation fallback
+
+`GET /api/v1/recommendations` now calls the same real PostGIS discovery as
+nearby search. Coordinates/radius/booleans follow its validation and filter
+contract (radius defaults to 1000 m, maximum 50000 m). Only ACTIVE candidates
+are eligible; unknown/closed source records remain available in the city
+directory. Open-now requires an explicitly open schedule. Unknown amenities or
+fees never match a requested true/false value.
+
+Emir's existing selector returns at most three candidates, distance first, then
+known cleanliness and stable ID for ties. No sentiment is invented. This is a
+documented fallback policy for review, not a claim of personalised AI ranking.
+The API retains actual names, coordinates and unknown values for detail selection.
+It returns `ai_reasons_available: false`, `fallback: true` and a clear explanatory
+message. No model is invoked and no AI reason is fabricated. Store failure is
+503, not an empty result. Valid requests with no matches return an empty list.
+
+The panel forwards the selected map radius, displays the fallback notice even
+alongside results, and uses a normal nearby-facility title while AI reasons are
+unavailable. It does not show unverified reason text. Aborted old requests cannot
+replace newer radius/filter results. The existing sign-in screen restriction
+is preserved; this endpoint retains the prior public route contract.
 
 ## Explicit settings
 
@@ -76,7 +98,15 @@ grammar, input/store errors and actual provider cancellation
 at the ten-second deadline. The provider is synthetic throughout.
 
 `AI summary HTTP integration` starts PostGIS/Mongo/Redis and requires at least
-fourteen successes with no errors/failures/skips. Existing isolated AI and real
+30 HTTP successes (14 summary + 16 recommendation) and four mounted React
+successes with no errors/failures/skips. Run both backend suites with
+`python -m pytest tests/test_summary_http.py tests/test_recommendation_http.py -q`.
+The mounted checks use `python scripts/check_map_reviews_live.py --suite ai`,
+requiring frontend `npm ci` and the same test database opt-ins. They check summary
+refresh after edit, real nearby fallback selection/coordinates, empty area and
+unknown fee exclusion. Their model is explicitly synthetic. These are jsdom
+interaction checks with actual HTTP/stores, not visual browser/mobile acceptance.
+Existing isolated AI and real
 Redis component suites remain separate. No branch-protection configuration is
 changed by adding this job.
 
@@ -84,8 +114,8 @@ changed by adding this job.
 
 - Live model selection, credentials, prompt alignment and human-labelled Turkish
   privacy/language/grounding evaluation.
-- Recommendation API wiring, agreed ranking and optional validated AI reasons.
-- Mounted frontend with the summary HTTP runtime, plus visual/mobile acceptance.
+- Final ranking acceptance and optional validated AI reasons.
+- Visual/browser/mobile acceptance after the mounted HTTP integration.
 - Report refresh, staging performance/security/SonarQube evidence and Learn
   submission confirmation remain separate from this integration.
 

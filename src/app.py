@@ -131,7 +131,6 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
 
     public = [
         ("/", ["GET"]),
-        ("/api/v1/recommendations", ["GET"]),
     ]
     signed_in = [
         ("/api/v1/toilets/suggest", ["POST"]),
