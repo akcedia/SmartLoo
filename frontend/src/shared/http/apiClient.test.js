@@ -89,6 +89,27 @@ describe("shared API client", () => {
     await expect(empty.client.request("/users/me", { method: "DELETE" })).resolves.toBeNull();
   });
 
+  it("sends a raw body unchanged with its content type (CSV is never JSON-stringified)", async () => {
+    const { client, calls } = setup(() => jsonResponse(200, { inserted: 1 }));
+    const csv = ["﻿source,source_id,name", 'example,a-1,"Tesis, Kadıköy"', ""].join("\r\n");
+    await client.request("/api/v1/admin/import", { method: "POST", rawBody: csv, contentType: "text/csv" });
+    expect(calls[0].init.body).toBe(csv);
+    expect(calls[0].init.headers["Content-Type"]).toBe("text/csv");
+    expect(calls[0].init.headers.Authorization).toBe("Bearer tok");
+    const file = new Blob(["[]"], { type: "application/json" });
+    await client.request("/api/v1/admin/import", { method: "POST", rawBody: file, contentType: "application/json" });
+    expect(calls[1].init.body).toBe(file);
+  });
+
+  it("keeps the whole error body for top-level error arrays", async () => {
+    const errors = [{ row: 2, field: "latitude", message: "Latitude must be between -90 and 90" }];
+    const { client } = setup(() => jsonResponse(422, { errors, atomic: true }));
+    const error = await client.request("/x", { method: "POST", rawBody: "a", contentType: "text/csv" }).catch((e) => e);
+    expect(error.status).toBe(422);
+    expect(error.data).toEqual({ errors, atomic: true });
+    expect(error.detail).toBeNull();
+  });
+
   it("handles non-JSON error bodies", async () => {
     const { client } = setup(() => new Response("<html>502</html>", { status: 502, statusText: "Bad Gateway" }));
     await expect(client.request("/x")).rejects.toMatchObject({ status: 502, message: "Bad Gateway", detail: null });
