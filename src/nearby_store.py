@@ -70,11 +70,18 @@ def find_toilet(toilet_id):
         ).fetchone()
 
 
-def find_ibb_facilities(open_now=False, has_disabled_access=None, has_baby_changing=None, is_free=None):
+def find_ibb_facilities(open_now=False, has_disabled_access=None, has_baby_changing=None, is_free=None,
+                        with_filter_coverage=False):
     """Bounded city directory; never present a truncated result as the full source."""
     with _connect() as conn:
+        if with_filter_coverage:
+            conn.isolation_level = psycopg.IsolationLevel.REPEATABLE_READ
         if not conn.execute("SELECT EXISTS(SELECT 1 FROM external_import_runs WHERE source='ibb') AS imported").fetchone()["imported"]:
             raise psycopg.OperationalError("IBB source has not been imported")
+        coverage = conn.execute("""SELECT count(*) AS total,
+            count(has_disabled_access) AS has_disabled_access,
+            count(has_baby_changing) AS has_baby_changing, count(is_free) AS is_free
+            FROM toilets WHERE source='ibb'""").fetchone() if with_filter_coverage else None
         rows = conn.execute("""
             SELECT id,name,latitude,longitude,district,address,has_disabled_access,has_baby_changing,
                    is_free,price_try,opening_hours,status,average_cleanliness,review_count,
@@ -92,4 +99,4 @@ def find_ibb_facilities(open_now=False, has_disabled_access=None, has_baby_chang
               has_baby_changing, is_free, is_free)).fetchall()
     if len(rows) > 2000:
         raise psycopg.OperationalError("City directory exceeds bounded capacity")
-    return rows
+    return (rows, coverage) if with_filter_coverage else rows
