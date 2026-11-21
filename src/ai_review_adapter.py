@@ -1,0 +1,161 @@
+"""Adapt Fırat's proposed #50 review contract to Emir's #59 service.
+
+Source: docs/contracts/reviews-service.md at #50 head 2be3e821; implementation
+app.state.reviews.eligible_for_summary at unmerged #67 head 8c5d58f1.
+The upstream function is not imported here; production coordination is pending.
+The caller must assemble a store-consistent read of payload and statistics;
+this adapter does not manufacture a distributed snapshot from independent reads.
+"""
+
+from dataclasses import asdict, dataclass
+from datetime import datetime
+from math import isfinite
+
+from src.ai_evidence import ReviewText
+from src.ai_review_contract import SummaryPublication, SummarySnapshot, parse_summary_snapshot
+from src.ai_summary_service import PublicationDecision, ReviewSnapshot
+
+
+@dataclass(frozen=True)
+class ReviewStatistics:
+    review_version: int
+    review_count: int
+    average_cleanliness: float | None
+    # Must come from a coordinated read/write boundary, not just equal versions.
+    consistent: bool = False
+
+
+def adapt_eligible_reviews(payload, statistics):
+    """Map pre-redacted review records, preserving actual aggregate statistics.
+
+    The review ID stays local; EvidencePreparer replaces it before provider use.
+    Invalid records fail the whole read. They are not silently omitted because
+    that would obscure the source contract error and could change AI evidence.
+    """
+    if not isinstance(payload, dict) or set(payload) != {"review_version", "reviews"}:
+        raise ValueError("invalid_eligible_review_payload")
+    if not isinstance(statistics, ReviewStatistics):
+        raise ValueError("invalid_review_statistics")
+    version = payload["review_version"]
+    for value in (version, statistics.review_version, statistics.review_count):
+        if type(value) is not int or value < 0:
+            raise ValueError("invalid_review_version_or_count")
+    average = statistics.average_cleanliness
+    if statistics.review_count == 0:
+        if average is not None:
+            raise ValueError("zero_reviews_requires_null_average")
+    elif type(average) not in (int, float) or not isfinite(average) or not 1 <= average <= 5:
+        raise ValueError("invalid_review_average")
+    rows = payload["reviews"]
+    if not isinstance(rows, list) or len(rows) > 50 or len(rows) > statistics.review_count:
+        raise ValueError("invalid_eligible_review_count")
+    records = []
+    ids = set()
+    for row in rows:
+        # In particular, no author/user/name/email fields enter this boundary.
+        if not isinstance(row, dict) or set(row) != {"id", "cleanliness_score", "comment", "created_at"}:
+            raise ValueError("invalid_eligible_review_record")
+        id = row["id"]
+        score = row["cleanliness_score"]
+        date = row["created_at"]
+        comment = row["comment"]
+        if not isinstance(id, str) or not id.strip() or id in ids:
+            raise ValueError("invalid_or_duplicate_review_id")
+        if type(score) is not int or not 1 <= score <= 5:
+            raise ValueError("invalid_review_score")
+        # #67's isolated store serializes timestamps as ISO strings; live Mongo
+        # may return datetime objects. Never guess the timezone of naive values.
+        if isinstance(date, str):
+            try:
+                date = datetime.fromisoformat(date)
+            except ValueError:
+                raise ValueError("invalid_review_timestamp") from None
+        if not isinstance(date, datetime) or date.tzinfo is None or date.utcoffset() is None:
+            raise ValueError("invalid_review_timestamp")
+        if comment is not None and (not isinstance(comment, str) or len(comment) > 1000):
+            raise ValueError("invalid_review_comment")
+        ids.add(id)
+        # Upstream contract promises redacted comments; we still retain the
+        # downstream EvidencePreparer and mandatory residual privacy policy.
+        records.append(ReviewText(id, date, comment, author_identifiers=()))
+    records.sort(key=lambda row: row.id)
+    records.sort(key=lambda row: row.created_at, reverse=True)
+    return ReviewSnapshot(
+        revision=str(version), reviews=tuple(records),
+        review_count=statistics.review_count, average_cleanliness=average,
+        consistent=statistics.consistent is True and version == statistics.review_version,
+    )
+
+
+class ReviewServiceRepository:
+    def __init__(self, read_consistent_snapshot):
+        """Async bridge returns (eligible payload, ReviewStatistics).
+
+        The bridge is owned by the review/store integration. It must distinguish
+        missing facilities from store failures. No success/default data is
+        returned when its read fails. No runtime dependency on an unmerged PR.
+        """
+        self.read_consistent_snapshot = read_consistent_snapshot
+
+    async def snapshot(self, toilet_id):
+        payload, statistics = await self.read_consistent_snapshot(toilet_id, limit=50)
+        return adapt_eligible_reviews(payload, statistics)
+
+
+def adapt_summary_snapshot(payload, *, expected_toilet_id):
+    """Consume the proposed single snapshot envelope, including unready states.
+
+    Separate publication-port wiring is still required before production use;
+    this conversion alone does not close the final cache-write race.
+    """
+    snapshot = parse_summary_snapshot(payload, expected_toilet_id=expected_toilet_id)
+    return adapt_eligible_reviews(
+        {"review_version": snapshot.review_version, "reviews": list(snapshot.reviews)},
+        ReviewStatistics(snapshot.review_version, snapshot.review_count,
+                         snapshot.average_cleanliness, consistent=snapshot.ready),
+    )
+
+
+class CoordinatedReviewRepository:
+    """Consumer-side bridge to the proposed ConsistentReviewPort.
+
+    The injected coordinator, not this adapter, implements distributed guarding
+    and durable recovery. No fallback to separate Mongo/SQL reads is provided.
+    """
+
+    def __init__(self, coordinator):
+        self.coordinator = coordinator
+
+    def _adapt(self, snapshot, toilet_id):
+        if not isinstance(snapshot, SummarySnapshot):
+            raise ValueError("invalid_coordinator_snapshot")
+        payload = {"protocol_version": 1, **asdict(snapshot)}
+        payload["reviews"] = list(payload["reviews"])
+        return adapt_summary_snapshot(payload, expected_toilet_id=toilet_id)
+
+    async def snapshot(self, toilet_id):
+        snapshot = await self.coordinator.snapshot_for_summary(toilet_id, limit=50)
+        return self._adapt(snapshot, toilet_id)
+
+    async def publish_current(self, toilet_id, expected_revision, publish):
+        try:
+            version = int(expected_revision)
+        except (ValueError, TypeError):
+            raise ValueError("invalid_expected_review_version") from None
+        if version < 0 or str(version) != expected_revision:
+            raise ValueError("invalid_expected_review_version")
+        decision = await self.coordinator.publish_summary_if_current(toilet_id, version, publish)
+        if not isinstance(decision, SummaryPublication):
+            raise ValueError("invalid_coordinator_publication")
+        snapshot = self._adapt(decision.snapshot, toilet_id)
+        if decision.status == "published":
+            if not snapshot.consistent or snapshot.revision != expected_revision or not isinstance(decision.value, dict):
+                raise ValueError("invalid_published_snapshot")
+            return PublicationDecision(True, snapshot, decision.value)
+        if decision.status not in ("stale", "busy", "repair_required") or decision.value is not None:
+            raise ValueError("invalid_rejected_publication")
+        if decision.status == "stale" and (not snapshot.consistent or snapshot.revision == expected_revision):
+            raise ValueError("invalid_stale_snapshot")
+        if decision.status in ("busy", "repair_required") and snapshot.consistent:
+            raise ValueError("unready_publication_claimed_ready")
+        return PublicationDecision(False, snapshot)

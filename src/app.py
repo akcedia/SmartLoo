@@ -23,10 +23,15 @@ from src.reviews import router as reviews_router
 from src.review_ai_coordinator import ReviewAICoordinator
 from src.admin_analytics import create_analytics_router
 from src import analytics_store
+from src.ai_routes import router as ai_router
+from src.ai_runtime import ai_lifespan
 
 
-def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None):
-    app = FastAPI(title="SmartLoo requirements-stage API")
+def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None,
+               ai_cache=None, ai_profile=None):
+    def lifespan(app):
+        return ai_lifespan(app, provider=ai_provider, cache=ai_cache, profile=ai_profile)
+    app = FastAPI(title="SmartLoo requirements-stage API", lifespan=lifespan)
     app.state.repository = deepcopy(state or {})
     app.state.ai_provider = ai_provider
     app.state.jwt_secret = jwt_secret
@@ -46,6 +51,7 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
     app.include_router(auth_router)
     app.include_router(reviews_router)
     app.include_router(accounts_router)
+    app.include_router(ai_router)
     app.state.analytics_read_facilities = (
         (lambda district: analytics_store.repository_facilities(app.state.repository, district))
         if state is not None else analytics_store.read_facilities
@@ -125,8 +131,6 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
 
     public = [
         ("/", ["GET"]),
-        ("/api/v1/toilets/{toilet_id}/summary", ["GET"]),
-        ("/api/v1/recommendations", ["GET"]),
     ]
     signed_in = [
         ("/api/v1/toilets/suggest", ["POST"]),

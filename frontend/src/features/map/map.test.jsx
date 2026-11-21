@@ -276,7 +276,8 @@ describe("Map detail, review and AI components static render tests", () => {
     const openGuestRecHtml = renderToStaticMarkup(
       <AiRecommendationsPanel isOpen={true} searchCenter={{ lat: 41, lon: 29 }} filters={{}} />
     );
-    expect(openGuestRecHtml).toContain("AI Tesis Önerileri (En Fazla 3)");
+    expect(openGuestRecHtml).toContain("Yakındaki Uygun Tesisler (En Fazla 3)");
+    expect(openGuestRecHtml).not.toContain("AI Tesis Önerileri (En Fazla 3)");
     expect(openGuestRecHtml).toContain("Giriş Yap");
   });
 
