@@ -13,9 +13,10 @@ import psycopg
 from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.responses import JSONResponse
 
+from src.accounts import router as accounts_router
 from src.auth import PostgresAccounts, RepositoryAccounts, current_user, require_admin
 from src.auth import router as auth_router
-from src.nearby_store import find_nearby, find_toilet
+from src.nearby_store import find_nearby, find_toilet, find_ibb_facilities
 from src.review_scores import ReviewStoreError
 from src.reviews import MongoReviews, PostgresToilets, RepositoryReviews, RepositoryToilets, ReviewService
 from src.reviews import router as reviews_router
@@ -44,6 +45,7 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
     app.state.review_ai_coordinator = ReviewAICoordinator(app.state.reviews)
     app.include_router(auth_router)
     app.include_router(reviews_router)
+    app.include_router(accounts_router)
     app.state.analytics_read_facilities = (
         (lambda district: analytics_store.repository_facilities(app.state.repository, district))
         if state is not None else analytics_store.read_facilities
@@ -95,6 +97,16 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
 
         return {"count": len(rows), "results": rows}
 
+    @app.get("/api/v1/toilets")
+    def ibb_directory(open_now: bool = False, has_disabled_access: bool | None = None,
+                      has_baby_changing: bool | None = None, is_free: bool | None = None):
+        rows = find_ibb_facilities(open_now, has_disabled_access, has_baby_changing, is_free)
+        return {"count": len(rows), "results": rows, "source": {
+            "name": "İstanbul Büyükşehir Belediyesi Açık Veri Portalı",
+            "url": "https://data.ibb.gov.tr/dataset/sehir-tuvaletleri-veri-seti",
+            "license": "https://data.ibb.gov.tr/license",
+        }}
+
     @app.get("/api/v1/toilets/{toilet_id}")
     def toilet_detail(toilet_id: UUID):
         try:
@@ -118,7 +130,6 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
     ]
     signed_in = [
         ("/api/v1/toilets/suggest", ["POST"]),
-        ("/api/v1/users/me", ["DELETE"]),
     ]
     admin = [
         ("/api/v1/admin/suggestions/{suggestion_id}", ["PATCH"]),

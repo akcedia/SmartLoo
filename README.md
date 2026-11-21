@@ -229,3 +229,13 @@ exact district and individual-review weighting. No reviews means null/0; store
 failure or a busy/pending review operation means 503, with no download.
 CSV has UTF-8 BOM and CRLF; both formats have RFC 5987 Turkish filenames.
 See [the analytics contract and verification](docs/contracts/admin-analytics-api.md).
+
+## Real İBB source map (integration candidate)
+
+The default map now offers the complete persisted İBB directory and a separate
+nearby view. Missing source hours/amenities/prices remain unknown. The directory
+is populated explicitly through reviewed, file-bound CLI import plans, never on
+app startup. See [source, identity, commands and verification](docs/integration/ibb-normalization.md#21-november-integration-decision-and-delivery).
+Apply migration 006 and run the documented import before expecting real source
+points; the ordinary shared Compose setup does not silently download municipal
+records or erase synthetic fixtures. Source/license attribution stays visible.

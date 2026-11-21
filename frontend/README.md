@@ -89,5 +89,30 @@ zorunlu kontrol eklenmesi bu değişikliğe dahil değildir.
 
 Bu kanıt jsdom üzerinde etkileşim ve gerçek HTTP/veritabanı entegrasyonudur;
 mobil/klavye tarayıcı kabulü değildir. AI uçları henüz main'de 501 döner ve
-ekran kullanılamama mesajı gösterir. Gerçek model, öneriler ve İBB veri aktarımı
-ayrı kalan işlerdir; bu değişiklik #57/#56'nın tamamını kapatmaz.
+ekran kullanılamama mesajı gösterir. Gerçek model ve öneriler ayrı kalan işlerdir;
+İBB konum verisi main'de entegredir. Bu kontrol #57/#56'nın tamamını kapatmaz.
+
+### Hesap silme ekranı ve gerçek backend (#63 / #75)
+
+`Hesabım` ekranı açık onay sonrasında `DELETE /api/v1/users/me` çağırır.
+Yalnız 204 yanıtında oturumu temizleyip misafir haritasına döner. 503 ve
+bağlantı hatalarında başarı göstermez; 401 ortak oturumu kapatır. Yanıtın
+kaybolması silmenin gerçekleşmediğini kanıtlamadığı için mesaj sonucu belirsiz
+bırakır. Onaydan vazgeçme/Escape ve başarısız istek odağı silme düğmesine döndürür.
+
+Yukarıdaki test ortamında, migration 007 dahil tüm migration'lar uygulandıktan
+sonra `python scripts/check_map_reviews_live.py --suite deletion` çalıştırılır.
+Kontrol ayrı sentetik tesisler/hesaplar ve geçici MongoDB veritabanı kullanır:
+
+- Vazgeçme/Escape, odak dönüşü ve korunmuş oturum.
+- Gerçek bekleyen yazar işlemi nedeniyle 503; hesap ve oturum korunur.
+- Gerçek 204; hesap silinir, eski giriş/token 401 alır, anonim yorum ve ortalama korunur.
+- Eski oturumla silme isteğine gerçek 401; ortak oturum kapanır.
+- Sunucu silmeyi tamamladıktan sonra yanıtın kaybolması; ekran yanlış sonuç
+  bildirmez, yeniden denemede 401 ile oturum kapanır.
+
+`Account deletion live integration` temiz GitHub ortamında bu beş kontrolü
+çalıştırır; JUnit kapısı sıfır hata/atlama ve en az beş başarı ister. Bunlar
+jsdom + gerçek HTTP/veritabanı kontrolleridir; görsel tarayıcı veya mobil kabulü
+olarak değerlendirilmemelidir. Öneri kaydı temizliği ve canlı AI entegrasyonu
+ayrı iş olarak kalır.

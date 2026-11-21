@@ -2,7 +2,7 @@
 
 Owner: Fırat Karadoğan ([#56](https://github.com/akcedia/SmartLoo/issues/56)). For Özgür (route registration, details, analytics) and Emir (AI summary). Data rules come from the [class model](../design/class/accounts-and-data.md) and [er-data-dictionary.md](../analysis/data/er-data-dictionary.md).
 
-**Status (20 November).** `read_review_scores()` is merged through [#50](https://github.com/akcedia/SmartLoo/pull/50). This branch implements review CRUD, viewer permissions and the guarded operation lifecycle (migrations 004/005). The AI bridge was tested with #68's actual consumer and real PostgreSQL/MongoDB/Redis using a synthetic provider and policies. Public AI routes, a live model and account deletion remain separate integration work.
+**Status (21 November).** `read_review_scores()` is merged through [#50](https://github.com/akcedia/SmartLoo/pull/50). Review CRUD, viewer permissions and the guarded operation lifecycle (migrations 004/005) are implemented. Account deletion in #75 shares this journal and adds the pending-author index (migration 007). The AI bridge was tested with #68's actual consumer and real PostgreSQL/MongoDB/Redis using a synthetic provider and policies. Public AI routes and a live model remain separate integration work.
 
 ## Implemented: scores for analytics
 
@@ -65,6 +65,15 @@ session atomically commits recomputed aggregates, one version increment and
 removal of the operation record. Lock acquisition waits at most two seconds;
 SQL statements use a five-second timeout.
 
+Review mutations first acquire account guards for the actor and original author,
+in sorted order, and recheck the actor's existence and current role. Account
+deletion takes the same guard. The facility journal borrows that same SQL session,
+so connection loss releases both guards together. Migration 007 stores `author_id`
+even for a pending creation whose before-document is null. Deletion refuses any
+pending author operation, including partial anonymization with no Mongo author
+link. The account/history SQL transaction runs last, after all author documents
+and recovery markers have been cleared. Account guards wait at most two seconds.
+
 On failure, compensation restores the old Mongo document (or removes a newly
 created document), verifies it, then clears the marker under the same guard.
 If rollback fails or the SQL session is lost, the durable marker remains. New
@@ -97,9 +106,9 @@ The callback has a two-second budget. A worker owns the synchronous SQL session
 and guard; the callback runs on the caller's event loop. Cancellation waits for
 the worker to close its session. Windows requires no event-loop policy change.
 
-Future account anonymization, facility closure and direct Mongo analytics
-readers must honor this same guard/pending lifecycle when integrated. Those
-future paths are separate work from the review CRUD change. The downstream AI
+Account anonymization uses this same guard/pending lifecycle. Future facility
+closure and direct Mongo analytics readers must honor it when integrated. Those
+future paths are separate work from account deletion. The downstream AI
 privacy/language/evidence policies remain required after initial redaction.
 
 ### Verification of the guarded lifecycle

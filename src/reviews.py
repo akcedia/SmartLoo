@@ -12,6 +12,7 @@ RepositoryToilets over the in-memory state; the API uses MongoReviews and Postgr
 
 import re
 import uuid
+from functools import wraps
 from contextlib import nullcontext
 from datetime import datetime, timezone
 
@@ -104,6 +105,9 @@ class RepositoryReviews:
         return next((dict(d) for d in self.docs.values()
                      if d["toilet_id"] == toilet_id and d.get("user_id") == user_id), None)
 
+    def by_user(self, user_id):
+        return [dict(d) for d in self.docs.values() if d.get("user_id") == user_id]
+
     def insert(self, doc):
         if self.find_user_review(doc["toilet_id"], doc["user_id"]):
             raise DuplicateReview
@@ -151,6 +155,9 @@ class MongoReviews:
 
     def find_user_review(self, toilet_id, user_id):
         return self._call(lambda c: c.find_one({"toilet_id": toilet_id, "user_id": user_id}, {"_id": 0}))
+
+    def by_user(self, user_id):
+        return self._call(lambda c: list(c.find({"user_id": user_id}, {"_id": 0})))
 
     def insert(self, doc):
         self._call(lambda c: c.insert_one(dict(doc)))
@@ -222,8 +229,28 @@ class PostgresToilets:
                                 (toilet_id,)).fetchone()["review_version"]
 
 
-def redact(text):
-    return PII_PATTERN.sub("[removed]", text) if text else text
+def redact(text, personal_terms=()):
+    """Replace known personal terms (e.g. the author's email and display name), then any email or phone."""
+    if not text:
+        return text
+    for term in personal_terms:
+        if term and term.strip():
+            text = re.sub(re.escape(term.strip()), "[removed]", text, flags=re.IGNORECASE)
+    return PII_PATTERN.sub("[removed]", text)
+
+
+def account_guarded(method):
+    """Account locks precede facility locks, including ADMIN deletion of another author."""
+    @wraps(method)
+    def guarded(self, principal, *args, **kwargs):
+        owner = self._review(args[0]).get("user_id") if method.__name__ != "create" else None
+        ids = sorted({principal.sub, *([owner] if owner else [])})
+        with self.accounts.guard(ids) as users:
+            actor = users[principal.sub]
+            if actor is None:
+                raise HTTPException(status_code=401, detail="Invalid or expired token")
+            return method(self, Principal(sub=principal.sub, role=actor["role"]), *args, **kwargs)
+    return guarded
 
 
 class ReviewService:
@@ -231,7 +258,8 @@ class ReviewService:
         self.reviews, self.toilets, self.accounts = reviews, toilets, accounts
         self.coordination = (
             MemoryReviewCoordination(toilets.repository)
-            if isinstance(toilets, RepositoryToilets) else PostgresReviewCoordination()
+            if isinstance(toilets, RepositoryToilets) else PostgresReviewCoordination(
+                connection_provider=lambda: accounts.active_connection.get())
         )
 
     def _ready(self, session):
@@ -303,8 +331,8 @@ class ReviewService:
             toilet_id, self.reviews.scores, connection=session.connection,
         ))
 
-    def _change(self, session, toilet_id, review_id, before, write):
-        operation = session.begin(review_id, before)
+    def _change(self, session, toilet_id, review_id, before, write, author_id=None):
+        operation = session.begin(review_id, before, author_id=author_id)
         try:
             write()
             self._commit(toilet_id)
@@ -321,6 +349,7 @@ class ReviewService:
             docs = self.reviews.by_toilet(key)
             return {"count": len(docs), "results": [self._public(d, principal) for d in docs[offset:offset + limit]]}
 
+    @account_guarded
     def create(self, principal, toilet_id, payload):
         key = self._toilet(toilet_id, for_review=True)
         with self.coordination.guard(key) as session:
@@ -332,9 +361,10 @@ class ReviewService:
             doc = {"id": str(uuid.uuid4()), "toilet_id": key, "user_id": principal.sub,
                    "cleanliness_score": payload.cleanliness_score, "comment": payload.comment,
                    "tags": payload.tags, "is_anonymized": False, "created_at": now, "updated_at": now}
-            self._change(session, key, doc["id"], None, lambda: self.reviews.insert(doc))
+            self._change(session, key, doc["id"], None, lambda: self.reviews.insert(doc), author_id=principal.sub)
             return self._public(self.reviews.get(doc["id"]), principal)
 
+    @account_guarded
     def update(self, principal, review_id, patch):
         old = self._review(review_id)
         with self.coordination.guard(old["toilet_id"]) as session:
@@ -347,6 +377,7 @@ class ReviewService:
             self._change(session, old["toilet_id"], review_id, old, lambda: self.reviews.replace(new))
             return self._public(self.reviews.get(review_id), principal)
 
+    @account_guarded
     def delete(self, principal, review_id):
         old = self._review(review_id)
         with self.coordination.guard(old["toilet_id"]) as session:
@@ -388,6 +419,24 @@ class ReviewService:
                              "comment": redact(row["comment"]), "created_at": row.get("created_at")}
                             for row in documents],
             }
+
+    def anonymize_author(self, user_id, personal_terms=()):
+        """FR-10: detach and redact every review of an account being deleted.
+
+        Each review changes under its facility guard like any other edit: the score stays, so the
+        aggregates do not move, but review_version is bumped and old AI summaries become stale.
+        Already anonymized reviews no longer match user_id, so a retry continues where it stopped.
+        """
+        for doc in self.reviews.by_user(user_id):
+            key = doc["toilet_id"]
+            with self.coordination.guard(key) as session:
+                self._ready(session)
+                old = self.reviews.get(doc["id"])
+                if old is None or old.get("user_id") != user_id:
+                    continue
+                new = {**old, "user_id": None, "is_anonymized": True,
+                       "comment": redact(old.get("comment"), personal_terms)}
+                self._change(session, key, old["id"], old, lambda: self.reviews.replace(new))
 
     def reconcile(self, toilet_id):
         """Restore an interrupted mutation and clear its marker exactly once."""

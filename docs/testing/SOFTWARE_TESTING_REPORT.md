@@ -2,7 +2,7 @@
 
 Draft for #60. Internal review target: 20 November at 18:00 (Europe/Istanbul). Course deadline: 22 November at 23:59.
 
-Current QA baseline: [main at 87994f9](https://github.com/akcedia/SmartLoo/tree/87994f967d430f1d8394465cd205d4b8e772b580). Historical runs retain their original revisions below. For each run, record commit, OS, tool versions, seed, commands, and an evidence link. Record Passed, Failed, Skipped, or Not run per case. Add the reason for failures or skips and link the issue and retest. Attribute existing contributor results to the original commit.
+Current QA baseline: [main at fde33e2b](https://github.com/akcedia/SmartLoo/tree/fde33e2b6452b078ad5241bdc2f3a5c2d344aa1d). Historical runs retain their original revisions below. For each run, record commit, OS, tool versions, seed, commands, and an evidence link. Record Passed, Failed, Skipped, or Not run per case. Add the reason for failures or skips and link the issue and retest. Attribute existing contributor results to the original commit.
 
 | Area | Evidence to collect |
 | --- | --- |
@@ -86,7 +86,7 @@ Independent QA on #73 `25da0b91` (Windows, Node 26.13.1, Vitest 2.1.8, Vite 5.4.
 
 Still open: shared `main` verification, #67 ownership metadata, the #71 server date-range limit and JSON filename header, the final AI service connection, SonarQube access, staging load measurements and remaining accessibility checks. The review PDF includes these pending results.
 
-## 20 November post-merge verification
+## 20 November post-merge verification (historical)
 
 [Post-merge QA record](QA-2026-11-20-main.md) pins main `2ac2a60e`. The independent local run passed 94 frontend tests and build (zero dependency advisories), and 90 of 109 selected backend checks. The backend result comprises 33 passing and 19 failing parametrized acceptance cases and 57 additional passing checks. For the functional matrix, the latest results therefore replace the older unintegrated baseline. Manual TC-22/23 retain their attributed browser evidence.
 
@@ -96,60 +96,68 @@ The merged backend supplies ownership and permissions to the map and wires live 
 
 The documentation-only [#76 verification](https://github.com/akcedia/SmartLoo/pull/76) used the same merged application and test source as main 2ac2a60e. The five [required DB suites](https://github.com/akcedia/SmartLoo/actions/runs/44795336948) passed 104 checks, and the [live map](https://github.com/akcedia/SmartLoo/actions/runs/44795336960) and [live admin](https://github.com/akcedia/SmartLoo/actions/runs/44795336830) passed 10 checks. All seven suites had zero failures, errors and skips. The separate non-blocking acceptance catalog still contains failures.
 
+## 21 November merged work and refreshed acceptance
+
+[Latest QA record](QA-2026-11-21.md) pins main [fde33e2b](https://github.com/akcedia/SmartLoo/tree/fde33e2b6452b078ad5241bdc2f3a5c2d344aa1d). Independent Windows runs recorded **156 passing frontend tests and a successful build**, and **99 passed / 18 failed** in the selected backend run. The latter includes 34 passing and 18 failing parametrized acceptance cases. The matrix below records this revision; manual TC-22/23 retain their earlier browser evidence. TC-34 now passes in the local acceptance run.
+
+Account deletion (#75 and #63) is merged. The [required deletion CI](https://github.com/akcedia/SmartLoo/actions/runs/44833351786/job/136623642678) passed 15 cases and the [live account UI](https://github.com/akcedia/SmartLoo/actions/runs/44833351701) passed 5. Neither suite skipped a case. Scoped checks include account removal, invalidation of old login/token, retention of review scores and anonymization. These mounted UI checks use real HTTP and databases with synthetic identities.
+
+Merged analytics (#64) retains the live admin/export checks. Merged accessibility (#65) provides component keyboard and semantic checks; screen-reader, Lighthouse and map FPS measurements remain open. The [İBB import suite](https://github.com/akcedia/SmartLoo/actions/runs/44824809830) passed 37 checks with real PostGIS. The #77 contributor recorded 432 imported facilities and a repeat with zero inserts/updates. The separate ADMIN upload, historical usage-statistics integration and fresh visual acceptance remain open. The draft AI #68 [real-store/synthetic-model checks](https://github.com/akcedia/SmartLoo/actions/runs/44880493302) passed 30 HTTP and 4 mounted UI cases; main and live-model acceptance are pending.
+
 ## Functional traceability
 
 Sources: [requirements](../REQUIREMENTS.MD) and [test catalog](../../tests/requirements_cases.json).
 
 | Case | Requirement | Scenario | Verification | Result | Evidence |
 | --- | --- | --- | --- | --- | --- |
-| TC-01 | FR-01 | Nearby open toilets | test_tc_01 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-02 | FR-02 | Accessibility filter | test_tc_02 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-03 | FR-02 | Baby changing filter | test_tc_03 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-04 | FR-08 | Successful login | test_tc_04 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-05 | FR-03 | Reject guest review | test_tc_05 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-06 | FR-03 | Create review and aggregate | test_tc_06 | Failed | Main 2ac2a60e, local acceptance run; detail returned 503 |
-| TC-07 | FR-05 | Suggest location | test_tc_07 | Failed | Main 2ac2a60e, local acceptance run |
-| TC-08 | FR-04 | Structured Turkish AI summary | test_tc_08 | Failed | Main 2ac2a60e, local acceptance run |
-| TC-09 | FR-06 | Filtered dashboard | test_tc_09 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-10 | FR-07 | CSV report export | test_tc_10 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-11 | FR-01 | Reject invalid search | test_tc_11 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-12 | FR-02 | Combined filters and clearing | test_tc_12 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-13 | FR-02 | Pricing filter | test_tc_13 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-14 | FR-01 | Empty nearby results | test_tc_14 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-15 | FR-04 | AI outage and insufficient reviews | test_tc_15 | Failed | Main 2ac2a60e, local acceptance run |
-| TC-16 | FR-04 | Summary cache | test_tc_16 | Failed | Main 2ac2a60e, local acceptance run |
-| TC-17 | FR-04 | Preference recommendations | test_tc_17 | Failed | Main 2ac2a60e, local acceptance run |
-| TC-18 | FR-05 | Moderate suggestions | test_tc_18 | Failed | Main 2ac2a60e, local acceptance run |
-| TC-19 | FR-07 | Idempotent CSV and JSON import | test_tc_19 | Failed | Main 2ac2a60e, local acceptance run |
-| TC-20 | FR-07 | Invalid import is atomic | test_tc_20 | Failed | Main 2ac2a60e, local acceptance run |
-| TC-21 | FR-09 | Initial map HTML and manual marker details | test_tc_21 | Failed | Main 2ac2a60e, local acceptance run |
+| TC-01 | FR-01 | Nearby open toilets | test_tc_01 | Passed | Main fde33e2b, local acceptance run |
+| TC-02 | FR-02 | Accessibility filter | test_tc_02 | Passed | Main fde33e2b, local acceptance run |
+| TC-03 | FR-02 | Baby changing filter | test_tc_03 | Passed | Main fde33e2b, local acceptance run |
+| TC-04 | FR-08 | Successful login | test_tc_04 | Passed | Main fde33e2b, local acceptance run |
+| TC-05 | FR-03 | Reject guest review | test_tc_05 | Passed | Main fde33e2b, local acceptance run |
+| TC-06 | FR-03 | Create review and aggregate | test_tc_06 | Failed | Main fde33e2b, local acceptance run; detail returned 503 in local fixture |
+| TC-07 | FR-05 | Suggest location | test_tc_07 | Failed | Main fde33e2b, local acceptance run |
+| TC-08 | FR-04 | Structured Turkish AI summary | test_tc_08 | Failed | Main fde33e2b, local acceptance run |
+| TC-09 | FR-06 | Filtered dashboard | test_tc_09 | Passed | Main fde33e2b, local acceptance run |
+| TC-10 | FR-07 | CSV report export | test_tc_10 | Passed | Main fde33e2b, local acceptance run |
+| TC-11 | FR-01 | Reject invalid search | test_tc_11 | Passed | Main fde33e2b, local acceptance run |
+| TC-12 | FR-02 | Combined filters and clearing | test_tc_12 | Passed | Main fde33e2b, local acceptance run |
+| TC-13 | FR-02 | Pricing filter | test_tc_13 | Passed | Main fde33e2b, local acceptance run |
+| TC-14 | FR-01 | Empty nearby results | test_tc_14 | Passed | Main fde33e2b, local acceptance run |
+| TC-15 | FR-04 | AI outage and insufficient reviews | test_tc_15 | Failed | Main fde33e2b, local acceptance run |
+| TC-16 | FR-04 | Summary cache | test_tc_16 | Failed | Main fde33e2b, local acceptance run |
+| TC-17 | FR-04 | Preference recommendations | test_tc_17 | Failed | Main fde33e2b, local acceptance run |
+| TC-18 | FR-05 | Moderate suggestions | test_tc_18 | Failed | Main fde33e2b, local acceptance run |
+| TC-19 | FR-07 | Idempotent CSV and JSON import | test_tc_19 | Failed | Main fde33e2b, local acceptance run |
+| TC-20 | FR-07 | Invalid import is atomic | test_tc_20 | Failed | Main fde33e2b, local acceptance run |
+| TC-21 | FR-09 | Initial map HTML and manual marker details | test_tc_21 | Failed | Main fde33e2b, local acceptance run |
 | TC-22 | FR-09 | Map without geolocation | Manual UI | Passed | Özgür, #54 `71e8ce8`, 17 November handoff above |
 | TC-23 | FR-09 | Filter markers remain consistent | Manual UI | Passed | Özgür, #54 `71e8ce8`, 17 November handoff above |
-| TC-24 | FR-07 | JSON report export | test_tc_24 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-25 | FR-06 | Dashboard has no data | test_tc_25 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-26 | FR-03 | Edit and delete own review | test_tc_26 | Failed | Main 2ac2a60e, local acceptance run; detail returned 503 |
-| TC-27 | FR-10 | Close reviewed facility | test_tc_27 | Failed | Main 2ac2a60e, local acceptance run |
-| TC-28 | FR-04 | Untrusted review content | test_tc_28 | Failed | Main 2ac2a60e, local acceptance run |
-| TC-29 | FR-10 | Invalid toilet coordinates | test_tc_29 | Failed | Main 2ac2a60e, local acceptance run |
-| TC-30 | FR-08 | Case insensitive email | test_tc_30 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-31 | FR-03 | Invalid review rating | test_tc_31 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-32 | FR-03 | Duplicate review | test_tc_32 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-33 | FR-10 | Nonexistent toilet | test_tc_33 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-34 | FR-10 | Account deletion | test_tc_34 | Failed | Main 2ac2a60e, local acceptance run; 501 on main, #75 candidate passed per author |
-| TC-35 | FR-03 | Recalculate aggregate | test_tc_35 | Failed | Main 2ac2a60e, local acceptance run; detail returned 503 |
-| TC-36 | FR-07 | Stable source identity | test_tc_36 | Failed | Main 2ac2a60e, local acceptance run |
-| TC-37 | FR-08 | Weak password | test_tc_37 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-38 | FR-08 | Password storage and response | test_tc_38 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-39 | FR-08 | JWT claims | test_tc_39 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-40 | FR-08 | Generic login error | test_tc_40 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-41 | FR-08 | Missing token | test_tc_41 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-42 | FR-08 | Tampered token | test_tc_42 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-43 | FR-08 | Expired token | test_tc_43 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-44 | FR-08 | User cannot access admin | test_tc_44 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-45 | FR-08 | Admin access | test_tc_45 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-46 | FR-03 | Review ownership | test_tc_46 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-47 | FR-08 | Login throttling | test_tc_47 | Passed | Main 2ac2a60e, local acceptance run |
-| TC-48 | FR-08 | Public registration cannot grant administrator privileges | test_tc_48 | Passed | Main 2ac2a60e, local acceptance run |
+| TC-24 | FR-07 | JSON report export | test_tc_24 | Passed | Main fde33e2b, local acceptance run |
+| TC-25 | FR-06 | Dashboard has no data | test_tc_25 | Passed | Main fde33e2b, local acceptance run |
+| TC-26 | FR-03 | Edit and delete own review | test_tc_26 | Failed | Main fde33e2b, local acceptance run; detail returned 503 in local fixture |
+| TC-27 | FR-10 | Close reviewed facility | test_tc_27 | Failed | Main fde33e2b, local acceptance run |
+| TC-28 | FR-04 | Untrusted review content | test_tc_28 | Failed | Main fde33e2b, local acceptance run |
+| TC-29 | FR-10 | Invalid toilet coordinates | test_tc_29 | Failed | Main fde33e2b, local acceptance run |
+| TC-30 | FR-08 | Case insensitive email | test_tc_30 | Passed | Main fde33e2b, local acceptance run |
+| TC-31 | FR-03 | Invalid review rating | test_tc_31 | Passed | Main fde33e2b, local acceptance run |
+| TC-32 | FR-03 | Duplicate review | test_tc_32 | Passed | Main fde33e2b, local acceptance run |
+| TC-33 | FR-10 | Nonexistent toilet | test_tc_33 | Passed | Main fde33e2b, local acceptance run |
+| TC-34 | FR-10 | Account deletion | test_tc_34 | Passed | Main fde33e2b, local acceptance run; real-store account CI also passed |
+| TC-35 | FR-03 | Recalculate aggregate | test_tc_35 | Failed | Main fde33e2b, local acceptance run; detail returned 503 in local fixture |
+| TC-36 | FR-07 | Stable source identity | test_tc_36 | Failed | Main fde33e2b, local acceptance run |
+| TC-37 | FR-08 | Weak password | test_tc_37 | Passed | Main fde33e2b, local acceptance run |
+| TC-38 | FR-08 | Password storage and response | test_tc_38 | Passed | Main fde33e2b, local acceptance run |
+| TC-39 | FR-08 | JWT claims | test_tc_39 | Passed | Main fde33e2b, local acceptance run |
+| TC-40 | FR-08 | Generic login error | test_tc_40 | Passed | Main fde33e2b, local acceptance run |
+| TC-41 | FR-08 | Missing token | test_tc_41 | Passed | Main fde33e2b, local acceptance run |
+| TC-42 | FR-08 | Tampered token | test_tc_42 | Passed | Main fde33e2b, local acceptance run |
+| TC-43 | FR-08 | Expired token | test_tc_43 | Passed | Main fde33e2b, local acceptance run |
+| TC-44 | FR-08 | User cannot access admin | test_tc_44 | Passed | Main fde33e2b, local acceptance run |
+| TC-45 | FR-08 | Admin access | test_tc_45 | Passed | Main fde33e2b, local acceptance run |
+| TC-46 | FR-03 | Review ownership | test_tc_46 | Passed | Main fde33e2b, local acceptance run |
+| TC-47 | FR-08 | Login throttling | test_tc_47 | Passed | Main fde33e2b, local acceptance run |
+| TC-48 | FR-08 | Public registration cannot grant administrator privileges | test_tc_48 | Passed | Main fde33e2b, local acceptance run |
 
 Functional result labels describe the stated baseline, not the latest unmerged feature branches. Parametrized test instances and TC IDs are counted separately. Partial means evidence exists but one or more acceptance conditions remain open.
 
@@ -180,6 +188,6 @@ Record the affected requirement, reproduction steps, expected and observed resul
 
 ## Delivery decision and remaining dependencies
 
-The updated report is ready for review. #60 remains open because full integrated acceptance is pending. #72 has merged. Final feature merges must retain the real-DB gates and pass them on their final revisions. Core auth, map, reviews and analytics are merged. Account deletion and AI integration remain with their feature owners. SonarQube access is still pending Özgür. Real-DB performance, complete security/privacy acceptance and the shared fixed-revision demo were not started on 19 November because their prerequisites are missing.
+The updated report is ready for review. #60 remains open because full integrated acceptance is pending. #72 has merged. Final feature merges must retain the real-DB gates and pass them on their final revisions. Core auth, map, reviews and analytics are merged. Account deletion is merged and TC-34 has been retested. AI integration remains on its draft branch. SonarQube access is still pending Özgür. Real-DB performance, complete security/privacy acceptance and the shared fixed-revision demo were not started on 19 November because their prerequisites are missing.
 
 The PDF is a review snapshot generated from this Markdown. Review the linked daily records for commands, environments and source evidence. The final PDF must be regenerated after pending results are available and reviewed before the course submission.

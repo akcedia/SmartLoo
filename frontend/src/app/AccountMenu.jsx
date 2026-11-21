@@ -5,6 +5,8 @@ const ROLE_LABELS = { ADMIN: "Yönetici", USER: "Kullanıcı" };
 
 // Header "Sign in or Account" control (UI Spec Lite). Shows the real session
 // from the shared SessionProvider; the token itself is never displayed.
+// Disclosure pattern (button + aria-expanded, plain links inside): it closes on
+// Escape, on an outside click and when keyboard focus leaves it.
 export default function AccountMenu({ session, onSignOut, returnTo }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef(null);
@@ -41,12 +43,17 @@ export default function AccountMenu({ session, onSignOut, returnTo }) {
   const role = ROLE_LABELS[session.role] ?? session.role;
 
   return (
-    <div className="app-account" ref={rootRef}>
+    <div
+      className="app-account"
+      ref={rootRef}
+      onBlur={(e) => {
+        if (open && e.relatedTarget && !rootRef.current?.contains(e.relatedTarget)) setOpen(false);
+      }}
+    >
       <button
         ref={buttonRef}
         type="button"
         className="app-account-button"
-        aria-haspopup="true"
         aria-expanded={open}
         aria-controls={menuId}
         onClick={() => setOpen((v) => !v)}
