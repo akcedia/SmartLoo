@@ -8,7 +8,10 @@ from types import SimpleNamespace
 from unittest.mock import AsyncMock
 from tests.ai_test_ports import sequential_publication
 
-from src.ai_openai import ENDPOINT, OpenAISummaryProvider, ProviderError, build_summary_request
+from src.ai_openai import ENDPOINT, SYSTEM_INSTRUCTIONS, OpenAISummaryProvider, ProviderError, build_summary_request
+from src.ai_restricted_policy import (
+    CLAUSES, FACETS, GROUPS, PHRASES, restricted_summary_instructions, restricted_validator,
+)
 from src.ai_summary_service import ReviewSnapshot, SummaryService
 
 EVIDENCE = [{"request_review_ref": f"r{i}", "text": text} for i, text in enumerate(
@@ -27,6 +30,21 @@ def response(*, status=200, content=None, finish="stop", refusal=None, tools=Non
 
 
 class RequestTests(unittest.TestCase):
+    def test_restricted_prompt_uses_the_policy_vocabulary_and_category_groups(self):
+        instructions = restricted_summary_instructions()
+        rules, vocabulary, groups = instructions.splitlines()
+        dictionary = json.loads(vocabulary.removeprefix("Sözlük: "))
+        self.assertEqual(tuple(dictionary), FACETS)
+        self.assertEqual({facet: entry["output"] for facet, entry in dictionary.items()}, PHRASES)
+        self.assertEqual(
+            {clause: (facet, state) for facet, entry in dictionary.items()
+             for state, clauses in entry["input"].items() for clause in clauses},
+            CLAUSES,
+        )
+        self.assertEqual(json.loads(groups.removeprefix("Kategori grupları: ")),
+                         {category: list(facets) for category, facets in GROUPS.items()})
+        self.assertIn("Temiz, ancak sabun eksik.", rules)
+
     def test_injection_stays_in_user_data_and_instructions_do_not_change(self):
         ordinary = build_summary_request(EVIDENCE, model="test-model")
         data = deepcopy(EVIDENCE)
@@ -75,6 +93,21 @@ class ProviderTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(kwargs["follow_redirects"])
         self.assertEqual(kwargs["timeout"], 8)
         self.assertNotIn("synthetic-key-not-real", json.dumps(kwargs["json"]))
+
+    async def test_restricted_instructions_reach_transport_and_validator_stays_strict(self):
+        instructions = f"{SYSTEM_INSTRUCTIONS}\n\n{restricted_summary_instructions()}"
+        provider = OpenAISummaryProvider(
+            self.client, api_key="synthetic-key-not-real", model="test-model",
+            system_instructions=instructions,
+        )
+        result = await provider(EVIDENCE)
+        request = self.client.post.call_args.kwargs["json"]
+        self.assertEqual(request["messages"][0], {"role": "system", "content": instructions})
+        self.assertEqual(json.loads(request["messages"][1]["content"])["reviews"], EVIDENCE)
+        validate = restricted_validator()
+        self.assertEqual(await validate(result, EVIDENCE), OUTPUT)
+        with self.assertRaises(ValueError):
+            await validate({**result, "summary": "Temizdi fakat sabun yoktu."}, EVIDENCE)
 
     async def test_missing_key_fails_without_network_or_secret_in_repr(self):
         for key in (None, "", "bad\nkey"):

@@ -7,8 +7,11 @@ from redis.asyncio import Redis
 from redis.asyncio.retry import Retry
 from redis.backoff import NoBackoff
 
-from src.ai_openai import OpenAISummaryProvider
-from src.ai_restricted_policy import POLICY_VERSION, restricted_preparer, restricted_validator
+from src.ai_openai import SYSTEM_INSTRUCTIONS, OpenAISummaryProvider
+from src.ai_restricted_policy import (
+    POLICY_VERSION, RESTRICTED_PROMPT_VERSION, restricted_preparer,
+    restricted_summary_instructions, restricted_validator,
+)
 from src.ai_review_adapter import CoordinatedReviewRepository
 from src.ai_summary_service import RedisSummaryCache, SummaryService
 
@@ -27,8 +30,11 @@ async def ai_lifespan(app, *, provider=None, cache=None, profile=None):
                 key = os.getenv("OPENAI_API_KEY", "")
                 if model and key:
                     http = await resources.enter_async_context(httpx.AsyncClient())
-                    provider = OpenAISummaryProvider(http, api_key=key, model=model)
-                    identity = f"openai:{model}:prompt-v1"
+                    provider = OpenAISummaryProvider(
+                        http, api_key=key, model=model,
+                        system_instructions=f"{SYSTEM_INSTRUCTIONS}\n\n{restricted_summary_instructions()}",
+                    )
+                    identity = f"openai:{provider.model}:{RESTRICTED_PROMPT_VERSION}"
             else:
                 # Injected providers are for explicitly composed tests/integrations.
                 identity = "injected-test-provider-v1"

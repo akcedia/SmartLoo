@@ -65,9 +65,11 @@ validation. It remains opt-in and requires review before production selection.
 Live configuration additionally needs a deliberate `SMARTLOO_AI_MODEL` and a
 server-side `OPENAI_API_KEY`. No model was selected and no live request ran in
 this integration. Keep keys outside Git, frontend variables, logs and reports.
-The existing OpenAI adapter is used unchanged. Prompt/model calibration and
-human evaluation are still needed; strict profile output can reject otherwise
-valid model paraphrases.
+The opt-in profile gives the OpenAI adapter the restricted vocabulary, category
+groups, and exact output rules. The cache identity includes
+`restricted-prompt-v2`, so v1 results are not reused. Live prompt/model
+calibration and human evaluation are still pending. See the
+[Turkish acceptance evidence](../testing/evidence/ai/turkish-acceptance.md).
 
 Tests inject an async provider via `create_app(ai_provider=...,
 ai_profile="restricted-tr-evidence-v1")`. That explicit test composition uses
@@ -112,7 +114,7 @@ changed by adding this job.
 
 ## Remaining acceptance
 
-- Live model selection, credentials, prompt alignment and human-labelled Turkish
+- Live model selection, credentials and human-labelled Turkish
   privacy/language/grounding evaluation.
 - Final ranking acceptance and optional validated AI reasons.
 - Visual/browser/mobile acceptance after the mounted HTTP integration.

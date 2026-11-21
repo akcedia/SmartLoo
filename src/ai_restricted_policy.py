@@ -7,6 +7,7 @@ This profile deliberately trades coverage for inspectable decisions. It is not
 an automatically enabled/approved production policy or full TC-28 acceptance.
 """
 
+import json
 import re
 import unicodedata
 
@@ -50,6 +51,44 @@ PHRASES = {
     # Only lighting observations; never a safety inspection/certification.
     "lighting": {"positive": "Aydınlatma olumlu bildiriliyor", "negative": "Aydınlatma yetersiz bildiriliyor", "mixed": "Aydınlatma hakkında çelişkili yorumlar var"},
 }
+
+RESTRICTED_PROMPT_VERSION = "restricted-prompt-v2"
+
+
+def restricted_summary_instructions():
+    """Describe the validator's exact vocabulary and rendering to the model."""
+    vocabulary = {}
+    for facet in FACETS:
+        vocabulary[facet] = {
+            "input": {state: [clause for clause, fact in CLAUSES.items()
+                              if fact == (facet, state)]
+                      for state in ("positive", "negative")},
+            "output": PHRASES[facet],
+        }
+    rules = (
+        "Aşağıdaki sözlük ve biçim kuralları bu dar Türkçe profil için bağlayıcıdır. "
+        "Yorumları noktalama ve ama, ancak, fakat, ve bağlaçlarından böl. "
+        "Her tam ifadeyi Türkçe büyük/küçük harfleri gözeterek input karşılığıyla eşleştir. "
+        "Her gözlem alanında yalnız olumlu veya olumsuz kanıt varsa o durumu, "
+        "ikisi varsa mixed, hiç kanıt yoksa unknown kullan. Çoğunluk çelişkiyi gidermez. "
+        "summary için alanları sözlük sırasıyla işle. unknown alanları atla. "
+        "Her alan için output ifadesini aynen kullan. İlk ifade büyük harfle başlar. "
+        "Sonraki ifadelerin ilk harfini Türkçe kurallarla küçült. "
+        "Bir önceki yazılan alan positive ve sıradaki negative ise ', ancak ', "
+        "diğer geçişlerde '; ' kullan. Sona tek nokta koy. Yeniden ifade etme. "
+        "pros için positive, cons için negative alanların output ifadelerini özgün "
+        "baş harfleriyle ve sonda noktayla yaz. Her listede sözlük sırasındaki "
+        "ilk üç ifadeyi kullan. mixed ve unknown bu listelere girmez. "
+        "categories için aşağıdaki gruplarda bulunan ham olumlu ve olumsuz "
+        "kanıtları birleştir ve aynı durum kurallarını uygula. safety sadece "
+        "aydınlatma gözlemini gösterir. cleanliness ya da odor negative ise "
+        "recommendation=avoid. cleanliness positive ve hiçbir alan negative "
+        "ya da mixed değilse recommended. Diğer durumlarda acceptable. "
+        "Örneğin temizlik positive ve sabun negative ise özet aynen "
+        "'Temiz, ancak sabun eksik.' olur."
+    )
+    return (f"{rules}\nSözlük: {json.dumps(vocabulary, ensure_ascii=False)}"
+            f"\nKategori grupları: {json.dumps(GROUPS)}")
 
 
 def _lower(text):

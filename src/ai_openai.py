@@ -46,7 +46,7 @@ def summary_schema():
     }
 
 
-def build_summary_request(evidence, *, model):
+def build_summary_request(evidence, *, model, system_instructions=SYSTEM_INSTRUCTIONS):
     if not isinstance(model, str) or not model.strip() or len(model) > 200:
         raise ValueError("invalid_ai_model")
     if not isinstance(evidence, list) or not 3 <= len(evidence) <= 50:
@@ -65,7 +65,7 @@ def build_summary_request(evidence, *, model):
         "model": model.strip(), "store": False, "stream": False,
         "max_completion_tokens": 1200,
         "messages": [
-            {"role": "system", "content": SYSTEM_INSTRUCTIONS},
+            {"role": "system", "content": system_instructions},
             {"role": "user", "content": json.dumps({"language": "tr", "reviews": evidence}, ensure_ascii=False)},
         ],
         "response_format": {"type": "json_schema", "json_schema": {
@@ -74,7 +74,8 @@ def build_summary_request(evidence, *, model):
 
 
 class OpenAISummaryProvider:
-    def __init__(self, client, *, api_key, model, timeout_seconds=8):
+    def __init__(self, client, *, api_key, model, timeout_seconds=8,
+                 system_instructions=SYSTEM_INSTRUCTIONS):
         if not isinstance(api_key, str) or not api_key.strip() or any(c.isspace() for c in api_key):
             raise ValueError("missing_or_invalid_openai_key")
         if not isinstance(model, str) or not model.strip() or len(model) > 200:
@@ -85,6 +86,7 @@ class OpenAISummaryProvider:
         self._api_key = api_key
         self.model = model.strip()
         self.timeout_seconds = timeout_seconds
+        self.system_instructions = system_instructions
 
     @classmethod
     def from_environment(cls, client, *, model, environment=None, timeout_seconds=8):
@@ -95,7 +97,9 @@ class OpenAISummaryProvider:
                    model=model, timeout_seconds=timeout_seconds)
 
     async def __call__(self, evidence):
-        request = build_summary_request(evidence, model=self.model)
+        request = build_summary_request(
+            evidence, model=self.model, system_instructions=self.system_instructions,
+        )
         try:
             # One request, no retry; deny redirect forwarding of Authorization.
             response = await asyncio.wait_for(self.client.post(ENDPOINT,
