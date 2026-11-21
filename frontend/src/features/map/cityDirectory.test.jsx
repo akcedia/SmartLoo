@@ -18,6 +18,34 @@ beforeEach(() => {
 afterEach(async () => { await act(async () => root.unmount()); host.remove(); });
 const response = rows => ({ok:true, status:200, json:async () => ({count:rows.length, results:rows})});
 
+it("keeps the source markers and explains unavailable filters instead of hiding every facility", async () => {
+  const rows = [{id:"a"},{id:"b"}];
+  const fetchImpl = vi.fn(async () => ({ok:true, status:200, json:async () => ({results:rows,
+    filter_coverage:{total:2, has_disabled_access:0, has_baby_changing:0, is_free:0}})}));
+  await act(async () => root.render(<SessionProvider initialSession={null} fetchImpl={fetchImpl}>
+    <MapApiProvider><SearchPage /></MapApiProvider></SessionProvider>));
+  expect(host.querySelector('[data-testid="map-mode"]').textContent).toBe("city:2");
+  for (const label of ["Engelli Erişimi", "Bebek Bakım", "Ücretsiz", "Ücretli"]) {
+    const button = [...host.querySelectorAll("button")].find(node => node.textContent === `${label} (bilgi yok)`);
+    expect(button?.disabled).toBe(true);
+    await act(async () => button.click());
+  }
+  expect(fetchImpl).toHaveBeenCalledTimes(1);
+  expect(host.textContent).toContain("Engelli erişimi 0/2");
+  expect(host.querySelector('[data-testid="map-mode"]').textContent).toBe("city:2");
+});
+
+it("keeps filters available when the source has verified values", async () => {
+  const fetchImpl = vi.fn(async () => ({ok:true, status:200, json:async () => ({results:[{id:"a"}],
+    filter_coverage:{total:2, has_disabled_access:1, has_baby_changing:1, is_free:2}})}));
+  await act(async () => root.render(<SessionProvider initialSession={null} fetchImpl={fetchImpl}>
+    <MapApiProvider><SearchPage /></MapApiProvider></SessionProvider>));
+  const button = [...host.querySelectorAll("button")].find(node => node.textContent === "Engelli Erişimi");
+  expect(button.disabled).toBe(false);
+  await act(async () => button.click());
+  expect(fetchImpl.mock.calls.at(-1)[0]).toContain("has_disabled_access=true");
+});
+
 it("city requests preserve unknown filters and use the public source directory", async () => {
   const request = vi.fn(async () => ({}));
   await createToiletApi(request).fetchIbbToilets({filters:{pricing:"all", open_now:false}});

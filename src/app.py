@@ -100,8 +100,9 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
     @app.get("/api/v1/toilets")
     def ibb_directory(open_now: bool = False, has_disabled_access: bool | None = None,
                       has_baby_changing: bool | None = None, is_free: bool | None = None):
-        rows = find_ibb_facilities(open_now, has_disabled_access, has_baby_changing, is_free)
-        return {"count": len(rows), "results": rows, "source": {
+        rows, coverage = find_ibb_facilities(open_now, has_disabled_access, has_baby_changing, is_free,
+                                              with_filter_coverage=True)
+        return {"count": len(rows), "results": rows, "filter_coverage": coverage, "source": {
             "name": "İstanbul Büyükşehir Belediyesi Açık Veri Portalı",
             "url": "https://data.ibb.gov.tr/dataset/sehir-tuvaletleri-veri-seti",
             "license": "https://data.ibb.gov.tr/license",
