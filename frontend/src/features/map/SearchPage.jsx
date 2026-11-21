@@ -23,6 +23,7 @@ export default function SearchPage({ onSwitchToAdmin }) {
   const [radius, setRadius] = useState(1000);
   const [filters, setFilters] = useState(INITIAL_FILTERS);
   const [toilets, setToilets] = useState([]);
+  const [filterCoverage, setFilterCoverage] = useState(null);
   const [selectedToilet, setSelectedToilet] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -69,8 +70,10 @@ export default function SearchPage({ onSwitchToAdmin }) {
       signal: controller.signal,
     })
       .then((data) => {
+        if (controller.signal.aborted) return;
         const nextResults = data.results || [];
         setToilets(nextResults);
+        if (citywide) setFilterCoverage(data.filter_coverage ?? null);
 
         setSelectedToilet((prev) => {
           if (!prev) return null;
@@ -80,7 +83,7 @@ export default function SearchPage({ onSwitchToAdmin }) {
         setLoading(false);
       })
       .catch((err) => {
-        if (err.name === "AbortError") return;
+        if (err.name === "AbortError" || controller.signal.aborted) return;
         setError("Tesis verileri yüklenemedi. Bağlantıyı kontrol edip tekrar deneyin.");
         setToilets([]);
         setSelectedToilet(null);
@@ -191,6 +194,8 @@ export default function SearchPage({ onSwitchToAdmin }) {
             <button
               key={key}
               type="button"
+              disabled={citywide && filterCoverage?.[key] === 0 && !filters[key]}
+              aria-pressed={filters[key]}
               onClick={() => toggleFilter(key)}
               style={{
                 padding: "6px 11px",
@@ -203,7 +208,7 @@ export default function SearchPage({ onSwitchToAdmin }) {
                 fontSize: "13px",
               }}
             >
-              {label}
+              {label}{citywide && filterCoverage?.[key] === 0 ? " (bilgi yok)" : ""}
             </button>
           ))}
 
@@ -216,6 +221,8 @@ export default function SearchPage({ onSwitchToAdmin }) {
               <button
                 key={value}
                 type="button"
+                disabled={citywide && value !== "all" && filterCoverage?.is_free === 0 && filters.pricing !== value}
+                aria-pressed={filters.pricing === value}
                 onClick={() => setPricingFilter(value)}
                 style={{
                   padding: "6px 10px",
@@ -228,7 +235,7 @@ export default function SearchPage({ onSwitchToAdmin }) {
                   fontSize: "13px",
                 }}
               >
-                {label}
+                {label}{citywide && value !== "all" && filterCoverage?.is_free === 0 ? " (bilgi yok)" : ""}
               </button>
             ))}
           </div>
@@ -314,6 +321,11 @@ export default function SearchPage({ onSwitchToAdmin }) {
           {" · "}<a href="https://data.ibb.gov.tr/license" target="_blank" rel="noreferrer">İBB Açık Veri Lisansı</a>
           {" · Açılış saati, ücret ve olanaklar kaynakta yoksa bilinmiyor gösterilir."}
         </p>
+        {citywide && filterCoverage && <p role="status" style={{margin:"8px 0 0", fontSize:"13px", color:"#475569"}}>
+          Doğrulanmış bilgi bulunan kayıtlar: Engelli erişimi {filterCoverage.has_disabled_access}/{filterCoverage.total},
+          {" "}bebek bakım {filterCoverage.has_baby_changing}/{filterCoverage.total}, ücret {filterCoverage.is_free}/{filterCoverage.total}.
+          {" "}Bilgisi olmayan filtreler kullanılamaz; bilinmeyen özellikler var veya yok sayılmaz.
+        </p>}
         {!citywide && locationStatus === "pending" && (
           <div style={{ marginTop: "8px", fontSize: "13px", color: "#1e40af", background: "#eff6ff", padding: "6px 10px", borderRadius: "4px" }}>
             Konum izni bekleniyor... Şimdilik varsayılan merkez (41.0, 29.0) gösteriliyor.
