@@ -58,13 +58,15 @@ describe("file checks before confirmation", () => {
 });
 
 describe("upload", () => {
-  it("sends the file itself with text/csv and returns the four counts", async () => {
+  it("sends the file bytes unchanged with text/csv and returns the four counts", async () => {
     const { api, calls } = clientReturning(Response.json({ inserted: 1, updated: 0, unchanged: 0, rejected: 0 }));
-    const file = new File([`${CSV_HEADER}\nexample,a,A,Kadıköy,41,29\n`], "batch.csv", { type: "text/csv" });
+    const content = `﻿${CSV_HEADER}\r\nexample,a,"A, Kadıköy",Kadıköy,41,29\r\n`;
+    const file = new File([content], "batch.csv", { type: "text/csv" });
     await expect(uploadImport(api, { file, format: "csv" })).resolves.toEqual({ inserted: 1, updated: 0, unchanged: 0, rejected: 0 });
     expect(calls[0].url).toBe(IMPORT_PATH);
     expect(calls[0].init.method).toBe("POST");
-    expect(calls[0].init.body).toBe(file);
+    const sent = new Uint8Array(calls[0].init.body);
+    expect(Array.from(sent)).toEqual(Array.from(new TextEncoder().encode(content)));
     expect(calls[0].init.headers["Content-Type"]).toBe("text/csv");
     expect(calls[0].init.headers.Authorization).toBe("Bearer admin-token");
   });

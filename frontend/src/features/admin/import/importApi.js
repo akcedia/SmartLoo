@@ -76,11 +76,13 @@ function validCounts(result) {
   return result && COUNT_KEYS.every((key) => Number.isInteger(result[key]) && result[key] >= 0);
 }
 
-// Sends the file bytes unchanged (CSV is never JSON-stringified).
+// Sends the file bytes unchanged (CSV is never JSON-stringified). The bytes are read
+// first so every fetch implementation sends them as-is, not as "[object File]".
 export async function uploadImport(api, { file, format, signal }) {
+  const bytes = await file.arrayBuffer();
   const result = await api.request(IMPORT_PATH, {
     method: "POST",
-    rawBody: file,
+    rawBody: bytes,
     contentType: formatInfo(format).contentType,
     signal,
   });
