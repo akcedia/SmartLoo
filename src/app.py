@@ -23,6 +23,7 @@ from src.reviews import router as reviews_router
 from src.review_ai_coordinator import ReviewAICoordinator
 from src.admin_analytics import create_analytics_router
 from src import analytics_store
+from src.admin_import import PostgresAdminImport, RepositoryAdminImport, router as import_router
 
 
 def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None):
@@ -43,9 +44,12 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
         reviews, toilets = MongoReviews(), PostgresToilets()
     app.state.reviews = ReviewService(reviews, toilets, app.state.accounts)
     app.state.review_ai_coordinator = ReviewAICoordinator(app.state.reviews)
+    app.state.admin_import = (RepositoryAdminImport(app.state.repository, app.state.reviews.coordination)
+                              if state is not None else PostgresAdminImport())
     app.include_router(auth_router)
     app.include_router(reviews_router)
     app.include_router(accounts_router)
+    app.include_router(import_router)
     app.state.analytics_read_facilities = (
         (lambda district: analytics_store.repository_facilities(app.state.repository, district))
         if state is not None else analytics_store.read_facilities
@@ -135,7 +139,6 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
     admin = [
         ("/api/v1/admin/suggestions/{suggestion_id}", ["PATCH"]),
         ("/api/v1/admin/toilets/{toilet_id}", ["PATCH"]),
-        ("/api/v1/admin/import", ["POST"]),
     ]
     for routes, guard in ((public, []), (signed_in, [Depends(current_user)]),
                           (admin, [Depends(require_admin)])):

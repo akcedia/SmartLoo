@@ -32,7 +32,7 @@ jobs:
         run: |
           case "$SUITE" in
             mongo) echo 'service=mongo' >> "$GITHUB_OUTPUT" ;;
-            auth|detail) echo 'service=postgis' >> "$GITHUB_OUTPUT" ;;
+            auth|detail|admin_import) echo 'service=postgis' >> "$GITHUB_OUTPUT" ;;
             reviews|analytics|deletion) echo 'service=postgis mongo' >> "$GITHUB_OUTPUT" ;;
             *) echo "Unknown suite: $SUITE" >&2; exit 1 ;;
           esac
@@ -59,6 +59,7 @@ jobs:
             reviews) python -m pytest tests/test_reviews.py tests/test_review_consistency.py tests/test_review_publication.py tests/test_reviews_integration.py -q --junitxml=required-results.xml ;;
             analytics) python -m pytest tests/test_admin_analytics.py tests/test_admin_analytics_integration.py tests/test_requirements.py -q -k 'admin_analytics or tc_09 or tc_10 or tc_24 or tc_25 or tc_45' --junitxml=required-results.xml ;;
             deletion) python -m pytest tests/test_account_deletion.py tests/test_account_deletion_integration.py tests/test_requirements.py -q -k 'account_deletion or tc_34' --junitxml=required-results.xml ;;
+            admin_import) python -m pytest tests/test_admin_import.py tests/test_admin_import_postgres.py tests/test_requirements.py -q -k 'admin_import or tc_19 or tc_20 or tc_36' --junitxml=required-results.xml ;;
           esac
       - name: Reject skipped or incomplete suite
         if: always()
@@ -71,6 +72,7 @@ jobs:
             reviews) minimum=35 ;;
             analytics) minimum=39 ;;
             deletion) minimum=15 ;;
+            admin_import) minimum=39 ;;
             *) exit 1 ;;
           esac
           python scripts/check_required_junit.py required-results.xml --minimum "$minimum"

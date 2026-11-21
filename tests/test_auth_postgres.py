@@ -104,7 +104,7 @@ def test_generic_401_and_throttling(client, email):
 def test_guards_return_401_then_403(client, email):
     register(client, email)
     token = login(client, email).json()["access_token"]
-    # Use the still-pending import route: this auth-only suite starts SQL, not
+    # Use the import route: this auth-only suite starts SQL, not
     # MongoDB. Real analytics success is verified by its own two-store suite.
     admin_route = "/api/v1/admin/import"
     assert client.post(admin_route).status_code == 401
@@ -112,8 +112,8 @@ def test_guards_return_401_then_403(client, email):
     assert client.post(admin_route, headers=bearer(token)).status_code == 403
     with connect() as conn:
         conn.execute("UPDATE users SET role = 'ADMIN' WHERE email = %s", (email,))
-    # The guard passes; import itself remains unimplemented.
-    assert client.post(admin_route, headers=bearer(token)).status_code == 501
+    # The guard passes; the importer now validates the missing media type.
+    assert client.post(admin_route, headers=bearer(token)).status_code == 415
 
 
 def test_72_byte_limit_without_truncation(client, email):
