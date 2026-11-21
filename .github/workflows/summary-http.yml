@@ -1,0 +1,39 @@
+name: AI summary HTTP integration
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  summary-http:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SMARTLOO_TEST_POSTGIS: '1'
+      SMARTLOO_TEST_MONGO: '1'
+      SMARTLOO_MONGO_URL: mongodb://127.0.0.1:27017
+      SMARTLOO_AI_TEST_REDIS_URL: redis://127.0.0.1:6379/15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python -m pip install -r requirements-test.txt
+      - run: docker compose up -d --wait postgis mongo redis
+      - run: docker compose exec -T postgis sh /db/scripts/migrate.sh
+      - name: Real stores and HTTP, synthetic provider only
+        run: python -m pytest tests/test_summary_http.py -q --junitxml=summary-http.xml
+      - name: Reject missing, failed or skipped evidence
+        if: always()
+        run: python scripts/check_required_junit.py summary-http.xml --minimum 14
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: summary-http
+          path: summary-http.xml
+          if-no-files-found: error
+      - name: Stop test services
+        if: always()
+        run: docker compose down -v

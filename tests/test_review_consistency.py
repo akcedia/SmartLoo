@@ -4,7 +4,7 @@ import pytest
 
 from src.auth import RepositoryAccounts
 from src.reviews import RepositoryReviews, RepositoryToilets, ReviewService
-from test_reviews import A, U, env, post, token
+from tests.test_reviews import A, U, env, post, token
 
 
 def test_uncommitted_text_is_not_exposed_to_ai(env, monkeypatch):
