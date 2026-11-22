@@ -98,7 +98,7 @@ def fixture_nearby(
     return sorted(results, key=lambda row: (row["distance_m"], row["id"]))
 
 @pytest.fixture
-def env():
+def env(monkeypatch):
     state = {
         "toilets": {A: facility(A,41.001), B: facility(B,41.004,False,True,True),
                     C: facility(C,41.002,True,False,True,"CLOSED"), D: facility(D,41.020)},
@@ -112,6 +112,11 @@ def env():
                            "categories":{"cleanliness":"positive","odor":"unknown",
                                          "supplies":"negative","accessibility":"unknown","safety":"unknown"}})
     app = create_app(state, ai, KEY)
+    # This isolated catalog mutates the in-memory repository. Its detail reads
+    # must use that same state, not a developer's unrelated PostgreSQL instance.
+    # Actual PostGIS detail behavior remains covered by test_toilet_detail.py.
+    monkeypatch.setattr("src.app.find_toilet", lambda toilet_id:
+                        deepcopy(app.state.repository["toilets"].get(str(toilet_id))))
     app.state.nearby_search = lambda **params: fixture_nearby(
         app.state.repository, **params
     )

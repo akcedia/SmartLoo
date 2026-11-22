@@ -127,6 +127,7 @@ def test_directory_detail_and_nearby_unknown_semantics(database):
         directory = client.get("/api/v1/toilets")
         assert directory.status_code == 200
         assert directory.json()["count"] == 3
+        assert directory.json()["filter_coverage"] == {"total": 3, "open_now": 0, "has_disabled_access": 0, "has_baby_changing": 0, "is_free": 0}
         assert directory.json()["source"]["license"] == "https://data.ibb.gov.tr/license"
         seasonal = next(r for r in directory.json()["results"] if r["source_status"] == "Dönemlik")
         assert seasonal["status"] is None and seasonal["is_open_now"] is None
@@ -134,5 +135,25 @@ def test_directory_detail_and_nearby_unknown_semantics(database):
         assert detail["status"] is None and detail["is_open_now"] is None
         assert client.get("/api/v1/toilets", params={"open_now": True}).json()["count"] == 0
         assert client.get("/api/v1/toilets", params={"is_free": False}).json()["count"] == 0
+        assert client.get("/api/v1/toilets", params={"is_free": False}).json()["filter_coverage"]["total"] == 3
         near = client.get("/api/v1/toilets/nearby", params={"lat": 41, "lon": 29, "radius":1000}).json()
         assert near["count"] == 3
+
+
+def test_directory_filter_coverage_counts_known_false_and_true_before_filtering(database):
+    source = raw(feature("Bir"), feature("İki"), feature("Üç"))
+    plan = make_plan(source)
+    apply_plan(source, plan, digest(plan))
+    with connect() as conn:
+        conn.execute("UPDATE toilets SET is_free=true, has_disabled_access=true WHERE name='Bir'")
+        conn.execute("UPDATE toilets SET is_free=false, has_disabled_access=false,has_baby_changing=false WHERE name='İki'")
+        conn.execute("UPDATE toilets SET opening_hours='24/7' WHERE name='Bir'")
+        conn.execute("UPDATE toilets SET opening_hours='not a schedule' WHERE name='İki'")
+        conn.execute("UPDATE toilets SET opening_hours='24/7', status='CLOSED' WHERE name='Üç'")
+    with TestClient(create_app()) as client:
+        data = client.get('/api/v1/toilets', params={"is_free": True}).json()
+        assert [row["name"] for row in data["results"]] == ["Bir"]
+        assert data["filter_coverage"] == {"total": 3, "open_now": 1, "has_disabled_access": 2, "has_baby_changing": 1, "is_free": 2}
+        opened = client.get('/api/v1/toilets', params={"open_now": True}).json()
+        assert [row["name"] for row in opened["results"]] == ["Bir"]
+        assert opened["filter_coverage"] == data["filter_coverage"]

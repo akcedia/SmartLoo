@@ -10,6 +10,19 @@ from src.app import create_app
 from src.db import connect
 
 
+def test_ai_lifespan_keeps_admin_import_and_public_routes_registered():
+    app = create_app(state={}, nearby_search=lambda **kwargs: [], ai_profile="")
+    with TestClient(app) as client:
+        assert app.state.summary_service is None
+        assert client.post('/api/v1/admin/import', json=[]).status_code == 401
+        assert client.get('/api/v1/toilets/not-a-uuid/summary').status_code == 422
+        response = client.get('/api/v1/recommendations', params={"lat": 41, "lon": 29})
+        assert response.status_code == 200
+        assert response.json()["fallback"] is True
+        assert response.json()["results"] == []
+    assert app.state.summary_service is None
+
+
 @pytest.fixture
 def locations():
     if os.getenv("SMARTLOO_TEST_POSTGIS") != "1":

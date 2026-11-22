@@ -25,6 +25,7 @@ from src.admin_analytics import create_analytics_router
 from src import analytics_store
 from src.ai_routes import router as ai_router
 from src.ai_runtime import ai_lifespan
+from src.admin_import import PostgresAdminImport, RepositoryAdminImport, router as import_router
 
 
 def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None,
@@ -48,10 +49,13 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
         reviews, toilets = MongoReviews(), PostgresToilets()
     app.state.reviews = ReviewService(reviews, toilets, app.state.accounts)
     app.state.review_ai_coordinator = ReviewAICoordinator(app.state.reviews)
+    app.state.admin_import = (RepositoryAdminImport(app.state.repository, app.state.reviews.coordination)
+                              if state is not None else PostgresAdminImport())
     app.include_router(auth_router)
     app.include_router(reviews_router)
     app.include_router(accounts_router)
     app.include_router(ai_router)
+    app.include_router(import_router)
     app.state.analytics_read_facilities = (
         (lambda district: analytics_store.repository_facilities(app.state.repository, district))
         if state is not None else analytics_store.read_facilities
@@ -106,8 +110,9 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
     @app.get("/api/v1/toilets")
     def ibb_directory(open_now: bool = False, has_disabled_access: bool | None = None,
                       has_baby_changing: bool | None = None, is_free: bool | None = None):
-        rows = find_ibb_facilities(open_now, has_disabled_access, has_baby_changing, is_free)
-        return {"count": len(rows), "results": rows, "source": {
+        rows, coverage = find_ibb_facilities(open_now, has_disabled_access, has_baby_changing, is_free,
+                                              with_filter_coverage=True)
+        return {"count": len(rows), "results": rows, "filter_coverage": coverage, "source": {
             "name": "İstanbul Büyükşehir Belediyesi Açık Veri Portalı",
             "url": "https://data.ibb.gov.tr/dataset/sehir-tuvaletleri-veri-seti",
             "license": "https://data.ibb.gov.tr/license",
@@ -138,7 +143,6 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
     admin = [
         ("/api/v1/admin/suggestions/{suggestion_id}", ["PATCH"]),
         ("/api/v1/admin/toilets/{toilet_id}", ["PATCH"]),
-        ("/api/v1/admin/import", ["POST"]),
     ]
     for routes, guard in ((public, []), (signed_in, [Depends(current_user)]),
                           (admin, [Depends(require_admin)])):
