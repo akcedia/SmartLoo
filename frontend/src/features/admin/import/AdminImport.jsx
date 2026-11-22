@@ -11,6 +11,7 @@ import {
   inspectImport,
   MAX_BYTES,
   MAX_RECORDS,
+  importOutcomeKnown,
   rowErrors,
   uploadImport,
 } from "./importApi.js";
@@ -28,10 +29,13 @@ function formatBytes(bytes) {
 
 export default function AdminImport({ api, readFile = (file) => file.text() }) {
   const [selection, setSelection] = useState(null); // { file, format, records, problem }
-  const [step, setStep] = useState("idle"); // idle | ready | uploading | done | failed
+  const [step, setStep] = useState("idle"); // idle | reading | ready | uploading | done | failed
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const inFlight = useRef(false);
+  // Every file choice and every reset gets a new id. A read that finishes after a
+  // newer choice (or after Vazgeç) is ignored, so an older file can never be sent.
+  const selectionId = useRef(0);
   const inputRef = useRef(null);
   const outcomeRef = useRef(null);
   const inputId = useId();
@@ -44,31 +48,36 @@ export default function AdminImport({ api, readFile = (file) => file.text() }) {
 
   async function handleFile(event) {
     const file = event.target.files?.[0];
+    const id = ++selectionId.current;
+    // Drop the previous selection and its confirmation before reading the new file.
+    setSelection(null);
     setResult(null);
     setError(null);
     if (!file) {
-      setSelection(null);
       setStep("idle");
       return;
     }
+    setStep("reading");
     const format = detectFormat(file);
     let text = "";
     if (format && file.size > 0 && file.size <= MAX_BYTES) {
       try {
         text = await readFile(file);
       } catch {
+        if (id !== selectionId.current) return;
         setSelection({ file, format, records: null, problem: "Dosya okunamadı." });
         setStep("idle");
         return;
       }
     }
+    if (id !== selectionId.current) return;
     const { records, problem } = inspectImport({ text, size: file.size, format });
     setSelection({ file, format, records, problem });
     setStep(problem ? "idle" : "ready");
   }
 
   async function confirmUpload() {
-    if (inFlight.current || !selection || selection.problem) return;
+    if (inFlight.current || step !== "ready" || !selection || selection.problem) return;
     inFlight.current = true;
     setStep("uploading");
     setError(null);
@@ -84,6 +93,7 @@ export default function AdminImport({ api, readFile = (file) => file.text() }) {
   }
 
   function reset() {
+    selectionId.current += 1;
     setSelection(null);
     setResult(null);
     setError(null);
@@ -95,6 +105,7 @@ export default function AdminImport({ api, readFile = (file) => file.text() }) {
   }
 
   const uploading = step === "uploading";
+  const reading = step === "reading";
   const errors = rowErrors(error);
 
   return (
@@ -123,6 +134,12 @@ export default function AdminImport({ api, readFile = (file) => file.text() }) {
         </p>
       </div>
 
+      {reading && (
+        <p className="admin-status" role="status">
+          <span className="admin-spinner" aria-hidden="true" /> Dosya okunuyor…
+        </p>
+      )}
+
       {selection?.problem && (
         <p className="admin-field-error" role="alert">{selection.problem}</p>
       )}
@@ -142,7 +159,7 @@ export default function AdminImport({ api, readFile = (file) => file.text() }) {
           </dl>
           <p className="admin-hint">Onaydan sonra dosya tek bir istekle gönderilir ve sonuç gelene kadar tekrar gönderilemez.</p>
           <div className="admin-import-actions">
-            <button type="button" onClick={confirmUpload} disabled={uploading || step === "failed"}>
+            <button type="button" onClick={confirmUpload} disabled={step !== "ready"}>
               {uploading ? "Yükleniyor…" : "Yüklemeyi onayla"}
             </button>
             <button type="button" className="admin-button-secondary" onClick={reset} disabled={uploading}>
@@ -172,7 +189,7 @@ export default function AdminImport({ api, readFile = (file) => file.text() }) {
 
       {step === "failed" && error && (
         <div ref={outcomeRef} tabIndex={-1} className="admin-status admin-status--error" role="alert">
-          <h3>İçe aktarım yapılmadı</h3>
+          <h3>{importOutcomeKnown(error) ? "İçe aktarım yapılmadı" : "İçe aktarım sonucu doğrulanamadı"}</h3>
           <p>{importErrorMessage(error)}</p>
           {errors.length > 0 && (
             <div className="admin-table-wrap">

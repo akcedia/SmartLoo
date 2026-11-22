@@ -100,6 +100,15 @@ export function rowErrors(error) {
   return Array.isArray(list) ? list.filter((e) => e && typeof e === "object") : [];
 }
 
+// Statuses for which the contract guarantees that nothing was written. Anything else
+// (lost response, 5xx other than 503, an unreadable success body) leaves the result
+// unknown: the server may have finished the import before the answer was lost.
+const NOTHING_WRITTEN = new Set([401, 403, 409, 413, 415, 422, 503]);
+
+export function importOutcomeKnown(error) {
+  return NOTHING_WRITTEN.has(error?.status);
+}
+
 export function importErrorMessage(error) {
   switch (error?.status) {
     case 401:
@@ -119,6 +128,6 @@ export function importErrorMessage(error) {
     case 0:
       return "Sunucuya ulaşılamadı. Dosyanın işlenip işlenmediği bilinmiyor. Bağlantınızı kontrol edip aynı dosyayı yeniden yükleyebilirsiniz; aynı kaynak kimlikleri kayıtları çoğaltmaz.";
     default:
-      return "İçe aktarım tamamlanamadı. Hiçbir kaydın yazıldığını varsaymayın.";
+      return "Sunucudan doğrulanmış bir sonuç alınamadı. Kayıtların yazılıp yazılmadığı bilinmiyor; tesis listesini kontrol edin. Aynı dosyayı yeniden yüklemek kayıtları çoğaltmaz.";
   }
 }

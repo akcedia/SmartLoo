@@ -139,6 +139,87 @@ describe("ADMIN import screen", () => {
   });
 });
 
+describe("file choice races (#81 review)", () => {
+  // readFile resolves only when the test says so, to hold a read open.
+  function deferredReader() {
+    const pending = new Map();
+    const readFile = (file) => new Promise((resolve) => pending.set(file.name, () => resolve(file.text())));
+    return { readFile, finish: async (name) => { pending.get(name)(); await settle(); } };
+  }
+
+  async function chooseNow(file) {
+    const input = host.querySelector('input[type="file"]');
+    Object.defineProperty(input, "files", { value: [file], configurable: true });
+    await act(async () => input.dispatchEvent(new Event("change", { bubbles: true })));
+  }
+
+  it("invalidates the old confirmation while a new file is read and sends only the new file", async () => {
+    const reader = deferredReader();
+    const { api, calls } = scriptedApi([Response.json({ inserted: 1, updated: 0, unchanged: 0, rejected: 0 })]);
+    await act(async () => root.render(<AdminImport api={api} readFile={reader.readFile} />));
+    const B = "source,source_id,name,district,latitude,longitude\r\nexample,b,B,Kadıköy,41,29\r\n";
+
+    await chooseNow(new File([CSV], "a.csv", { type: "text/csv" }));
+    await reader.finish("a.csv");
+    expect(button("Yüklemeyi onayla").disabled).toBe(false);
+
+    await chooseNow(new File([B], "b.csv", { type: "text/csv" }));
+    expect(button("Yüklemeyi onayla")).toBeUndefined();
+    expect(text()).toContain("Dosya okunuyor");
+    expect(text()).not.toContain("a.csv");
+
+    await reader.finish("b.csv");
+    expect(text()).toContain("b.csv");
+    await act(async () => button("Yüklemeyi onayla").click());
+    await settle();
+    expect(calls).toHaveLength(1);
+    expect(new TextDecoder().decode(calls[0].init.body)).toBe(B);
+  });
+
+  it("ignores a read that finishes after a newer choice or after Vazgeç", async () => {
+    const reader = deferredReader();
+    const { api, calls } = scriptedApi([]);
+    await act(async () => root.render(<AdminImport api={api} readFile={reader.readFile} />));
+
+    await chooseNow(new File([CSV], "old.csv", { type: "text/csv" }));
+    await chooseNow(new File([CSV], "new.csv", { type: "text/csv" }));
+    await reader.finish("new.csv");
+    await reader.finish("old.csv");
+    expect(text()).toContain("new.csv");
+    expect(text()).not.toContain("old.csv");
+
+    await act(async () => button("Vazgeç").click());
+    await chooseNow(new File([CSV], "late.csv", { type: "text/csv" }));
+    await act(async () => host.querySelector('input[type="file"]').dispatchEvent(new Event("change", { bubbles: true })));
+    expect(button("Yüklemeyi onayla")).toBeUndefined();
+    expect(calls).toHaveLength(0);
+  });
+});
+
+describe("outcome titles (#81 review)", () => {
+  async function failWith(response) {
+    const { api } = scriptedApi([response]);
+    await render(api);
+    await choose(new File([CSV], "a.csv", { type: "text/csv" }));
+    await act(async () => button("Yüklemeyi onayla").click());
+    await settle();
+    return host.querySelector('[role="alert"] h3').textContent;
+  }
+
+  it("does not claim a rollback when the response was lost", async () => {
+    expect(await failWith(new TypeError("Failed to fetch"))).toBe("İçe aktarım sonucu doğrulanamadı");
+  });
+
+  it("does not claim a rollback for an unexpected server error", async () => {
+    expect(await failWith(Response.json({ detail: "x" }, { status: 500 }))).toBe("İçe aktarım sonucu doğrulanamadı");
+  });
+
+  it.each([409, 413, 415, 422, 503])("states that nothing was written for a definite %s", async (status) => {
+    const body = status === 422 ? { errors: [], atomic: true } : { detail: "x" };
+    expect(await failWith(Response.json(body, { status }))).toBe("İçe aktarım yapılmadı");
+  });
+});
+
 describe("import route and session", () => {
   const now = Math.floor(Date.now() / 1000);
   const session = (role) => sessionFromToken(fakeJwt({ sub: `${role}-1`, role, iat: now, exp: now + 3600 }), `${role.toLowerCase()}@example.com`);
