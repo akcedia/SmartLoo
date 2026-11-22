@@ -1,0 +1,50 @@
+name: AI Redis component checks
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/ai_*.py'
+      - 'tests/**'
+      - 'integration/**'
+      - '.github/workflows/ai-redis.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ai-redis:
+    name: AI unit and real Redis checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      redis:
+        image: redis:7.4-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 2s
+          --health-timeout 3s
+          --health-retries 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install isolated AI integration dependency
+        run: python -m pip install redis==8.1.0
+      - name: Run independent AI tests
+        run: python -m unittest discover -s tests -p 'test_ai_*.py' -v
+      - name: Require eight real Redis checks without skips
+        env:
+          SMARTLOO_AI_TEST_REDIS_URL: redis://127.0.0.1:6379/15
+        run: python -m integration.run_ai_redis_checks
+      - name: Save real Redis evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-redis-component-evidence
+          path: output/ai-redis-integration.json
+          if-no-files-found: error

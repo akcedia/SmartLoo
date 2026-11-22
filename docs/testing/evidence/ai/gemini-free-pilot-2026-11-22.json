@@ -1,0 +1,26 @@
+{
+  "date": "2026-11-22",
+  "implementation_revision": "53c2f0d",
+  "provider": "gemini",
+  "model": "gemini-3.1-flash-lite",
+  "billing_tier": "Free; confirmed by user and AI Studio screenshot",
+  "generation_requests": 2,
+  "evidence": "Three fixed synthetic comments: Temizdi.",
+  "provider_timeout_seconds": 8,
+  "automatic_retries": 0,
+  "paid_fallback": false,
+  "attempts": [
+    {"attempt": 1, "status": "provider_failed", "safe_error": "gemini_timeout"},
+    {"attempt": 2, "status": "validated", "summary": "Temiz."}
+  ],
+  "validated_model_output": true,
+  "metadata_check": {
+    "requests": 1,
+    "http_status": 200,
+    "advertises_generateContent": true,
+    "elapsed_seconds": 0.657,
+    "note": "Metadata access is not successful generation or quota/quality acceptance."
+  },
+  "real_user_comments_sent": false,
+  "live_model_acceptance": "One native-provider synthetic sample validated; broad language/privacy, end-to-end live HTTP and latency acceptance remain open."
+}

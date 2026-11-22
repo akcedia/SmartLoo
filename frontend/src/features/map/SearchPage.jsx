@@ -277,7 +277,7 @@ export default function SearchPage({ onSwitchToAdmin }) {
               fontSize: "13px",
             }}
           >
-            AI Önerileri
+            Tesis Önerileri
           </button>
 
           {hasLocationPermission && userLocation && (
@@ -386,6 +386,7 @@ export default function SearchPage({ onSwitchToAdmin }) {
         <AiRecommendationsPanel
           isOpen={showRecommendations}
           searchCenter={searchCenter}
+          radius={radius}
           filters={filters}
           hasLocationPermission={hasLocationPermission}
           onSelectToilet={(toilet) => setSelectedToilet(toilet)}

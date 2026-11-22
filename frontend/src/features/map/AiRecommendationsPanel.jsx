@@ -5,6 +5,7 @@ import { buildSignInUrl } from "./toiletApi.js";
 export default function AiRecommendationsPanel({
   isOpen,
   searchCenter,
+  radius = 1000,
   filters,
   hasLocationPermission,
   onSelectToilet,
@@ -15,6 +16,7 @@ export default function AiRecommendationsPanel({
   const [loading, setLoading] = useState(false);
   const [fallbackMessage, setFallbackMessage] = useState("");
   const [retryToken, setRetryToken] = useState(0);
+  const [aiReasonsAvailable, setAiReasonsAvailable] = useState(false);
 
   const currentUser = getCurrentSessionUser();
 
@@ -23,45 +25,50 @@ export default function AiRecommendationsPanel({
 
     const controller = new AbortController();
     setLoading(true);
+    setItems([]);
+    setAiReasonsAvailable(false);
     setFallbackMessage("");
 
     fetchAiRecommendations({
       lat: searchCenter.lat,
       lon: searchCenter.lon,
+      radius,
       filters,
       signal: controller.signal,
     })
       .then((res) => {
+        if (controller.signal.aborted) return;
         setItems(res.items || []);
+        setAiReasonsAvailable(res.aiReasonsAvailable === true);
         if (res.fallback || (res.items || []).length === 0) {
           setFallbackMessage(
             res.message ||
-              "Tercihlerinize uygun yapay zeka önerisi şu anda bulunamadı; haritadaki tüm tesisleri inceleyebilirsiniz."
+              "Tercihlerinize uygun tesis önerisi şu anda bulunamadı; haritadaki tüm tesisleri inceleyebilirsiniz."
           );
         }
         setLoading(false);
       })
       .catch((err) => {
-        if (err.name === "AbortError") return;
+        if (err.name === "AbortError" || controller.signal.aborted) return;
         setItems([]);
         if (err.status === 401) {
-          setFallbackMessage("Oturum süreniz dolmuş. AI önerileri için tekrar giriş yapın.");
+          setFallbackMessage("Oturum süreniz dolmuş. Tesis önerileri için tekrar giriş yapın.");
         } else {
           setFallbackMessage(
-            "Yapay zeka öneri servisi şu anda kullanılamıyor; normal harita aramasıyla devam edebilirsiniz."
+            "Tesis önerileri şu anda kullanılamıyor; normal harita aramasıyla devam edebilirsiniz."
           );
         }
         setLoading(false);
       });
 
     return () => controller.abort();
-  }, [isOpen, currentUser?.id, searchCenter.lat, searchCenter.lon, filters, retryToken]);
+  }, [isOpen, currentUser?.id, searchCenter.lat, searchCenter.lon, radius, filters, retryToken]);
 
   if (!isOpen) return null;
 
   return (
     <aside
-      aria-label="Yapay zeka tesis önerileri"
+      aria-label={aiReasonsAvailable ? "Yapay zeka tesis önerileri" : "Yakındaki uygun tesisler"}
       style={{
         position: "absolute",
         bottom: "24px",
@@ -88,11 +95,11 @@ export default function AiRecommendationsPanel({
         }}
       >
         <strong style={{ fontSize: "14px", color: "#0f172a" }}>
-          AI Tesis Önerileri (En Fazla 3)
+          {aiReasonsAvailable ? "AI Tesis Önerileri (En Fazla 3)" : "Yakındaki Uygun Tesisler (En Fazla 3)"}
         </strong>
         <button
           type="button"
-          aria-label="AI önerileri panelini kapat"
+          aria-label="Tesis önerileri panelini kapat"
           onClick={onClose}
           style={{
             border: "none",
@@ -110,7 +117,7 @@ export default function AiRecommendationsPanel({
       {!currentUser ? (
         <div style={{ fontSize: "13px", color: "#334155" }}>
           <p style={{ margin: "0 0 8px 0", lineHeight: "1.45" }}>
-            Konum ve filtre tercihlerinize göre kişiselleştirilmiş AI önerileri görmek için giriş yapın.
+            Konum ve filtre tercihlerinize göre tesis önerilerini görmek için giriş yapın.
           </p>
           <button
             type="button"
@@ -158,6 +165,8 @@ export default function AiRecommendationsPanel({
           </button>
         </div>
       ) : (
+        <div>
+        {fallbackMessage && <p role="status" style={{ fontSize: "12px", color: "#475569" }}>{fallbackMessage}</p>}
         <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "8px" }}>
           {items.map((item, idx) => (
             <li key={item.id ?? idx}>
@@ -191,7 +200,7 @@ export default function AiRecommendationsPanel({
                   </div>
                 )}
 
-                {(item.reason || item.explanation) && (
+                {aiReasonsAvailable && (item.reason || item.explanation) && (
                   <p style={{ margin: "4px 0 0 0", fontSize: "12px", color: "#334155", lineHeight: "1.4" }}>
                     {item.reason || item.explanation}
                   </p>
@@ -200,6 +209,7 @@ export default function AiRecommendationsPanel({
             </li>
           ))}
         </ul>
+        </div>
       )}
     </aside>
   );

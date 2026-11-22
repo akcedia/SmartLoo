@@ -10,7 +10,7 @@ from types import ModuleType, SimpleNamespace
 
 import pytest
 
-from test_reviews import A, env
+from tests.test_reviews import A, env
 
 
 @pytest.fixture

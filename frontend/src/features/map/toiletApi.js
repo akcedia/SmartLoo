@@ -114,10 +114,11 @@ export function createToiletApi(request = apiRequest) {
     });
   }
 
-  async function fetchAiRecommendations({ lat, lon, filters = {}, signal } = {}) {
+  async function fetchAiRecommendations({ lat, lon, radius = 1000, filters = {}, signal } = {}) {
     const query = {
       lat,
       lon,
+      radius,
     };
 
     if (filters.open_now) query.open_now = "true";
@@ -148,6 +149,7 @@ export function createToiletApi(request = apiRequest) {
       items: rawItems.slice(0, 3),
       fallback: Boolean(data?.fallback || data?.available === false),
       message: data?.message || data?.reason || "",
+      aiReasonsAvailable: data?.ai_reasons_available === true,
     };
   }
   return { fetchIbbToilets, fetchNearbyToilets, fetchToiletDetail, fetchToiletReviews, createToiletReview, updateReview, deleteReview, fetchToiletAiSummary, fetchAiRecommendations };

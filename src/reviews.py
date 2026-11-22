@@ -407,8 +407,11 @@ class ReviewService:
             elif operation is not None:
                 state = operation["state"]
             documents = []
+            terms = {}
             if state == "ready":
                 documents = [row for row in self.reviews.by_toilet(key) if (row.get("comment") or "").strip()][:limit]
+                terms = self.accounts.redaction_terms(
+                    (row["user_id"] for row in documents if row.get("user_id")), connection=session.connection)
             return {
                 "protocol_version": 1, "toilet_id": key, "state": state,
                 "review_version": metadata["review_version"],
@@ -416,7 +419,7 @@ class ReviewService:
                 "review_count": metadata["review_count"],
                 "average_cleanliness": metadata["average_cleanliness"],
                 "reviews": [{"id": row["id"], "cleanliness_score": row["cleanliness_score"],
-                             "comment": redact(row["comment"]), "created_at": row.get("created_at")}
+                             "comment": redact(row["comment"], terms.get(row.get("user_id"), ())), "created_at": row.get("created_at")}
                             for row in documents],
             }
 
