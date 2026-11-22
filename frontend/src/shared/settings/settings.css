@@ -64,7 +64,7 @@
   white-space: nowrap;
 }
 .sl-setting-choices button:hover:not([aria-checked="true"]) { background: var(--sl-surface-hover); color: var(--sl-text); }
-.sl-setting-choices button[aria-checked="true"] { color: var(--sl-on-accent2); background: var(--sl-accent2-solid); }
+.sl-setting-choices button[aria-checked="true"] { color: var(--sl-on-accent2); background: var(--sl-accent2-solid); box-shadow: inset 0 0 0 1px var(--sl-accent2-border); }
 .sl-setting .sl-dropdown-button { min-width: 96px; }
 .sl-setting-divider { height: 1px; margin: 4px 0 14px; background: var(--sl-border); }
 .sl-settings-note { margin: 2px 0 0; font-size: 11.5px; color: var(--sl-text-muted); }

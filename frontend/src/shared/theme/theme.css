@@ -89,11 +89,11 @@
   --sl-accent-ring: #22d3ee;
 
   /* Dark mode uses a deep green instead of the pastel one (23 Nov). */
-  --sl-accent2-solid: #166534;   /* selected fill */
-  --sl-on-accent2: #ecfdf3;      /* 6.76:1 */
+  --sl-accent2-solid: #0d3b20;   /* selected fill (darker, 23 Nov) */
+  --sl-on-accent2: #ecfdf3;      /* 11.97:1 */
   --sl-accent2-soft: #0c2416;
   --sl-accent2-text: #6ee7a0;    /* 12.60:1 on surface, 10.63:1 on soft */
-  --sl-accent2-border: #22863f;  /* 4.22:1 on surface */
+  --sl-accent2-border: #1d7a3c;  /* 3.61:1 on surface; outlines the dark fill */
 
   --sl-danger: #ff7a6e;
   --sl-danger-hover: #ff958b;

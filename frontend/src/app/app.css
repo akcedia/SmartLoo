@@ -108,7 +108,7 @@ body { margin: 0; }
   font-weight: 500;
 }
 .app .app-topnav a:hover { background: var(--sl-surface-hover); color: var(--app-text); }
-.app .app-topnav a[aria-current="page"] { color: var(--sl-on-accent2); background: var(--sl-accent2-solid); font-weight: 600; }
+.app .app-topnav a[aria-current="page"] { color: var(--sl-on-accent2); background: var(--sl-accent2-solid); box-shadow: inset 0 0 0 1px var(--sl-accent2-border); font-weight: 600; }
 
 /* Account menu */
 .app-account { position: relative; }
