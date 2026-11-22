@@ -1,6 +1,7 @@
 // Header theme switch: Sistem → Açık → Koyu. The label always names the current
 // choice and the next one, so the button is understandable without seeing the icon.
 import { useEffect, useState } from "react";
+import { useI18n } from "../i18n/I18nProvider.jsx";
 import { applyTheme, loadPreference, nextPreference, resolveTheme, savePreference, watchSystemTheme } from "./theme.js";
 
 const LABELS = { system: "Sistem", light: "Açık", dark: "Koyu" };
@@ -32,6 +33,7 @@ function Icon({ preference }) {
 
 export default function ThemeToggle() {
   const [preference, setPreference] = useState(loadPreference);
+  const { t } = useI18n();
 
   useEffect(() => {
     applyTheme(resolveTheme(preference));
@@ -52,11 +54,11 @@ export default function ThemeToggle() {
       type="button"
       className="app-theme-toggle"
       onClick={change}
-      aria-label={`Tema: ${LABELS[preference]}. ${LABELS[next]} temaya geç`}
-      title={`Tema: ${LABELS[preference]}`}
+      aria-label={t("Tema: {current}. {next} temaya geç", { current: t(LABELS[preference]), next: t(LABELS[next]) })}
+      title={t("Tema: {current}", { current: t(LABELS[preference]) })}
     >
       <Icon preference={preference} />
-      <span className="app-theme-label" aria-hidden="true">{LABELS[preference]}</span>
+      <span className="app-theme-label" aria-hidden="true">{t(LABELS[preference])}</span>
     </button>
   );
 }

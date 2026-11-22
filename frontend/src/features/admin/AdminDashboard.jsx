@@ -12,6 +12,7 @@ import TrendChart from "./components/TrendChart.jsx";
 import FacilityTable from "./components/FacilityTable.jsx";
 import ExportButtons from "./components/ExportButtons.jsx";
 import { ErrorPanel, LoadingPanel, NoDataPanel, SkeletonPanel } from "./components/StatusPanel.jsx";
+import { useI18n } from "../../shared/i18n/I18nProvider.jsx";
 import "./admin.css";
 
 // Tabs from UI Spec Lite > Administration. Only Analytics belongs to #29.
@@ -56,6 +57,7 @@ export function serverFilterErrors(error) {
 // Everything below the filters, driven only by the request state and the API
 // response, so each state can be rendered and tested from contract examples.
 export function DashboardContent({ status, data, error, onRetry, adapter, query }) {
+  const { t } = useI18n();
   if (status === "loading" && !data) return <SkeletonPanel />;
   if (status === "error") return <ErrorPanel error={error} onRetry={onRetry} />;
   if (!data) return null;
@@ -68,11 +70,11 @@ export function DashboardContent({ status, data, error, onRetry, adapter, query 
       {!hasReviews && <NoDataPanel hasFacilities={data.facilities === null || data.facilities.length > 0} />}
       <div className="admin-grid">
         <section className="admin-panel" aria-labelledby="trend-title">
-          <h2 id="trend-title">Hijyen trendi</h2>
+          <h2 id="trend-title">{t("Hijyen trendi")}</h2>
           <TrendChart trend={data.trend} threshold={data.critical_threshold} />
         </section>
         <section className="admin-panel" aria-labelledby="facilities-title">
-          <h2 id="facilities-title">Tesisler</h2>
+          <h2 id="facilities-title">{t("Tesisler")}</h2>
           <FacilityTable rows={data.facilities} />
         </section>
       </div>
@@ -83,6 +85,7 @@ export function DashboardContent({ status, data, error, onRetry, adapter, query 
 
 export default function AdminDashboard({ adapter: injectedAdapter }) {
   const sample = useSampleAdapter();
+  const { t } = useI18n();
   const adapter = injectedAdapter ?? sample.adapter;
 
   const [filters, setFilters] = useState(() => ({ district: "", preset: "last30", ...presetRange("last30") }));
@@ -108,17 +111,17 @@ export default function AdminDashboard({ adapter: injectedAdapter }) {
     <div className="admin">
       <main className="admin-main">
         <div className="admin-heading">
-          <h1>Yönetim Paneli</h1>
-          <p className="admin-subtitle">İlçe ve tarih bazlı hijyen analizi</p>
+          <h1>{t("Yönetim Paneli")}</h1>
+          <p className="admin-subtitle">{t("İlçe ve tarih bazlı hijyen analizi")}</p>
         </div>
 
-        <nav className="admin-tabs" aria-label="Yönetim bölümleri">
+        <nav className="admin-tabs" aria-label={t("Yönetim bölümleri")}>
           {TABS.map((tab) =>
             tab.key === "analytics" ? (
-              <span key={tab.key} className="admin-tab admin-tab--active" aria-current="page">{tab.label}</span>
+              <span key={tab.key} className="admin-tab admin-tab--active" aria-current="page">{t(tab.label)}</span>
             ) : (
-              <span key={tab.key} className="admin-tab admin-tab--disabled" aria-disabled="true" title="Ayrı görevde geliştirilecek">
-                {tab.label}
+              <span key={tab.key} className="admin-tab admin-tab--disabled" aria-disabled="true" title={t("Ayrı görevde geliştirilecek")}>
+                {t(tab.label)}
               </span>
             ),
           )}
@@ -127,15 +130,14 @@ export default function AdminDashboard({ adapter: injectedAdapter }) {
         {adapter.isSample && (
           <aside className="admin-sample-banner" role="note">
             <div>
-              <strong className="admin-sample-label">ÖRNEK VERİ</strong>
-              Bu ekran backend'e bağlı değildir (VITE_ADMIN_DATA=sample). Tesis adları, puanlar ve tarihler
-              arayüz incelemesi için uydurulmuştur. Bu modda oturum ve yetki denetimi uygulanmaz.
+              <strong className="admin-sample-label">{t("ÖRNEK VERİ")}</strong>
+              {t("Bu ekran backend'e bağlı değildir (VITE_ADMIN_DATA=sample). Tesis adları, puanlar ve tarihler arayüz incelemesi için uydurulmuştur. Bu modda oturum ve yetki denetimi uygulanmaz.")}
             </div>
             <label>
-              Demo senaryosu
+              {t("Demo senaryosu")}
               <select value={sample.scenario} onChange={(e) => handleScenarioChange(e.target.value)}>
                 {Object.entries(SCENARIOS).map(([key, label]) => (
-                  <option key={key} value={key}>{label}</option>
+                  <option key={key} value={key}>{t(label)}</option>
                 ))}
               </select>
             </label>
@@ -146,12 +148,12 @@ export default function AdminDashboard({ adapter: injectedAdapter }) {
 
         {valid && (
           <p className="admin-selection" aria-live="polite">
-            Gösterilen: <strong>{filters.district || "Tüm ilçeler"}</strong> ·{" "}
+            {t("Gösterilen:")} <strong>{filters.district || t("Tüm ilçeler")}</strong> ·{" "}
             <strong>{formatDateTr(filters.from)} – {formatDateTr(filters.to)}</strong>
           </p>
         )}
 
-        {!valid && <p className="admin-empty">Geçerli bir tarih aralığı seçildiğinde veriler yüklenecek.</p>}
+        {!valid && <p className="admin-empty">{t("Geçerli bir tarih aralığı seçildiğinde veriler yüklenecek.")}</p>}
         {valid && (
           <DashboardContent status={status} data={data} error={error} onRetry={reload} adapter={adapter} query={query} />
         )}

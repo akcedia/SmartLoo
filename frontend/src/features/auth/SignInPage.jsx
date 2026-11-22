@@ -4,11 +4,13 @@ import { useRef, useState } from "react";
 import { useSession } from "../../shared/session/SessionProvider.jsx";
 import { Link, navigate, safeReturnPath } from "../../app/router.jsx";
 import FormField from "./FormField.jsx";
+import { useI18n } from "../../shared/i18n/I18nProvider.jsx";
 import { useFocusFirstError } from "./useFocusFirstError.js";
 import { authErrorMessage, validateSignIn } from "./validation.js";
 
 export default function SignInPage({ search = "" }) {
   const { session, signIn } = useSession();
+  const { t } = useI18n();
   const params = new URLSearchParams(search);
   const next = safeReturnPath(params.get("next"));
   const registered = params.get("registered") === "1";
@@ -24,9 +26,9 @@ export default function SignInPage({ search = "" }) {
   if (session) {
     return (
       <main className="app-page app-narrow">
-        <h1>Giriş yapıldı</h1>
-        <p>{session.email} olarak oturum açtınız.</p>
-        <p><Link to={next}>Devam et</Link></p>
+        <h1>{t("Giriş yapıldı")}</h1>
+        <p>{t("{email} olarak oturum açtınız.", { email: session.email })}</p>
+        <p><Link to={next}>{t("Devam et")}</Link></p>
       </main>
     );
   }
@@ -57,18 +59,18 @@ export default function SignInPage({ search = "" }) {
 
   return (
     <main className="app-page app-narrow">
-      <h1>Giriş yap</h1>
+      <h1>{t("Giriş yap")}</h1>
       {registered && (
-        <p className="app-alert app-alert--ok" role="status">Hesabınız oluşturuldu. Şimdi giriş yapabilirsiniz.</p>
+        <p className="app-alert app-alert--ok" role="status">{t("Hesabınız oluşturuldu. Şimdi giriş yapabilirsiniz.")}</p>
       )}
       <form ref={formRef} className="app-form" onSubmit={handleSubmit} noValidate aria-busy={busy}>
-        {formError && <p className="app-alert app-alert--error" role="alert">{formError}</p>}
+        {formError && <p className="app-alert app-alert--error" role="alert">{t(formError)}</p>}
         <FormField label="E-posta" type="email" name="email" autoComplete="email" value={form.email} onChange={set("email")} error={errors.email} required />
         <FormField label="Parola" type="password" name="password" autoComplete="current-password" value={form.password} onChange={set("password")} error={errors.password} required />
-        <button type="submit" className="app-button" disabled={busy}>{busy ? "Giriş yapılıyor…" : "Giriş yap"}</button>
+        <button type="submit" className="app-button" disabled={busy}>{busy ? t("Giriş yapılıyor…") : t("Giriş yap")}</button>
       </form>
       <p className="app-muted">
-        Hesabınız yok mu? <Link to="/register">Kayıt olun</Link>
+        {t("Hesabınız yok mu?")} <Link to="/register">{t("Kayıt olun")}</Link>
       </p>
     </main>
   );

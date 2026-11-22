@@ -4,6 +4,7 @@
 // chooser for maps). Only the facility's coordinates are sent; see directions.js.
 import { useEffect, useId, useRef, useState } from "react";
 import { detectPlatform, directionsOptions } from "./directions.js";
+import { useI18n } from "../../shared/i18n/I18nProvider.jsx";
 import "./directions.css";
 
 function RouteIcon() {
@@ -21,6 +22,7 @@ export default function DirectionsButton({ latitude, longitude, name, platform: 
   const rootRef = useRef(null);
   const buttonRef = useRef(null);
   const menuId = useId();
+  const { t } = useI18n();
 
   useEffect(() => {
     if (!open) return undefined;
@@ -43,16 +45,16 @@ export default function DirectionsButton({ latitude, longitude, name, platform: 
   }, [open]);
 
   if (!providers.length) {
-    return <p className="sl-directions-missing">Bu tesisin konumu kayıtlı olmadığı için yol tarifi verilemiyor.</p>;
+    return <p className="sl-directions-missing">{t("Bu tesisin konumu kayıtlı olmadığı için yol tarifi verilemiyor.")}</p>;
   }
 
   if (geo) {
     return (
       <div className="sl-directions">
         <a className="sl-directions-button" href={geo}>
-          <RouteIcon /> Yol tarifi al
+          <RouteIcon /> {t("Yol tarifi al")}
         </a>
-        <p className="sl-directions-note">Telefonunuz hangi harita uygulamasıyla açılacağını soracak.</p>
+        <p className="sl-directions-note">{t("Telefonunuz hangi harita uygulamasıyla açılacağını soracak.")}</p>
       </div>
     );
   }
@@ -67,27 +69,27 @@ export default function DirectionsButton({ latitude, longitude, name, platform: 
         aria-controls={menuId}
         onClick={() => setOpen((value) => !value)}
       >
-        <RouteIcon /> Yol tarifi al
+        <RouteIcon /> {t("Yol tarifi al")}
       </button>
       {open && (
-        <div id={menuId} className="sl-directions-menu" role="group" aria-label="Harita uygulaması seçin">
-          <p className="sl-directions-menu-title">Hangi uygulamayla açılsın?</p>
+        <div id={menuId} className="sl-directions-menu" role="group" aria-label={t("Harita uygulaması seçin")}>
+          <p className="sl-directions-menu-title">{t("Hangi uygulamayla açılsın?")}</p>
           <ul>
             {providers.map((p) => (
               <li key={p.id}>
                 <a href={p.href} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>
-                  {p.label}
-                  <span className="app-sr"> (yeni sekmede veya uygulamada açılır)</span>
+                  {t(p.label)}
+                  <span className="app-sr"> ({t("yeni sekmede veya uygulamada açılır")})</span>
                 </a>
               </li>
             ))}
           </ul>
           <button type="button" className="sl-directions-cancel" onClick={() => { setOpen(false); buttonRef.current?.focus(); }}>
-            Vazgeç
+            {t("Vazgeç")}
           </button>
         </div>
       )}
-      <p className="sl-directions-note">Yalnızca tesisin konumu gönderilir; başlangıç noktasını harita uygulaması belirler.</p>
+      <p className="sl-directions-note">{t("Yalnızca tesisin konumu gönderilir; başlangıç noktasını harita uygulaması belirler.")}</p>
     </div>
   );
 }
