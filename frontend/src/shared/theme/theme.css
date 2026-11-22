@@ -98,8 +98,9 @@
   --sl-shadow-lg: 0 14px 36px rgba(0, 0, 0, 0.65), 0 2px 6px rgba(0, 0, 0, 0.45);
   --sl-skeleton-a: #1a232d;
   --sl-skeleton-b: #222d39;
-  /* OSM raster tiles are light-only: dim and invert them so the map does not glare. */
-  --sl-map-tiles: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.88) saturate(0.6);
+  /* The map keeps its original light OSM colours in dark mode (user decision, 23 Nov):
+     street names stay readable; only the interface around it is dark. */
+  --sl-map-tiles: none;
 }
 
 html { background: var(--sl-bg); }

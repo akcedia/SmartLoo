@@ -16,7 +16,7 @@ import { exportErrorMessage } from "../../features/admin/components/ExportButton
 const EN = catalog("en");
 const SRC = join(process.cwd(), "src");
 // Screens owned by the shared app (Onur). Map screens join this list when Furkan wraps them.
-const TRANSLATED = ["app", "shared", "features/auth", "features/admin", "features/map/DirectionsButton.jsx"];
+const TRANSLATED = ["app", "shared", "features/auth", "features/admin", "features/map/DirectionsButton.jsx", "features/map/SearchPage.jsx", "features/map/MapView.jsx"];
 
 function sourceFiles(path) {
   const full = join(SRC, path);

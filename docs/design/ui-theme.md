@@ -41,8 +41,18 @@ actions use the secondary style.
 
 ## Map
 
-- OSM tiles are dimmed/inverted in dark mode by `--sl-map-tiles`; the attribution
-  stays visible on a solid surface. Leaflet controls and popups follow the theme.
+- The map keeps its original light OSM colours in both themes (decision 23 Nov:
+  street names stay readable); only the interface around it is dark. Leaflet
+  controls, popups and the attribution follow the theme.
+- Layout (`features/map/map.css`): controls are grouped by job. Top left: view
+  switch (Harita/Liste), İstanbul geneli / Yakınımda and radius chips. Next to it:
+  Şu an açık, Ücretsiz and "Filtreler" (panel with the other filters, coverage note
+  and Temizle). Bottom right: AI Önerileri and Konumum. Bottom left: zoom and data
+  source. On phones the controls become two scrollable rows, and filters, facility
+  detail and AI suggestions open as bottom sheets; the list is full screen.
+- Pins (`features/map/mapPins.js`): filled cyan = open now, cyan outline = opening
+  hours unknown, grey = closed or not active; the selected pin is larger. The
+  marker title states the same in words.
 - The facility panel has "Yol tarifi al" (`features/map/DirectionsButton.jsx`):
   Android opens a `geo:` link so the phone's own app chooser appears; iPhone/iPad
   and desktops get a small menu (Apple / Google / Yandex Haritalar). Only the
