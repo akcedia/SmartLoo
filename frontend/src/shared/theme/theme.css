@@ -30,7 +30,13 @@
   --sl-accent-soft: #e0f6fa;        /* selected row / tab background */
   --sl-accent-border: #8fd8e6;
   --sl-accent-ring: #0891b2;
-  --sl-accent-glow: rgba(8, 145, 178, 0.28);
+
+  /* Second accent: pastel green for selected chips, switches and tabs. */
+  --sl-accent2-solid: #bbf0cd;   /* selected fill */
+  --sl-on-accent2: #0f4a28;      /* 8.11:1 on the fill */
+  --sl-accent2-soft: #e3f8ea;
+  --sl-accent2-text: #16653a;    /* 7.10:1 on surface, 6.39:1 on soft */
+  --sl-accent2-border: #3a9a63;
 
   --sl-danger: #b42318;
   --sl-danger-hover: #912018;
@@ -57,27 +63,33 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --sl-bg: #0b0f14;
-  --sl-surface: #131a22;
-  --sl-surface-raised: #1a232d;
-  --sl-surface-sunken: #0f151c;
-  --sl-surface-hover: #1f2a36;
-  --sl-border: #263240;
-  --sl-border-strong: #64748a; /* 3.68:1 on surface */
+  /* Near-black neutrals (23 Nov: "blacks should be blacker"). */
+  --sl-bg: #030405;
+  --sl-surface: #0b0d10;
+  --sl-surface-raised: #121519;
+  --sl-surface-sunken: #07080a;
+  --sl-surface-hover: #191d22;
+  --sl-border: #22272e;
+  --sl-border-strong: #5f6b7a; /* 3.59:1 on surface, 3.37:1 on raised */
 
-  --sl-text: #e6edf3;          /* 14.83:1 on surface */
-  --sl-text-secondary: #c2ccd6; /* 10.76:1 */
-  --sl-text-muted: #93a1b0;     /* 6.65:1 on surface, 6.02:1 on raised */
-  --sl-text-faint: #7d8a99;     /* 4.98:1 */
+  --sl-text: #ecf0f4;          /* 16.99:1 on surface */
+  --sl-text-secondary: #c3cad2; /* 11.77:1 */
+  --sl-text-muted: #949ead;     /* 7.18:1 on surface, 6.76:1 on raised */
+  --sl-text-faint: #7f8997;     /* 5.49:1 */
 
   --sl-accent-solid: #06b6d4;       /* the bright cyan button */
   --sl-accent-solid-hover: #22d3ee;
   --sl-on-accent: #042f38;          /* dark text on cyan: 5.89:1 / 7.91:1 */
-  --sl-accent-text: #3fd5ee;        /* 9.98:1 on surface */
-  --sl-accent-soft: #0a2a33;
+  --sl-accent-text: #3fd5ee;        /* 11.08:1 on surface */
+  --sl-accent-soft: #08262e;
   --sl-accent-border: #155e75;
   --sl-accent-ring: #22d3ee;
-  --sl-accent-glow: rgba(34, 211, 238, 0.30);
+
+  --sl-accent2-solid: #86efac;   /* pastel green fill */
+  --sl-on-accent2: #05301a;      /* 10.36:1 */
+  --sl-accent2-soft: #0e2a1a;
+  --sl-accent2-text: #9df2bb;    /* 14.69:1 on surface, 11.62:1 on soft */
+  --sl-accent2-border: #3f9f68;
 
   --sl-danger: #ff7a6e;
   --sl-danger-hover: #ff958b;
@@ -96,8 +108,8 @@
   --sl-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
   --sl-shadow-md: 0 4px 14px rgba(0, 0, 0, 0.55), 0 1px 3px rgba(0, 0, 0, 0.4);
   --sl-shadow-lg: 0 14px 36px rgba(0, 0, 0, 0.65), 0 2px 6px rgba(0, 0, 0, 0.45);
-  --sl-skeleton-a: #1a232d;
-  --sl-skeleton-b: #222d39;
+  --sl-skeleton-a: #121519;
+  --sl-skeleton-b: #1b1f25;
   /* The map keeps its original light OSM colours in dark mode (user decision, 23 Nov):
      street names stay readable; only the interface around it is dark. */
   --sl-map-tiles: none;
@@ -131,6 +143,15 @@ a { text-underline-offset: 0.18em; }
 :root .leaflet-bar a:hover { background: var(--sl-surface-hover); }
 :root .leaflet-container .leaflet-control-attribution { background: var(--sl-surface); color: var(--sl-text-muted); }
 :root .leaflet-container .leaflet-control-attribution a { color: var(--sl-accent-text); }
+
+/* Settings > "Hareketi azalt" (the OS setting is honoured separately below). */
+:root[data-motion="reduce"] *,
+:root[data-motion="reduce"] *::before,
+:root[data-motion="reduce"] *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
 
 @media (prefers-reduced-motion: reduce) {
   :root.sl-theme-switching,

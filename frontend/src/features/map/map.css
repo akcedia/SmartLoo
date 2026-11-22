@@ -26,26 +26,26 @@
 .sl-toolbar { display: flex; flex-wrap: wrap; gap: 8px; pointer-events: none; max-width: 100%; }
 .sl-toolbar > * { pointer-events: auto; }
 
-.sl-panel {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  padding: 6px;
-  background: var(--sl-surface);
-  border: 1px solid var(--sl-border);
-  border-radius: 14px;
-  box-shadow: var(--sl-shadow-md);
-}
+/* Control groups have no box of their own: each button carries its own
+   border and a short shadow so it stays readable on top of the map. */
+.sl-group { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.sl-filter-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 
 .sl-segmented {
   display: inline-flex;
+  align-items: center;
   gap: 2px;
   padding: 3px;
-  background: var(--sl-surface-sunken);
-  border-radius: 10px;
+  background: var(--sl-surface);
+  border: 1px solid var(--sl-border);
+  border-radius: 12px;
+  box-shadow: var(--sl-shadow-sm);
 }
-.sl-segmented button {
+.sl-segmented > button,
+.sl-radius-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   min-height: 34px;
   padding: 0 12px;
   font: inherit;
@@ -54,25 +54,23 @@
   color: var(--sl-text-secondary);
   background: transparent;
   border: 0;
-  border-radius: 8px;
+  border-radius: 9px;
   cursor: pointer;
   white-space: nowrap;
   transition: background-color 0.15s ease-out, color 0.15s ease-out;
 }
-.sl-segmented button:hover:not(:disabled):not([aria-pressed="true"]) { background: var(--sl-surface-hover); color: var(--sl-text); }
-.sl-segmented button[aria-pressed="true"] {
-  background: var(--sl-accent-solid);
-  color: var(--sl-on-accent);
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), 0 3px 10px var(--sl-accent-glow);
-}
-.sl-segmented button:disabled { opacity: 0.55; cursor: not-allowed; }
+.sl-segmented > button:hover:not(:disabled):not([aria-pressed="true"]),
+.sl-radius-button:hover { background: var(--sl-surface-hover); color: var(--sl-text); }
+.sl-segmented > button[aria-pressed="true"] { background: var(--sl-accent2-solid); color: var(--sl-on-accent2); }
+.sl-segmented > button:disabled { opacity: 0.55; cursor: not-allowed; }
+.sl-segmented svg { flex: none; }
 
 .sl-chip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-height: 34px;
-  padding: 0 12px;
+  min-height: 36px;
+  padding: 0 13px;
   font: inherit;
   font-size: 13.5px;
   font-weight: 500;
@@ -80,18 +78,19 @@
   background: var(--sl-surface);
   border: 1px solid var(--sl-border-strong);
   border-radius: 999px;
+  box-shadow: var(--sl-shadow-sm);
   cursor: pointer;
   white-space: nowrap;
   transition: background-color 0.15s ease-out, border-color 0.15s ease-out;
 }
 .sl-chip:hover:not(:disabled) { background: var(--sl-surface-hover); color: var(--sl-text); }
 .sl-chip[aria-pressed="true"] {
-  background: var(--sl-accent-soft);
-  border-color: var(--sl-accent-solid);
-  color: var(--sl-accent-text);
+  background: var(--sl-accent2-solid);
+  border-color: var(--sl-accent2-border);
+  color: var(--sl-on-accent2);
   font-weight: 600;
 }
-.sl-chip[aria-expanded="true"] { border-color: var(--sl-accent-solid); }
+.sl-chip[aria-expanded="true"] { border-color: var(--sl-accent2-border); }
 .sl-chip:disabled { opacity: 0.55; cursor: not-allowed; }
 .sl-badge {
   display: inline-grid;
@@ -102,13 +101,68 @@
   box-sizing: border-box;
   font-size: 11px;
   font-weight: 700;
-  color: var(--sl-on-accent);
-  background: var(--sl-accent-solid);
+  color: var(--sl-on-accent2);
+  background: var(--sl-accent2-solid);
+  border: 1px solid var(--sl-accent2-border);
   border-radius: 999px;
 }
-.sl-radius-chips { display: inline-flex; gap: 4px; }
-.sl-radius-chips .sl-chip { padding: 0 10px; }
-.sl-count { padding: 0 6px; font-size: 12.5px; color: var(--sl-text-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.sl-count {
+  padding: 6px 10px;
+  font-size: 12.5px;
+  color: var(--sl-text-muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  background: var(--sl-surface);
+  border: 1px solid var(--sl-border);
+  border-radius: 999px;
+  box-shadow: var(--sl-shadow-sm);
+}
+
+/* "1 km ▾" next to Yakınımda */
+.sl-radius { position: relative; display: inline-flex; }
+.sl-radius-button { padding: 0 8px 0 10px; color: var(--sl-text); border-left: 1px solid var(--sl-border); border-radius: 0 9px 9px 0; }
+.sl-radius-chevron { transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+.sl-radius-button[aria-expanded="true"] .sl-radius-chevron { transform: rotate(180deg); }
+.sl-radius-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: -4px;
+  z-index: 1405;
+  display: grid;
+  gap: 2px;
+  min-width: 120px;
+  padding: 4px;
+  background: var(--sl-surface-raised);
+  border: 1px solid var(--sl-border);
+  border-radius: 12px;
+  box-shadow: var(--sl-shadow-lg);
+  transform-origin: top right;
+  animation: sl-pop 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sl-radius-menu button {
+  min-height: 38px;
+  padding: 0 12px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  color: var(--sl-text-secondary);
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+}
+.sl-radius-menu button:hover { background: var(--sl-surface-hover); color: var(--sl-text); }
+.sl-radius-menu button[aria-checked="true"] { background: var(--sl-accent2-solid); color: var(--sl-on-accent2); }
+@keyframes sl-pop {
+  from { opacity: 0; transform: translateY(-4px) scale(0.97); }
+}
+
+/* Arrow that folds the filter row on phones (hidden on wide screens). */
+.sl-row-toggle { display: none; }
+.sl-view-label { white-space: nowrap; }
+.sl-label-short { display: none; }
 
 .sl-search :focus-visible { outline: 3px solid var(--sl-accent-ring); outline-offset: 2px; }
 
@@ -157,7 +211,7 @@
   color: var(--sl-on-accent);
   background: var(--sl-accent-solid);
   border: 1px solid var(--sl-accent-solid);
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), 0 4px 14px var(--sl-accent-glow);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
 }
 .sl-button-primary:hover { background: var(--sl-accent-solid-hover); }
 .sl-button-secondary { color: var(--sl-text-secondary); background: var(--sl-surface); border: 1px solid var(--sl-border-strong); }
@@ -270,9 +324,9 @@
   color: var(--sl-surface);
   background: var(--sl-ai);
   border-color: var(--sl-ai);
-  box-shadow: 0 6px 22px rgba(124, 58, 237, 0.38), var(--sl-shadow-md);
+  box-shadow: var(--sl-shadow-md);
 }
-.sl-fab--ai[aria-expanded="true"] { box-shadow: 0 0 0 4px var(--sl-ai-border), var(--sl-shadow-md); }
+.sl-fab--ai[aria-expanded="true"] { outline: 2px solid var(--sl-ai-border); outline-offset: 2px; }
 .sl-fab--locate { width: 48px; padding: 0; color: var(--sl-accent-text); }
 
 /* ---------- Source line (bottom left, next to zoom) ---------- */
@@ -330,7 +384,7 @@
 .sl-pin--unknown .sl-pin-label { fill: var(--sl-accent-solid); }
 .sl-pin--closed .sl-pin-body { fill: #8a94a3; }
 .sl-pin--closed .sl-pin-label { fill: #ffffff; }
-.sl-pin--selected svg { filter: drop-shadow(0 0 7px var(--sl-accent-glow)) drop-shadow(0 3px 4px rgba(15, 23, 32, 0.5)); }
+.sl-pin--selected svg { filter: drop-shadow(0 3px 4px rgba(15, 23, 32, 0.5)); }
 .sl-pin--selected .sl-pin-body { stroke-width: 3; }
 .sl-pin:focus-visible { outline: 3px solid var(--sl-accent-ring); outline-offset: 2px; border-radius: 50% 50% 50% 0; }
 
@@ -363,21 +417,83 @@ path.sl-radius { stroke: var(--sl-accent-solid); stroke-width: 2; fill: var(--sl
 
 /* ---------- Phones ---------- */
 @media (max-width: 767px) {
-  .sl-top { top: 8px; left: 8px; right: 8px; gap: 6px; }
-  .sl-toolbar { flex-direction: column; flex-wrap: nowrap; width: 100%; gap: 6px; }
-  .sl-panel {
-    flex-wrap: nowrap;
-    width: 100%;
-    box-sizing: border-box;
-    overflow-x: auto;
-    scrollbar-width: none;
-    border-radius: 12px;
-    padding: 5px;
-  }
-  .sl-panel::-webkit-scrollbar { display: none; }
-  .sl-segmented button,
+  .sl-top { top: 8px; left: 8px; right: 8px; gap: 8px; }
+  .sl-toolbar { flex-direction: column; flex-wrap: nowrap; align-items: flex-start; width: 100%; gap: 8px; }
+  .sl-group { flex-wrap: nowrap; }
+  .sl-segmented > button,
+  .sl-radius-button { min-height: 40px; padding: 0 11px; }
   .sl-chip { min-height: 40px; }
   .sl-count { display: none; }
+
+  /* Map/List become icons; the words stay for screen readers. */
+  .sl-view-switch > button { padding: 0 10px; }
+  .sl-view-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+  }
+  .sl-label-long { display: none; }
+  .sl-label-short { display: inline; }
+
+  /* Filter row folds into the arrow and slides out when opened. */
+  .sl-group-filters { width: 100%; }
+  .sl-row-toggle {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    color: var(--sl-text);
+    background: var(--sl-surface);
+    border: 1px solid var(--sl-border-strong);
+    border-radius: 999px;
+    box-shadow: var(--sl-shadow-sm);
+    cursor: pointer;
+  }
+  .sl-row-toggle svg { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+  .sl-row-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+  .sl-row-toggle .sl-badge { position: absolute; top: -5px; right: -5px; }
+  .sl-filter-chips {
+    flex-wrap: nowrap;
+    min-width: 0;
+    max-width: 0;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding: 2px 2px 4px;
+    margin: -2px 0 -4px;
+    scrollbar-width: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-16px);
+    transition:
+      max-width 0.36s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.22s ease-out,
+      transform 0.36s cubic-bezier(0.16, 1, 0.3, 1),
+      visibility 0s linear 0.36s;
+  }
+  .sl-filter-chips::-webkit-scrollbar { display: none; }
+  .sl-group-filters.is-open .sl-filter-chips {
+    max-width: calc(100vw - 72px);
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition:
+      max-width 0.36s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.22s ease-out 0.05s,
+      transform 0.36s cubic-bezier(0.16, 1, 0.3, 1),
+      visibility 0s;
+  }
+  .sl-group-filters.is-open .sl-filter-chips .sl-chip { animation: sl-chip-in 0.32s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .sl-group-filters.is-open .sl-filter-chips .sl-chip:nth-child(2) { animation-delay: 0.04s; }
+  .sl-group-filters.is-open .sl-filter-chips .sl-chip:nth-child(3) { animation-delay: 0.08s; }
+  @keyframes sl-chip-in {
+    from { opacity: 0; transform: translateX(-10px); }
+  }
 
   /* Bottom sheets: filters, facility detail, AI suggestions. */
   .sl-filter-panel {
@@ -391,9 +507,13 @@ path.sl-radius { stroke: var(--sl-accent-solid); stroke-width: 2; fill: var(--sl
     padding-bottom: calc(16px + env(safe-area-inset-bottom));
     border-radius: 18px 18px 0 0;
     z-index: 1300;
+    animation: sl-sheet-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes sl-sheet-in {
+    from { transform: translateY(24px); opacity: 0; }
   }
   .sl-filter-group .sl-chip,
-  .sl-filter-group .sl-segmented button { min-height: 44px; }
+  .sl-filter-group .sl-segmented > button { min-height: 44px; }
   .sl-filter-actions > * { flex: 1; min-height: 48px; }
 
   .sl-search aside[aria-label="Tesis detayları"],
@@ -422,15 +542,20 @@ path.sl-radius { stroke: var(--sl-accent-solid); stroke-width: 2; fill: var(--sl
   .sl-source-note { display: none; }
   .sl-map-area .leaflet-control-zoom { display: none; }
 
-  /* List view: full screen under the two control rows. */
+  /* List view: full screen under the control rows. */
   .sl-search--list .sl-top { inset: 0; padding: 8px; background: var(--sl-bg); }
   .sl-search--list .sl-list { flex: 1; width: 100%; border-radius: 12px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .sl-filter-chips,
+  .sl-filter-chips .sl-chip,
+  .sl-row-toggle svg,
+  .sl-radius-menu,
+  .sl-filter-panel,
   .sl-pin svg,
   .sl-fab,
   .sl-chip,
-  .sl-segmented button { transition: none; }
+  .sl-segmented > button { transition: none; animation: none; }
   .sl-user-dot-pulse { animation: none; opacity: 0.4; }
 }

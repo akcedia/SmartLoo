@@ -29,14 +29,14 @@ function themeTokens(name) {
   const css = readFileSync(new URL("../shared/theme/theme.css", import.meta.url), "utf8");
   const start = css.indexOf(`:root[data-theme="${name}"] {`);
   const block = css.slice(start, css.indexOf("\n}", start));
-  return Object.fromEntries([...block.matchAll(/--sl-([a-z-]+):\s*(#[0-9a-fA-F]{6})/g)].map((m) => [m[1], m[2]]));
+  return Object.fromEntries([...block.matchAll(/--sl-([a-z0-9-]+):\s*(#[0-9a-fA-F]{6})/g)].map((m) => [m[1], m[2]]));
 }
 
 describe.each(["light", "dark"])("colour contrast of the %s theme", (name) => {
   const t = themeTokens(name);
 
   it("defines every token the pairs below use", () => {
-    for (const key of ["bg", "surface", "surface-raised", "surface-sunken", "text", "text-secondary", "text-muted", "text-faint", "border-strong", "accent-solid", "accent-solid-hover", "on-accent", "accent-text", "accent-soft", "danger", "danger-soft", "ok", "ok-soft", "warn", "warn-soft", "ai", "ai-soft"]) {
+    for (const key of ["bg", "surface", "surface-raised", "surface-sunken", "text", "text-secondary", "text-muted", "text-faint", "border-strong", "accent-solid", "accent-solid-hover", "on-accent", "accent-text", "accent-soft", "danger", "danger-soft", "ok", "ok-soft", "warn", "warn-soft", "ai", "ai-soft", "accent2-solid", "on-accent2", "accent2-text", "accent2-soft", "accent2-border"]) {
       expect(t[key], key).toMatch(/^#[0-9a-f]{6}$/i);
     }
   });
@@ -65,6 +65,10 @@ describe.each(["light", "dark"])("colour contrast of the %s theme", (name) => {
     ["AI toggle text", "surface", "ai", 4.5],
     ["form control border (non-text)", "border-strong", "surface", 3],
     ["accent fill against surface (non-text)", "accent-solid", "surface", 3],
+    ["selected chip text on pastel green", "on-accent2", "accent2-solid", 4.5],
+    ["pastel green text on surface", "accent2-text", "surface", 4.5],
+    ["pastel green text on its soft background", "accent2-text", "accent2-soft", 4.5],
+    ["pastel green border (non-text)", "accent2-border", "surface", 3],
   ])("%s", (_, fg, bg, min) => {
     expect(contrast(t[fg], t[bg])).toBeGreaterThanOrEqual(min);
   });

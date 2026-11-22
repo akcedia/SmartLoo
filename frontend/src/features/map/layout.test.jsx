@@ -67,14 +67,27 @@ describe("map page layout", () => {
     const mode = host.querySelector(".sl-group-mode");
     const filters = host.querySelector(".sl-group-filters");
     expect(mode.textContent).toContain("İstanbul geneli");
-    expect(mode.textContent).toContain("Yakınımda ara");
+    expect(mode.textContent).toContain("Yakınımda");
     expect(filters.textContent).toContain("Şu An Açık");
     expect(filters.textContent).toContain("Ücretsiz");
     expect(host.querySelector(".sl-filter-panel").hidden).toBe(true);
-    expect(host.querySelector(".sl-radius-chips")).toBeNull();
+  });
 
-    await act(async () => button("Yakınımda ara").click());
-    expect([...host.querySelectorAll(".sl-radius-chips button")].map((b) => b.textContent)).toEqual(["500 m", "1 km", "2,5 km", "5 km"]);
+  it("picks the radius from a compact dropdown next to Yakınımda and closes it again", async () => {
+    const fetchImpl = await render();
+    const picker = host.querySelector(".sl-radius-button");
+    expect(picker.textContent).toBe("1 km");
+    expect(host.querySelector(".sl-radius-menu")).toBeNull();
+    await act(async () => picker.click());
+    const options = [...host.querySelectorAll(".sl-radius-menu button")];
+    expect(options.map((b) => b.textContent)).toEqual(["500 m", "1 km", "2,5 km", "5 km", "10 km"]);
+    expect(document.activeElement.textContent).toBe("1 km");
+    await act(async () => options[3].click());
+    expect(host.querySelector(".sl-radius-menu")).toBeNull();
+    expect(picker.textContent).toBe("5 km");
+    expect(document.activeElement).toBe(picker);
+    expect(host.querySelector('[data-testid="map-mode"]').textContent.startsWith("nearby:")).toBe(true);
+    expect(fetchImpl.mock.calls.at(-1)[0]).toContain("radius=5000");
   });
 
   it("opens the filter panel, focuses inside it, counts extra filters and closes with Escape", async () => {
@@ -105,7 +118,7 @@ describe("map page layout", () => {
   it("lists facilities nearest first in nearby mode and opens one on the map", async () => {
     geolocation.getCurrentPosition = vi.fn((ok) => ok({ coords: { latitude: 41, longitude: 29 } }));
     await render();
-    await act(async () => button("Yakınımda ara").click());
+    await act(async () => button("Yakınımda").click());
     await act(async () => button("Liste").click());
     const items = [...host.querySelectorAll(".sl-list-item")];
     expect(items.map((b) => b.querySelector(".sl-list-name").textContent)).toEqual(["Yakın", "Uzak"]);
@@ -128,7 +141,7 @@ describe("map page layout", () => {
 
   it("offers a way back to the city view when location is denied in nearby mode", async () => {
     await render();
-    await act(async () => button("Yakınımda ara").click());
+    await act(async () => button("Yakınımda").click());
     expect(host.textContent).toContain("Konum izni yok");
     await act(async () => button("İstanbul geneline dön").click());
     expect(host.querySelector('[data-testid="map-mode"]').textContent.startsWith("city:")).toBe(true);

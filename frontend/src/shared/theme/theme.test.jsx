@@ -3,7 +3,7 @@ import React, { act } from "react";
 import { createRoot } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { applyTheme, loadPreference, nextPreference, resolveTheme, savePreference, THEME_KEY } from "./theme.js";
-import ThemeToggle from "./ThemeToggle.jsx";
+import SettingsMenu from "../settings/SettingsMenu.jsx";
 
 function mockSystem(dark) {
   const listeners = new Set();
@@ -54,7 +54,7 @@ describe("theme preference", () => {
   });
 });
 
-describe("ThemeToggle", () => {
+describe("theme in the settings menu", () => {
   let host;
   let root;
   beforeEach(() => {
@@ -68,24 +68,27 @@ describe("ThemeToggle", () => {
     host.remove();
   });
 
+  const themeButton = (label) =>
+    [...host.querySelectorAll('[role="radiogroup"][aria-label="Tema"] [role="radio"]')].find((b) => b.textContent === label);
+
   it("follows the system until the user picks a theme, and remembers the pick", async () => {
     const system = mockSystem(false);
-    await act(async () => root.render(<ThemeToggle />));
-    const button = host.querySelector("button");
+    await act(async () => root.render(<SettingsMenu />));
     expect(document.documentElement.dataset.theme).toBe("light");
-    expect(button.getAttribute("aria-label")).toBe("Tema: Sistem. Açık temaya geç");
-
     await act(async () => system.set(true));
     expect(document.documentElement.dataset.theme).toBe("dark");
 
-    await act(async () => button.click()); // → Açık
+    await act(async () => host.querySelector(".sl-settings-button").click());
+    expect(themeButton("Sistem").getAttribute("aria-checked")).toBe("true");
+
+    await act(async () => themeButton("Açık").click());
     expect(document.documentElement.dataset.theme).toBe("light");
     expect(localStorage.getItem(THEME_KEY)).toBe("light");
     await act(async () => system.set(true));
     expect(document.documentElement.dataset.theme).toBe("light");
 
-    await act(async () => button.click()); // → Koyu
+    await act(async () => themeButton("Koyu").click());
     expect(document.documentElement.dataset.theme).toBe("dark");
-    expect(button.getAttribute("aria-label")).toBe("Tema: Koyu. Sistem temaya geç");
+    expect(themeButton("Koyu").getAttribute("aria-checked")).toBe("true");
   });
 });

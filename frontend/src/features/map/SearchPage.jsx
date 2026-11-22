@@ -4,6 +4,8 @@ import MapView from "./MapView.jsx";
 import FacilityDetailPanel from "./FacilityDetailPanel.jsx";
 import AiRecommendationsPanel from "./AiRecommendationsPanel.jsx";
 import { pinState } from "./mapPins.js";
+import RadiusPicker from "./RadiusPicker.jsx";
+import { formatRadius, loadMobileFiltersOpen, loadStartRadius, loadStartView, saveMobileFiltersOpen } from "../../shared/settings/preferences.js";
 import { useI18n } from "../../shared/i18n/I18nProvider.jsx";
 import "./map.css";
 
@@ -17,13 +19,13 @@ const INITIAL_FILTERS = {
 
 export default function SearchPage({ onSwitchToAdmin }) {
   const { fetchIbbToilets, fetchNearbyToilets, fetchToiletDetail } = useMapApi();
-  const [citywide, setCitywide] = useState(true);
+  const [citywide, setCitywide] = useState(() => loadStartView() === "city");
   const [searchCenter, setSearchCenter] = useState(DEFAULT_CENTER);
   const [userLocation, setUserLocation] = useState(null);
   const [locationStatus, setLocationStatus] = useState("pending"); // "pending" | "granted" | "denied"
   const [pendingCenter, setPendingCenter] = useState(null);
 
-  const [radius, setRadius] = useState(1000);
+  const [radius, setRadius] = useState(loadStartRadius);
   const [filters, setFilters] = useState(INITIAL_FILTERS);
   const [toilets, setToilets] = useState([]);
   const [filterCoverage, setFilterCoverage] = useState(null);
@@ -44,6 +46,16 @@ export default function SearchPage({ onSwitchToAdmin }) {
   const [view, setView] = useState("map"); // "map" | "list"
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [locateError, setLocateError] = useState("");
+  // Phones: the filter row folds behind an arrow button (closed by default).
+  const isPhone = useMediaQuery("(max-width: 767px)");
+  const [filterRowOpen, setFilterRowOpen] = useState(loadMobileFiltersOpen);
+  const filterRowId = useId();
+  const toggleFilterRow = () => {
+    setFilterRowOpen((open) => {
+      saveMobileFiltersOpen(!open);
+      return !open;
+    });
+  };
   const filtersPanelId = useId();
   const filtersButtonRef = useRef(null);
   const filtersPanelRef = useRef(null);
@@ -208,6 +220,8 @@ export default function SearchPage({ onSwitchToAdmin }) {
     ? openHoursUnavailable
     : citywide && filterCoverage?.[key] === 0;
 
+  const activeFilterCount =
+    (filters.open_now ? 1 : 0) + (filters.has_disabled_access ? 1 : 0) + (filters.has_baby_changing ? 1 : 0) + (filters.pricing !== "all" ? 1 : 0);
   const activeExtraFilters =
     (filters.has_disabled_access ? 1 : 0) + (filters.has_baby_changing ? 1 : 0) + (filters.pricing === "paid" ? 1 : 0);
   const anyFilter = filters.open_now || filters.has_disabled_access || filters.has_baby_changing || filters.pricing !== "all";
@@ -245,27 +259,42 @@ export default function SearchPage({ onSwitchToAdmin }) {
         <div className="sl-top">
         <div className="sl-toolbar">
           {/* Group 1: where to search (mode + radius) and the view switch */}
-          <div className="sl-panel sl-group-mode" role="group" aria-label={t("Arama alanı")}>
+          <div className="sl-group sl-group-mode" role="group" aria-label={t("Arama alanı")}>
             <div className="sl-segmented sl-view-switch" role="group" aria-label={t("Görünüm")}>
-              <button type="button" aria-pressed={view === "map"} onClick={() => setView("map")}>{t("Harita")}</button>
-              <button type="button" aria-pressed={view === "list"} onClick={() => setView("list")}>{t("Liste")}</button>
+              <button type="button" aria-pressed={view === "map"} onClick={() => setView("map")}>
+                <MapIcon /><span className="sl-view-label">{t("Harita")}</span>
+              </button>
+              <button type="button" aria-pressed={view === "list"} onClick={() => setView("list")}>
+                <ListIcon /><span className="sl-view-label">{t("Liste")}</span>
+              </button>
             </div>
             <div className="sl-segmented" role="group" aria-label={t("Arama modu")}>
               <button type="button" aria-pressed={citywide} onClick={() => { setCitywide(true); setPendingCenter(null); }}>
-                {t("İstanbul geneli")}
+                <span className="sl-label-long">{t("İstanbul geneli")}</span>
+                <span className="sl-label-short">{t("İstanbul")}</span>
               </button>
-              <button type="button" aria-pressed={!citywide} onClick={() => setCitywide(false)}>{t("Yakınımda ara")}</button>
+              <button type="button" aria-pressed={!citywide} onClick={() => setCitywide(false)}>{t("Yakınımda")}</button>
+              <RadiusPicker radius={radius} onChange={(value) => { setRadius(value); setCitywide(false); }} />
             </div>
-            {!citywide && (
-              <div className="sl-radius-chips" role="group" aria-label={t("Arama yarıçapı")}>
-                {RADII.map((value) => chip(`r${value}`, formatRadius(value), radius === value, () => setRadius(value)))}
-              </div>
-            )}
             <span className="sl-count" aria-live="polite">{countLabel}</span>
           </div>
 
           {/* Group 2: what to show (the two most used filters + all filters) */}
-          <div className="sl-panel sl-group-filters" role="group" aria-label={t("Tesis filtreleri")}>
+          <div className={`sl-group sl-group-filters${filterRowOpen ? " is-open" : ""}`} role="group" aria-label={t("Tesis filtreleri")}>
+            <button
+              type="button"
+              className="sl-row-toggle"
+              aria-expanded={filterRowOpen}
+              aria-controls={filterRowId}
+              aria-label={filterRowOpen ? t("Filtreleri gizle") : t("Filtreleri göster")}
+              onClick={toggleFilterRow}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+              {!filterRowOpen && activeFilterCount > 0 && <span className="sl-badge" aria-hidden="true">{activeFilterCount}</span>}
+            </button>
+            <div id={filterRowId} className="sl-filter-chips" {...(isPhone && !filterRowOpen ? { inert: "" } : {})}>
             {chip(
               "open_now",
               `${OPEN_NOW_LABEL}${filterUnavailable("open_now") ? " (bilgi yok)" : ""}`,
@@ -291,6 +320,7 @@ export default function SearchPage({ onSwitchToAdmin }) {
               <FilterIcon /> {t("Filtreler")}
               {activeExtraFilters > 0 && <span className="sl-badge" aria-label={t("{n} filtre seçili", { n: activeExtraFilters })}>{activeExtraFilters}</span>}
             </button>
+            </div>
           </div>
         </div>
 
@@ -449,11 +479,20 @@ export default function SearchPage({ onSwitchToAdmin }) {
   );
 }
 
-const RADII = [500, 1000, 2500, 5000];
 const OPEN_NOW_LABEL = "Şu An Açık";
 
-function formatRadius(meters) {
-  return meters >= 1000 ? `${String(meters / 1000).replace(".", ",")} km` : `${meters} m`;
+function useMediaQuery(query) {
+  const get = () => (typeof window !== "undefined" && window.matchMedia ? window.matchMedia(query).matches : false);
+  const [matches, setMatches] = useState(get);
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return undefined;
+    const list = window.matchMedia(query);
+    const onChange = () => setMatches(list.matches);
+    onChange();
+    list.addEventListener?.("change", onChange);
+    return () => list.removeEventListener?.("change", onChange);
+  }, [query]);
+  return matches;
 }
 
 // "Açık" alone would clash with the theme name "Açık" (Light) in the catalog.
@@ -500,6 +539,23 @@ function ResultList({ toilets, citywide, showDistance, loading, onSelect }) {
 }
 
 const iconProps = { width: 18, height: 18, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": true, focusable: "false" };
+
+function MapIcon() {
+  return (
+    <svg {...iconProps}>
+      <path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z" />
+      <path d="M9 4v14M15 6v14" />
+    </svg>
+  );
+}
+
+function ListIcon() {
+  return (
+    <svg {...iconProps}>
+      <path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01" />
+    </svg>
+  );
+}
 
 function FilterIcon() {
   return (

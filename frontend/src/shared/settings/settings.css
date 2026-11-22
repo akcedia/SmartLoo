@@ -1,0 +1,116 @@
+/* Header settings menu. Tokens: shared/theme/theme.css. */
+.sl-settings { position: relative; }
+.sl-settings-button {
+  display: inline-grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  font: inherit;
+  color: var(--sl-text-secondary);
+  background: var(--sl-surface);
+  border: 1px solid var(--sl-border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sl-settings-button:hover { color: var(--sl-text); background: var(--sl-surface-hover); }
+.sl-settings-button[aria-expanded="true"] { color: var(--sl-text); border-color: var(--sl-accent2-border); transform: rotate(45deg); }
+.sl-settings-button:focus-visible,
+.sl-settings-panel :focus-visible { outline: 3px solid var(--sl-accent-ring); outline-offset: 2px; }
+
+.sl-settings-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 1400;
+  width: min(330px, calc(100vw - 24px));
+  box-sizing: border-box;
+  padding: 14px;
+  color: var(--sl-text);
+  background: var(--sl-surface-raised);
+  border: 1px solid var(--sl-border);
+  border-radius: 14px;
+  box-shadow: var(--sl-shadow-lg);
+  transform-origin: top right;
+  animation: sl-settings-in 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes sl-settings-in {
+  from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+}
+.sl-settings-title { margin: 0 0 12px; font-size: 15px; font-weight: 700; }
+.sl-setting { display: grid; gap: 6px; margin-bottom: 12px; }
+.sl-setting--inline { grid-template-columns: 1fr auto; align-items: center; }
+.sl-setting-label { font-size: 12.5px; font-weight: 600; color: var(--sl-text-muted); }
+.sl-setting-choices {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--sl-surface-sunken);
+  border: 1px solid var(--sl-border);
+  border-radius: 10px;
+}
+.sl-setting-choices button {
+  flex: 1;
+  min-height: 34px;
+  padding: 0 8px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--sl-text-secondary);
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.sl-setting-choices button:hover:not([aria-checked="true"]) { background: var(--sl-surface-hover); color: var(--sl-text); }
+.sl-setting-choices button[aria-checked="true"] { color: var(--sl-on-accent2); background: var(--sl-accent2-solid); }
+.sl-setting select {
+  min-height: 34px;
+  max-width: 170px;
+  padding: 0 8px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--sl-text);
+  background: var(--sl-surface);
+  border: 1px solid var(--sl-border-strong);
+  border-radius: 8px;
+}
+.sl-setting-divider { height: 1px; margin: 4px 0 14px; background: var(--sl-border); }
+.sl-settings-note { margin: 2px 0 0; font-size: 11.5px; color: var(--sl-text-muted); }
+
+/* Switch built on a real checkbox (keyboard and screen readers work as usual). */
+.sl-switch {
+  appearance: none;
+  position: relative;
+  width: 42px;
+  height: 24px;
+  margin: 0;
+  background: var(--sl-border-strong);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.18s ease-out;
+}
+.sl-switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sl-switch:checked { background: var(--sl-accent2-border); }
+.sl-switch:checked::after { transform: translateX(18px); }
+
+@media (max-width: 640px) {
+  .sl-settings-panel { position: fixed; top: 60px; right: 12px; left: 12px; width: auto; }
+}
+@media (pointer: coarse) {
+  .sl-settings-button { width: 44px; height: 44px; }
+  .sl-setting-choices button,
+  .sl-setting select { min-height: 42px; }
+}

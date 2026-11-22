@@ -30,14 +30,25 @@ one shared token layer.
 | Text: primary / secondary / muted / hint or disabled | `--sl-text`, `--sl-text-secondary`, `--sl-text-muted`, `--sl-text-faint` |
 | Primary button fill / hover / its text | `--sl-accent-solid`, `--sl-accent-solid-hover`, `--sl-on-accent` |
 | Links, selected text, soft selected background | `--sl-accent-text`, `--sl-accent-soft`, `--sl-accent-border` |
-| Focus ring, button glow | `--sl-accent-ring`, `--sl-accent-glow` |
+| Focus ring | `--sl-accent-ring` |
+| Second accent (pastel green): selected chips, switches, tabs | `--sl-accent2-solid`, `--sl-on-accent2`, `--sl-accent2-soft`, `--sl-accent2-text`, `--sl-accent2-border` |
 | Status (text / soft background / border) | `--sl-danger*`, `--sl-ok*`, `--sl-warn*` |
 | AI content | `--sl-ai`, `--sl-ai-soft`, `--sl-ai-border` |
 | Shadows | `--sl-shadow-sm`, `--sl-shadow-md`, `--sl-shadow-lg` |
 
 Accent: cyan. Dark theme fills buttons with `#06B6D4` and dark text; light theme
 fills with `#0E7490` and white text. One filled (accent) button per view; other
-actions use the secondary style.
+actions use the secondary style. Selected states (chips, segmented switches, tabs,
+settings choices) use the pastel green second accent. No glows: buttons use short,
+plain shadows only. The dark theme uses near-black neutrals (`#030405` page).
+
+## Settings (header gear menu)
+
+`frontend/src/shared/settings/`: theme (Sistem/Açık/Koyu), language (TR/EN), how the
+map opens (İstanbul geneli / Yakınımda, default radius), directions app (ask every
+time / Apple / Google / Yandex) and "Hareketi azalt" (`<html data-motion="reduce">`).
+Stored in this browser only (`preferences.js`). The directions menu offers "Bu seçimi
+varsayılan yap"; a saved app opens directly and "Başka uygulama seç" resets it.
 
 ## Map
 
@@ -45,10 +56,11 @@ actions use the secondary style.
   street names stay readable); only the interface around it is dark. Leaflet
   controls, popups and the attribution follow the theme.
 - Layout (`features/map/map.css`): controls are grouped by job. Top left: view
-  switch (Harita/Liste), İstanbul geneli / Yakınımda and radius chips. Next to it:
+  switch (Harita/Liste), İstanbul geneli / Yakınımda with a compact radius dropdown ("1 km ▾"). Next to it:
   Şu an açık, Ücretsiz and "Filtreler" (panel with the other filters, coverage note
   and Temizle). Bottom right: AI Önerileri and Konumum. Bottom left: zoom and data
-  source. On phones the controls become two scrollable rows, and filters, facility
+  source. Buttons carry their own border; groups have no box. On phones the filter row folds
+  behind an arrow button (closed by default, remembered), and filters, facility
   detail and AI suggestions open as bottom sheets; the list is full screen.
 - Pins (`features/map/mapPins.js`): filled cyan = open now, cyan outline = opening
   hours unknown, grey = closed or not active; the selected pin is larger. The

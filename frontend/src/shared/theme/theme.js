@@ -49,7 +49,7 @@ export function applyTheme(theme, { animate = false } = {}) {
     setTimeout(() => root.classList.remove("sl-theme-switching"), 250);
   }
   root.dataset.theme = theme;
-  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "dark" ? "#0b0f14" : "#ffffff");
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "dark" ? "#030405" : "#ffffff");
 }
 
 /** Calls onChange(resolvedTheme) whenever the OS theme changes. Returns an unsubscribe function. */
