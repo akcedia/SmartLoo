@@ -1,0 +1,16 @@
+# SmartLoo security assessment scope (#60, #82)
+
+Status: scope prepared; latest-candidate execution and findings pending. Use a pinned commit on an authorized, isolated SmartLoo Docker or staging instance with synthetic users, reviews, facilities and coordinates. Record the commit, component versions, service mode, test roles, expected/actual observations and run identifiers. Keep the live 432-facility directory and any third-party service outside this assessment. Never use real user data or publish credentials, tokens or raw personal information.
+
+| Area | Expected security property | Evidence to retain | Coordination |
+| --- | --- | --- | --- |
+| Authentication and sessions | Guest access is denied for authenticated actions; expired and revoked sessions are invalid; login limits and uniform failure responses hold. | Existing auth/session test IDs, role/status matrix, sanitized CI and retest links. | Fırat |
+| Authorization and ownership | ADMIN-only actions stay restricted, review authors and moderators retain their distinct permissions, and denied requests leave data unchanged. | Anonymized role matrix, captured status codes and before/after fixture counts. | Fırat, Onur, Furkan |
+| Input and display | Boundaries are validated server-side and user-provided text is rendered as text without unintended behavior. | Existing contract and rendering tests, browser/screen evidence from synthetic text and failure messages. | Fırat, Onur, Furkan |
+| Data integrity | Rejected batches write nothing, concurrent operations preserve identities, deletion anonymizes reviews and cache changes follow revisions. | Fixture counts, existing real-DB test evidence, before/after invariants and retest commit. | Fırat, Özgür |
+| Privacy and secrets | Account identifiers and synthetic contact details stay out of public/AI outputs, location permission is respected, and secrets stay out of API responses/logs and commits. | Redacted payload summaries, consent state, scanner report with configuration and version, and source revision. | Emir, Fırat, Özgür |
+| Quality gate | Link the last SonarQube result to the scanned SHA, settings and analysis URL, then review findings by severity and disposition. | Historical 1 existing blocker / 7 smells and passing new-code gate are separate from new measurements. Attach the actual gate and issue evidence when available. | Özgür |
+
+Use the project's existing regression and integration suites as the starting evidence. Keep authorized hands-on assessment findings separate from automated acceptance results. Record each finding as ID, requirement, affected SHA, observed behavior, risk, owner, disposition or fix commit, and retest status/evidence. Record failures and unexecuted checks explicitly. Keep SonarQube, staging load, browser/accessibility and production availability separate. Monthly availability requires its full observation window once hosting is live.
+
+[Report and acceptance matrix](../../SOFTWARE_TESTING_REPORT.md) are maintained through [#76](https://github.com/akcedia/SmartLoo/pull/76). [Scope request](https://github.com/akcedia/SmartLoo/issues/60#issuecomment-7081613282) and [instructor checklist](https://github.com/akcedia/SmartLoo/issues/82).
