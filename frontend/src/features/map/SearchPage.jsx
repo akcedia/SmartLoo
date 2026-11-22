@@ -276,7 +276,6 @@ export default function SearchPage({ onSwitchToAdmin }) {
               <button type="button" aria-pressed={!citywide} onClick={() => setCitywide(false)}>{t("Yakınımda")}</button>
               <RadiusPicker radius={radius} onChange={(value) => { setRadius(value); setCitywide(false); }} />
             </div>
-            <span className="sl-count" aria-live="polite">{countLabel}</span>
           </div>
 
           {/* Group 2: what to show (the two most used filters + all filters) */}
@@ -446,6 +445,8 @@ export default function SearchPage({ onSwitchToAdmin }) {
             <button type="button" className="sl-fab" onClick={onSwitchToAdmin}>Admin Paneli</button>
           )}
         </div>
+
+        <p className="sl-count" aria-live="polite">{countLabel}</p>
 
         <p className="sl-source">
           {t("Kaynak:")} <a href="https://data.ibb.gov.tr/dataset/sehir-tuvaletleri-veri-seti" target="_blank" rel="noreferrer">İBB Açık Veri Portalı</a>

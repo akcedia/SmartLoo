@@ -27,12 +27,14 @@ const field = (label) => {
   const el = [...host.querySelectorAll("label")].find((l) => l.textContent === label);
   return host.querySelector(`#${CSS.escape(el.htmlFor)}`);
 };
-async function change(select, value) {
-  const set = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value").set;
-  await act(async () => {
-    set.call(select, value);
-    select.dispatchEvent(new Event("change", { bubbles: true }));
-  });
+// Opens the dropdown named `label` and picks the option with text `option`.
+async function choose(label, option) {
+  const button = [...host.querySelectorAll(".sl-dropdown-button")].find((b) => b.getAttribute("aria-label").startsWith(`${label}:`));
+  await act(async () => button.click());
+  const item = [...host.querySelectorAll('.sl-dropdown-menu [role="radio"]')].find((b) => b.textContent === option);
+  await act(async () => item.click());
+  expect(host.querySelector(".sl-dropdown-menu")).toBeNull();
+  expect(button.getAttribute("aria-label")).toBe(`${label}: ${option}`);
 }
 
 describe("settings menu", () => {
@@ -54,11 +56,12 @@ describe("settings menu", () => {
 
     await act(async () => radio("Harita açılınca", "Yakınımda").click());
     expect(loadStartView()).toBe("nearby");
-    await change(field("Varsayılan yarıçap"), "2500");
+    await choose("Varsayılan yarıçap", "2,5 km");
     expect(loadStartRadius()).toBe(2500);
-    await change(field("Yol tarifi uygulaması"), "yandex");
+    await choose("Yol tarifi uygulaması", "Yandex Haritalar");
     expect(loadMapsApp()).toBe("yandex");
-    await change(field("Yol tarifi uygulaması"), "ask");
+    expect(host.querySelector(".sl-settings-panel")).not.toBeNull();
+    await choose("Yol tarifi uygulaması", "Her seferinde sor");
     expect(localStorage.getItem("smartloo.mapsApp")).toBeNull();
 
     await act(async () => field("Hareketi azalt").click());

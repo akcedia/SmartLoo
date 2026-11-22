@@ -41,8 +41,7 @@
   border-radius: 12px;
   box-shadow: var(--sl-shadow-sm);
 }
-.sl-segmented > button,
-.sl-radius-button {
+.sl-segmented > button {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -59,8 +58,7 @@
   white-space: nowrap;
   transition: background-color 0.15s ease-out, color 0.15s ease-out;
 }
-.sl-segmented > button:hover:not(:disabled):not([aria-pressed="true"]),
-.sl-radius-button:hover { background: var(--sl-surface-hover); color: var(--sl-text); }
+.sl-segmented > button:hover:not(:disabled):not([aria-pressed="true"]) { background: var(--sl-surface-hover); color: var(--sl-text); }
 .sl-segmented > button[aria-pressed="true"] { background: var(--sl-accent2-solid); color: var(--sl-on-accent2); }
 .sl-segmented > button:disabled { opacity: 0.55; cursor: not-allowed; }
 .sl-segmented svg { flex: none; }
@@ -106,9 +104,16 @@
   border: 1px solid var(--sl-accent2-border);
   border-radius: 999px;
 }
+/* Result count: top right on wide screens, bottom left (above the source) on phones. */
 .sl-count {
-  padding: 6px 10px;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1001;
+  margin: 0;
+  padding: 7px 12px;
   font-size: 12.5px;
+  font-weight: 500;
   color: var(--sl-text-muted);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
@@ -118,46 +123,16 @@
   box-shadow: var(--sl-shadow-sm);
 }
 
-/* "1 km ▾" next to Yakınımda */
-.sl-radius { position: relative; display: inline-flex; }
-.sl-radius-button { padding: 0 8px 0 10px; color: var(--sl-text); border-left: 1px solid var(--sl-border); border-radius: 0 9px 9px 0; }
-.sl-radius-chevron { transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
-.sl-radius-button[aria-expanded="true"] .sl-radius-chevron { transform: rotate(180deg); }
-.sl-radius-menu {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: -4px;
-  z-index: 1405;
-  display: grid;
-  gap: 2px;
-  min-width: 120px;
-  padding: 4px;
-  background: var(--sl-surface-raised);
-  border: 1px solid var(--sl-border);
-  border-radius: 12px;
-  box-shadow: var(--sl-shadow-lg);
-  transform-origin: top right;
-  animation: sl-pop 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.sl-radius-menu button {
-  min-height: 38px;
-  padding: 0 12px;
-  font: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  text-align: left;
-  color: var(--sl-text-secondary);
+/* "1 km ▾" next to Yakınımda (shared Dropdown, styled as part of the switch) */
+.sl-segmented .sl-radius-button {
+  min-height: 34px;
+  padding: 0 8px 0 10px;
   background: transparent;
   border: 0;
-  border-radius: 8px;
-  cursor: pointer;
-  font-variant-numeric: tabular-nums;
+  border-left: 1px solid var(--sl-border);
+  border-radius: 0 9px 9px 0;
 }
-.sl-radius-menu button:hover { background: var(--sl-surface-hover); color: var(--sl-text); }
-.sl-radius-menu button[aria-checked="true"] { background: var(--sl-accent2-solid); color: var(--sl-on-accent2); }
-@keyframes sl-pop {
-  from { opacity: 0; transform: translateY(-4px) scale(0.97); }
-}
+.sl-segmented .sl-radius-button:hover { background: var(--sl-surface-hover); }
 
 /* Arrow that folds the filter row on phones (hidden on wide screens). */
 .sl-row-toggle { display: none; }
@@ -321,9 +296,9 @@
 .sl-fab:hover { transform: translateY(-1px); }
 .sl-fab:active { transform: translateY(1px); }
 .sl-fab--ai {
-  color: var(--sl-surface);
-  background: var(--sl-ai);
-  border-color: var(--sl-ai);
+  color: var(--sl-on-ai-fab);
+  background: var(--sl-ai-fab);
+  border-color: #a996f5;
   box-shadow: var(--sl-shadow-md);
 }
 .sl-fab--ai[aria-expanded="true"] { outline: 2px solid var(--sl-ai-border); outline-offset: 2px; }
@@ -413,6 +388,9 @@ path.sl-radius { stroke: var(--sl-accent-solid); stroke-width: 2; fill: var(--sl
 /* ---------- Wide screens: keep controls clear of the detail card ---------- */
 @media (min-width: 768px) {
   .sl-search--detail .sl-top { right: calc(min(360px, 100% - 32px) + 32px); }
+  .sl-search--detail .sl-count { display: none; }
+  /* Keep the count clear of the control rows when they wrap on medium widths. */
+  .sl-top { right: 200px; }
 }
 
 /* ---------- Phones ---------- */
@@ -421,9 +399,19 @@ path.sl-radius { stroke: var(--sl-accent-solid); stroke-width: 2; fill: var(--sl
   .sl-toolbar { flex-direction: column; flex-wrap: nowrap; align-items: flex-start; width: 100%; gap: 8px; }
   .sl-group { flex-wrap: nowrap; }
   .sl-segmented > button,
-  .sl-radius-button { min-height: 40px; padding: 0 11px; }
+  .sl-segmented .sl-radius-button { min-height: 40px; padding: 0 11px; }
   .sl-chip { min-height: 40px; }
-  .sl-count { display: none; }
+  .sl-count {
+    top: auto;
+    right: auto;
+    left: 8px;
+    bottom: calc(56px + env(safe-area-inset-bottom));
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  .sl-search--detail .sl-count,
+  .sl-search--list .sl-count,
+  .sl-search--filters .sl-count { display: none; }
 
   /* Map/List become icons; the words stay for screen readers. */
   .sl-view-switch > button { padding: 0 10px; }
@@ -551,7 +539,6 @@ path.sl-radius { stroke: var(--sl-accent-solid); stroke-width: 2; fill: var(--sl
   .sl-filter-chips,
   .sl-filter-chips .sl-chip,
   .sl-row-toggle svg,
-  .sl-radius-menu,
   .sl-filter-panel,
   .sl-pin svg,
   .sl-fab,

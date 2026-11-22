@@ -17,6 +17,7 @@ import {
   saveStartRadius,
   saveStartView,
 } from "./preferences.js";
+import Dropdown from "../ui/Dropdown.jsx";
 import "./settings.css";
 
 const THEMES = [
@@ -81,9 +82,7 @@ export default function SettingsMenu() {
   const rootRef = useRef(null);
   const buttonRef = useRef(null);
   const panelId = useId();
-  const radiusId = useId();
   const motionId = useId();
-  const mapsId = useId();
 
   // The theme follows the OS while "Sistem" is chosen.
   useEffect(() => {
@@ -159,21 +158,23 @@ export default function SettingsMenu() {
             onChange={(next) => { saveStartView(next); setView(next); }}
           />
           <div className="sl-setting sl-setting--inline">
-            <label htmlFor={radiusId} className="sl-setting-label">{t("Varsayılan yarıçap")}</label>
-            <select
-              id={radiusId}
+            <span className="sl-setting-label" aria-hidden="true">{t("Varsayılan yarıçap")}</span>
+            <Dropdown
+              label={t("Varsayılan yarıçap")}
               value={radius}
-              onChange={(e) => { const next = Number(e.target.value); saveStartRadius(next); setRadius(next); }}
-            >
-              {RADII.map((value) => <option key={value} value={value}>{formatRadius(value)}</option>)}
-            </select>
+              options={RADII.map((value) => ({ value, label: formatRadius(value) }))}
+              onChange={(next) => { saveStartRadius(next); setRadius(next); }}
+            />
           </div>
 
           <div className="sl-setting sl-setting--inline">
-            <label htmlFor={mapsId} className="sl-setting-label">{t("Yol tarifi uygulaması")}</label>
-            <select id={mapsId} value={mapsApp} onChange={(e) => { saveMapsApp(e.target.value); setMapsApp(e.target.value); }}>
-              {MAPS.map(([key, text]) => <option key={key} value={key}>{t(text)}</option>)}
-            </select>
+            <span className="sl-setting-label" aria-hidden="true">{t("Yol tarifi uygulaması")}</span>
+            <Dropdown
+              label={t("Yol tarifi uygulaması")}
+              value={mapsApp}
+              options={MAPS.map(([key, text]) => ({ value: key, label: t(text) }))}
+              onChange={(next) => { saveMapsApp(next); setMapsApp(next); }}
+            />
           </div>
 
           <div className="sl-setting-divider" />

@@ -77,13 +77,13 @@ describe("map page layout", () => {
     const fetchImpl = await render();
     const picker = host.querySelector(".sl-radius-button");
     expect(picker.textContent).toBe("1 km");
-    expect(host.querySelector(".sl-radius-menu")).toBeNull();
+    expect(host.querySelector(".sl-dropdown-menu")).toBeNull();
     await act(async () => picker.click());
-    const options = [...host.querySelectorAll(".sl-radius-menu button")];
+    const options = [...host.querySelectorAll(".sl-dropdown-menu button")];
     expect(options.map((b) => b.textContent)).toEqual(["500 m", "1 km", "2,5 km", "5 km", "10 km"]);
     expect(document.activeElement.textContent).toBe("1 km");
     await act(async () => options[3].click());
-    expect(host.querySelector(".sl-radius-menu")).toBeNull();
+    expect(host.querySelector(".sl-dropdown-menu")).toBeNull();
     expect(picker.textContent).toBe("5 km");
     expect(document.activeElement).toBe(picker);
     expect(host.querySelector('[data-testid="map-mode"]').textContent.startsWith("nearby:")).toBe(true);

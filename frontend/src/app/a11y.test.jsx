@@ -69,6 +69,7 @@ describe.each(["light", "dark"])("colour contrast of the %s theme", (name) => {
     ["pastel green text on surface", "accent2-text", "surface", 4.5],
     ["pastel green text on its soft background", "accent2-text", "accent2-soft", 4.5],
     ["pastel green border (non-text)", "accent2-border", "surface", 3],
+    ["AI button text", "on-ai-fab", "ai-fab", 4.5],
   ])("%s", (_, fg, bg, min) => {
     expect(contrast(t[fg], t[bg])).toBeGreaterThanOrEqual(min);
   });

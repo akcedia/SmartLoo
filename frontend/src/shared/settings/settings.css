@@ -65,17 +65,7 @@
 }
 .sl-setting-choices button:hover:not([aria-checked="true"]) { background: var(--sl-surface-hover); color: var(--sl-text); }
 .sl-setting-choices button[aria-checked="true"] { color: var(--sl-on-accent2); background: var(--sl-accent2-solid); }
-.sl-setting select {
-  min-height: 34px;
-  max-width: 170px;
-  padding: 0 8px;
-  font: inherit;
-  font-size: 13px;
-  color: var(--sl-text);
-  background: var(--sl-surface);
-  border: 1px solid var(--sl-border-strong);
-  border-radius: 8px;
-}
+.sl-setting .sl-dropdown-button { min-width: 96px; }
 .sl-setting-divider { height: 1px; margin: 4px 0 14px; background: var(--sl-border); }
 .sl-settings-note { margin: 2px 0 0; font-size: 11.5px; color: var(--sl-text-muted); }
 
@@ -111,6 +101,5 @@
 }
 @media (pointer: coarse) {
   .sl-settings-button { width: 44px; height: 44px; }
-  .sl-setting-choices button,
-  .sl-setting select { min-height: 42px; }
+  .sl-setting-choices button { min-height: 42px; }
 }
