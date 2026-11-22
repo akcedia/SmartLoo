@@ -10,7 +10,7 @@ from redis.backoff import NoBackoff
 from src.ai_openai import SYSTEM_INSTRUCTIONS, OpenAISummaryProvider
 from src.ai_gemini import GeminiSummaryProvider
 from src.ai_restricted_policy import (
-    POLICY_VERSION, RESTRICTED_PROMPT_VERSION, restricted_preparer,
+    POLICY_VERSION, PROFILE_NAME, RESTRICTED_PROMPT_VERSION, restricted_preparer,
     restricted_summary_instructions, restricted_validator,
 )
 from src.ai_review_adapter import CoordinatedReviewRepository
@@ -23,7 +23,7 @@ async def ai_lifespan(app, *, provider=None, cache=None, profile=None):
     selected = os.getenv("SMARTLOO_AI_PROFILE", "") if profile is None else profile
     async with AsyncExitStack() as resources:
         if selected:
-            if selected != POLICY_VERSION:
+            if selected not in (PROFILE_NAME, POLICY_VERSION):
                 raise ValueError("Unsupported AI profile")
             # This finite grammar is opt-in, never a general Turkish privacy claim.
             if provider is None:
