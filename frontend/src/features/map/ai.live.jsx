@@ -56,7 +56,7 @@ describe("Mounted AI screens with real SQL/Mongo/Redis and synthetic model", () 
     expect(changed.status).toBe(200);
     await mount(<AiSummaryBox toiletId={facility} refreshKey={1} />);
     await waitFor(() => host.textContent.includes("Sabun eksik"));
-  });
+  }, 20000); // Several real writes and two summary reads; each API retains its own deadline.
 
   it("shows real nearby fallback facilities, the explanation, and selected coordinates", async () => {
     const selected = vi.fn();

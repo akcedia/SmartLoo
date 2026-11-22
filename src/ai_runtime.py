@@ -8,6 +8,7 @@ from redis.asyncio.retry import Retry
 from redis.backoff import NoBackoff
 
 from src.ai_openai import SYSTEM_INSTRUCTIONS, OpenAISummaryProvider
+from src.ai_gemini import GeminiSummaryProvider
 from src.ai_restricted_policy import (
     POLICY_VERSION, RESTRICTED_PROMPT_VERSION, restricted_preparer,
     restricted_summary_instructions, restricted_validator,
@@ -26,15 +27,19 @@ async def ai_lifespan(app, *, provider=None, cache=None, profile=None):
                 raise ValueError("Unsupported AI profile")
             # This finite grammar is opt-in, never a general Turkish privacy claim.
             if provider is None:
+                provider_name = os.getenv("SMARTLOO_AI_PROVIDER", "openai")
+                if provider_name not in ("openai", "gemini"):
+                    raise ValueError("Unsupported AI provider")
                 model = os.getenv("SMARTLOO_AI_MODEL", "")
-                key = os.getenv("OPENAI_API_KEY", "")
+                key = os.getenv("GEMINI_API_KEY" if provider_name == "gemini" else "OPENAI_API_KEY", "")
                 if model and key:
                     http = await resources.enter_async_context(httpx.AsyncClient())
-                    provider = OpenAISummaryProvider(
+                    provider_class = GeminiSummaryProvider if provider_name == "gemini" else OpenAISummaryProvider
+                    provider = provider_class(
                         http, api_key=key, model=model,
                         system_instructions=f"{SYSTEM_INSTRUCTIONS}\n\n{restricted_summary_instructions()}",
                     )
-                    identity = f"openai:{provider.model}:{RESTRICTED_PROMPT_VERSION}"
+                    identity = f"{provider_name}:{provider.model}:{RESTRICTED_PROMPT_VERSION}"
             else:
                 # Injected providers are for explicitly composed tests/integrations.
                 identity = "injected-test-provider-v1"
