@@ -79,6 +79,8 @@ def find_ibb_facilities(open_now=False, has_disabled_access=None, has_baby_chang
         if not conn.execute("SELECT EXISTS(SELECT 1 FROM external_import_runs WHERE source='ibb') AS imported").fetchone()["imported"]:
             raise psycopg.OperationalError("IBB source has not been imported")
         coverage = conn.execute("""SELECT count(*) AS total,
+            count(*) FILTER (WHERE status='ACTIVE'
+                AND opening_hours_is_open(opening_hours,now()) IS NOT NULL) AS open_now,
             count(has_disabled_access) AS has_disabled_access,
             count(has_baby_changing) AS has_baby_changing, count(is_free) AS is_free
             FROM toilets WHERE source='ibb'""").fetchone() if with_filter_coverage else None

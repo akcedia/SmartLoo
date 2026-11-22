@@ -158,6 +158,12 @@ export default function SearchPage({ onSwitchToAdmin }) {
   };
 
   const hasLocationPermission = locationStatus === "granted";
+  const openHoursUnavailable = citywide
+    ? filterCoverage?.open_now === 0
+    : toilets.length > 0 && toilets.every(toilet => toilet.is_open_now == null);
+  const filterUnavailable = key => key === "open_now"
+    ? openHoursUnavailable
+    : citywide && filterCoverage?.[key] === 0;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh", fontFamily: "system-ui, sans-serif" }}>
@@ -194,7 +200,7 @@ export default function SearchPage({ onSwitchToAdmin }) {
             <button
               key={key}
               type="button"
-              disabled={citywide && filterCoverage?.[key] === 0 && !filters[key]}
+              disabled={(filterUnavailable(key) || (key === "open_now" && loading)) && !filters[key]}
               aria-pressed={filters[key]}
               onClick={() => toggleFilter(key)}
               style={{
@@ -208,7 +214,7 @@ export default function SearchPage({ onSwitchToAdmin }) {
                 fontSize: "13px",
               }}
             >
-              {label}{citywide && filterCoverage?.[key] === 0 ? " (bilgi yok)" : ""}
+              {label}{filterUnavailable(key) ? " (bilgi yok)" : ""}
             </button>
           ))}
 
@@ -324,7 +330,11 @@ export default function SearchPage({ onSwitchToAdmin }) {
         {citywide && filterCoverage && <p role="status" style={{margin:"8px 0 0", fontSize:"13px", color:"#475569"}}>
           Doğrulanmış bilgi bulunan kayıtlar: Engelli erişimi {filterCoverage.has_disabled_access}/{filterCoverage.total},
           {" "}bebek bakım {filterCoverage.has_baby_changing}/{filterCoverage.total}, ücret {filterCoverage.is_free}/{filterCoverage.total}.
+          {filterCoverage.open_now != null && <> çalışma saati doğrulanmış aktif tesis {filterCoverage.open_now}/{filterCoverage.total}.</>}
           {" "}Bilgisi olmayan filtreler kullanılamaz; bilinmeyen özellikler var veya yok sayılmaz.
+        </p>}
+        {!citywide && !loading && !error && openHoursUnavailable && <p role="status" style={{margin:"8px 0 0", fontSize:"13px", color:"#475569"}}>
+          Bu sonuçlarda çalışma saati bilgisi yok. Şu An Açık filtresi kullanılamıyor; tesisler gösterilmeye devam ediyor.
         </p>}
         {!citywide && locationStatus === "pending" && (
           <div style={{ marginTop: "8px", fontSize: "13px", color: "#1e40af", background: "#eff6ff", padding: "6px 10px", borderRadius: "4px" }}>
