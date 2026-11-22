@@ -59,7 +59,7 @@
   font-variant-numeric: tabular-nums;
 }
 .sl-dropdown-menu button:hover { background: var(--sl-surface-hover); color: var(--sl-text); }
-.sl-dropdown-menu button[aria-checked="true"] { background: var(--sl-accent2-solid); color: var(--sl-on-accent2); box-shadow: inset 0 0 0 1px var(--sl-accent2-border); }
+.sl-dropdown-menu button[aria-checked="true"] { background: var(--sl-accent2-solid); color: var(--sl-on-accent2); }
 @keyframes sl-dropdown-in {
   from { opacity: 0; transform: translateY(-4px) scale(0.97); }
 }
