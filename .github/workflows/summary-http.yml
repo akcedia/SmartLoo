@@ -27,6 +27,10 @@ jobs:
       - run: python -m pip install -r requirements-test.txt
       - run: npm ci
         working-directory: frontend
+      - name: Turkish policy corpus, no model calls or new human acceptance claim
+        run: |
+          python -m pytest tests/test_turkish_ai_acceptance.py -q --junitxml=turkish-offline.xml
+          python scripts/check_turkish_ai_acceptance.py --output turkish-offline.json
       - name: Gemini adapter and provider selection, no live requests
         run: python -m pytest tests/test_gemini_provider.py -q --junitxml=gemini-adapter.xml
       - run: docker compose up -d --wait postgis mongo redis
@@ -40,6 +44,7 @@ jobs:
         run: |
           python scripts/check_required_junit.py summary-http.xml --minimum 31
           python scripts/check_required_junit.py gemini-adapter.xml --minimum 19
+          python scripts/check_required_junit.py turkish-offline.xml --minimum 39
           python scripts/check_required_junit.py ai-ui-live.xml --minimum 4
       - uses: actions/upload-artifact@v4
         if: always()
@@ -48,6 +53,8 @@ jobs:
           path: |
             summary-http.xml
             gemini-adapter.xml
+            turkish-offline.xml
+            turkish-offline.json
             ai-ui-live.xml
           if-no-files-found: error
       - name: Stop test services
