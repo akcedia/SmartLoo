@@ -1,0 +1,78 @@
+/* Directions action inside the facility panel. Theme tokens: shared/theme/theme.css. */
+.sl-directions { margin-top: 14px; }
+
+.sl-directions .sl-directions-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 10px 16px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--sl-on-accent);
+  background: var(--sl-accent-solid);
+  border: 1px solid var(--sl-accent-solid);
+  border-radius: 10px;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), 0 6px 18px var(--sl-accent-glow);
+  transition: background-color 0.15s ease-out, box-shadow 0.15s ease-out, transform 0.1s ease-out;
+}
+.sl-directions .sl-directions-button:hover { background: var(--sl-accent-solid-hover); border-color: var(--sl-accent-solid-hover); }
+.sl-directions-button:active { transform: translateY(1px); }
+.sl-directions-button:focus-visible { outline: 3px solid var(--sl-accent-ring); outline-offset: 2px; }
+.sl-directions-button[aria-expanded="true"] { box-shadow: 0 0 0 4px var(--sl-accent-glow); }
+
+.sl-directions-note,
+.sl-directions-missing { margin: 6px 0 0; font-size: 12px; color: var(--sl-text-muted); }
+
+.sl-directions-menu {
+  margin-top: 8px;
+  padding: 6px;
+  background: var(--sl-surface-raised);
+  border: 1px solid var(--sl-border);
+  border-radius: 12px;
+  box-shadow: var(--sl-shadow-lg);
+  animation: sl-directions-in 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sl-directions-menu-title { margin: 4px 8px 6px; font-size: 12px; font-weight: 600; color: var(--sl-text-muted); }
+.sl-directions-menu ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.sl-directions .sl-directions-menu a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 8px;
+  color: var(--sl-text);
+  font-weight: 600;
+  text-decoration: none;
+}
+.sl-directions .sl-directions-menu a:hover { background: var(--sl-surface-hover); color: var(--sl-accent-text); }
+.sl-directions-menu a:focus-visible,
+.sl-directions-cancel:focus-visible { outline: 3px solid var(--sl-accent-ring); outline-offset: -1px; }
+.sl-directions-cancel {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 4px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--sl-text-secondary);
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--sl-border);
+  border-radius: 0 0 8px 8px;
+  cursor: pointer;
+}
+.sl-directions-cancel:hover { background: var(--sl-surface-hover); }
+
+@keyframes sl-directions-in {
+  from { opacity: 0; transform: translateY(-4px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sl-directions-menu { animation: none; }
+  .sl-directions-button { transition: none; }
+}
