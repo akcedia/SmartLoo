@@ -167,9 +167,9 @@ export default function SearchPage({ onSwitchToAdmin }) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh", fontFamily: "system-ui, sans-serif" }}>
-      <header style={{ padding: "12px 16px", background: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}>
+      <header style={{ padding: "12px 16px", background: "var(--sl-surface-sunken)", borderBottom: "1px solid var(--sl-border)" }}>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center" }}>
-          <strong style={{ fontSize: "18px", color: "#0f172a" }}>SmartLoo</strong>
+          <strong style={{ fontSize: "18px", color: "var(--sl-text)" }}>SmartLoo</strong>
           <button type="button" aria-pressed={citywide} onClick={() => { setCitywide(true); setPendingCenter(null); }}>
             İstanbul’daki İBB tesisleri
           </button>
@@ -181,7 +181,7 @@ export default function SearchPage({ onSwitchToAdmin }) {
               aria-label="Arama yarıçapı"
               value={radius}
               onChange={(e) => { setRadius(Number(e.target.value)); setCitywide(false); }}
-              style={{ padding: "5px 8px", borderRadius: "6px", border: "1px solid #cbd5e1" }}
+              style={{ padding: "5px 8px", borderRadius: "6px", border: "1px solid var(--sl-border-strong)" }}
             >
               <option value={250}>250 m</option>
               <option value={500}>500 m</option>
@@ -206,9 +206,9 @@ export default function SearchPage({ onSwitchToAdmin }) {
               style={{
                 padding: "6px 11px",
                 borderRadius: "6px",
-                border: "1px solid #cbd5e1",
-                background: filters[key] ? "#2563eb" : "#ffffff",
-                color: filters[key] ? "#ffffff" : "#1e293b",
+                border: "1px solid var(--sl-border-strong)",
+                background: filters[key] ? "var(--sl-accent-solid)" : "var(--sl-surface)",
+                color: filters[key] ? "var(--sl-on-accent)" : "var(--sl-text-secondary)",
                 cursor: "pointer",
                 fontWeight: filters[key] ? "600" : "400",
                 fontSize: "13px",
@@ -218,7 +218,7 @@ export default function SearchPage({ onSwitchToAdmin }) {
             </button>
           ))}
 
-          <div role="group" aria-label="Ücret filtresi" style={{ display: "inline-flex", borderRadius: "6px", overflow: "hidden", border: "1px solid #cbd5e1" }}>
+          <div role="group" aria-label="Ücret filtresi" style={{ display: "inline-flex", borderRadius: "6px", overflow: "hidden", border: "1px solid var(--sl-border-strong)" }}>
             {[
               { value: "all", label: "Tümü" },
               { value: "free", label: "Ücretsiz" },
@@ -233,9 +233,9 @@ export default function SearchPage({ onSwitchToAdmin }) {
                 style={{
                   padding: "6px 10px",
                   border: "none",
-                  borderRight: value !== "paid" ? "1px solid #cbd5e1" : "none",
-                  background: filters.pricing === value ? "#2563eb" : "#ffffff",
-                  color: filters.pricing === value ? "#ffffff" : "#1e293b",
+                  borderRight: value !== "paid" ? "1px solid var(--sl-border-strong)" : "none",
+                  background: filters.pricing === value ? "var(--sl-accent-solid)" : "var(--sl-surface)",
+                  color: filters.pricing === value ? "var(--sl-on-accent)" : "var(--sl-text-secondary)",
                   cursor: "pointer",
                   fontWeight: filters.pricing === value ? "600" : "400",
                   fontSize: "13px",
@@ -252,9 +252,9 @@ export default function SearchPage({ onSwitchToAdmin }) {
             style={{
               padding: "6px 10px",
               borderRadius: "6px",
-              border: "1px solid #94a3b8",
-              background: "#e2e8f0",
-              color: "#334155",
+              border: "1px solid var(--sl-border-strong)",
+              background: "var(--sl-border)",
+              color: "var(--sl-text-secondary)",
               cursor: "pointer",
               fontSize: "13px",
             }}
@@ -269,9 +269,9 @@ export default function SearchPage({ onSwitchToAdmin }) {
             style={{
               padding: "6px 10px",
               borderRadius: "6px",
-              border: "1px solid #7c3aed",
-              background: showRecommendations ? "#7c3aed" : "#f5f3ff",
-              color: showRecommendations ? "#ffffff" : "#5b21b6",
+              border: "1px solid var(--sl-ai)",
+              background: showRecommendations ? "var(--sl-ai)" : "var(--sl-ai-soft)",
+              color: showRecommendations ? "var(--sl-surface)" : "var(--sl-ai)",
               cursor: "pointer",
               fontWeight: "600",
               fontSize: "13px",
@@ -287,9 +287,9 @@ export default function SearchPage({ onSwitchToAdmin }) {
               style={{
                 padding: "6px 10px",
                 borderRadius: "6px",
-                border: "1px solid #0284c7",
-                background: "#e0f2fe",
-                color: "#0369a1",
+                border: "1px solid var(--sl-accent-solid)",
+                background: "var(--sl-accent-soft)",
+                color: "var(--sl-accent-text)",
                 cursor: "pointer",
                 fontSize: "13px",
               }}
@@ -298,7 +298,7 @@ export default function SearchPage({ onSwitchToAdmin }) {
             </button>
           )}
 
-          <span style={{ marginLeft: "auto", fontSize: "13px", color: "#475569" }}>
+          <span style={{ marginLeft: "auto", fontSize: "13px", color: "var(--sl-text-muted)" }}>
             {citywide ? "İstanbul geneli · " : `Yarıçap: ${radius} m · Merkez: ${searchCenter.lat.toFixed(3)}, ${searchCenter.lon.toFixed(3)} · `}
             {loading ? "Yükleniyor..." : `${toilets.length} ${citywide ? "İBB kaydı" : "tesis"}`}
           </span>
@@ -310,9 +310,9 @@ export default function SearchPage({ onSwitchToAdmin }) {
               style={{
                 padding: "6px 10px",
                 borderRadius: "6px",
-                border: "1px solid #0f172a",
-                background: "#0f172a",
-                color: "#ffffff",
+                border: "1px solid var(--sl-accent-solid)",
+                background: "var(--sl-accent-solid)",
+                color: "var(--sl-on-accent)",
                 cursor: "pointer",
                 fontSize: "13px",
               }}
@@ -327,34 +327,34 @@ export default function SearchPage({ onSwitchToAdmin }) {
           {" · "}<a href="https://data.ibb.gov.tr/license" target="_blank" rel="noreferrer">İBB Açık Veri Lisansı</a>
           {" · Açılış saati, ücret ve olanaklar kaynakta yoksa bilinmiyor gösterilir."}
         </p>
-        {citywide && filterCoverage && <p role="status" style={{margin:"8px 0 0", fontSize:"13px", color:"#475569"}}>
+        {citywide && filterCoverage && <p role="status" style={{margin:"8px 0 0", fontSize:"13px", color:"var(--sl-text-muted)"}}>
           Doğrulanmış bilgi bulunan kayıtlar: Engelli erişimi {filterCoverage.has_disabled_access}/{filterCoverage.total},
           {" "}bebek bakım {filterCoverage.has_baby_changing}/{filterCoverage.total}, ücret {filterCoverage.is_free}/{filterCoverage.total}.
           {filterCoverage.open_now != null && <> çalışma saati doğrulanmış aktif tesis {filterCoverage.open_now}/{filterCoverage.total}.</>}
           {" "}Bilgisi olmayan filtreler kullanılamaz; bilinmeyen özellikler var veya yok sayılmaz.
         </p>}
-        {!citywide && !loading && !error && openHoursUnavailable && <p role="status" style={{margin:"8px 0 0", fontSize:"13px", color:"#475569"}}>
+        {!citywide && !loading && !error && openHoursUnavailable && <p role="status" style={{margin:"8px 0 0", fontSize:"13px", color:"var(--sl-text-muted)"}}>
           Bu sonuçlarda çalışma saati bilgisi yok. Şu An Açık filtresi kullanılamıyor; tesisler gösterilmeye devam ediyor.
         </p>}
         {!citywide && locationStatus === "pending" && (
-          <div style={{ marginTop: "8px", fontSize: "13px", color: "#1e40af", background: "#eff6ff", padding: "6px 10px", borderRadius: "4px" }}>
+          <div style={{ marginTop: "8px", fontSize: "13px", color: "var(--sl-accent-text)", background: "var(--sl-accent-soft)", padding: "6px 10px", borderRadius: "4px" }}>
             Konum izni bekleniyor... Şimdilik varsayılan merkez (41.0, 29.0) gösteriliyor.
           </div>
         )}
 
         {!citywide && locationStatus === "denied" && (
-          <div style={{ marginTop: "8px", fontSize: "13px", color: "#92400e", background: "#fef3c7", padding: "6px 10px", borderRadius: "4px" }}>
+          <div style={{ marginTop: "8px", fontSize: "13px", color: "var(--sl-warn)", background: "var(--sl-warn-soft)", padding: "6px 10px", borderRadius: "4px" }}>
             Konum izni reddedildi. Varsayılan veya seçilen harita merkezi kullanılıyor; kullanıcı mesafesi gösterilmez.
           </div>
         )}
 
         {error && (
-          <div style={{ marginTop: "8px", fontSize: "13px", color: "#991b1b", background: "#fee2e2", padding: "6px 10px", borderRadius: "4px", display: "flex", alignItems: "center", gap: "10px" }}>
+          <div style={{ marginTop: "8px", fontSize: "13px", color: "var(--sl-danger)", background: "var(--sl-danger-soft)", padding: "6px 10px", borderRadius: "4px", display: "flex", alignItems: "center", gap: "10px" }}>
             <span>{error}</span>
             <button
               type="button"
               onClick={() => setRetryToken((c) => c + 1)}
-              style={{ padding: "3px 10px", borderRadius: "4px", border: "1px solid #991b1b", background: "#ffffff", color: "#991b1b", cursor: "pointer", fontSize: "12px", fontWeight: "600" }}
+              style={{ padding: "3px 10px", borderRadius: "4px", border: "1px solid var(--sl-danger)", background: "var(--sl-surface)", color: "var(--sl-danger)", cursor: "pointer", fontSize: "12px", fontWeight: "600" }}
             >
               Yeniden Dene
             </button>
@@ -362,7 +362,7 @@ export default function SearchPage({ onSwitchToAdmin }) {
         )}
 
         {!loading && !error && toilets.length === 0 && (
-          <div style={{ marginTop: "8px", fontSize: "13px", color: "#1e40af", background: "#dbeafe", padding: "6px 10px", borderRadius: "4px" }}>
+          <div style={{ marginTop: "8px", fontSize: "13px", color: "var(--sl-accent-text)", background: "var(--sl-accent-soft)", padding: "6px 10px", borderRadius: "4px" }}>
             {citywide ? "Seçili filtrelere uygun İBB kaydı bulunamadı. Filtreleri temizlemeyi deneyin." : "Bu bölgede seçili kriterlere uygun tuvalet bulunamadı. Yarıçapı artırmayı, haritayı kaydırmayı veya filtreleri temizlemeyi deneyin."}
           </div>
         )}

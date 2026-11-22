@@ -21,6 +21,7 @@ Start the FastAPI backend on port 8000 for live data (see the root README). Set
 |---|---|---|
 | `src/main.jsx`, `src/app/` | Entry, routes (`/`, `/sign-in`, `/register`, `/account`, `/admin`), header, account menu | Onur (with Furkan) |
 | `src/shared/http/apiClient.js` | Shared HTTP client: Bearer token, `ApiError`, FastAPI 422 field errors, one 401 handler | Onur |
+| `src/shared/theme/` | Light/dark theme tokens and the header theme switch ([rules](../docs/design/ui-theme.md)) | Onur |
 | `src/shared/session/` | `SessionProvider` / `useSession()`: sign-in, register, sign-out, 60-minute expiry | Onur |
 | `src/features/auth/` | Sign In, Register, Account screens and the `RequireRole` screen gate (FR-08) | Onur |
 | `src/features/admin/` | Admin analytics and export (FR-06, FR-07) | Onur |
