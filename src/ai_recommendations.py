@@ -7,10 +7,108 @@ No weights are asserted as an approved requirement. Unknown values stay unknown.
 """
 
 import asyncio
+import json
 from copy import deepcopy
+from itertools import combinations
 from math import isfinite
 
 AMENITIES = frozenset({"has_disabled_access", "has_baby_changing", "is_free"})
+REASON_CLAIMS = {
+    "free": ("is_free", True, "ücretsiz"),
+    "paid": ("is_free", False, "ücretli"),
+    "accessible": ("has_disabled_access", True, "engelli erişimine uygun"),
+    "baby_changing": ("has_baby_changing", True, "bebek bakım ünitesine sahip"),
+}
+REASON_INSTRUCTIONS = (
+    "SmartLoo için yalnız verilen adayları açıkla. Her candidate_ref tam bir kez "
+    "bulunmalı. Her aday için allowed_claims içinden bir veya daha fazla kod seç. "
+    "Kodları free, paid, accessible, baby_changing sırasına göre yaz. "
+    "Cümle 'Tesis ' ile başlasın ve kesinlikle tek noktayla bitsin. Kodların "
+    "karşılıkları sırasıyla 'ücretsiz', 'ücretli', 'engelli erişimine uygun', "
+    "'bebek bakım ünitesine sahip'. İki karşılığı ' ve ' ile birleştir. "
+    "Üç karşılıkta ilk ikisinin arasına ', ', sonuncudan önce ' ve ' koy. "
+    "Verilmeyen özellik veya kişisel bilgi ekleme. Yalnız JSON şemasını döndür."
+)
+
+
+def _allowed_claims(facts):
+    return [code for code, (field, value, _) in REASON_CLAIMS.items()
+            if facts.get(field) is value]
+
+
+def _claim_sentence(claims):
+    clauses = [REASON_CLAIMS[code][2] for code in claims]
+    if len(clauses) == 1:
+        return f"Tesis {clauses[0]}."
+    return f"Tesis {', '.join(clauses[:-1])} ve {clauses[-1]}."
+
+
+def recommendation_reason_payload(evidence):
+    if not 1 <= len(evidence) <= 3:
+        raise ValueError("invalid_reason_candidate_count")
+    payload = {}
+    for index, facts in enumerate(evidence, 1):
+        ref = f"c{index}"
+        if facts.get("candidate_ref") != ref:
+            raise ValueError("invalid_reason_candidate_ref")
+        claims = _allowed_claims(facts)
+        if not claims:
+            raise ValueError("reason_candidate_without_verified_facts")
+        payload[ref] = claims
+    return payload
+
+
+def recommendation_reason_schema(payload):
+    return {
+        "type": "object", "additionalProperties": False,
+        "properties": {"recommendations": {
+            "type": "array", "minItems": len(payload), "maxItems": len(payload),
+            "items": {"type": "object", "additionalProperties": False,
+                      "properties": {
+                          "candidate_ref": {"type": "string", "enum": list(payload)},
+                          "claims": {"type": "array", "minItems": 1, "maxItems": 3,
+                                     "items": {"type": "string", "enum": list(REASON_CLAIMS)}},
+                          "reason": {"type": "string"}},
+                      "required": ["candidate_ref", "claims", "reason"]},
+        }},
+        "required": ["recommendations"],
+    }
+
+
+def _unique_fields(pairs):
+    fields = dict(pairs)
+    if len(fields) != len(pairs):
+        raise ValueError("duplicate_reason_field")
+    return fields
+
+
+def parse_recommendation_reasons(text, payload):
+    response = json.loads(text, object_pairs_hook=_unique_fields)
+    if not isinstance(response, dict) or set(response) != {"recommendations"}:
+        raise ValueError("invalid_reason_response")
+    rows = response["recommendations"]
+    if not isinstance(rows, list) or len(rows) != len(payload):
+        raise ValueError("invalid_reason_result_count")
+    reasons = {}
+    for row in rows:
+        if not isinstance(row, dict) or set(row) != {"candidate_ref", "claims", "reason"}:
+            raise ValueError("invalid_reason_fields")
+        ref, claims, reason = row["candidate_ref"], row["claims"], row["reason"]
+        if not isinstance(ref, str) or ref not in payload or ref in reasons:
+            raise ValueError("invalid_reason_ref")
+        if not isinstance(claims, list) or not claims:
+            raise ValueError("invalid_reason_claims")
+        canonical = [code for code in payload[ref] if code in claims]
+        if claims != canonical or reason != _claim_sentence(canonical):
+            raise ValueError("unsupported_reason_claims_or_sentence")
+        reasons[ref] = reason
+    return reasons
+
+
+async def validate_recommendation_reason(reason, facts):
+    claims = _allowed_claims(facts)
+    return any(reason == _claim_sentence(group)
+               for size in range(1, len(claims) + 1) for group in combinations(claims, size))
 
 
 def select_candidates(candidates, preferences):
