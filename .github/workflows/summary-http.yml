@@ -39,7 +39,7 @@ jobs:
         if: always()
         run: |
           python scripts/check_required_junit.py summary-http.xml --minimum 31
-          python scripts/check_required_junit.py gemini-adapter.xml --minimum 17
+          python scripts/check_required_junit.py gemini-adapter.xml --minimum 19
           python scripts/check_required_junit.py ai-ui-live.xml --minimum 4
       - uses: actions/upload-artifact@v4
         if: always()

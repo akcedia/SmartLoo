@@ -44,7 +44,9 @@ not evidence of an accurate summary.
    `python scripts/check_gemini_pilot.py --confirm-free-tier` performs at most
    one native-provider request using three fixed synthetic comments. It validates
    the schema and existing restricted policy and saves ignored
-   `.venv/gemini-pilot.json`. It refuses to overwrite an earlier result. Only use
+   `.venv/gemini-pilot.json`. It refuses to overwrite an earlier result. A second
+   manually selected `--attempt 2` writes `.venv/gemini-pilot-2.json` instead;
+   neither attempt retries automatically. Only use
    the confirmation flag after checking that the project is actually on Free.
    This provider-only pilot does not claim end-to-end HTTP or academic acceptance.
 
@@ -66,3 +68,31 @@ HTTP only; they cannot establish live model compatibility or free quota access.
 No Gemini key, live request, paid resource or real user comment was used during
 implementation. Codex prepared the adapter and tests at Özgür's request; human
 review and GitHub updates remain pending.
+
+### First live pilot after private setup
+
+After Özgür saved the key locally and confirmed the AI Studio Free tier,
+one generation request with three fixed synthetic comments was made. It hit
+the existing eight-second provider deadline (`gemini_timeout`); no validated
+summary was received. There was no automatic retry or paid-provider fallback.
+The original ignored `.venv/gemini-pilot.json` is preserved.
+
+A subsequent metadata-only GET (no generation) returned HTTP 200 in 0.657
+seconds and advertised `generateContent` support. This verifies metadata access
+through this connection, not successful generation, quota entitlement, Turkish
+accuracy or consistent latency. No production deadline was relaxed.
+
+A second controlled manual generation with the same synthetic comments and
+eight-second limit returned a valid output: summary/pros `Temiz.`, no cons,
+`recommended`, cleanliness `positive` and all other categories `unknown`.
+It passed the shared schema and restricted Turkish grounding validator. This
+does not establish the cause of the first timeout or reliable latency.
+
+The [redacted pilot result](../testing/evidence/ai/gemini-free-pilot-2026-11-22.json)
+records both attempts. Two additional offline guards verify that existing
+attempt reports cannot be overwritten and prevent another client/request before
+even reading credentials. The prepared CI gate now requires 19 adapter/pilot
+guard tests with zero failures/errors/skips.
+
+The running application has not been enabled with the real Gemini key; broad
+human-labelled Turkish/privacy and end-to-end live HTTP acceptance remain open.

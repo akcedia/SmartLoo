@@ -65,3 +65,20 @@ port 5082, account, 432 facilities and reviews were not replaced or reset.
 Codex prepared the merge resolution, Gemini adapter, tests and local runners at
 Özgür's request. GitHub changes, review, CI on this new commit, merge, teacher
 approval and Learn submission remain separate and pending.
+
+## Subsequent free-tier pilot
+
+Özgür subsequently saved the key privately and confirmed Free tier in AI Studio.
+Two controlled manual native-provider requests used only the same three
+synthetic `Temizdi.` comments: the first timed out at eight seconds; the second
+returned `Temiz.` and passed schema/restricted-policy validation. Both records
+were retained; no automatic retry or paid-provider fallback occurred. The
+intervening metadata-only GET returned HTTP 200 in 0.657 seconds, separately
+from generation. See the [redacted live result](evidence/ai/gemini-free-pilot-2026-11-22.json).
+
+The adapter/pilot guard suite now has **19 passed**, zero failures/errors/skips.
+The two new guards prevent overwriting either existing attempt or making another
+request before the report is checked. CI's prepared gate was raised to 19.
+The real key remains ignored; the Docker site was not changed. A single accepted
+synthetic output is not broad privacy/language, end-to-end live HTTP, performance
+or instructor acceptance.

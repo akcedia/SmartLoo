@@ -125,3 +125,18 @@ def test_missing_gemini_key_does_not_fall_back_to_openai(monkeypatch):
         with TestClient(app):
             assert app.state.summary_service is None
         openai.assert_not_called()
+
+
+@pytest.mark.parametrize("attempt", [1, 2])
+def test_pilot_preserves_existing_attempt_without_reading_key_or_calling_network(tmp_path, monkeypatch, attempt):
+    from scripts import check_gemini_pilot as pilot
+    monkeypatch.setattr(pilot, "ROOT", tmp_path)
+    folder = tmp_path / '.venv'
+    folder.mkdir()
+    report = folder / ('gemini-pilot.json' if attempt == 1 else 'gemini-pilot-2.json')
+    report.write_text('preserved evidence', encoding='utf-8')
+    with patch('httpx.AsyncClient') as client:
+        with pytest.raises(SystemExit, match='already exists'):
+            asyncio.run(pilot.check(attempt))
+        client.assert_not_called()
+    assert report.read_text(encoding='utf-8') == 'preserved evidence'
