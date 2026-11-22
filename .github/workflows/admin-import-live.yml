@@ -1,0 +1,81 @@
+name: Admin import live integration
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  admin-import-live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SMARTLOO_TEST_POSTGIS: '1'
+      SMARTLOO_TEST_MONGO: '1'
+      SMARTLOO_DB_HOST: 127.0.0.1
+      SMARTLOO_MONGO_URL: mongodb://127.0.0.1:27017
+      SMARTLOO_MAP_JUNIT: ${{ github.workspace }}/admin-import-live.xml
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Detect the mounted import suite
+        id: detect
+        env:
+          PREVIOUS: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          config=frontend/vitest.import-live.config.js
+          suite=frontend/src/features/admin/import/adminImport.live.jsx
+          required=false
+          for path in "$config" "$suite"; do
+            if test -f "$path" || git cat-file -e "$PREVIOUS:$path" 2>/dev/null; then
+              required=true
+            fi
+          done
+          echo "required=$required" >> "$GITHUB_OUTPUT"
+          if [ "$required" = false ]; then
+            echo 'Mounted import suite is not present yet; no import-test result was produced.'
+            exit 0
+          fi
+          test -f "$config"
+          test -f "$suite"
+      - uses: actions/setup-python@v5
+        if: steps.detect.outputs.required == 'true'
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@v4
+        if: steps.detect.outputs.required == 'true'
+        with:
+          node-version: '24'
+      - name: Install Python dependencies
+        if: steps.detect.outputs.required == 'true'
+        run: python -m pip install -r requirements-test.txt
+      - name: Install frontend dependencies
+        if: steps.detect.outputs.required == 'true'
+        run: npm ci
+        working-directory: frontend
+      - name: Start isolated services
+        if: steps.detect.outputs.required == 'true'
+        run: docker compose up -d --wait postgis mongo
+      - name: Apply database migrations
+        if: steps.detect.outputs.required == 'true'
+        run: docker compose exec -T postgis sh /db/scripts/migrate.sh
+      - name: Run mounted ADMIN CSV and JSON import against actual services
+        if: steps.detect.outputs.required == 'true'
+        run: python scripts/check_map_reviews_live.py --suite import
+      - name: Reject missing, failed or skipped evidence
+        if: always() && steps.detect.outputs.required == 'true'
+        run: python scripts/check_required_junit.py admin-import-live.xml --minimum 1
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.detect.outputs.required == 'true'
+        with:
+          name: admin-import-live
+          path: admin-import-live.xml
+          if-no-files-found: error
+      - name: Stop test services
+        if: always() && steps.detect.outputs.required == 'true'
+        run: docker compose down -v

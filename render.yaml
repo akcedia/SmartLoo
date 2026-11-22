@@ -1,0 +1,36 @@
+# Local preparation only. Select a reviewed branch before creating the service.
+services:
+  - type: web
+    name: smartloo-school
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./docker/Dockerfile.cloud
+    dockerContext: .
+    autoDeployTrigger: "off"
+    healthCheckPath: /healthz
+    envVars:
+      - key: SMARTLOO_DB_HOST
+        sync: false
+      - key: SMARTLOO_DB_PORT
+        value: "5432"
+      - key: SMARTLOO_DB_NAME
+        sync: false
+      - key: SMARTLOO_DB_USER
+        sync: false
+      - key: SMARTLOO_DB_PASSWORD
+        sync: false
+      - key: PGSSLMODE
+        value: verify-full
+      - key: PGSSLROOTCERT
+        value: /etc/ssl/certs/ca-certificates.crt
+      - key: PGCHANNELBINDING
+        value: require
+      - key: SMARTLOO_MONGO_URL
+        sync: false
+      - key: SMARTLOO_MONGO_DB
+        value: smartloo
+      - key: SMARTLOO_REDIS_URL
+        sync: false
+      - key: SMARTLOO_JWT_SECRET
+        generateValue: true
