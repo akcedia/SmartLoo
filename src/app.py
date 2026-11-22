@@ -14,6 +14,8 @@ from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.responses import JSONResponse
 
 from src.accounts import router as accounts_router
+from src.suggestions import PostgresSuggestions, RepositorySuggestions
+from src.suggestions import router as suggestions_router
 from src.auth import PostgresAccounts, RepositoryAccounts, current_user, require_admin
 from src.auth import router as auth_router
 from src.nearby_store import find_nearby, find_toilet, find_ibb_facilities
@@ -49,6 +51,9 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
     app.include_router(auth_router)
     app.include_router(reviews_router)
     app.include_router(accounts_router)
+    app.state.suggestions = (RepositorySuggestions(app.state.repository) if state is not None
+                             else PostgresSuggestions())
+    app.include_router(suggestions_router)
     app.include_router(import_router)
     app.state.analytics_read_facilities = (
         (lambda district: analytics_store.repository_facilities(app.state.repository, district))
@@ -133,11 +138,8 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
         ("/api/v1/toilets/{toilet_id}/summary", ["GET"]),
         ("/api/v1/recommendations", ["GET"]),
     ]
-    signed_in = [
-        ("/api/v1/toilets/suggest", ["POST"]),
-    ]
+    signed_in = []
     admin = [
-        ("/api/v1/admin/suggestions/{suggestion_id}", ["PATCH"]),
         ("/api/v1/admin/toilets/{toilet_id}", ["PATCH"]),
     ]
     for routes, guard in ((public, []), (signed_in, [Depends(current_user)]),
