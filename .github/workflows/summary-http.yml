@@ -33,17 +33,20 @@ jobs:
           python scripts/check_turkish_ai_acceptance.py --output turkish-offline.json
       - name: Gemini adapter and provider selection, no live requests
         run: python -m pytest tests/test_gemini_provider.py -q --junitxml=gemini-adapter.xml
+      - name: Grounded recommendation component, no live requests
+        run: python -m pytest tests/test_ai_recommendations.py -q --junitxml=recommendation-component.xml
       - run: docker compose up -d --wait postgis mongo redis
       - run: docker compose exec -T postgis sh /db/scripts/migrate.sh
       - name: Real stores and HTTP, synthetic provider only
-        run: python -m pytest tests/test_summary_http.py tests/test_recommendation_http.py -q --junitxml=summary-http.xml
+        run: python -m pytest tests/test_summary_http.py tests/test_recommendation_http.py tests/test_recommendation_wiring.py -q --junitxml=summary-http.xml
       - name: Mounted summary and real nearby recommendation UI
         run: python scripts/check_map_reviews_live.py --suite ai
       - name: Reject missing, failed or skipped evidence
         if: always()
         run: |
-          python scripts/check_required_junit.py summary-http.xml --minimum 31
+          python scripts/check_required_junit.py summary-http.xml --minimum 41
           python scripts/check_required_junit.py gemini-adapter.xml --minimum 19
+          python scripts/check_required_junit.py recommendation-component.xml --minimum 14
           python scripts/check_required_junit.py turkish-offline.xml --minimum 39
           python scripts/check_required_junit.py ai-ui-live.xml --minimum 4
       - uses: actions/upload-artifact@v4
@@ -53,6 +56,7 @@ jobs:
           path: |
             summary-http.xml
             gemini-adapter.xml
+            recommendation-component.xml
             turkish-offline.xml
             turkish-offline.json
             ai-ui-live.xml

@@ -29,9 +29,10 @@ from src.admin_import import PostgresAdminImport, RepositoryAdminImport, router 
 
 
 def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None,
-               ai_cache=None, ai_profile=None):
+               ai_cache=None, ai_profile=None, ai_reason_provider=None):
     def lifespan(app):
-        return ai_lifespan(app, provider=ai_provider, cache=ai_cache, profile=ai_profile)
+        return ai_lifespan(app, provider=ai_provider, cache=ai_cache, profile=ai_profile,
+                           reason_provider=ai_reason_provider)
     app = FastAPI(title="SmartLoo requirements-stage API", lifespan=lifespan)
     app.state.repository = deepcopy(state or {})
     app.state.ai_provider = ai_provider
