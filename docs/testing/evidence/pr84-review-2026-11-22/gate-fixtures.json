@@ -1,0 +1,87 @@
+{
+  "pr": 84,
+  "source_sha": "4273a1a493a30de21420395a458d9b735afbfbd0",
+  "detector_cases": 7,
+  "junit_cases": 7,
+  "all_passed": true,
+  "actual_mounted_import_run": false,
+  "cases": [
+    {
+      "case": "suite_not_introduced",
+      "passed": true,
+      "exit_code": 0,
+      "required": "false"
+    },
+    {
+      "case": "suite_introduced",
+      "passed": true,
+      "exit_code": 0,
+      "required": "true"
+    },
+    {
+      "case": "only_config",
+      "passed": true,
+      "exit_code": 1,
+      "required": "true"
+    },
+    {
+      "case": "only_test",
+      "passed": true,
+      "exit_code": 1,
+      "required": "true"
+    },
+    {
+      "case": "both_removed_after_introduction",
+      "passed": true,
+      "exit_code": 1,
+      "required": "true"
+    },
+    {
+      "case": "config_removed",
+      "passed": true,
+      "exit_code": 1,
+      "required": "true"
+    },
+    {
+      "case": "both_retained",
+      "passed": true,
+      "exit_code": 0,
+      "required": "true"
+    },
+    {
+      "case": "junit_one_pass",
+      "passed": true,
+      "accepted": true
+    },
+    {
+      "case": "junit_empty",
+      "passed": true,
+      "accepted": false
+    },
+    {
+      "case": "junit_failure",
+      "passed": true,
+      "accepted": false
+    },
+    {
+      "case": "junit_error",
+      "passed": true,
+      "accepted": false
+    },
+    {
+      "case": "junit_skip",
+      "passed": true,
+      "accepted": false
+    },
+    {
+      "case": "junit_malformed",
+      "passed": true,
+      "accepted": false
+    },
+    {
+      "case": "junit_missing",
+      "passed": true,
+      "accepted": false
+    }
+  ]
+}
