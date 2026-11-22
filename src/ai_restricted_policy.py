@@ -14,7 +14,8 @@ import unicodedata
 from src.ai_evidence import EvidencePreparer
 from src.ai_output import SummaryOutputValidator, validate_summary_schema
 
-POLICY_VERSION = "restricted-tr-evidence-v1"
+PROFILE_NAME = "restricted-tr-evidence-v1"
+POLICY_VERSION = "restricted-tr-evidence-v2"
 FACETS = ("cleanliness", "odor", "soap", "paper", "water", "accessibility", "lighting")
 GROUPS = {"cleanliness": ("cleanliness",), "odor": ("odor",),
           "supplies": ("soap", "paper", "water"),
@@ -23,12 +24,12 @@ GROUPS = {"cleanliness": ("cleanliness",), "odor": ("odor",),
 # Whole-clause matches only. In particular, 'temiz' is never a substring rule.
 CLAUSES = {}
 for facet, state, phrases in (
-    ("cleanliness", "positive", ("temiz", "temizdi", "genel olarak temiz", "genel olarak temizdi")),
+    ("cleanliness", "positive", ("temiz", "temizdi", "genel olarak temiz", "genel olarak temizdi", "içerisi gayet temizdi")),
     ("cleanliness", "negative", ("kirli", "kirliydi", "temiz değil", "temiz değildi")),
     ("odor", "positive", ("koku yok", "koku yoktu", "kötü koku yok", "kötü koku yoktu")),
     ("odor", "negative", ("kötü koku var", "kötü koku vardı", "kötü kokuyordu")),
     ("soap", "positive", ("sabun var", "sabun vardı")),
-    ("soap", "negative", ("sabun yok", "sabun yoktu", "sabun eksik", "sabun eksikti")),
+    ("soap", "negative", ("sabun yok", "sabun yoktu", "sabun eksik", "sabun eksikti", "lavaboda sabun kalmamıştı")),
     ("paper", "positive", ("tuvalet kâğıdı var", "tuvalet kâğıdı vardı")),
     ("paper", "negative", ("tuvalet kâğıdı yok", "tuvalet kâğıdı yoktu", "tuvalet kâğıdı eksik")),
     ("water", "positive", ("su var", "su vardı")),
@@ -36,7 +37,7 @@ for facet, state, phrases in (
     ("accessibility", "positive", ("engelli erişimi vardı", "engelli erişimi var")),
     ("accessibility", "negative", ("engelli erişimi yoktu", "engelli erişimi yok")),
     ("lighting", "positive", ("aydınlatma iyiydi", "aydınlatma iyi")),
-    ("lighting", "negative", ("aydınlatma yetersizdi", "aydınlatma yetersiz")),
+    ("lighting", "negative", ("aydınlatma yetersizdi", "aydınlatma yetersiz", "içerisi karanlıktı")),
 ):
     for phrase in phrases:
         CLAUSES[phrase] = (facet, state)
@@ -52,7 +53,7 @@ PHRASES = {
     "lighting": {"positive": "Aydınlatma olumlu bildiriliyor", "negative": "Aydınlatma yetersiz bildiriliyor", "mixed": "Aydınlatma hakkında çelişkili yorumlar var"},
 }
 
-RESTRICTED_PROMPT_VERSION = "restricted-prompt-v2"
+RESTRICTED_PROMPT_VERSION = "restricted-prompt-v3"
 
 
 def restricted_summary_instructions():

@@ -75,6 +75,24 @@ class SummaryServiceTests(unittest.IsolatedAsyncioTestCase):
         await self.service.summarize("A")
         self.assertEqual(self.provider.await_count, 2)
 
+    async def test_policy_change_regenerates_with_same_review_revision(self):
+        previous = await self.service.summarize("A")
+        new_provider = AsyncMock(return_value={"summary": "Temiz."})
+        updated_service = SummaryService(
+            self.repo, self.cache, new_provider, prepare_evidence=self.prepare,
+            validate_output=self.validator, policy_version="test-only-v2",
+            publish_current=sequential_publication(self.repo.snapshot),
+        )
+
+        refreshed = await updated_service.summarize("A")
+        self.assertNotEqual(previous["summary"], refreshed["summary"])
+        self.assertEqual(refreshed["summary"], "Temiz.")
+        self.assertEqual(await updated_service.summarize("A"), refreshed)
+        self.assertEqual(await self.service.summarize("A"), previous)
+        new_provider.assert_awaited_once()
+        self.provider.assert_awaited_once()
+        self.assertEqual(self.cache.writes, 2)
+
     async def test_M06_delete_below_threshold_does_not_serve_cached_summary(self):
         await self.service.summarize("A")
         self.snapshot = replace(self.snapshot, revision="2", reviews=("temiz",) * 2, review_count=2)
