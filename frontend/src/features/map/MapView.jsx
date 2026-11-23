@@ -70,12 +70,12 @@ export default function MapView({
             zIndex: 1000,
             padding: "8px 16px",
             borderRadius: "999px",
-            border: "1px solid #1d4ed8",
-            background: "#2563eb",
-            color: "#ffffff",
+            border: "1px solid var(--sl-accent-solid)",
+            background: "var(--sl-accent-solid)",
+            color: "var(--sl-on-accent)",
             fontWeight: "600",
             fontSize: "13px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+            boxShadow: "var(--sl-shadow-md)",
             cursor: "pointer",
           }}
         >
@@ -102,7 +102,7 @@ export default function MapView({
         {!citywide && <Circle
           center={[searchCenter.lat, searchCenter.lon]}
           radius={radius}
-          pathOptions={{ color: "#2563eb", fillOpacity: 0.08 }}
+          pathOptions={{ color: "var(--sl-accent-solid)", fillOpacity: 0.08 }}
         />}
 
         {hasLocationPermission && userLocation && (

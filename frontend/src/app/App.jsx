@@ -6,6 +6,7 @@ import { useEffect, useRef } from "react";
 import { SessionProvider, useSession } from "../shared/session/SessionProvider.jsx";
 import { Link, useLocation } from "./router.jsx";
 import AccountMenu from "./AccountMenu.jsx";
+import ThemeToggle from "../shared/theme/ThemeToggle.jsx";
 import HomeRoute from "./HomeRoute.jsx";
 import SignInPage from "../features/auth/SignInPage.jsx";
 import RegisterPage from "../features/auth/RegisterPage.jsx";
@@ -37,6 +38,7 @@ function Header({ path }) {
           <Link to="/admin" aria-current={routeFor(path) === "admin" ? "page" : undefined}>Yönetim</Link>
         )}
       </nav>
+      <ThemeToggle />
       <AccountMenu session={session} onSignOut={signOut} returnTo={path} />
     </header>
   );

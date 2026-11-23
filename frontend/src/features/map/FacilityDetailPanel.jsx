@@ -1,6 +1,7 @@
 import React from "react";
 import AiSummaryBox from "./AiSummaryBox.jsx";
 import ReviewSection from "./ReviewSection.jsx";
+import DirectionsButton from "./DirectionsButton.jsx";
 
 function formatBooleanField(val, trueText, falseText) {
   if (val === null || val === undefined) return "Bilinmiyor";
@@ -52,10 +53,10 @@ export default function FacilityDetailPanel({
         maxHeight: "calc(100% - 32px)",
         boxSizing: "border-box",
         overflowY: "auto",
-        background: "#ffffff",
+        background: "var(--sl-surface)",
         padding: "16px",
         borderRadius: "8px",
-        boxShadow: "0 4px 14px rgba(0,0,0,0.18)",
+        boxShadow: "var(--sl-shadow-md)",
         zIndex: 1000,
       }}
     >
@@ -64,12 +65,12 @@ export default function FacilityDetailPanel({
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          borderBottom: "1px solid #e2e8f0",
+          borderBottom: "1px solid var(--sl-border)",
           paddingBottom: "8px",
           gap: "8px",
         }}
       >
-        <h3 style={{ margin: 0, fontSize: "16px", color: "#0f172a", overflowWrap: "anywhere" }}>
+        <h3 style={{ margin: 0, fontSize: "16px", color: "var(--sl-text)", overflowWrap: "anywhere" }}>
           {merged.name}
         </h3>
         <button
@@ -81,7 +82,7 @@ export default function FacilityDetailPanel({
             background: "transparent",
             fontSize: "20px",
             cursor: "pointer",
-            color: "#64748b",
+            color: "var(--sl-text-muted)",
             lineHeight: 1,
           }}
         >
@@ -94,8 +95,8 @@ export default function FacilityDetailPanel({
           style={{
             marginTop: "10px",
             fontSize: "13px",
-            color: "#1e40af",
-            background: "#eff6ff",
+            color: "var(--sl-accent-text)",
+            background: "var(--sl-accent-soft)",
             padding: "6px 10px",
             borderRadius: "4px",
           }}
@@ -109,8 +110,8 @@ export default function FacilityDetailPanel({
           style={{
             marginTop: "10px",
             fontSize: "13px",
-            color: "#991b1b",
-            background: "#fee2e2",
+            color: "var(--sl-danger)",
+            background: "var(--sl-danger-soft)",
             padding: "8px 10px",
             borderRadius: "4px",
           }}
@@ -124,8 +125,8 @@ export default function FacilityDetailPanel({
           style={{
             marginTop: "10px",
             fontSize: "13px",
-            color: "#92400e",
-            background: "#fef3c7",
+            color: "var(--sl-warn)",
+            background: "var(--sl-warn-soft)",
             padding: "8px 10px",
             borderRadius: "4px",
             display: "flex",
@@ -142,9 +143,9 @@ export default function FacilityDetailPanel({
                 alignSelf: "flex-start",
                 padding: "3px 10px",
                 borderRadius: "4px",
-                border: "1px solid #92400e",
-                background: "#ffffff",
-                color: "#92400e",
+                border: "1px solid var(--sl-warn)",
+                background: "var(--sl-surface)",
+                color: "var(--sl-warn)",
                 cursor: "pointer",
                 fontSize: "12px",
                 fontWeight: "600",
@@ -166,7 +167,7 @@ export default function FacilityDetailPanel({
               marginBottom: 0,
               fontSize: "14px",
               lineHeight: "1.9",
-              color: "#334155",
+              color: "var(--sl-text-secondary)",
             }}
           >
             {merged.district && (
@@ -207,6 +208,8 @@ export default function FacilityDetailPanel({
                 : "Henüz puanlanmamış"}
             </li>
           </ul>
+
+          <DirectionsButton latitude={merged.latitude} longitude={merged.longitude} name={merged.name} />
 
           <AiSummaryBox
             toiletId={merged.id}

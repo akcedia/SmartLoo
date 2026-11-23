@@ -1,0 +1,93 @@
+// "Yol tarifi al" for the selected facility.
+// Android: a plain geo: link, so the phone's own chooser asks which maps app to use.
+// iPhone/iPad, Mac and other desktops: a small menu of maps apps (iOS has no system
+// chooser for maps). Only the facility's coordinates are sent; see directions.js.
+import { useEffect, useId, useRef, useState } from "react";
+import { detectPlatform, directionsOptions } from "./directions.js";
+import "./directions.css";
+
+function RouteIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+      <path d="M3 11l18-8-8 18-2-8-8-2z" />
+    </svg>
+  );
+}
+
+export default function DirectionsButton({ latitude, longitude, name, platform: platformProp }) {
+  const platform = platformProp ?? detectPlatform();
+  const { geo, providers } = directionsOptions({ lat: latitude, lon: longitude, name }, platform);
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef(null);
+  const buttonRef = useRef(null);
+  const menuId = useId();
+
+  useEffect(() => {
+    if (!open) return undefined;
+    function onKey(event) {
+      if (event.key === "Escape") {
+        setOpen(false);
+        buttonRef.current?.focus();
+      }
+    }
+    function onPointer(event) {
+      if (!rootRef.current?.contains(event.target)) setOpen(false);
+    }
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", onPointer);
+    rootRef.current?.querySelector("a")?.focus();
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onPointer);
+    };
+  }, [open]);
+
+  if (!providers.length) {
+    return <p className="sl-directions-missing">Bu tesisin konumu kayıtlı olmadığı için yol tarifi verilemiyor.</p>;
+  }
+
+  if (geo) {
+    return (
+      <div className="sl-directions">
+        <a className="sl-directions-button" href={geo}>
+          <RouteIcon /> Yol tarifi al
+        </a>
+        <p className="sl-directions-note">Telefonunuz hangi harita uygulamasıyla açılacağını soracak.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="sl-directions" ref={rootRef}>
+      <button
+        ref={buttonRef}
+        type="button"
+        className="sl-directions-button"
+        aria-expanded={open}
+        aria-controls={menuId}
+        onClick={() => setOpen((value) => !value)}
+      >
+        <RouteIcon /> Yol tarifi al
+      </button>
+      {open && (
+        <div id={menuId} className="sl-directions-menu" role="group" aria-label="Harita uygulaması seçin">
+          <p className="sl-directions-menu-title">Hangi uygulamayla açılsın?</p>
+          <ul>
+            {providers.map((p) => (
+              <li key={p.id}>
+                <a href={p.href} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>
+                  {p.label}
+                  <span className="app-sr"> (yeni sekmede veya uygulamada açılır)</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <button type="button" className="sl-directions-cancel" onClick={() => { setOpen(false); buttonRef.current?.focus(); }}>
+            Vazgeç
+          </button>
+        </div>
+      )}
+      <p className="sl-directions-note">Yalnızca tesisin konumu gönderilir; başlangıç noktasını harita uygulaması belirler.</p>
+    </div>
+  );
+}
