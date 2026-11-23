@@ -15,6 +15,7 @@ import {
   rowErrors,
   uploadImport,
 } from "./importApi.js";
+import { useI18n } from "../../../shared/i18n/I18nProvider.jsx";
 
 const COUNT_LABELS = [
   ["inserted", "Eklenen", "Yeni kaynak kimlikleri"],
@@ -23,11 +24,14 @@ const COUNT_LABELS = [
   ["rejected", "Reddedilen", "Kabul edilmeyen kayıtlar"],
 ];
 
-function formatBytes(bytes) {
-  return bytes < 1024 ? `${bytes} bayt` : `${(bytes / 1024).toLocaleString("tr-TR", { maximumFractionDigits: 1 })} KB`;
+function formatBytes(bytes, t, locale) {
+  return bytes < 1024
+    ? t("{n} bayt", { n: bytes })
+    : `${(bytes / 1024).toLocaleString(locale, { maximumFractionDigits: 1 })} KB`;
 }
 
 export default function AdminImport({ api, readFile = (file) => file.text() }) {
+  const { t, locale } = useI18n();
   const [selection, setSelection] = useState(null); // { file, format, records, problem }
   const [step, setStep] = useState("idle"); // idle | reading | ready | uploading | done | failed
   const [result, setResult] = useState(null);
@@ -65,7 +69,7 @@ export default function AdminImport({ api, readFile = (file) => file.text() }) {
         text = await readFile(file);
       } catch {
         if (id !== selectionId.current) return;
-        setSelection({ file, format, records: null, problem: "Dosya okunamadı." });
+        setSelection({ file, format, records: null, problem: "Dosya okunamadı." }); // translated on render
         setStep("idle");
         return;
       }
@@ -110,15 +114,14 @@ export default function AdminImport({ api, readFile = (file) => file.text() }) {
 
   return (
     <section className="admin-import" aria-labelledby="import-title">
-      <h2 id="import-title">Tesis verisi içe aktar</h2>
+      <h2 id="import-title">{t("Tesis verisi içe aktar")}</h2>
       <p className="admin-import-intro">
-        CSV veya JSON dosyasındaki tesisler <code>(source, source_id)</code> kimliğine göre eklenir ya da güncellenir.
-        Dosyadaki tek bir hatalı kayıt tüm dosyayı geri alır. Boş bırakılan alanlar “bilinmiyor” olarak kalır; hiçbir tesis
-        kendiliğinden erişilebilir, ücretsiz veya açık sayılmaz.
+        {t("CSV veya JSON dosyasındaki tesisler")} <code>(source, source_id)</code> {t("kimliğine göre eklenir ya da güncellenir.")}{" "}
+        {t("Dosyadaki tek bir hatalı kayıt tüm dosyayı geri alır. Boş bırakılan alanlar “bilinmiyor” olarak kalır; hiçbir tesis kendiliğinden erişilebilir, ücretsiz veya açık sayılmaz.")}
       </p>
 
       <div className="admin-import-field">
-        <label htmlFor={inputId}>Dosya</label>
+        <label htmlFor={inputId}>{t("Dosya")}</label>
         <input
           ref={inputRef}
           id={inputId}
@@ -129,85 +132,84 @@ export default function AdminImport({ api, readFile = (file) => file.text() }) {
           disabled={uploading}
         />
         <p id={hintId} className="admin-hint">
-          En fazla {MAX_BYTES.toLocaleString("tr-TR")} bayt ve {MAX_RECORDS.toLocaleString("tr-TR")} kayıt. Zorunlu sütunlar:
-          source, source_id, name, district, latitude, longitude. Ayrıntılar: içe aktarım sözleşmesi.
+          {t("En fazla {bytes} bayt ve {records} kayıt. Zorunlu sütunlar: source, source_id, name, district, latitude, longitude. Ayrıntılar: içe aktarım sözleşmesi.", { bytes: MAX_BYTES.toLocaleString(locale), records: MAX_RECORDS.toLocaleString(locale) })}
         </p>
       </div>
 
       {reading && (
         <p className="admin-status" role="status">
-          <span className="admin-spinner" aria-hidden="true" /> Dosya okunuyor…
+          <span className="admin-spinner" aria-hidden="true" /> {t("Dosya okunuyor…")}
         </p>
       )}
 
       {selection?.problem && (
-        <p className="admin-field-error" role="alert">{selection.problem}</p>
+        <p className="admin-field-error" role="alert">{t(selection.template ?? selection.problem, selection.vars)}</p>
       )}
 
       {selection && !selection.problem && step !== "done" && (
         <div className="admin-import-confirm" aria-busy={uploading}>
-          <h3>Yüklemeyi onaylayın</h3>
+          <h3>{t("Yüklemeyi onaylayın")}</h3>
           <dl className="admin-import-summary">
-            <dt>Dosya</dt>
+            <dt>{t("Dosya")}</dt>
             <dd>{selection.file.name}</dd>
-            <dt>Biçim</dt>
+            <dt>{t("Biçim")}</dt>
             <dd>{formatInfo(selection.format).label}</dd>
-            <dt>Boyut</dt>
-            <dd>{formatBytes(selection.file.size)}</dd>
-            <dt>Kayıt</dt>
+            <dt>{t("Boyut")}</dt>
+            <dd>{formatBytes(selection.file.size, t, locale)}</dd>
+            <dt>{t("Kayıt")}</dt>
             <dd>{selection.records}</dd>
           </dl>
-          <p className="admin-hint">Onaydan sonra dosya tek bir istekle gönderilir ve sonuç gelene kadar tekrar gönderilemez.</p>
+          <p className="admin-hint">{t("Onaydan sonra dosya tek bir istekle gönderilir ve sonuç gelene kadar tekrar gönderilemez.")}</p>
           <div className="admin-import-actions">
             <button type="button" onClick={confirmUpload} disabled={step !== "ready"}>
-              {uploading ? "Yükleniyor…" : "Yüklemeyi onayla"}
+              {uploading ? t("Yükleniyor…") : t("Yüklemeyi onayla")}
             </button>
             <button type="button" className="admin-button-secondary" onClick={reset} disabled={uploading}>
-              Vazgeç
+              {t("Vazgeç")}
             </button>
           </div>
-          {uploading && <p className="admin-status" role="status"><span className="admin-spinner" aria-hidden="true" /> Dosya gönderiliyor…</p>}
+          {uploading && <p className="admin-status" role="status"><span className="admin-spinner" aria-hidden="true" /> {t("Dosya gönderiliyor…")}</p>}
         </div>
       )}
 
       {step === "done" && result && (
         <div ref={outcomeRef} tabIndex={-1} className="admin-status admin-import-result" role="status">
-          <h3>İçe aktarım tamamlandı</h3>
+          <h3>{t("İçe aktarım tamamlandı")}</h3>
           <dl className="admin-import-counts">
             {COUNT_LABELS.map(([key, label, note]) => (
               <div key={key}>
-                <dt>{label}</dt>
+                <dt>{t(label)}</dt>
                 <dd>
-                  <strong>{result[key]}</strong> <span className="admin-hint">{note}</span>
+                  <strong>{result[key]}</strong> <span className="admin-hint">{t(note)}</span>
                 </dd>
               </div>
             ))}
           </dl>
-          <button type="button" onClick={reset}>Başka dosya yükle</button>
+          <button type="button" onClick={reset}>{t("Başka dosya yükle")}</button>
         </div>
       )}
 
       {step === "failed" && error && (
         <div ref={outcomeRef} tabIndex={-1} className="admin-status admin-status--error" role="alert">
-          <h3>{importOutcomeKnown(error) ? "İçe aktarım yapılmadı" : "İçe aktarım sonucu doğrulanamadı"}</h3>
-          <p>{importErrorMessage(error)}</p>
+          <h3>{importOutcomeKnown(error) ? t("İçe aktarım yapılmadı") : t("İçe aktarım sonucu doğrulanamadı")}</h3>
+          <p>{t(importErrorMessage(error))}</p>
           {errors.length > 0 && (
             <div className="admin-table-wrap">
               <table className="admin-table admin-import-errors">
                 <caption>
-                  Satır hataları{errors.length >= 50 ? " (ilk 50; dosyada başka hatalar da olabilir)" : ""}
+                  {t("Satır hataları")}{errors.length >= 50 ? ` (${t("ilk 50; dosyada başka hatalar da olabilir")})` : ""}
                 </caption>
                 <thead>
                   <tr>
-                    <th scope="col">Kayıt</th>
-                    <th scope="col">Alan</th>
-                    <th scope="col">Hata</th>
+                    <th scope="col">{t("Kayıt")}</th>
+                    <th scope="col">{t("Alan")}</th>
+                    <th scope="col">{t("Hata")}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {errors.map((e, i) => (
                     <tr key={`${e.row}-${e.field ?? ""}-${i}`}>
-                      <th scope="row">{e.row === 0 ? "Dosya / başlık" : e.row}</th>
+                      <th scope="row">{e.row === 0 ? t("Dosya / başlık") : e.row}</th>
                       <td>{e.field ?? "—"}</td>
                       <td>{e.message}</td>
                     </tr>
@@ -216,7 +218,7 @@ export default function AdminImport({ api, readFile = (file) => file.text() }) {
               </table>
             </div>
           )}
-          <button type="button" onClick={reset}>Dosyayı düzelt ve yeniden seç</button>
+          <button type="button" onClick={reset}>{t("Dosyayı düzelt ve yeniden seç")}</button>
         </div>
       )}
     </section>
