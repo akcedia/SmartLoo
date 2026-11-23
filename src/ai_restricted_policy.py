@@ -2,7 +2,7 @@
 
 Only complete, enumerated factual clauses are accepted. Unknown wording,
 questions, instructions, identifiers and redaction markers reject the input.
-Output must use the exact controlled rendering supported by those facts.
+Output must use the controlled rendering or an exact, documented equivalent.
 This profile deliberately trades coverage for inspectable decisions. It is not
 an automatically enabled/approved production policy or full TC-28 acceptance.
 """
@@ -15,7 +15,8 @@ from src.ai_evidence import EvidencePreparer
 from src.ai_output import SummaryOutputValidator, validate_summary_schema
 
 PROFILE_NAME = "restricted-tr-evidence-v1"
-POLICY_VERSION = "restricted-tr-evidence-v2"
+POLICY_VERSION = "restricted-tr-evidence-v3"
+SUMMARY_EQUIVALENTS = {"Temizdi fakat sabun yoktu.": "Temiz, ancak sabun eksik."}
 FACETS = ("cleanliness", "odor", "soap", "paper", "water", "accessibility", "lighting")
 GROUPS = {"cleanliness": ("cleanliness",), "odor": ("odor",),
           "supplies": ("soap", "paper", "water"),
@@ -188,6 +189,8 @@ async def restricted_output_check(text):
         text = _normalize(text)
     except ValueError:
         return False
+    if text in SUMMARY_EQUIVALENTS:
+        return True
     if not text.endswith("."):
         return False
     pieces = re.split(r"; |, ancak ", text[:-1])
@@ -201,7 +204,10 @@ async def restricted_grounding_check(candidate, evidence):
         expected = _render(evidence_facts(evidence))
     except ValueError:
         return False
-    if any(output[field] != expected[field] for field in ("summary", "categories", "recommendation")):
+    summary = SUMMARY_EQUIVALENTS.get(output["summary"], output["summary"])
+    if summary != expected["summary"]:
+        return False
+    if any(output[field] != expected[field] for field in ("categories", "recommendation")):
         return False
     return all(len(values := output[field]) == len(set(values)) and set(values) <= set(expected[field])
                for field in ("pros", "cons"))

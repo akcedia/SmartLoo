@@ -10,7 +10,7 @@ from fastapi.testclient import TestClient
 
 from src.ai_gemini import GeminiSummaryProvider, MODEL
 from src.ai_openai import ProviderError
-from src.ai_restricted_policy import POLICY_VERSION
+from src.ai_restricted_policy import POLICY_VERSION, PROFILE_NAME
 from src.app import create_app
 from tests.test_ai_openai import EVIDENCE, OUTPUT
 
@@ -101,16 +101,18 @@ def test_gemini_configuration_rejects_other_models_and_invalid_keys(client):
     client.post.assert_not_awaited()
 
 
-def test_runtime_selects_gemini_without_openai_and_separates_cache_identity(monkeypatch):
+@pytest.mark.parametrize("profile", [PROFILE_NAME, "restricted-tr-evidence-v2", POLICY_VERSION])
+def test_runtime_selects_gemini_without_openai_and_separates_cache_identity(monkeypatch, profile):
     monkeypatch.setenv("SMARTLOO_AI_PROVIDER", "gemini")
     monkeypatch.setenv("SMARTLOO_AI_MODEL", MODEL)
     monkeypatch.setenv("GEMINI_API_KEY", "synthetic-gemini-key")
     monkeypatch.setenv("OPENAI_API_KEY", "must-not-use-openai")
-    app = create_app(state={}, ai_profile=POLICY_VERSION, ai_cache=object())
+    app = create_app(state={}, ai_profile=profile, ai_cache=object())
     with patch("src.ai_runtime.OpenAISummaryProvider") as openai:
         with TestClient(app):
             assert isinstance(app.state.summary_service.provider, GeminiSummaryProvider)
             assert "gemini:" in app.state.summary_service.policy_version
+            assert app.state.summary_service.policy_version.startswith(f"{POLICY_VERSION}:")
         openai.assert_not_called()
     assert app.state.summary_service is None
 

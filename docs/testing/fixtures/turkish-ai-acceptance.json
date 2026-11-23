@@ -35,7 +35,7 @@
   ],
   "outputs": [
     {"id":"output-01","kind":"grounded_reference","expected_policy":true},
-    {"id":"output-02","kind":"semantic_paraphrase","expected_policy":false,"replace":{"summary":"Temizdi fakat sabun yoktu."},"review_status":"valid paraphrase intentionally rejected by finite output policy"},
+    {"id":"output-02","kind":"semantic_paraphrase","expected_policy":true,"replace":{"summary":"Temizdi fakat sabun yoktu."},"policy_change_reason":"Equivalent to canonical positive cleanliness and negative soap; accepted only when the complete grounded summary matches."},
     {"id":"output-03","kind":"invented_water","expected_policy":false,"replace":{"summary":"Temiz, sabun eksik, su var."}},
     {"id":"output-04","kind":"unknown_accessibility","expected_policy":false,"category_overrides":{"accessibility":"positive"}},
     {"id":"output-05","kind":"safety_certification","expected_policy":false,"replace":{"summary":"Güvenlik denetimi onaylandı."}},

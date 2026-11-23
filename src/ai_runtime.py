@@ -24,7 +24,8 @@ async def ai_lifespan(app, *, provider=None, cache=None, profile=None, reason_pr
     selected = os.getenv("SMARTLOO_AI_PROFILE", "") if profile is None else profile
     async with AsyncExitStack() as resources:
         if selected:
-            if selected not in (PROFILE_NAME, POLICY_VERSION):
+            # Previous config selectors still opt in to the current policy.
+            if selected not in (PROFILE_NAME, "restricted-tr-evidence-v2", POLICY_VERSION):
                 raise ValueError("Unsupported AI profile")
             # This finite grammar is opt-in, never a general Turkish privacy claim.
             if provider is None:
