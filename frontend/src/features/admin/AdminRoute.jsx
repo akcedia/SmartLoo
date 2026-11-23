@@ -14,15 +14,20 @@ export function adminDataMode(env = import.meta.env ?? {}) {
   return env.VITE_ADMIN_DATA === "sample" ? "sample" : "live";
 }
 
+export function adminSection(path = "") {
+  return path === "/admin/import" ? "import" : "analytics";
+}
+
 export default function AdminRoute({ path, mode = adminDataMode() }) {
   const { api } = useSession();
   const liveAdapter = useMemo(() => createHttpAdapter({ client: api }), [api]);
 
-  if (mode === "sample") return <AdminDashboard />;
+  const section = adminSection(path);
+  if (mode === "sample") return <AdminDashboard section={section} />;
 
   return (
     <RequireRole role="ADMIN" path={path}>
-      <AdminDashboard adapter={liveAdapter} />
+      <AdminDashboard adapter={liveAdapter} section={section} importApi={api} />
     </RequireRole>
   );
 }

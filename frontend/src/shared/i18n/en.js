@@ -103,6 +103,8 @@ export default {
   "Analiz": "Analytics",
   "Moderasyon": "Moderation",
   "İçe aktarım": "Import",
+  "CSV/JSON tesis verisi içe aktarımı": "CSV/JSON facility import",
+  "Backend sözleşmesi hazır olunca eklenecek": "Available when the backend contract is ready",
   "Ayrı görevde geliştirilecek": "Planned as a separate task",
   "ÖRNEK VERİ": "SAMPLE DATA",
   "Bu ekran backend'e bağlı değildir (VITE_ADMIN_DATA=sample). Tesis adları, puanlar ve tarihler arayüz incelemesi için uydurulmuştur. Bu modda oturum ve yetki denetimi uygulanmaz.": "This screen is not connected to the backend (VITE_ADMIN_DATA=sample). Facility names, scores and dates are made up for UI review. No session or permission checks apply in this mode.",

@@ -225,6 +225,42 @@ body { margin: 0; }
 .admin .admin-export button:not(:first-child) { background: var(--admin-surface); color: var(--admin-accent); border-color: var(--admin-input-border); box-shadow: none; }
 .admin .admin-export button:not(:first-child):hover:not(:disabled) { background: var(--admin-accent-soft); border-color: var(--admin-accent-fill); }
 
+/* Import tab */
+.admin-import {
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius);
+  padding: clamp(14px, 3vw, 20px);
+  box-shadow: var(--admin-shadow);
+}
+.admin-import h2 { margin-top: 0; }
+.admin-import h3 { margin: 0 0 8px; font-size: 1rem; }
+.admin-import-intro { margin: 0 0 16px; color: var(--admin-muted); max-width: 70ch; }
+.admin-import-field { display: grid; gap: 6px; margin-bottom: 12px; }
+.admin-import-field label { font-weight: 600; }
+.admin-import-field input[type="file"] { font: inherit; max-width: 100%; }
+.admin-import-confirm {
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px solid var(--admin-border);
+  border-left: 6px solid var(--admin-accent);
+  border-radius: 8px;
+}
+.admin-import-summary { display: grid; grid-template-columns: max-content 1fr; gap: 4px 16px; margin: 0 0 8px; }
+.admin-import-summary dt { font-weight: 600; color: var(--admin-muted); }
+.admin-import-summary dd { margin: 0; overflow-wrap: anywhere; }
+.admin-import-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.admin .admin-button-secondary { background: var(--admin-surface); color: var(--admin-accent); }
+.admin .admin-button-secondary:hover:not(:disabled) { background: var(--admin-accent-soft); }
+.admin-import-result:focus, .admin-status:focus { outline: 3px solid var(--admin-accent); outline-offset: 2px; }
+.admin-import-counts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr)); gap: 10px; margin: 0 0 14px; }
+.admin-import-counts > div { padding: 10px 12px; border: 1px solid var(--admin-border); border-radius: 8px; }
+.admin-import-counts dt { font-weight: 600; color: var(--admin-muted); font-size: 0.85rem; }
+.admin-import-counts dd { margin: 2px 0 0; }
+.admin-import-counts strong { font-size: 1.5rem; font-variant-numeric: tabular-nums; margin-right: 6px; }
+.admin-import-errors td, .admin-import-errors th { vertical-align: top; }
+.admin-status--error .admin-table-wrap { margin: 8px 0 12px; }
+
 /* States */
 .admin-status {
   margin-top: 16px;
