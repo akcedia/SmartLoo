@@ -130,6 +130,9 @@ describe("ModerationPanel", () => {
     expect(calls).toHaveLength(3);
     expect(calls[2].url).toContain("status=pending");
     expect(host.textContent).toContain("Bekleyen öneri yok.");
+    // The reason stays visible even though the card is gone after the reload.
+    expect(host.querySelector('[role="alert"]').textContent).toContain("zaten karara bağlanmış");
+    expect(host.querySelector('[role="alert"]').textContent).toContain("Öneri 1");
   });
 
   it("switches status lists and pages with 'Daha fazla göster'", async () => {

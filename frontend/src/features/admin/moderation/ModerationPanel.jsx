@@ -41,7 +41,6 @@ function formatTime(value, locale) {
 function Suggestion({ api, item, onDecided, busy, setBusy }) {
   const { t, locale } = useI18n();
   const [confirm, setConfirm] = useState(null); // "approved" | "rejected" | null
-  const [error, setError] = useState(null);
   const confirmRef = useRef(null);
   const titleId = useId();
 
@@ -52,12 +51,10 @@ function Suggestion({ api, item, onDecided, busy, setBusy }) {
   async function decide() {
     const status = confirm;
     setBusy(item.id);
-    setError(null);
     try {
       const saved = await decideSuggestion(api, item.id, status);
       onDecided({ ok: true, item: saved });
     } catch (err) {
-      setError(decisionErrorMessage(err));
       onDecided({ ok: false, item, error: err });
     } finally {
       setBusy(null);
@@ -98,8 +95,6 @@ function Suggestion({ api, item, onDecided, busy, setBusy }) {
           </>
         )}
       </dl>
-
-      {error && <p className="admin-field-error" role="alert">{t(error)}</p>}
 
       {pending && !confirm && (
         <div className="admin-mod-actions">
@@ -173,15 +168,17 @@ export default function ModerationPanel({ api }) {
     }
   }
 
-  function onDecided({ ok, item }) {
+  // The outcome lives here, not in the card: after a failure the list reloads and the
+  // card may disappear (e.g. 409, decided by someone else), but the reason must stay visible.
+  function onDecided({ ok, item, error }) {
     if (ok) {
-      setNotice(item.status === "approved"
+      setNotice({ kind: "ok", text: item.status === "approved"
         ? t("“{name}” onaylandı; tesis haritada yayında.", { name: item.name })
-        : t("“{name}” reddedildi.", { name: item.name }));
+        : t("“{name}” reddedildi.", { name: item.name }) });
       setState((s) => ({ ...s, items: s.items.filter((i) => i.id !== item.id), count: Math.max(0, s.count - 1) }));
     } else {
-      setNotice(null);
-      setReloadKey((k) => k + 1);
+      setNotice({ kind: "error", text: `“${item.name}”: ${t(decisionErrorMessage(error))}` });
+      if (error?.status !== 401 && error?.status !== 403) setReloadKey((k) => k + 1);
     }
   }
 
@@ -208,7 +205,8 @@ export default function ModerationPanel({ api }) {
         ))}
       </div>
 
-      <p className="admin-status admin-mod-notice" role="status" hidden={!notice}>{notice}</p>
+      <p className="admin-status admin-mod-notice" role="status" hidden={notice?.kind !== "ok"}>{notice?.kind === "ok" ? notice.text : ""}</p>
+      {notice?.kind === "error" && <p className="admin-status admin-status--error" role="alert">{notice.text}</p>}
 
       {state.phase === "loading" && (
         <p className="admin-status" role="status"><span className="admin-spinner" aria-hidden="true" /> {t("Öneriler yükleniyor…")}</p>
