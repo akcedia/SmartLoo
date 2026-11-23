@@ -1,4 +1,4 @@
-// Administration > Analytics tab (FR-06, FR-07 export).
+// Administration: Analytics tab (FR-06, FR-07 export) and Import tab (FR-07 import).
 // Live data comes in through `adapter` (AdminRoute). Without one it falls back to the
 // labelled sample adapter for UI review. Hiding this route is UX only; the backend enforces RBAC.
 
@@ -12,14 +12,22 @@ import TrendChart from "./components/TrendChart.jsx";
 import FacilityTable from "./components/FacilityTable.jsx";
 import ExportButtons from "./components/ExportButtons.jsx";
 import { ErrorPanel, LoadingPanel, NoDataPanel, SkeletonPanel } from "./components/StatusPanel.jsx";
+import { useI18n } from "../../shared/i18n/I18nProvider.jsx";
+import AdminImport from "./import/AdminImport.jsx";
+import { Link } from "../../app/router.jsx";
 import "./admin.css";
 
-// Tabs from UI Spec Lite > Administration. Only Analytics belongs to #29.
+// Tabs from UI Spec Lite > Administration. Moderation waits for its backend contract.
 const TABS = [
-  { key: "analytics", label: "Analiz" },
-  { key: "moderation", label: "Moderasyon" },
-  { key: "import", label: "İçe aktarım" },
+  { key: "analytics", label: "Analiz", to: "/admin" },
+  { key: "moderation", label: "Moderasyon", to: null },
+  { key: "import", label: "İçe aktarım", to: "/admin/import" },
 ];
+
+const SUBTITLES = {
+  analytics: "İlçe ve tarih bazlı hijyen analizi",
+  import: "CSV/JSON tesis verisi içe aktarımı",
+};
 
 function useSampleAdapter() {
   const scenarioRef = useRef("normal");
@@ -56,6 +64,7 @@ export function serverFilterErrors(error) {
 // Everything below the filters, driven only by the request state and the API
 // response, so each state can be rendered and tested from contract examples.
 export function DashboardContent({ status, data, error, onRetry, adapter, query }) {
+  const { t } = useI18n();
   if (status === "loading" && !data) return <SkeletonPanel />;
   if (status === "error") return <ErrorPanel error={error} onRetry={onRetry} />;
   if (!data) return null;
@@ -68,11 +77,11 @@ export function DashboardContent({ status, data, error, onRetry, adapter, query 
       {!hasReviews && <NoDataPanel hasFacilities={data.facilities === null || data.facilities.length > 0} />}
       <div className="admin-grid">
         <section className="admin-panel" aria-labelledby="trend-title">
-          <h2 id="trend-title">Hijyen trendi</h2>
+          <h2 id="trend-title">{t("Hijyen trendi")}</h2>
           <TrendChart trend={data.trend} threshold={data.critical_threshold} />
         </section>
         <section className="admin-panel" aria-labelledby="facilities-title">
-          <h2 id="facilities-title">Tesisler</h2>
+          <h2 id="facilities-title">{t("Tesisler")}</h2>
           <FacilityTable rows={data.facilities} />
         </section>
       </div>
@@ -81,15 +90,17 @@ export function DashboardContent({ status, data, error, onRetry, adapter, query 
   );
 }
 
-export default function AdminDashboard({ adapter: injectedAdapter }) {
+export default function AdminDashboard({ adapter: injectedAdapter, section = "analytics", importApi = null }) {
   const sample = useSampleAdapter();
+  const { t } = useI18n();
   const adapter = injectedAdapter ?? sample.adapter;
 
   const [filters, setFilters] = useState(() => ({ district: "", preset: "last30", ...presetRange("last30") }));
   const errors = validateRange(filters);
   const valid = Object.keys(errors).length === 0;
   const query = { district: filters.district || null, from: filters.from, to: filters.to };
-  const { status, data, error, reload } = useDashboardData(adapter, query, valid);
+  // The import tab never requests analytics data.
+  const { status, data, error, reload } = useDashboardData(adapter, query, valid && section === "analytics");
 
   function handleFilterChange(change) {
     setFilters((current) => {
@@ -108,17 +119,19 @@ export default function AdminDashboard({ adapter: injectedAdapter }) {
     <div className="admin">
       <main className="admin-main">
         <div className="admin-heading">
-          <h1>Yönetim Paneli</h1>
-          <p className="admin-subtitle">İlçe ve tarih bazlı hijyen analizi</p>
+          <h1>{t("Yönetim Paneli")}</h1>
+          <p className="admin-subtitle">{t(SUBTITLES[section])}</p>
         </div>
 
-        <nav className="admin-tabs" aria-label="Yönetim bölümleri">
+        <nav className="admin-tabs" aria-label={t("Yönetim bölümleri")}>
           {TABS.map((tab) =>
-            tab.key === "analytics" ? (
-              <span key={tab.key} className="admin-tab admin-tab--active" aria-current="page">{tab.label}</span>
+            tab.key === section ? (
+              <span key={tab.key} className="admin-tab admin-tab--active" aria-current="page">{t(tab.label)}</span>
+            ) : tab.to ? (
+              <Link key={tab.key} className="admin-tab" to={tab.to}>{t(tab.label)}</Link>
             ) : (
-              <span key={tab.key} className="admin-tab admin-tab--disabled" aria-disabled="true" title="Ayrı görevde geliştirilecek">
-                {tab.label}
+              <span key={tab.key} className="admin-tab admin-tab--disabled" aria-disabled="true" title={t("Backend sözleşmesi hazır olunca eklenecek")}>
+                {t(tab.label)}
               </span>
             ),
           )}
@@ -127,32 +140,39 @@ export default function AdminDashboard({ adapter: injectedAdapter }) {
         {adapter.isSample && (
           <aside className="admin-sample-banner" role="note">
             <div>
-              <strong className="admin-sample-label">ÖRNEK VERİ</strong>
-              Bu ekran backend'e bağlı değildir (VITE_ADMIN_DATA=sample). Tesis adları, puanlar ve tarihler
-              arayüz incelemesi için uydurulmuştur. Bu modda oturum ve yetki denetimi uygulanmaz.
+              <strong className="admin-sample-label">{t("ÖRNEK VERİ")}</strong>
+              {t("Bu ekran backend'e bağlı değildir (VITE_ADMIN_DATA=sample). Tesis adları, puanlar ve tarihler arayüz incelemesi için uydurulmuştur. Bu modda oturum ve yetki denetimi uygulanmaz.")}
             </div>
             <label>
-              Demo senaryosu
+              {t("Demo senaryosu")}
               <select value={sample.scenario} onChange={(e) => handleScenarioChange(e.target.value)}>
                 {Object.entries(SCENARIOS).map(([key, label]) => (
-                  <option key={key} value={key}>{label}</option>
+                  <option key={key} value={key}>{t(label)}</option>
                 ))}
               </select>
             </label>
           </aside>
         )}
 
-        <FilterBar {...filters} errors={{ ...serverFilterErrors(error), ...errors }} onChange={handleFilterChange} />
+        {section === "import" && (importApi ? (
+          <AdminImport api={importApi} />
+        ) : (
+          <p className="admin-status admin-status--warn" role="note">
+            İçe aktarım yalnızca canlı modda, gerçek yönetici oturumuyla kullanılabilir. Örnek veri modunda dosya yüklenmez.
+          </p>
+        ))}
 
-        {valid && (
+        {section === "analytics" && <FilterBar {...filters} errors={{ ...serverFilterErrors(error), ...errors }} onChange={handleFilterChange} />}
+
+        {section === "analytics" && valid && (
           <p className="admin-selection" aria-live="polite">
-            Gösterilen: <strong>{filters.district || "Tüm ilçeler"}</strong> ·{" "}
+            {t("Gösterilen:")} <strong>{filters.district || t("Tüm ilçeler")}</strong> ·{" "}
             <strong>{formatDateTr(filters.from)} – {formatDateTr(filters.to)}</strong>
           </p>
         )}
 
-        {!valid && <p className="admin-empty">Geçerli bir tarih aralığı seçildiğinde veriler yüklenecek.</p>}
-        {valid && (
+        {section === "analytics" && !valid && <p className="admin-empty">{t("Geçerli bir tarih aralığı seçildiğinde veriler yüklenecek.")}</p>}
+        {section === "analytics" && valid && (
           <DashboardContent status={status} data={data} error={error} onRetry={reload} adapter={adapter} query={query} />
         )}
       </main>

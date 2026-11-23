@@ -1,0 +1,223 @@
+{
+  "base_url": "https://smartloo.onrender.com",
+  "source_revision": "89abb21",
+  "synthetic_fixtures": true,
+  "real_facilities_changed": false,
+  "model_calls": 0,
+  "checks": [
+    {
+      "check": "register synthetic account 0",
+      "status": 201,
+      "expected": 201
+    },
+    {
+      "check": "login synthetic account 0",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "check": "register synthetic account 1",
+      "status": 201,
+      "expected": 201
+    },
+    {
+      "check": "login synthetic account 1",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "check": "USER cannot read ADMIN metrics",
+      "status": 403,
+      "expected": 403
+    },
+    {
+      "check": "guest cannot write review",
+      "status": 401,
+      "expected": 401
+    },
+    {
+      "check": "invalid review score",
+      "status": 422,
+      "expected": 422
+    },
+    {
+      "check": "create first review",
+      "status": 201,
+      "expected": 201
+    },
+    {
+      "check": "duplicate review blocked",
+      "status": 409,
+      "expected": 409
+    },
+    {
+      "check": "other USER cannot edit",
+      "status": 403,
+      "expected": 403
+    },
+    {
+      "check": "other USER cannot delete",
+      "status": 403,
+      "expected": 403
+    },
+    {
+      "check": "login synthetic ADMIN",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "check": "ADMIN summary",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "check": "second author same facility",
+      "status": 201,
+      "expected": 201
+    },
+    {
+      "check": "ADMIN summary",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "check": "author edits own score",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "check": "ADMIN summary",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "check": "review on second synthetic facility",
+      "status": 201,
+      "expected": 201
+    },
+    {
+      "check": "ADMIN summary",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "check": "detail aggregate after edits",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "check": "JSON export",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "check": "CSV export",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "check": "USER cannot export",
+      "status": 403,
+      "expected": 403
+    },
+    {
+      "check": "partial date rejected",
+      "status": 422,
+      "expected": 422
+    },
+    {
+      "check": "reversed dates rejected",
+      "status": 422,
+      "expected": 422
+    },
+    {
+      "check": "empty district has null score",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "check": "ADMIN summary",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "check": "ADMIN summary",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "check": "Istanbul next-day boundary",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "check": "author deletes own review",
+      "status": 204,
+      "expected": 204
+    },
+    {
+      "check": "ADMIN summary",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "check": "delete synthetic USER account with review",
+      "status": 204,
+      "expected": 204
+    },
+    {
+      "check": "deleted USER token rejected",
+      "status": 401,
+      "expected": 401
+    },
+    {
+      "check": "ADMIN summary",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "check": "ADMIN deletes anonymized synthetic review",
+      "status": 204,
+      "expected": 204
+    },
+    {
+      "check": "ADMIN deletes own synthetic review",
+      "status": 204,
+      "expected": 204
+    },
+    {
+      "check": "ADMIN summary",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "check": "empty detail score is null",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "check": "delete synthetic ADMIN account",
+      "status": 204,
+      "expected": 204
+    },
+    {
+      "check": "deleted ADMIN token rejected",
+      "status": 401,
+      "expected": 401
+    }
+  ],
+  "public_facilities_before": 432,
+  "weighted_individual_review_average": 4.0,
+  "critical_threshold_exact_3_5_not_critical": true,
+  "panel_json_csv_same_selection": true,
+  "istanbul_inclusive_day_boundaries": true,
+  "boundary_timestamps_seeded_directly_on_synthetic_review": true,
+  "account_deletion_anonymizes_and_preserves_score": true,
+  "checks_passed": true,
+  "cleanup_verified": true,
+  "public_facilities_after": 432,
+  "synthetic_facilities_remaining": 0,
+  "synthetic_accounts_remaining": 0,
+  "synthetic_reviews_remaining": 0,
+  "http_check_count": 40
+}

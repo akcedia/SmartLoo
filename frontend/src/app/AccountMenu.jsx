@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { Link, signInPath } from "./router.jsx";
+import { useI18n } from "../shared/i18n/I18nProvider.jsx";
 
 const ROLE_LABELS = { ADMIN: "Yönetici", USER: "Kullanıcı" };
 
@@ -12,6 +13,7 @@ export default function AccountMenu({ session, onSignOut, returnTo }) {
   const rootRef = useRef(null);
   const buttonRef = useRef(null);
   const menuId = useId();
+  const { t } = useI18n();
 
   useEffect(() => {
     if (!open) return undefined;
@@ -34,13 +36,13 @@ export default function AccountMenu({ session, onSignOut, returnTo }) {
 
   if (!session) {
     return (
-      <Link className="app-signin" to={signInPath(returnTo)}>Giriş yap</Link>
+      <Link className="app-signin" to={signInPath(returnTo)}>{t("Giriş yap")}</Link>
     );
   }
 
   const name = session.email.split("@")[0];
   const initials = name.slice(0, 2).toLocaleUpperCase("tr-TR");
-  const role = ROLE_LABELS[session.role] ?? session.role;
+  const role = t(ROLE_LABELS[session.role] ?? session.role);
 
   return (
     <div
@@ -69,8 +71,8 @@ export default function AccountMenu({ session, onSignOut, returnTo }) {
             <span className="app-dot" aria-hidden="true" />
             {session.email} · {role}
           </p>
-          <Link to="/account" onClick={() => setOpen(false)}>Hesabım</Link>
-          {session.role === "ADMIN" && <Link to="/admin" onClick={() => setOpen(false)}>Yönetim paneli</Link>}
+          <Link to="/account" onClick={() => setOpen(false)}>{t("Hesabım")}</Link>
+          {session.role === "ADMIN" && <Link to="/admin" onClick={() => setOpen(false)}>{t("Yönetim paneli")}</Link>}
           <button
             type="button"
             onClick={() => {
@@ -78,7 +80,7 @@ export default function AccountMenu({ session, onSignOut, returnTo }) {
               onSignOut();
             }}
           >
-            Çıkış yap
+            {t("Çıkış yap")}
           </button>
         </div>
       )}

@@ -4,21 +4,21 @@ import React, { useEffect, useState } from "react";
 const RECOMMENDATION_BADGES = {
   recommended: {
     label: "Önerilir",
-    bg: "#dcfce7",
-    color: "#166534",
-    border: "#86efac",
+    bg: "var(--sl-ok-soft)",
+    color: "var(--sl-ok)",
+    border: "var(--sl-ok-border)",
   },
   acceptable: {
     label: "Kabul Edilebilir",
-    bg: "#fef3c7",
-    color: "#92400e",
-    border: "#fcd34d",
+    bg: "var(--sl-warn-soft)",
+    color: "var(--sl-warn)",
+    border: "var(--sl-warn-border)",
   },
   avoid: {
     label: "Kaçınılmalı",
-    bg: "#fee2e2",
-    color: "#991b1b",
-    border: "#fca5a5",
+    bg: "var(--sl-danger-soft)",
+    color: "var(--sl-danger)",
+    border: "var(--sl-danger-border)",
   },
 };
 
@@ -87,8 +87,8 @@ export default function AiSummaryBox({ toiletId, refreshKey = 0 }) {
         marginTop: "14px",
         padding: "10px 12px",
         borderRadius: "6px",
-        background: "#f8fafc",
-        border: "1px solid #cbd5e1",
+        background: "var(--sl-surface-sunken)",
+        border: "1px solid var(--sl-border-strong)",
       }}
     >
       <div
@@ -100,7 +100,7 @@ export default function AiSummaryBox({ toiletId, refreshKey = 0 }) {
           marginBottom: "6px",
         }}
       >
-        <strong style={{ fontSize: "13px", color: "#0f172a" }}>
+        <strong style={{ fontSize: "13px", color: "var(--sl-text)" }}>
           Yapay Zeka Özeti
         </strong>
         {!loading && !errorMessage && !isFallback && badge && (
@@ -121,13 +121,13 @@ export default function AiSummaryBox({ toiletId, refreshKey = 0 }) {
       </div>
 
       {loading && (
-        <p style={{ margin: 0, fontSize: "12px", color: "#475569" }}>
+        <p style={{ margin: 0, fontSize: "12px", color: "var(--sl-text-muted)" }}>
           Yapay zeka yorum özeti hazırlanıyor...
         </p>
       )}
 
       {!loading && errorMessage && (
-        <div style={{ fontSize: "12px", color: "#64748b", display: "flex", flexDirection: "column", gap: "6px" }}>
+        <div style={{ fontSize: "12px", color: "var(--sl-text-muted)", display: "flex", flexDirection: "column", gap: "6px" }}>
           <span>{errorMessage}</span>
           <button
             type="button"
@@ -136,9 +136,9 @@ export default function AiSummaryBox({ toiletId, refreshKey = 0 }) {
               alignSelf: "flex-start",
               padding: "3px 8px",
               borderRadius: "4px",
-              border: "1px solid #94a3b8",
-              background: "#ffffff",
-              color: "#334155",
+              border: "1px solid var(--sl-border-strong)",
+              background: "var(--sl-surface)",
+              color: "var(--sl-text-secondary)",
               fontSize: "11px",
               cursor: "pointer",
             }}
@@ -149,7 +149,7 @@ export default function AiSummaryBox({ toiletId, refreshKey = 0 }) {
       )}
 
       {!loading && !errorMessage && isFallback && (
-        <p style={{ margin: 0, fontSize: "12px", color: "#64748b", lineHeight: "1.45" }}>
+        <p style={{ margin: 0, fontSize: "12px", color: "var(--sl-text-muted)", lineHeight: "1.45" }}>
           {summaryData?.message ||
             summaryData?.reason ||
             "Bu tesis için henüz yapay zeka özeti oluşturulmadı veya AI servisi şu anda devre dışı."}
@@ -157,17 +157,17 @@ export default function AiSummaryBox({ toiletId, refreshKey = 0 }) {
       )}
 
       {!loading && !errorMessage && !isFallback && (
-        <div style={{ fontSize: "13px", color: "#1e293b" }}>
+        <div style={{ fontSize: "13px", color: "var(--sl-text-secondary)" }}>
           <p style={{ margin: "0 0 8px 0", lineHeight: "1.45" }}>
             {summaryData.summary}
           </p>
 
           {pros.length > 0 && (
             <div style={{ marginBottom: "6px" }}>
-              <div style={{ fontSize: "11px", fontWeight: "600", color: "#166534", marginBottom: "2px" }}>
+              <div style={{ fontSize: "11px", fontWeight: "600", color: "var(--sl-ok)", marginBottom: "2px" }}>
                 Öne Çıkan Artılar
               </div>
-              <ul style={{ margin: 0, paddingLeft: "16px", fontSize: "12px", color: "#166534", lineHeight: "1.45" }}>
+              <ul style={{ margin: 0, paddingLeft: "16px", fontSize: "12px", color: "var(--sl-ok)", lineHeight: "1.45" }}>
                 {pros.map((item, idx) => (
                   <li key={idx}>{item}</li>
                 ))}
@@ -177,10 +177,10 @@ export default function AiSummaryBox({ toiletId, refreshKey = 0 }) {
 
           {cons.length > 0 && (
             <div style={{ marginBottom: "6px" }}>
-              <div style={{ fontSize: "11px", fontWeight: "600", color: "#991b1b", marginBottom: "2px" }}>
+              <div style={{ fontSize: "11px", fontWeight: "600", color: "var(--sl-danger)", marginBottom: "2px" }}>
                 Dikkat Edilmesi Gerekenler
               </div>
-              <ul style={{ margin: 0, paddingLeft: "16px", fontSize: "12px", color: "#991b1b", lineHeight: "1.45" }}>
+              <ul style={{ margin: 0, paddingLeft: "16px", fontSize: "12px", color: "var(--sl-danger)", lineHeight: "1.45" }}>
                 {cons.map((item, idx) => (
                   <li key={idx}>{item}</li>
                 ))}
@@ -188,7 +188,7 @@ export default function AiSummaryBox({ toiletId, refreshKey = 0 }) {
             </div>
           )}
 
-          <div style={{ fontSize: "11px", color: "#64748b", marginTop: "6px" }}>
+          <div style={{ fontSize: "11px", color: "var(--sl-text-muted)", marginTop: "6px" }}>
             AI-generated summary
             {summaryData.based_on_reviews != null ? ` · ${summaryData.based_on_reviews} yoruma dayalı` : ""}
             {generatedLabel ? ` · ${generatedLabel}` : ""}

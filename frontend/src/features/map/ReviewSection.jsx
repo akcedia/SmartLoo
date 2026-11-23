@@ -213,11 +213,11 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
       style={{
         marginTop: "14px",
         paddingTop: "12px",
-        borderTop: "1px solid #e2e8f0",
+        borderTop: "1px solid var(--sl-border)",
       }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-        <h4 style={{ margin: 0, fontSize: "14px", color: "#0f172a" }}>
+        <h4 style={{ margin: 0, fontSize: "14px", color: "var(--sl-text)" }}>
           Değerlendirmeler ({reviews.length})
         </h4>
       </div>
@@ -225,12 +225,12 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
       {!currentUser ? (
         <div
           style={{
-            background: "#f8fafc",
-            border: "1px solid #cbd5e1",
+            background: "var(--sl-surface-sunken)",
+            border: "1px solid var(--sl-border-strong)",
             borderRadius: "6px",
             padding: "10px",
             fontSize: "13px",
-            color: "#334155",
+            color: "var(--sl-text-secondary)",
             marginBottom: "12px",
           }}
         >
@@ -244,8 +244,8 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
               padding: "6px 12px",
               borderRadius: "6px",
               border: "none",
-              background: "#2563eb",
-              color: "#ffffff",
+              background: "var(--sl-accent-solid)",
+              color: "var(--sl-on-accent)",
               fontSize: "12px",
               fontWeight: "600",
               cursor: "pointer",
@@ -257,12 +257,12 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
       ) : existingUserReview && !isEditing ? (
         <div
           style={{
-            background: "#eff6ff",
-            border: "1px solid #bfdbfe",
+            background: "var(--sl-accent-soft)",
+            border: "1px solid var(--sl-accent-border)",
             borderRadius: "6px",
             padding: "10px",
             fontSize: "13px",
-            color: "#1e3a8a",
+            color: "var(--sl-accent-text)",
             marginBottom: "12px",
           }}
         >
@@ -275,9 +275,9 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
             style={{
               padding: "5px 10px",
               borderRadius: "5px",
-              border: "1px solid #1d4ed8",
-              background: "#ffffff",
-              color: "#1d4ed8",
+              border: "1px solid var(--sl-accent-solid)",
+              background: "var(--sl-surface)",
+              color: "var(--sl-accent-text)",
               fontSize: "12px",
               fontWeight: "600",
               cursor: "pointer",
@@ -290,18 +290,18 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
         <form
           onSubmit={handleSubmit}
           style={{
-            background: "#f8fafc",
-            border: "1px solid #e2e8f0",
+            background: "var(--sl-surface-sunken)",
+            border: "1px solid var(--sl-border)",
             borderRadius: "6px",
             padding: "10px",
             marginBottom: "12px",
           }}
         >
-          <div style={{ fontSize: "13px", fontWeight: "600", color: "#0f172a", marginBottom: "8px" }}>
+          <div style={{ fontSize: "13px", fontWeight: "600", color: "var(--sl-text)", marginBottom: "8px" }}>
             {isEditing ? "Değerlendirmenizi Düzenleyin" : "Yeni Değerlendirme Yaz"}
           </div>
 
-          <label style={{ display: "block", fontSize: "12px", color: "#334155", marginBottom: "8px" }}>
+          <label style={{ display: "block", fontSize: "12px", color: "var(--sl-text-secondary)", marginBottom: "8px" }}>
             Hijyen Puanı (1–5):{" "}
             <select
               aria-label="Hijyen puanı"
@@ -312,8 +312,8 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
                 marginLeft: "4px",
                 padding: "4px 8px",
                 borderRadius: "4px",
-                border: "1px solid #cbd5e1",
-                background: "#ffffff",
+                border: "1px solid var(--sl-border-strong)",
+                background: "var(--sl-surface)",
               }}
             >
               <option value={5}>5 - Çok Temiz</option>
@@ -324,7 +324,7 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
             </select>
           </label>
 
-          <label style={{ display: "block", fontSize: "12px", color: "#334155" }}>
+          <label style={{ display: "block", fontSize: "12px", color: "var(--sl-text-secondary)" }}>
             Yorum (İsteğe bağlı):
             <textarea
               aria-label="Yorum metni"
@@ -341,7 +341,7 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
                 marginTop: "4px",
                 padding: "6px 8px",
                 borderRadius: "4px",
-                border: "1px solid #cbd5e1",
+                border: "1px solid var(--sl-border-strong)",
                 fontSize: "13px",
                 fontFamily: "inherit",
                 resize: "vertical",
@@ -358,7 +358,7 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
               gap: "8px",
             }}
           >
-            <span style={{ fontSize: "11px", color: "#64748b" }}>
+            <span style={{ fontSize: "11px", color: "var(--sl-text-muted)" }}>
               {comment.length} / {MAX_COMMENT_LENGTH}
             </span>
 
@@ -371,9 +371,9 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
                   style={{
                     padding: "5px 10px",
                     borderRadius: "5px",
-                    border: "1px solid #94a3b8",
-                    background: "#ffffff",
-                    color: "#334155",
+                    border: "1px solid var(--sl-border-strong)",
+                    background: "var(--sl-surface)",
+                    color: "var(--sl-text-secondary)",
                     fontSize: "12px",
                     cursor: "pointer",
                   }}
@@ -388,8 +388,8 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
                   padding: "5px 12px",
                   borderRadius: "5px",
                   border: "none",
-                  background: "#2563eb",
-                  color: "#ffffff",
+                  background: "var(--sl-accent-solid)",
+                  color: "var(--sl-on-accent)",
                   fontSize: "12px",
                   fontWeight: "600",
                   cursor: submitting ? "not-allowed" : "pointer",
@@ -408,8 +408,8 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
           style={{
             marginBottom: "10px",
             fontSize: "12px",
-            color: "#991b1b",
-            background: "#fee2e2",
+            color: "var(--sl-danger)",
+            background: "var(--sl-danger-soft)",
             padding: "7px 10px",
             borderRadius: "4px",
           }}
@@ -423,8 +423,8 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
           style={{
             marginBottom: "10px",
             fontSize: "12px",
-            color: "#166534",
-            background: "#dcfce7",
+            color: "var(--sl-ok)",
+            background: "var(--sl-ok-soft)",
             padding: "7px 10px",
             borderRadius: "4px",
           }}
@@ -434,7 +434,7 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
       )}
 
       {loading && (
-        <div style={{ fontSize: "13px", color: "#475569" }}>
+        <div style={{ fontSize: "13px", color: "var(--sl-text-muted)" }}>
           Yorumlar yükleniyor...
         </div>
       )}
@@ -443,8 +443,8 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
         <div
           style={{
             fontSize: "12px",
-            color: "#92400e",
-            background: "#fef3c7",
+            color: "var(--sl-warn)",
+            background: "var(--sl-warn-soft)",
             padding: "8px 10px",
             borderRadius: "4px",
             display: "flex",
@@ -460,9 +460,9 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
             style={{
               padding: "3px 8px",
               borderRadius: "4px",
-              border: "1px solid #92400e",
-              background: "#ffffff",
-              color: "#92400e",
+              border: "1px solid var(--sl-warn)",
+              background: "var(--sl-surface)",
+              color: "var(--sl-warn)",
               fontSize: "11px",
               fontWeight: "600",
               cursor: "pointer",
@@ -474,7 +474,7 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
       )}
 
       {!loading && !loadError && reviews.length === 0 && (
-        <p style={{ margin: 0, fontSize: "13px", color: "#64748b" }}>
+        <p style={{ margin: 0, fontSize: "13px", color: "var(--sl-text-muted)" }}>
           Bu tesis için henüz yorum yapılmamış.
         </p>
       )}
@@ -490,24 +490,24 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
               <li
                 key={rev.id}
                 style={{
-                  border: "1px solid #e2e8f0",
+                  border: "1px solid var(--sl-border)",
                   borderRadius: "6px",
                   padding: "8px 10px",
-                  background: isOwner ? "#f8fafc" : "#ffffff",
+                  background: isOwner ? "var(--sl-surface-sunken)" : "var(--sl-surface)",
                   fontSize: "13px",
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "6px" }}>
-                  <strong style={{ color: "#0f172a", fontSize: "12px" }}>
+                  <strong style={{ color: "var(--sl-text)", fontSize: "12px" }}>
                     {formatReviewAuthor(rev, isOwner)}
                   </strong>
-                  <span style={{ fontSize: "12px", fontWeight: "600", color: "#1d4ed8" }}>
+                  <span style={{ fontSize: "12px", fontWeight: "600", color: "var(--sl-accent-text)" }}>
                     {rev.cleanliness_score} / 5
                   </span>
                 </div>
 
                 {dateLabel && (
-                  <div style={{ fontSize: "11px", color: "#64748b", marginTop: "2px" }}>
+                  <div style={{ fontSize: "11px", color: "var(--sl-text-muted)", marginTop: "2px" }}>
                     {dateLabel}
                   </div>
                 )}
@@ -516,7 +516,7 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
                   <p
                     style={{
                       margin: "6px 0 0 0",
-                      color: "#334155",
+                      color: "var(--sl-text-secondary)",
                       lineHeight: "1.45",
                       whiteSpace: "pre-wrap",
                       wordBreak: "break-word",
@@ -536,9 +536,9 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
                         style={{
                           padding: "3px 8px",
                           borderRadius: "4px",
-                          border: "1px solid #cbd5e1",
-                          background: "#ffffff",
-                          color: "#1e293b",
+                          border: "1px solid var(--sl-border-strong)",
+                          background: "var(--sl-surface)",
+                          color: "var(--sl-text-secondary)",
                           fontSize: "11px",
                           cursor: "pointer",
                         }}
@@ -554,9 +554,9 @@ export default function ReviewSection({ toiletId, onReviewsMutated }) {
                         style={{
                           padding: "3px 8px",
                           borderRadius: "4px",
-                          border: "1px solid #fecaca",
-                          background: "#fef2f2",
-                          color: "#991b1b",
+                          border: "1px solid var(--sl-danger-border)",
+                          background: "var(--sl-danger-soft)",
+                          color: "var(--sl-danger)",
                           fontSize: "11px",
                           cursor: "pointer",
                         }}

@@ -1,11 +1,13 @@
 import React, { useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Circle, Popup, useMap, useMapEvents } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Circle, Popup, ZoomControl, useMap, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import { PIN_STATE_LABELS, pinIcon, pinState, userLocationIcon } from "./mapPins.js";
+import { useI18n } from "../../shared/i18n/I18nProvider.jsx";
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -22,6 +24,17 @@ function RecenterMap({ center, citywide, toilets }) {
       else map.setView([41.05, 29.0], 10);
     } else map.setView([center.lat, center.lon], 15);
   }, [center.lat, center.lon, citywide, toilets, map]);
+  return null;
+}
+
+// A facility chosen from the list or the AI panel is brought into view.
+function ShowSelected({ toilet }) {
+  const map = useMap();
+  useEffect(() => {
+    if (!toilet || toilet.latitude == null || toilet.longitude == null) return;
+    const point = [toilet.latitude, toilet.longitude];
+    if (!map.getBounds().contains(point)) map.panTo(point);
+  }, [toilet, map]);
   return null;
 }
 
@@ -55,12 +68,15 @@ export default function MapView({
   onSearchThisArea,
   onSelectToilet,
   onClearSelection,
+  selectedToilet = null,
 }) {
+  const { t } = useI18n();
   return (
     <div style={{ position: "relative", height: "100%", width: "100%" }}>
       {!citywide && pendingCenter && (
         <button
           type="button"
+          className="sl-search-area"
           onClick={onSearchThisArea}
           style={{
             position: "absolute",
@@ -70,24 +86,26 @@ export default function MapView({
             zIndex: 1000,
             padding: "8px 16px",
             borderRadius: "999px",
-            border: "1px solid #1d4ed8",
-            background: "#2563eb",
-            color: "#ffffff",
+            border: "1px solid var(--sl-accent-solid)",
+            background: "var(--sl-accent-solid)",
+            color: "var(--sl-on-accent)",
             fontWeight: "600",
             fontSize: "13px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+            boxShadow: "var(--sl-shadow-md)",
             cursor: "pointer",
           }}
         >
-          Bu bölgede ara
+          {t("Bu bölgede ara")}
         </button>
       )}
 
       <MapContainer
         center={[searchCenter.lat, searchCenter.lon]}
         zoom={15}
+        zoomControl={false}
         style={{ height: "100%", width: "100%" }}
       >
+        <ZoomControl position="bottomleft" />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -102,26 +120,34 @@ export default function MapView({
         {!citywide && <Circle
           center={[searchCenter.lat, searchCenter.lon]}
           radius={radius}
-          pathOptions={{ color: "#2563eb", fillOpacity: 0.08 }}
+          pathOptions={{ className: "sl-radius" }}
         />}
 
         {hasLocationPermission && userLocation && (
-          <Marker position={[userLocation.lat, userLocation.lon]}>
-            <Popup>Mevcut Konumunuz</Popup>
+          <Marker position={[userLocation.lat, userLocation.lon]} icon={userLocationIcon} title={t("Mevcut Konumunuz")} keyboard={false}>
+            <Popup>{t("Mevcut Konumunuz")}</Popup>
           </Marker>
         )}
 
-        {toilets.map((toilet) => (
-          <Marker
-            key={toilet.id}
-            alt={toilet.name}
-            title={toilet.name}
-            position={[toilet.latitude, toilet.longitude]}
-            eventHandlers={{
-              click: () => onSelectToilet(toilet),
-            }}
-          />
-        ))}
+        <ShowSelected toilet={selectedToilet} />
+
+        {toilets.map((toilet) => {
+          const state = pinState(toilet);
+          const selected = selectedToilet?.id === toilet.id;
+          return (
+            <Marker
+              key={toilet.id}
+              icon={pinIcon(state, selected)}
+              alt={toilet.name}
+              title={`${toilet.name} · ${t(PIN_STATE_LABELS[state])}`}
+              position={[toilet.latitude, toilet.longitude]}
+              zIndexOffset={selected ? 1000 : state === "open" ? 100 : 0}
+              eventHandlers={{
+                click: () => onSelectToilet(toilet),
+              }}
+            />
+          );
+        })}
       </MapContainer>
     </div>
   );

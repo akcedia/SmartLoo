@@ -1,0 +1,118 @@
+{
+  "base_url": "https://smartloo.onrender.com",
+  "writes": 0,
+  "model_calls": 0,
+  "passed": true,
+  "facility_count": 432,
+  "nearby_count": 1,
+  "filter_coverage": {
+    "total": 432,
+    "open_now": 0,
+    "has_disabled_access": 0,
+    "has_baby_changing": 0,
+    "is_free": 0
+  },
+  "checked_assets": 2,
+  "checks": [
+    {
+      "path": "/healthz",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/assets/index-BuHlDp5l.js",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/assets/index-DRxTk5hM.css",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/sign-in",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/register",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/account",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/admin",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/api/v1/toilets",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/api/v1/toilets/33f6720b-c241-4553-99b5-b9753ebfcde4",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/api/v1/toilets/nearby",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/api/v1/toilets",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/api/v1/toilets",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/api/v1/toilets",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/api/v1/toilets",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/api/v1/toilets",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/api/v1/toilets",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/api/v1/admin/metrics/summary",
+      "status": 401,
+      "expected": 401
+    },
+    {
+      "path": "/assets/nonexistent.js",
+      "status": 404,
+      "expected": 404
+    },
+    {
+      "path": "/api/v1/toilets/nearby",
+      "status": 422,
+      "expected": 422
+    }
+  ]
+}
