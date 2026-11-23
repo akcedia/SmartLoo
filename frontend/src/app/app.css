@@ -126,8 +126,9 @@ body { margin: 0; }
 }
 .app-account-button:hover { background: var(--sl-surface-hover); }
 
-/* Theme switch */
-.app-theme-toggle {
+/* Theme and language switches */
+.app-theme-toggle,
+.app-lang-toggle {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -142,7 +143,9 @@ body { margin: 0; }
   border-radius: 999px;
   cursor: pointer;
 }
-.app-theme-toggle:hover { background: var(--sl-surface-hover); color: var(--app-text); }
+.app-theme-toggle:hover,
+.app-lang-toggle:hover { background: var(--sl-surface-hover); color: var(--app-text); }
+.app-lang-toggle { min-width: var(--app-touch); justify-content: center; font-weight: 700; letter-spacing: 0.02em; }
 .app-theme-toggle svg { flex: none; }
 .app-avatar {
   display: inline-grid;
@@ -382,6 +385,7 @@ body { margin: 0; }
   .app-account-menu button,
   .app .app-signin,
   .app .app-topnav a,
-  .app-theme-toggle { min-height: var(--app-touch); box-sizing: border-box; }
+  .app-theme-toggle,
+  .app-lang-toggle { min-height: var(--app-touch); box-sizing: border-box; }
   .app-field input { font-size: 16px; }
 }

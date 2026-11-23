@@ -1,5 +1,6 @@
 import { CRITICAL_THRESHOLD } from "../api/contract.js";
 import { useElementWidth } from "../useElementWidth.js";
+import { useI18n } from "../../../shared/i18n/I18nProvider.jsx";
 
 const MIN_W = 260;
 const PAD = { top: 12, right: 12, bottom: 28, left: 32 };
@@ -18,12 +19,13 @@ export function chartGeometry(width, days) {
 // Daily mean trend. Days without reviews are gaps, never drawn as 0.
 export default function TrendChart({ trend, threshold = CRITICAL_THRESHOLD }) {
   const [ref, width] = useElementWidth(640);
+  const { t } = useI18n();
   if (trend === null) {
-    return <p className="admin-empty">Sunucu bu yanıtta günlük trendi göndermedi.</p>;
+    return <p className="admin-empty">{t("Sunucu bu yanıtta günlük trendi göndermedi.")}</p>;
   }
   const points = trend.filter((d) => d.average_cleanliness !== null);
   if (points.length === 0) {
-    return <p className="admin-empty">Bu seçim için trend verisi yok.</p>;
+    return <p className="admin-empty">{t("Bu seçim için trend verisi yok.")}</p>;
   }
 
   const { W, H, innerW, labelEvery } = chartGeometry(width, trend.length);
@@ -45,7 +47,7 @@ export default function TrendChart({ trend, threshold = CRITICAL_THRESHOLD }) {
 
   return (
     <figure className="admin-chart" ref={ref}>
-      <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} role="img" aria-label="Günlük ortalama hijyen puanı trendi">
+      <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} role="img" aria-label={t("Günlük ortalama hijyen puanı trendi")}>
         {[1, 2, 3, 4, 5].map((v) => (
           <g key={v}>
             <line x1={PAD.left} x2={W - PAD.right} y1={y(v)} y2={y(v)} className="admin-chart-grid" />
@@ -65,7 +67,7 @@ export default function TrendChart({ trend, threshold = CRITICAL_THRESHOLD }) {
               r="4"
               className={d.average_cleanliness < threshold ? "admin-chart-dot admin-chart-dot--critical" : "admin-chart-dot"}
             >
-              <title>{`${d.date}: ${d.average_cleanliness.toFixed(2)} (${d.review_count} değerlendirme)`}</title>
+              <title>{`${d.date}: ${d.average_cleanliness.toFixed(2)} (${t("{n} değerlendirme", { n: d.review_count })})`}</title>
             </circle>
           ),
         )}
@@ -75,23 +77,23 @@ export default function TrendChart({ trend, threshold = CRITICAL_THRESHOLD }) {
           ) : null,
         )}
       </svg>
-      <figcaption>Günlük ortalama (1–5). Kesikli çizgi: {threshold} kritik eşik. Değerlendirme olmayan günler boş bırakılır.</figcaption>
+      <figcaption>{t("Günlük ortalama (1–5). Kesikli çizgi: {threshold} kritik eşik. Değerlendirme olmayan günler boş bırakılır.", { threshold })}</figcaption>
       {/* The chart is an image to assistive technology; this table carries the same data as text. */}
       <div className="admin-sr">
       <table>
-        <caption>Günlük hijyen ortalamaları ({trend.length - points.length} gün değerlendirmesiz)</caption>
+        <caption>{t("Günlük hijyen ortalamaları ({n} gün değerlendirmesiz)", { n: trend.length - points.length })}</caption>
         <thead>
           <tr>
-            <th scope="col">Tarih</th>
-            <th scope="col">Ortalama</th>
-            <th scope="col">Değerlendirme</th>
+            <th scope="col">{t("Tarih")}</th>
+            <th scope="col">{t("Ortalama")}</th>
+            <th scope="col">{t("Değerlendirme")}</th>
           </tr>
         </thead>
         <tbody>
           {points.map((d) => (
             <tr key={d.date}>
               <th scope="row">{d.date}</th>
-              <td>{d.average_cleanliness.toFixed(2)}{d.average_cleanliness < threshold ? " (kritik)" : ""}</td>
+              <td>{d.average_cleanliness.toFixed(2)}{d.average_cleanliness < threshold ? ` (${t("kritik")})` : ""}</td>
               <td>{d.review_count}</td>
             </tr>
           ))}
