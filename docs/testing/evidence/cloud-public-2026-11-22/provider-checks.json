@@ -1,0 +1,34 @@
+{
+  "neon": {
+    "connected": true,
+    "read_only": true,
+    "tls": true,
+    "hostname_verified": true,
+    "channel_binding_required": true,
+    "postgres_version": "16.16 (b5be8fd)",
+    "public_table_count": 8,
+    "postgis_available": true,
+    "postgis_installed": true
+  },
+  "atlas": {
+    "connected": true,
+    "read_only": true,
+    "tls_required": true,
+    "certificate_verification": true,
+    "database_read_authorized": true,
+    "collection_count": 1,
+    "review_count": 0
+  },
+  "upstash": {
+    "connected": true,
+    "tls_required": true,
+    "certificate_verification": true,
+    "hostname_verification": true,
+    "application_cache_roundtrip": true,
+    "ttl_seconds": 60,
+    "expiration_verified": true,
+    "scoped_key_isolation": true,
+    "model_calls": 0,
+    "temporary_keys_removed": true
+  }
+}
