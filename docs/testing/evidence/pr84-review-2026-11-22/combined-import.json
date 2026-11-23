@@ -1,0 +1,18 @@
+{
+  "candidate_sources": [
+    "4273a1a",
+    "95d2efd"
+  ],
+  "public_app_used": false,
+  "private_database": true,
+  "runner_exit_code": 0,
+  "cases": 1,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "junit_guard_exit_code": 0,
+  "remaining_facilities": 0,
+  "remaining_users": 0,
+  "remaining_recovery_operations": 0,
+  "private_database_removed": true
+}
