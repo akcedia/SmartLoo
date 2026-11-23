@@ -3,12 +3,14 @@
 // and reports a rejected token once, so the session can end in one place.
 
 export class ApiError extends Error {
-  constructor(status, message, { detail = null, fieldErrors = {} } = {}) {
+  constructor(status, message, { detail = null, fieldErrors = {}, data = null } = {}) {
     super(message);
     this.name = "ApiError";
     this.status = status;
     this.detail = detail;
     this.fieldErrors = fieldErrors;
+    // Whole parsed error body, for APIs that answer with top-level fields (e.g. import 422 `errors`).
+    this.data = data;
   }
 }
 
@@ -25,9 +27,9 @@ export function fieldErrorsFrom(detail) {
   return errors;
 }
 
-async function readDetail(response) {
+async function readErrorBody(response) {
   try {
-    return (await response.json()).detail ?? null;
+    return await response.json();
   } catch {
     return null;
   }
@@ -36,11 +38,14 @@ async function readDetail(response) {
 export function createApiClient({ baseUrl = "", getToken = () => null, onUnauthorized = () => {}, fetchImpl } = {}) {
   const doFetch = fetchImpl ?? ((...args) => fetch(...args));
 
-  async function request(path, { method = "GET", query, body, signal, auth = true, raw = false } = {}) {
+  // `body` is sent as JSON. `rawBody` (string, Blob/File, ArrayBuffer) is sent unchanged with
+  // `contentType`, e.g. a CSV file as text/csv; it is never JSON-stringified.
+  async function request(path, { method = "GET", query, body, rawBody, contentType, signal, auth = true, raw = false } = {}) {
     const token = auth ? getToken() : null;
     const headers = { Accept: raw ? "*/*" : "application/json" };
     if (token) headers.Authorization = `Bearer ${token}`;
-    if (body !== undefined) headers["Content-Type"] = "application/json";
+    if (rawBody !== undefined) headers["Content-Type"] = contentType ?? "application/octet-stream";
+    else if (body !== undefined) headers["Content-Type"] = "application/json";
 
     const qs = query ? new URLSearchParams(Object.entries(query).filter(([, v]) => v !== null && v !== undefined && v !== "")).toString() : "";
     let response;
@@ -48,7 +53,7 @@ export function createApiClient({ baseUrl = "", getToken = () => null, onUnautho
       response = await doFetch(`${baseUrl}${path}${qs ? `?${qs}` : ""}`, {
         method,
         headers,
-        body: body === undefined ? undefined : JSON.stringify(body),
+        body: rawBody !== undefined ? rawBody : body === undefined ? undefined : JSON.stringify(body),
         signal,
       });
     } catch (error) {
@@ -57,11 +62,12 @@ export function createApiClient({ baseUrl = "", getToken = () => null, onUnautho
     }
 
     if (!response.ok) {
-      const detail = await readDetail(response);
+      const data = await readErrorBody(response);
+      const detail = data && typeof data === "object" && "detail" in data ? data.detail : null;
       // Only a token we actually sent can have expired; a sign-in failure is not a session end.
       if (response.status === 401 && token) onUnauthorized();
       const message = typeof detail === "string" ? detail : response.statusText || "İstek başarısız";
-      throw new ApiError(response.status, message, { detail, fieldErrors: fieldErrorsFrom(detail) });
+      throw new ApiError(response.status, message, { detail, fieldErrors: fieldErrorsFrom(detail), data });
     }
 
     if (raw) return response;
