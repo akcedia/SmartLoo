@@ -1,0 +1,73 @@
+/* Shared dropdown (Dropdown.jsx). Tokens: shared/theme/theme.css. */
+.sl-dropdown { position: relative; display: inline-flex; }
+.sl-dropdown-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 10px 0 12px;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--sl-text);
+  background: var(--sl-surface);
+  border: 1px solid var(--sl-border-strong);
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  transition: background-color 0.15s ease-out, border-color 0.15s ease-out;
+}
+.sl-dropdown-button:hover { background: var(--sl-surface-hover); }
+.sl-dropdown-button[aria-expanded="true"] { border-color: var(--sl-accent2-border); }
+.sl-dropdown-button:focus-visible,
+.sl-dropdown-menu :focus-visible { outline: 3px solid var(--sl-accent-ring); outline-offset: 2px; }
+.sl-dropdown-chevron { flex: none; color: var(--sl-text-muted); transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+.sl-dropdown-button[aria-expanded="true"] .sl-dropdown-chevron { transform: rotate(180deg); }
+
+.sl-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  z-index: 1405;
+  display: grid;
+  gap: 2px;
+  min-width: max(100%, 120px);
+  padding: 4px;
+  box-sizing: border-box;
+  background: var(--sl-surface-raised);
+  border: 1px solid var(--sl-border);
+  border-radius: 12px;
+  box-shadow: var(--sl-shadow-lg);
+  animation: sl-dropdown-in 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sl-dropdown-menu--right { right: -4px; transform-origin: top right; }
+.sl-dropdown-menu--left { left: -4px; transform-origin: top left; }
+.sl-dropdown-menu button {
+  min-height: 38px;
+  padding: 0 12px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+  color: var(--sl-text-secondary);
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+}
+.sl-dropdown-menu button:hover { background: var(--sl-surface-hover); color: var(--sl-text); }
+.sl-dropdown-menu button[aria-checked="true"] { background: var(--sl-accent2-solid); color: var(--sl-on-accent2); }
+@keyframes sl-dropdown-in {
+  from { opacity: 0; transform: translateY(-4px) scale(0.97); }
+}
+@media (pointer: coarse) {
+  .sl-dropdown-button { min-height: 42px; }
+  .sl-dropdown-menu button { min-height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sl-dropdown-menu { animation: none; }
+  .sl-dropdown-chevron { transition: none; }
+}

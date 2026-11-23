@@ -102,3 +102,52 @@ describe("DirectionsButton", () => {
     expect(host.querySelector("a, button")).toBeNull();
   });
 });
+
+describe("remembered maps app", () => {
+  let host;
+  let root;
+  beforeEach(() => {
+    globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+    localStorage.clear();
+    host = document.createElement("div");
+    document.body.append(host);
+    root = createRoot(host);
+  });
+  afterEach(() => {
+    act(() => root.unmount());
+    host.remove();
+    localStorage.clear();
+  });
+
+  const render = (platform) =>
+    act(async () => root.render(<DirectionsButton key={Math.random()} latitude={KADIKOY.lat} longitude={KADIKOY.lon} name={KADIKOY.name} platform={platform} />));
+
+  it("asks every time unless the user ticks “Bu seçimi varsayılan yap”", async () => {
+    await render("ios");
+    await act(async () => host.querySelector("button.sl-directions-button").click());
+    const google = [...host.querySelectorAll(".sl-directions-menu a")].find((a) => a.textContent.includes("Google"));
+    google.addEventListener("click", (e) => e.preventDefault());
+    await act(async () => google.click());
+    expect(localStorage.getItem("smartloo.mapsApp")).toBeNull();
+
+    await act(async () => host.querySelector("button.sl-directions-button").click());
+    await act(async () => host.querySelector(".sl-directions-remember input").click());
+    const apple = [...host.querySelectorAll(".sl-directions-menu a")].find((a) => a.textContent.includes("Apple"));
+    apple.addEventListener("click", (e) => e.preventDefault());
+    await act(async () => apple.click());
+    expect(localStorage.getItem("smartloo.mapsApp")).toBe("apple");
+
+    const direct = host.querySelector("a.sl-directions-button");
+    expect(direct.getAttribute("href")).toMatch(/^https:\/\/maps\.apple\.com\//);
+    expect(host.textContent).toContain("Apple Haritalar ile açılır.");
+  });
+
+  it("uses the saved app even on Android, and “Başka uygulama seç” goes back to asking", async () => {
+    localStorage.setItem("smartloo.mapsApp", "google");
+    await render("android");
+    expect(host.querySelector("a.sl-directions-button").getAttribute("href")).toMatch(/^https:\/\/www\.google\.com\/maps\/dir\//);
+    await act(async () => [...host.querySelectorAll("button")].find((b) => b.textContent === "Başka uygulama seç").click());
+    expect(localStorage.getItem("smartloo.mapsApp")).toBeNull();
+    expect(host.querySelector("a.sl-directions-button").getAttribute("href")).toMatch(/^geo:/);
+  });
+});

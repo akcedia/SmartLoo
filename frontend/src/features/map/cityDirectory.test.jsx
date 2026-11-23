@@ -85,7 +85,7 @@ it("starts citywide with open-only off, and can switch back to the real nearby e
   expect(host.querySelector('[data-testid="map-mode"]').textContent).toBe("city:2");
   expect(fetchImpl.mock.calls[0][0]).toBe("/api/v1/toilets");
   expect(host.textContent).toContain("İBB Açık Veri Lisansı");
-  const nearby = [...host.querySelectorAll("button")].find(b => b.textContent === "Yakınımda ara");
+  const nearby = [...host.querySelectorAll("button")].find(b => b.textContent === "Yakınımda");
   await act(async () => nearby.click());
   expect(fetchImpl.mock.calls.at(-1)[0]).toContain("/api/v1/toilets/nearby?");
   expect(host.querySelector('[data-testid="map-mode"]').textContent).toBe("nearby:0");
@@ -108,7 +108,7 @@ it.each([null, true, false])("nearby uses its own opening information (%s), not 
   }));
   await act(async () => root.render(<SessionProvider initialSession={null} fetchImpl={fetchImpl}>
     <MapApiProvider><SearchPage /></MapApiProvider></SessionProvider>));
-  await act(async () => [...host.querySelectorAll("button")].find(b => b.textContent === "Yakınımda ara").click());
+  await act(async () => [...host.querySelectorAll("button")].find(b => b.textContent === "Yakınımda").click());
   const button = [...host.querySelectorAll("button")].find(b => b.textContent.startsWith("Şu An Açık"));
   expect(button.disabled).toBe(isOpen === null);
   expect(host.querySelector('[data-testid="map-mode"]').textContent).toBe("nearby:1");

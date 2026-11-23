@@ -19,13 +19,12 @@
   border-radius: 10px;
   text-decoration: none;
   cursor: pointer;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), 0 6px 18px var(--sl-accent-glow);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
   transition: background-color 0.15s ease-out, box-shadow 0.15s ease-out, transform 0.1s ease-out;
 }
 .sl-directions .sl-directions-button:hover { background: var(--sl-accent-solid-hover); border-color: var(--sl-accent-solid-hover); }
 .sl-directions-button:active { transform: translateY(1px); }
 .sl-directions-button:focus-visible { outline: 3px solid var(--sl-accent-ring); outline-offset: 2px; }
-.sl-directions-button[aria-expanded="true"] { box-shadow: 0 0 0 4px var(--sl-accent-glow); }
 
 .sl-directions-note,
 .sl-directions-missing { margin: 6px 0 0; font-size: 12px; color: var(--sl-text-muted); }
@@ -75,4 +74,31 @@
 @media (prefers-reduced-motion: reduce) {
   .sl-directions-menu { animation: none; }
   .sl-directions-button { transition: none; }
+}
+
+/* Remember the chosen maps app */
+.sl-directions-remember {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  margin-top: 4px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--sl-text-secondary);
+  border-top: 1px solid var(--sl-border);
+  cursor: pointer;
+}
+.sl-directions-remember input { width: 18px; height: 18px; margin: 0; accent-color: var(--sl-accent2-border); }
+.sl-directions-link {
+  padding: 0;
+  font: inherit;
+  font-weight: 700;
+  color: var(--sl-accent-text);
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  background: none;
+  border: 0;
+  cursor: pointer;
 }

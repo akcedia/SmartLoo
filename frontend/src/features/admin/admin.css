@@ -44,7 +44,7 @@ body { margin: 0; }
   color: var(--admin-on-accent);
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08), 0 4px 14px var(--sl-accent-glow);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
   transition: background-color 0.15s ease-out, box-shadow 0.15s ease-out, transform 0.1s ease-out;
 }
 .admin button:hover:not(:disabled) { background: var(--admin-accent-strong); border-color: var(--admin-accent-strong); }
@@ -67,7 +67,7 @@ body { margin: 0; }
 .admin-tabs { display: flex; gap: 4px; margin: 20px 0 16px; border-bottom: 1px solid var(--admin-border); }
 .admin-tab { white-space: nowrap; padding: 10px 14px; margin-bottom: -1px; border-bottom: 2px solid transparent; font-weight: 500; color: var(--admin-muted); text-decoration: none; }
 .admin a.admin-tab:hover { color: var(--admin-text); }
-.admin .admin-tab--active { color: var(--admin-text); border-bottom-color: var(--admin-accent-fill); font-weight: 600; }
+.admin .admin-tab--active { color: var(--admin-text); border-bottom-color: var(--sl-accent2-border); font-weight: 600; }
 .admin-tab--disabled { color: var(--sl-text-faint); cursor: not-allowed; }
 
 .admin-sample-banner {
@@ -124,8 +124,8 @@ body { margin: 0; }
   font-size: 0.9rem;
 }
 .admin-radio:hover { background: var(--sl-surface-hover); }
-.admin-radio:has(input:checked) { border-color: var(--admin-accent-fill); background: var(--admin-accent-soft); color: var(--admin-accent); font-weight: 600; }
-.admin-radio input { accent-color: var(--admin-accent-fill); }
+.admin-radio:has(input:checked) { border-color: var(--sl-accent2-border); background: var(--sl-accent2-solid); color: var(--sl-on-accent2); font-weight: 600; }
+.admin-radio input { accent-color: var(--sl-accent2-border); }
 .admin-hint { flex-basis: 100%; margin: 0; font-size: 0.82rem; color: var(--admin-muted); }
 .admin-field-error { color: var(--admin-critical); font-weight: 400; font-size: 0.85rem; }
 

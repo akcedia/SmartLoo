@@ -16,7 +16,7 @@ import { exportErrorMessage } from "../../features/admin/components/ExportButton
 const EN = catalog("en");
 const SRC = join(process.cwd(), "src");
 // Screens owned by the shared app (Onur). Map screens join this list when Furkan wraps them.
-const TRANSLATED = ["app", "shared", "features/auth", "features/admin", "features/map/DirectionsButton.jsx"];
+const TRANSLATED = ["app", "shared", "features/auth", "features/admin", "features/map/DirectionsButton.jsx", "features/map/SearchPage.jsx", "features/map/MapView.jsx", "features/map/RadiusPicker.jsx"];
 
 function sourceFiles(path) {
   const full = join(SRC, path);
@@ -123,18 +123,21 @@ describe("language switch in the app", () => {
       email.dispatchEvent(new Event("input", { bubbles: true }));
     });
 
-    const toggle = host.querySelector(".app-lang-toggle");
-    expect(toggle.getAttribute("aria-label")).toBe("Switch to English");
-    await act(async () => toggle.click());
+    const english = () => [...host.querySelectorAll('[role="radio"]')].find((b) => b.textContent === "English");
+    const turkish = () => [...host.querySelectorAll('[role="radio"]')].find((b) => b.textContent === "Türkçe");
+    await act(async () => host.querySelector(".sl-settings-button").click());
+    expect(english().getAttribute("lang")).toBe("en");
+    await act(async () => english().click());
 
     expect(document.documentElement.lang).toBe("en");
     expect(host.querySelector("h1").textContent).toBe("Sign in");
-    expect(host.querySelector("label").textContent).toBe("Email");
+    expect(host.querySelector("main label").textContent).toBe("Email");
+    expect(host.querySelector(".sl-settings-button").getAttribute("aria-label")).toBe("Settings");
     expect(host.querySelector('input[type="email"]').value).toBe("ayse@example.com");
     expect(host.querySelector(".app-topnav").textContent).toContain("Map");
     expect(localStorage.getItem(LANG_KEY)).toBe("en");
 
-    await act(async () => host.querySelector(".app-lang-toggle").click());
+    await act(async () => turkish().click());
     expect(host.querySelector("h1").textContent).toBe("Giriş yap");
     expect(document.documentElement.lang).toBe("tr");
   });

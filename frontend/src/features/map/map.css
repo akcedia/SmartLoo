@@ -1,0 +1,551 @@
+/* Map page layout (SearchPage) and pins (mapPins.js). Theme tokens: shared/theme/theme.css.
+   Controls are grouped by job:
+     top-left    where to search: view switch, İstanbul geneli / Yakınımda, radius, count
+     next to it  what to show: Şu an açık, Ücretsiz, Filtreler (panel with the rest)
+     bottom-right AI Önerileri and Konumum
+     bottom-left zoom and data source
+   Phones: two compact rows on top, detail and AI open as bottom sheets, list is full screen. */
+
+.sl-search { height: 100%; font-family: inherit; color: var(--sl-text); }
+.sl-map-area { position: relative; height: 100%; overflow: hidden; }
+
+/* ---------- Top column: toolbar, filter panel, notices, list ---------- */
+.sl-top {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  pointer-events: none;
+}
+.sl-top > * { pointer-events: auto; }
+.sl-toolbar { display: flex; flex-wrap: wrap; gap: 8px; pointer-events: none; max-width: 100%; }
+.sl-toolbar > * { pointer-events: auto; }
+
+/* Control groups have no box of their own: each button carries its own
+   border and a short shadow so it stays readable on top of the map. */
+.sl-group { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.sl-filter-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+
+.sl-segmented {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  background: var(--sl-surface);
+  border: 1px solid var(--sl-border);
+  border-radius: 12px;
+  box-shadow: var(--sl-shadow-sm);
+}
+.sl-segmented > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 12px;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--sl-text-secondary);
+  background: transparent;
+  border: 0;
+  border-radius: 9px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s ease-out, color 0.15s ease-out;
+}
+.sl-segmented > button:hover:not(:disabled):not([aria-pressed="true"]) { background: var(--sl-surface-hover); color: var(--sl-text); }
+.sl-segmented > button[aria-pressed="true"] { background: var(--sl-accent2-solid); color: var(--sl-on-accent2); }
+.sl-segmented > button:disabled { opacity: 0.55; cursor: not-allowed; }
+.sl-segmented svg { flex: none; }
+
+.sl-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 13px;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--sl-text-secondary);
+  background: var(--sl-surface);
+  border: 1px solid var(--sl-border-strong);
+  border-radius: 999px;
+  box-shadow: var(--sl-shadow-sm);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s ease-out, border-color 0.15s ease-out;
+}
+/* Hover never hides the selected state (and does not stick after a tap on touch screens). */
+@media (hover: hover) {
+  .sl-chip:hover:not(:disabled):not([aria-pressed="true"]) { background: var(--sl-surface-hover); color: var(--sl-text); }
+}
+.sl-chip[aria-pressed="true"] {
+  background: var(--sl-accent2-solid);
+  border-color: var(--sl-accent2-solid);
+  color: var(--sl-on-accent2);
+  font-weight: 600;
+}
+.sl-chip[aria-expanded="true"] { border-color: var(--sl-accent2-border); }
+.sl-chip:disabled { opacity: 0.55; cursor: not-allowed; }
+.sl-badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  box-sizing: border-box;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--sl-on-accent2);
+  background: var(--sl-accent2-solid);
+  border: 1px solid var(--sl-accent2-border);
+  border-radius: 999px;
+}
+/* Result count: top right on wide screens, bottom left (above the source) on phones. */
+.sl-count {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1001;
+  margin: 0;
+  padding: 7px 12px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--sl-text-muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  background: var(--sl-surface);
+  border: 1px solid var(--sl-border);
+  border-radius: 999px;
+  box-shadow: var(--sl-shadow-sm);
+}
+
+/* "1 km ▾" next to Yakınımda (shared Dropdown, styled as part of the switch) */
+.sl-segmented .sl-radius-button {
+  min-height: 34px;
+  padding: 0 8px 0 10px;
+  background: transparent;
+  border: 0;
+  border-left: 1px solid var(--sl-border);
+  border-radius: 0 9px 9px 0;
+}
+.sl-segmented .sl-radius-button:hover { background: var(--sl-surface-hover); }
+
+/* Arrow that folds the filter row on phones (hidden on wide screens). */
+.sl-row-toggle { display: none; }
+.sl-view-label { white-space: nowrap; }
+.sl-label-short { display: none; }
+
+.sl-search :focus-visible { outline: 3px solid var(--sl-accent-ring); outline-offset: 2px; }
+
+/* ---------- Filter panel ---------- */
+.sl-filter-panel {
+  width: min(360px, 100%);
+  box-sizing: border-box;
+  padding: 14px;
+  background: var(--sl-surface-raised);
+  border: 1px solid var(--sl-border);
+  border-radius: 14px;
+  box-shadow: var(--sl-shadow-lg);
+}
+.sl-filter-panel[hidden] { display: none; }
+.sl-filter-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 15px; }
+.sl-icon-button {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  font: inherit;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--sl-text-muted);
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.sl-icon-button:hover { background: var(--sl-surface-hover); color: var(--sl-text); }
+.sl-filter-group { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 14px; padding: 0; border: 0; min-width: 0; }
+.sl-filter-group legend { padding: 0; margin-bottom: 8px; font-size: 12.5px; font-weight: 600; color: var(--sl-text-muted); }
+.sl-filter-note { margin: 0 0 14px; font-size: 12px; line-height: 1.45; color: var(--sl-text-muted); }
+.sl-filter-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.sl-button-primary,
+.sl-button-secondary {
+  min-height: 40px;
+  padding: 0 16px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.sl-button-primary {
+  color: var(--sl-on-accent);
+  background: var(--sl-accent-solid);
+  border: 1px solid var(--sl-accent-solid);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+}
+.sl-button-primary:hover { background: var(--sl-accent-solid-hover); }
+.sl-button-secondary { color: var(--sl-text-secondary); background: var(--sl-surface); border: 1px solid var(--sl-border-strong); }
+.sl-button-secondary:hover:not(:disabled) { background: var(--sl-surface-hover); }
+.sl-button-secondary:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* ---------- Notices ---------- */
+.sl-notices { display: flex; flex-direction: column; gap: 6px; max-width: min(520px, 100%); }
+.sl-notices:empty { display: none; }
+.sl-notice {
+  margin: 0;
+  padding: 8px 12px;
+  font-size: 13px;
+  line-height: 1.4;
+  border: 1px solid;
+  border-radius: 10px;
+  box-shadow: var(--sl-shadow-sm);
+}
+.sl-notice--info { color: var(--sl-accent-text); background: var(--sl-accent-soft); border-color: var(--sl-accent-border); }
+.sl-notice--warn { color: var(--sl-warn); background: var(--sl-warn-soft); border-color: var(--sl-warn-border); }
+.sl-notice--error { color: var(--sl-danger); background: var(--sl-danger-soft); border-color: var(--sl-danger-border); }
+.sl-link-button {
+  padding: 0;
+  font: inherit;
+  font-weight: 700;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+/* ---------- Result list ---------- */
+.sl-list {
+  width: min(380px, 100%);
+  max-height: calc(100% - 4px);
+  min-height: 0;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 8px;
+  background: var(--sl-surface);
+  border: 1px solid var(--sl-border);
+  border-radius: 14px;
+  box-shadow: var(--sl-shadow-md);
+  overscroll-behavior: contain;
+}
+.sl-list-title { margin: 4px 8px 8px; font-size: 14px; }
+.sl-list-empty { margin: 8px; font-size: 13px; color: var(--sl-text-muted); }
+.sl-list ul { list-style: none; margin: 0; padding: 0; }
+.sl-list-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 56px;
+  padding: 8px 10px;
+  font: inherit;
+  text-align: left;
+  color: var(--sl-text);
+  background: transparent;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.sl-list-item:hover { background: var(--sl-surface-hover); }
+.sl-list-dot { flex: none; width: 12px; height: 12px; box-sizing: border-box; border-radius: 50%; }
+.sl-list-dot--open { background: var(--sl-accent-solid); }
+.sl-list-dot--closed { background: var(--sl-border-strong); }
+.sl-list-dot--unknown { background: var(--sl-surface); border: 2.5px solid var(--sl-accent-solid); }
+.sl-list-main { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.sl-list-name { font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sl-list-meta { font-size: 12.5px; color: var(--sl-text-muted); }
+.sl-list-distance { flex: none; font-size: 13px; font-weight: 700; color: var(--sl-accent-text); font-variant-numeric: tabular-nums; }
+.sl-search--list .sl-top { bottom: 96px; }
+.sl-search--list .sl-list { flex: 0 1 auto; }
+
+/* ---------- Floating actions (bottom right) ---------- */
+.sl-fabs {
+  position: absolute;
+  right: 16px;
+  bottom: 32px;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+.sl-fab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 18px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--sl-text);
+  background: var(--sl-surface-raised);
+  border: 1px solid var(--sl-border);
+  border-radius: 999px;
+  box-shadow: var(--sl-shadow-lg);
+  cursor: pointer;
+  transition: transform 0.12s ease-out, box-shadow 0.15s ease-out;
+}
+.sl-fab:hover { transform: translateY(-1px); }
+.sl-fab:active { transform: translateY(1px); }
+.sl-fab--ai {
+  color: var(--sl-on-ai-fab);
+  background: var(--sl-ai-fab);
+  border-color: #a996f5;
+  box-shadow: var(--sl-shadow-md);
+}
+.sl-fab--ai[aria-expanded="true"] { outline: 2px solid var(--sl-ai-border); outline-offset: 2px; }
+.sl-fab--locate { width: 48px; padding: 0; color: var(--sl-accent-text); }
+
+/* ---------- Source line (bottom left, next to zoom) ---------- */
+.sl-source {
+  position: absolute;
+  left: 60px;
+  bottom: 10px;
+  z-index: 1000;
+  max-width: calc(100% - 260px);
+  margin: 0;
+  padding: 4px 9px;
+  font-size: 11.5px;
+  color: var(--sl-text-muted);
+  background: var(--sl-surface);
+  border-radius: 8px;
+  box-shadow: var(--sl-shadow-sm);
+}
+.sl-source a { color: var(--sl-accent-text); }
+
+/* ---------- Furkan's panels, placed by this layout ---------- */
+.sl-search .sl-search-area { top: auto !important; bottom: 100px !important; z-index: 1002 !important; box-shadow: var(--sl-shadow-lg) !important; }
+.sl-search aside[aria-label="Yapay zeka tesis önerileri"] {
+  left: auto !important;
+  right: 16px !important;
+  bottom: 150px !important;
+  border-radius: 14px !important;
+  border-color: var(--sl-border) !important;
+  box-shadow: var(--sl-shadow-lg) !important;
+  z-index: 1002 !important;
+}
+.sl-search aside[aria-label="Tesis detayları"] {
+  border: 1px solid var(--sl-border) !important;
+  border-radius: 14px !important;
+  box-shadow: var(--sl-shadow-lg) !important;
+  z-index: 1002 !important;
+}
+
+/* ---------- Pins ---------- */
+.sl-pin { background: none; border: 0; }
+.sl-pin svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 2px 2.5px rgba(15, 23, 32, 0.45));
+  transform-origin: 50% 100%;
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sl-pin:hover svg { transform: translateY(-2px) scale(1.06); }
+.sl-pin-body { stroke: #ffffff; stroke-width: 2; }
+.sl-pin-label { font: 800 9.5px system-ui, -apple-system, "Segoe UI", sans-serif; letter-spacing: 0.02em; }
+.sl-pin--open .sl-pin-body { fill: var(--sl-accent-solid); }
+.sl-pin--open .sl-pin-label { fill: var(--sl-on-accent); }
+.sl-pin--unknown .sl-pin-body { fill: #ffffff; stroke: var(--sl-accent-solid); stroke-width: 3; }
+.sl-pin--unknown .sl-pin-label { fill: var(--sl-accent-solid); }
+.sl-pin--closed .sl-pin-body { fill: #8a94a3; }
+.sl-pin--closed .sl-pin-label { fill: #ffffff; }
+.sl-pin--selected svg { filter: drop-shadow(0 3px 4px rgba(15, 23, 32, 0.5)); }
+.sl-pin--selected .sl-pin-body { stroke-width: 3; }
+.sl-pin:focus-visible { outline: 3px solid var(--sl-accent-ring); outline-offset: 2px; border-radius: 50% 50% 50% 0; }
+
+.sl-user-dot { background: none; border: 0; }
+.sl-user-dot-core {
+  position: absolute;
+  inset: 3px;
+  background: #2563eb;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(15, 23, 32, 0.45);
+}
+.sl-user-dot-pulse {
+  position: absolute;
+  inset: -8px;
+  background: rgba(37, 99, 235, 0.22);
+  border-radius: 50%;
+  animation: sl-pulse 2s ease-out infinite;
+}
+@keyframes sl-pulse {
+  from { transform: scale(0.5); opacity: 1; }
+  to { transform: scale(1.4); opacity: 0; }
+}
+path.sl-radius { stroke: var(--sl-accent-solid); stroke-width: 2; fill: var(--sl-accent-solid); fill-opacity: 0.07; }
+
+/* ---------- Wide screens: keep controls clear of the detail card ---------- */
+@media (min-width: 768px) {
+  .sl-search--detail .sl-top { right: calc(min(360px, 100% - 32px) + 32px); }
+  .sl-search--detail .sl-count { display: none; }
+  /* Keep the count clear of the control rows when they wrap on medium widths. */
+  .sl-top { right: 200px; }
+}
+
+/* ---------- Phones ---------- */
+@media (max-width: 767px) {
+  .sl-top { top: 8px; left: 8px; right: 8px; gap: 8px; }
+  .sl-toolbar { flex-direction: column; flex-wrap: nowrap; align-items: flex-start; width: 100%; gap: 8px; }
+  .sl-group { flex-wrap: nowrap; }
+  .sl-segmented > button,
+  .sl-segmented .sl-radius-button { min-height: 40px; padding: 0 11px; }
+  .sl-chip { min-height: 40px; }
+  .sl-count {
+    top: auto;
+    right: auto;
+    left: 8px;
+    bottom: calc(56px + env(safe-area-inset-bottom));
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  .sl-search--detail .sl-count,
+  .sl-search--list .sl-count,
+  .sl-search--filters .sl-count { display: none; }
+
+  /* Map/List become icons; the words stay for screen readers. */
+  .sl-view-switch > button { padding: 0 10px; }
+  .sl-view-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+  }
+  .sl-label-long { display: none; }
+  .sl-label-short { display: inline; }
+
+  /* Filter row folds into the arrow and slides out when opened. */
+  .sl-group-filters { width: 100%; }
+  .sl-row-toggle {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    color: var(--sl-text);
+    background: var(--sl-surface);
+    border: 1px solid var(--sl-border-strong);
+    border-radius: 999px;
+    box-shadow: var(--sl-shadow-sm);
+    cursor: pointer;
+  }
+  .sl-row-toggle svg { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+  .sl-row-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+  .sl-row-toggle .sl-badge { position: absolute; top: -5px; right: -5px; }
+  .sl-filter-chips {
+    flex-wrap: nowrap;
+    min-width: 0;
+    max-width: 0;
+    overflow-x: auto;
+    overflow-y: visible;
+    padding: 2px 2px 4px;
+    margin: -2px 0 -4px;
+    scrollbar-width: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-16px);
+    transition:
+      max-width 0.36s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.22s ease-out,
+      transform 0.36s cubic-bezier(0.16, 1, 0.3, 1),
+      visibility 0s linear 0.36s;
+  }
+  .sl-filter-chips::-webkit-scrollbar { display: none; }
+  .sl-group-filters.is-open .sl-filter-chips {
+    max-width: calc(100vw - 72px);
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition:
+      max-width 0.36s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.22s ease-out 0.05s,
+      transform 0.36s cubic-bezier(0.16, 1, 0.3, 1),
+      visibility 0s;
+  }
+  .sl-group-filters.is-open .sl-filter-chips .sl-chip { animation: sl-chip-in 0.32s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .sl-group-filters.is-open .sl-filter-chips .sl-chip:nth-child(2) { animation-delay: 0.04s; }
+  .sl-group-filters.is-open .sl-filter-chips .sl-chip:nth-child(3) { animation-delay: 0.08s; }
+  @keyframes sl-chip-in {
+    from { opacity: 0; transform: translateX(-10px); }
+  }
+
+  /* Bottom sheets: filters, facility detail, AI suggestions. */
+  .sl-filter-panel {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    max-height: 82vh;
+    overflow-y: auto;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+    border-radius: 18px 18px 0 0;
+    z-index: 1300;
+    animation: sl-sheet-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes sl-sheet-in {
+    from { transform: translateY(24px); opacity: 0; }
+  }
+  .sl-filter-group .sl-chip,
+  .sl-filter-group .sl-segmented > button { min-height: 44px; }
+  .sl-filter-actions > * { flex: 1; min-height: 48px; }
+
+  .sl-search aside[aria-label="Tesis detayları"],
+  .sl-search aside[aria-label="Yapay zeka tesis önerileri"] {
+    top: auto !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    max-height: 64% !important;
+    border-radius: 18px 18px 0 0 !important;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .sl-fabs { right: 12px; bottom: calc(28px + env(safe-area-inset-bottom)); }
+  .sl-fab--ai span { display: none; }
+  .sl-fab--ai { width: 52px; min-height: 52px; padding: 0; }
+  .sl-fab--locate { width: 52px; min-height: 52px; }
+  .sl-search--detail .sl-fabs,
+  .sl-search--list .sl-fabs,
+  .sl-search--filters .sl-fabs,
+  .sl-search--detail .sl-search-area { display: none; }
+  .sl-search .sl-search-area { bottom: calc(96px + env(safe-area-inset-bottom)) !important; }
+
+  .sl-source { left: 8px; bottom: calc(24px + env(safe-area-inset-bottom)); max-width: calc(100% - 84px); font-size: 11px; }
+  .sl-source-note { display: none; }
+  .sl-map-area .leaflet-control-zoom { display: none; }
+
+  /* List view: full screen under the control rows. */
+  .sl-search--list .sl-top { inset: 0; padding: 8px; background: var(--sl-bg); }
+  .sl-search--list .sl-list { flex: 1; width: 100%; border-radius: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sl-filter-chips,
+  .sl-filter-chips .sl-chip,
+  .sl-row-toggle svg,
+  .sl-filter-panel,
+  .sl-pin svg,
+  .sl-fab,
+  .sl-chip,
+  .sl-segmented > button { transition: none; animation: none; }
+  .sl-user-dot-pulse { animation: none; opacity: 0.4; }
+}
