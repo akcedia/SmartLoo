@@ -23,38 +23,62 @@ function contrast(a, b) {
   const [x, y] = [luminance(a), luminance(b)].sort((p, q) => q - p);
   return (x + 0.05) / (y + 0.05);
 }
-function tokens(file, prefix) {
-  const css = readFileSync(new URL(file, import.meta.url), "utf8");
-  return Object.fromEntries([...css.matchAll(new RegExp(`--${prefix}-([a-z-]+):\\s*(#[0-9a-fA-F]{6})`, "g"))].map((m) => [m[1], m[2]]));
+// Both themes are measured from shared/theme/theme.css: the light block is
+// `:root[data-theme="light"]`, the dark block `:root[data-theme="dark"]`.
+function themeTokens(name) {
+  const css = readFileSync(new URL("../shared/theme/theme.css", import.meta.url), "utf8");
+  const start = css.indexOf(`:root[data-theme="${name}"] {`);
+  const block = css.slice(start, css.indexOf("\n}", start));
+  return Object.fromEntries([...block.matchAll(/--sl-([a-z0-9-]+):\s*(#[0-9a-fA-F]{6})/g)].map((m) => [m[1], m[2]]));
 }
 
-describe("colour contrast of the design tokens", () => {
-  const app = tokens("./app.css", "app");
-  const admin = tokens("../features/admin/admin.css", "admin");
+describe.each(["light", "dark"])("colour contrast of the %s theme", (name) => {
+  const t = themeTokens(name);
 
-  it.each([
-    ["text on page background", app.text, app.bg, 4.5],
-    ["muted text on page background", app.muted, app.bg, 4.5],
-    ["links on page background", app.accent, app.bg, 4.5],
-    ["links on white", app.accent, app.surface, 4.5],
-    ["active nav / selected item", app.accent, app["accent-soft"], 4.5],
-    ["button text", "#ffffff", app.accent, 4.5],
-    ["error text", app.critical, app["critical-bg"], 4.5],
-    ["success text", app.ok, app["ok-bg"], 4.5],
-    ["form control border (non-text)", app["input-border"], app.surface, 3],
-  ])("app: %s ≥ %s:1", (_, fg, bg, min) => {
-    expect(contrast(fg, bg)).toBeGreaterThanOrEqual(min);
+  it("defines every token the pairs below use", () => {
+    for (const key of ["bg", "surface", "surface-raised", "surface-sunken", "text", "text-secondary", "text-muted", "text-faint", "border-strong", "accent-solid", "accent-solid-hover", "on-accent", "accent-text", "accent-soft", "danger", "danger-soft", "ok", "ok-soft", "warn", "warn-soft", "ai", "ai-soft", "accent2-solid", "on-accent2", "accent2-text", "accent2-soft", "accent2-border"]) {
+      expect(t[key], key).toMatch(/^#[0-9a-f]{6}$/i);
+    }
   });
 
   it.each([
-    ["selected period chip", admin.accent, admin["accent-soft"], 4.5],
-    ["links and active tab on page background", admin.accent, admin.bg, 4.5],
-    ["muted text", admin.muted, admin.bg, 4.5],
-    ["critical score", admin.critical, admin["critical-bg"], 4.5],
-    ["'Aktif' pill", admin.ok, "#e6f4ea", 4.5],
-    ["filter control border (non-text)", admin["input-border"], admin.surface, 3],
-  ])("admin: %s ≥ %s:1", (_, fg, bg, min) => {
-    expect(contrast(fg, bg)).toBeGreaterThanOrEqual(min);
+    ["text on page background", "text", "bg", 4.5],
+    ["text on surface", "text", "surface", 4.5],
+    ["secondary text on surface", "text-secondary", "surface", 4.5],
+    ["muted text on page background", "text-muted", "bg", 4.5],
+    ["muted text on surface", "text-muted", "surface", 4.5],
+    ["muted text on sunken surface", "text-muted", "surface-sunken", 4.5],
+    ["muted text on raised surface", "text-muted", "surface-raised", 4.5],
+    ["hint text on surface", "text-faint", "surface", 4.5],
+    ["hint / disabled text on page background", "text-faint", "bg", 4.5],
+    ["links on page background", "accent-text", "bg", 4.5],
+    ["links on surface", "accent-text", "surface", 4.5],
+    ["active nav / selected chip", "accent-text", "accent-soft", 4.5],
+    ["button text on accent fill", "on-accent", "accent-solid", 4.5],
+    ["button text on hover fill", "on-accent", "accent-solid-hover", 4.5],
+    ["error text", "danger", "danger-soft", 4.5],
+    ["error text on surface", "danger", "surface", 4.5],
+    ["danger button text", "bg", "danger", 4.5],
+    ["success text / 'Aktif' pill", "ok", "ok-soft", 4.5],
+    ["maintenance / warning text", "warn", "warn-soft", 4.5],
+    ["AI label", "ai", "ai-soft", 4.5],
+    ["AI toggle text", "surface", "ai", 4.5],
+    ["form control border (non-text)", "border-strong", "surface", 3],
+    ["accent fill against surface (non-text)", "accent-solid", "surface", 3],
+    ["selected chip text on pastel green", "on-accent2", "accent2-solid", 4.5],
+    ["pastel green text on surface", "accent2-text", "surface", 4.5],
+    ["pastel green text on its soft background", "accent2-text", "accent2-soft", 4.5],
+    ["pastel green border (non-text)", "accent2-border", "surface", 3],
+    ["AI button text", "on-ai-fab", "ai-fab", 4.5],
+  ])("%s", (_, fg, bg, min) => {
+    expect(contrast(t[fg], t[bg])).toBeGreaterThanOrEqual(min);
+  });
+});
+
+describe("components use theme tokens", () => {
+  it.each(["../app/app.css", "../features/admin/admin.css"])("%s has no hard-coded colors", (file) => {
+    const css = readFileSync(new URL(file, import.meta.url), "utf8");
+    expect(css.match(/#[0-9a-fA-F]{3,6}\b/g)).toBeNull();
   });
 });
 

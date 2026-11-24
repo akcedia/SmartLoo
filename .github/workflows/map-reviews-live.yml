@@ -37,11 +37,20 @@ jobs:
       - name: Reject missing, failed or skipped evidence
         if: always()
         run: python scripts/check_required_junit.py map-reviews-live.xml --minimum 9
+      - name: Mounted moderation and facility status against real services
+        env:
+          SMARTLOO_MAP_JUNIT: ${{ github.workspace }}/moderation-live.xml
+        run: python scripts/check_map_reviews_live.py --suite moderation
+      - name: Require real moderation evidence without skips
+        if: always()
+        run: python scripts/check_required_junit.py moderation-live.xml --minimum 1
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: map-reviews-live
-          path: map-reviews-live.xml
+          path: |
+            map-reviews-live.xml
+            moderation-live.xml
           if-no-files-found: error
       - name: Stop test services
         if: always()

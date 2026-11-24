@@ -6,6 +6,8 @@ import { useEffect, useRef } from "react";
 import { SessionProvider, useSession } from "../shared/session/SessionProvider.jsx";
 import { Link, useLocation } from "./router.jsx";
 import AccountMenu from "./AccountMenu.jsx";
+import SettingsMenu from "../shared/settings/SettingsMenu.jsx";
+import { I18nProvider, useI18n } from "../shared/i18n/I18nProvider.jsx";
 import HomeRoute from "./HomeRoute.jsx";
 import SignInPage from "../features/auth/SignInPage.jsx";
 import RegisterPage from "../features/auth/RegisterPage.jsx";
@@ -25,18 +27,20 @@ export function routeFor(path) {
 
 function Header({ path }) {
   const { session, signOut } = useSession();
+  const { t } = useI18n();
   return (
     <header className="app-topbar">
       <Link className="app-brand" to="/">
         <span className="app-brand-mark" aria-hidden="true">SL</span>
         SmartLoo
       </Link>
-      <nav className="app-topnav" aria-label="Ana menü">
-        <Link to="/" aria-current={path === "/" ? "page" : undefined}>Harita</Link>
+      <nav className="app-topnav" aria-label={t("Ana menü")}>
+        <Link to="/" aria-current={path === "/" ? "page" : undefined}>{t("Harita")}</Link>
         {session?.role === "ADMIN" && (
-          <Link to="/admin" aria-current={routeFor(path) === "admin" ? "page" : undefined}>Yönetim</Link>
+          <Link to="/admin" aria-current={routeFor(path) === "admin" ? "page" : undefined}>{t("Yönetim")}</Link>
         )}
       </nav>
+      <SettingsMenu />
       <AccountMenu session={session} onSignOut={signOut} returnTo={path} />
     </header>
   );
@@ -44,11 +48,12 @@ function Header({ path }) {
 
 function Notice() {
   const { notice, clearNotice } = useSession();
+  const { t } = useI18n();
   if (!notice) return null;
   return (
     <div className="app-notice" role="status">
-      <span>{notice}</span>
-      <button type="button" className="app-notice-close" onClick={clearNotice} aria-label="Bildirimi kapat">×</button>
+      <span>{t(notice)}</span>
+      <button type="button" className="app-notice-close" onClick={clearNotice} aria-label={t("Bildirimi kapat")}>×</button>
     </div>
   );
 }
@@ -67,11 +72,12 @@ function Routes() {
   const route = routeFor(path);
   const mainRef = useRef(null);
   const firstRender = useRef(true);
+  const { t } = useI18n();
 
   useEffect(() => {
     const titles = { home: "Harita", "sign-in": "Giriş yap", register: "Kayıt ol", account: "Hesabım", admin: "Yönetim", "not-found": "Sayfa bulunamadı" };
-    document.title = `${titles[route]} · SmartLoo`;
-  }, [route]);
+    document.title = `${t(titles[route])} · SmartLoo`;
+  }, [route, t]);
 
   useEffect(() => {
     if (firstRender.current) {
@@ -83,7 +89,7 @@ function Routes() {
 
   return (
     <div className={route === "home" ? "app app--full" : "app"}>
-      <a className="app-skip" href="#main">İçeriğe geç</a>
+      <a className="app-skip" href="#main">{t("İçeriğe geç")}</a>
       <Header path={path} />
       <Notice />
       <div id="main" tabIndex={-1} ref={mainRef}>
@@ -98,8 +104,8 @@ function Routes() {
         {route === "admin" && <AdminRoute path={path} />}
         {route === "not-found" && (
           <main className="app-page app-narrow">
-            <h1>Sayfa bulunamadı</h1>
-            <p><Link to="/">Haritaya dön</Link></p>
+            <h1>{t("Sayfa bulunamadı")}</h1>
+            <p><Link to="/">{t("Haritaya dön")}</Link></p>
           </main>
         )}
       </div>
@@ -107,10 +113,12 @@ function Routes() {
   );
 }
 
-export default function App(props) {
+export default function App({ initialLang, ...props }) {
   return (
-    <SessionProvider {...props}>
-      <Routes />
-    </SessionProvider>
+    <I18nProvider initialLang={initialLang}>
+      <SessionProvider {...props}>
+        <Routes />
+      </SessionProvider>
+    </I18nProvider>
   );
 }

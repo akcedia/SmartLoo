@@ -2,7 +2,7 @@
 
 Draft for #60. Internal review target: 24 November. Test-document PR and Yeşim Hoca reviewer assignment: 25 November. Learn PDF submission after PR approval: 29 November. The announcement specifies dates without times. Özgür coordinates reviewer assignment and Learn submission. [Updated course calendar](https://github.com/akcedia/SmartLoo/issues/60#issuecomment-7059811141).
 
-Current QA baseline: [main 180a2944](https://github.com/akcedia/SmartLoo/tree/180a29442eac3d00500e5848aea41354366e4b88). Results below retain their tested revision and scope.
+Current QA baseline: [main 7b824134](https://github.com/akcedia/SmartLoo/tree/7b824134157c64913ec0ca8bdf2b25525992b190). The public Render handoff is recorded separately at d28502c. Results retain their tested revision and scope.
 
 | Area | Evidence to collect |
 | --- | --- |
@@ -104,7 +104,7 @@ Account deletion (#75 and #63) is merged. The [required deletion CI](https://git
 
 Merged analytics (#64) retains the live admin/export checks. Merged accessibility (#65) provides component keyboard and semantic checks; screen-reader, Lighthouse and map FPS measurements remain open. The [İBB import suite](https://github.com/akcedia/SmartLoo/actions/runs/44824809830) passed 37 checks with real PostGIS. The #77 contributor recorded 432 imported facilities and a repeat with zero inserts/updates. The separate ADMIN upload, historical usage-statistics integration and fresh visual acceptance remain open. The draft AI #68 [real-store/synthetic-model checks](https://github.com/akcedia/SmartLoo/actions/runs/44880493302) passed 30 HTTP and 4 mounted UI cases; main and live-model acceptance are pending.
 
-## Latest test results and interpretation
+## 21 November test results and interpretation
 
 The independent run on main 6b1c5b2f after #79 and #80 passed **42/52 automated acceptance instances (80.77%)**, with 10 failed and zero skipped. Across all collected local Python cases, **200/276 passed**, 10 failed and 66 service-dependent cases skipped. Seven passing subtests are outside those item counts. See the [per-case evidence and run context](evidence/acceptance/main-6b1c5b2f.md).
 
@@ -121,60 +121,72 @@ The [22 November evidence record](evidence/acceptance/main-180a2944.md) links ve
 
 The [instructor review #82 evidence map](evidence/INSTRUCTOR-REVIEW-82.md) links the test matrix, coverage, security and focused TDD evidence, plus the performance and SonarQube plans. Formal penetration-test evidence, staging load, SonarQube, visual accessibility and full integrated AI acceptance are open.
 
+## 24 November QA and internal review
+
+The [independent main rerun](evidence/acceptance/main-7b824134.md) records **45 passed, 7 failed, 0 skipped** in the 52-instance requirements catalog. TC-07/18/27 now pass, with [focused TDD evidence](https://github.com/akcedia/SmartLoo/issues/56#issuecomment-7102554132). AI cases TC-08/15/16/17/28 and the TC-21 entry-point check remain open. TC-21 expects rendered map DOM from the API factory. Cloud root smoke measures HTTP availability. Browser-level map acceptance still needs its own result. The broad local Python run has **230 passed, 7 failed, 68 service-dependent skips**. The frontend passed **286 tests** and built successfully.
+
+[Backend coverage](evidence/coverage/backend-7b824134.md) is **77.23% combined** (1631/2112), with 1328/1676 statements and 303/436 branch destinations exercised. The combined result remains below the **80%** target. Service skips and the absence of draft AI changes limit this measurement.
+
+The [public Render handoff](CLOUD-HANDOFF-2026-11-22.md) documents 40 semantic HTTP checks on deployed 89abb21 and 20 read-only smoke checks on deployed d28502c. It covers search, auth, reviews, analytics/export and account deletion with synthetic data. Cleanup retained 432 İBB facilities. The [merged ADMIN import job](https://github.com/akcedia/SmartLoo/actions/runs/45077556517/job/137378077976) passed a real-service UI test. The [ADMIN UI candidate record](ADMIN-UI-REVIEW-2026-11-24.md) includes mounted moderation, import and map/review suites. Each suite retains its own environment and receipt.
+
+[Draft #89's AI job](https://github.com/akcedia/SmartLoo/actions/runs/45361313204/job/138331788353) covers HTTP, adapter, safeguards, Turkish offline checks and mounted UI. [Draft #100](https://github.com/akcedia/SmartLoo/pull/100) reports 50 passed and 2 failed on its candidate. Native Gemini synthetic samples remain candidate evidence. Independent human review, integrated AI and agreed catalog handling remain open.
+
+The [#82 evidence map](evidence/INSTRUCTOR-REVIEW-82.md) records the pending SonarQube rerun after #95, final performance, security and accessibility evidence, and the draft PDF. The historical 358 ms short-run p95 exceeds the latency target. The specified five-minute run and a current Sonar scan still need evidence.
+
 ## Functional traceability
 
 Sources: [requirements](../REQUIREMENTS.MD) and [test catalog](../../tests/requirements_cases.json).
 
 | Case | Requirement | Scenario | Verification | Result | Evidence |
 | --- | --- | --- | --- | --- | --- |
-| TC-01 | FR-01 | Nearby open toilets | test_tc_01 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-02 | FR-02 | Accessibility filter | test_tc_02 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-03 | FR-02 | Baby changing filter | test_tc_03 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-04 | FR-08 | Successful login | test_tc_04 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-05 | FR-03 | Reject guest review | test_tc_05 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-06 | FR-03 | Create review and aggregate | test_tc_06 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-07 | FR-05 | Suggest location | test_tc_07 | Failed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-08 | FR-04 | Structured Turkish AI summary | test_tc_08 | Failed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-09 | FR-06 | Filtered dashboard | test_tc_09 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md); live-main workflow also passed |
-| TC-10 | FR-07 | CSV report export | test_tc_10 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md); live-main workflow also passed |
-| TC-11 | FR-01 | Reject invalid search | test_tc_11 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-12 | FR-02 | Combined filters and clearing | test_tc_12 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-13 | FR-02 | Pricing filter | test_tc_13 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-14 | FR-01 | Empty nearby results | test_tc_14 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-15 | FR-04 | AI outage and insufficient reviews | test_tc_15 | Failed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-16 | FR-04 | Summary cache | test_tc_16 | Failed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-17 | FR-04 | Preference recommendations | test_tc_17 | Failed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-18 | FR-05 | Moderate suggestions | test_tc_18 | Failed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-19 | FR-07 | Idempotent CSV and JSON import | test_tc_19 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-20 | FR-07 | Invalid import is atomic | test_tc_20 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-21 | FR-09 | Initial map HTML and manual marker details | test_tc_21 | Failed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
+| TC-01 | FR-01 | Nearby open toilets | test_tc_01 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-02 | FR-02 | Accessibility filter | test_tc_02 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-03 | FR-02 | Baby changing filter | test_tc_03 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-04 | FR-08 | Successful login | test_tc_04 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md); [cloud scope](CLOUD-HANDOFF-2026-11-22.md) |
+| TC-05 | FR-03 | Reject guest review | test_tc_05 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md); [cloud scope](CLOUD-HANDOFF-2026-11-22.md) |
+| TC-06 | FR-03 | Create review and aggregate | test_tc_06 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md); [cloud scope](CLOUD-HANDOFF-2026-11-22.md) |
+| TC-07 | FR-05 | Suggest location | test_tc_07 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-08 | FR-04 | Structured Turkish AI summary | test_tc_08 | Failed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-09 | FR-06 | Filtered dashboard | test_tc_09 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md); [cloud scope](CLOUD-HANDOFF-2026-11-22.md) |
+| TC-10 | FR-07 | CSV report export | test_tc_10 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md); [cloud scope](CLOUD-HANDOFF-2026-11-22.md) |
+| TC-11 | FR-01 | Reject invalid search | test_tc_11 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-12 | FR-02 | Combined filters and clearing | test_tc_12 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-13 | FR-02 | Pricing filter | test_tc_13 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-14 | FR-01 | Empty nearby results | test_tc_14 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-15 | FR-04 | AI outage and insufficient reviews | test_tc_15 | Failed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-16 | FR-04 | Summary cache | test_tc_16 | Failed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-17 | FR-04 | Preference recommendations | test_tc_17 | Failed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-18 | FR-05 | Moderate suggestions | test_tc_18 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-19 | FR-07 | Idempotent CSV and JSON import | test_tc_19 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-20 | FR-07 | Invalid import is atomic | test_tc_20 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-21 | FR-09 | Initial map HTML and manual marker details | test_tc_21 | Failed | [Main evidence](evidence/acceptance/main-7b824134.md); API factory / browser DOM gap |
 | TC-22 | FR-09 | Map without geolocation | Manual UI | Passed | Özgür, #54 `71e8ce8`, 17 November handoff above |
 | TC-23 | FR-09 | Filter markers remain consistent | Manual UI | Passed | Özgür, #54 `71e8ce8`, 17 November handoff above |
-| TC-24 | FR-07 | JSON report export | test_tc_24 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md); live-main workflow also passed |
-| TC-25 | FR-06 | Dashboard has no data | test_tc_25 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md); live-main workflow also passed |
-| TC-26 | FR-03 | Edit and delete own review | test_tc_26 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-27 | FR-10 | Close reviewed facility | test_tc_27 | Failed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-28 | FR-04 | Untrusted review content | test_tc_28 | Failed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-29 | FR-10 | Invalid toilet coordinates | test_tc_29 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-30 | FR-08 | Case insensitive email | test_tc_30 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-31 | FR-03 | Invalid review rating | test_tc_31 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-32 | FR-03 | Duplicate review | test_tc_32 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-33 | FR-10 | Nonexistent toilet | test_tc_33 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-34 | FR-10 | Account deletion | test_tc_34 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md); live-main workflow also passed |
-| TC-35 | FR-03 | Recalculate aggregate | test_tc_35 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-36 | FR-07 | Stable source identity | test_tc_36 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-37 | FR-08 | Weak password | test_tc_37 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-38 | FR-08 | Password storage and response | test_tc_38 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-39 | FR-08 | JWT claims | test_tc_39 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-40 | FR-08 | Generic login error | test_tc_40 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-41 | FR-08 | Missing token | test_tc_41 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-42 | FR-08 | Tampered token | test_tc_42 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-43 | FR-08 | Expired token | test_tc_43 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-44 | FR-08 | User cannot access admin | test_tc_44 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-45 | FR-08 | Admin access | test_tc_45 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-46 | FR-03 | Review ownership | test_tc_46 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-47 | FR-08 | Login throttling | test_tc_47 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
-| TC-48 | FR-08 | Public registration cannot grant administrator privileges | test_tc_48 | Passed | [Main 180a2944 evidence](evidence/acceptance/main-180a2944.md) |
+| TC-24 | FR-07 | JSON report export | test_tc_24 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md); [cloud scope](CLOUD-HANDOFF-2026-11-22.md) |
+| TC-25 | FR-06 | Dashboard has no data | test_tc_25 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md); [cloud scope](CLOUD-HANDOFF-2026-11-22.md) |
+| TC-26 | FR-03 | Edit and delete own review | test_tc_26 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md); [cloud scope](CLOUD-HANDOFF-2026-11-22.md) |
+| TC-27 | FR-10 | Close reviewed facility | test_tc_27 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-28 | FR-04 | Untrusted review content | test_tc_28 | Failed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-29 | FR-10 | Invalid toilet coordinates | test_tc_29 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-30 | FR-08 | Case insensitive email | test_tc_30 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-31 | FR-03 | Invalid review rating | test_tc_31 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-32 | FR-03 | Duplicate review | test_tc_32 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md); [cloud scope](CLOUD-HANDOFF-2026-11-22.md) |
+| TC-33 | FR-10 | Nonexistent toilet | test_tc_33 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-34 | FR-10 | Account deletion | test_tc_34 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md); [cloud scope](CLOUD-HANDOFF-2026-11-22.md) |
+| TC-35 | FR-03 | Recalculate aggregate | test_tc_35 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-36 | FR-07 | Stable source identity | test_tc_36 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-37 | FR-08 | Weak password | test_tc_37 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-38 | FR-08 | Password storage and response | test_tc_38 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-39 | FR-08 | JWT claims | test_tc_39 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-40 | FR-08 | Generic login error | test_tc_40 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-41 | FR-08 | Missing token | test_tc_41 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-42 | FR-08 | Tampered token | test_tc_42 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-43 | FR-08 | Expired token | test_tc_43 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-44 | FR-08 | User cannot access admin | test_tc_44 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-45 | FR-08 | Admin access | test_tc_45 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md); [cloud scope](CLOUD-HANDOFF-2026-11-22.md) |
+| TC-46 | FR-03 | Review ownership | test_tc_46 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-47 | FR-08 | Login throttling | test_tc_47 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
+| TC-48 | FR-08 | Public registration cannot grant administrator privileges | test_tc_48 | Passed | [Main evidence](evidence/acceptance/main-7b824134.md) |
 
 Functional result labels describe the stated baseline, not the latest unmerged feature branches. Parametrized test instances and TC IDs are counted separately. Partial means evidence exists but one or more acceptance conditions remain open.
 
@@ -188,8 +200,8 @@ Functional result labels describe the stated baseline, not the latest unmerged f
 | NFR-T04 | NFR-02 | Record 100 cache-hit requests and 20 healthy uncached requests; separately force provider timeout Cache p95 <100 ms; uncached p95 <8 s; timeout fallback by 10 s. Record environment and provider/mock separately. | Partial | Partial component evidence: 117 AI tests and 8 real Redis checks at #68 d9fa94df; specified 100/20 latency sample measurements pending. |
 | NFR-T05 | NFR-05 / NFR-06 | Test three viewport widths; keyboard-only map alternatives/details; axe/Lighthouse plus manual focus/contrast checks; 500-marker pan/zoom No horizontal overflow blocking actions; labels/focus usable; ≥30 FPS; Lighthouse accessibility ≥90; no serious/critical axe findings. Record throttling/hardware. | Partial | Partial: #65 edc8e020 mobile overflow fixed, keyboard/axe checks above; Lighthouse, map alternatives, FPS and live acceptance pending. |
 | NFR-T06 | NFR-07 | Disable AI then perform search/filter/details; monitor public API each minute for a calendar month Core requests continue; AI unavailable message appears. Availability ≥99% measured separately; short tests do not prove monthly uptime. | Not run | — |
-| NFR-T07 | NFR-04 / NFR-08 | Seed synthetic email/name/phone in reviews; capture AI request; deny location permission; delete account; inspect public responses and storage PII absent from AI request; no unconsented stored location; account identifiers removed and review text redacted where needed; hashes/secrets absent from responses. | Partial | [Live deletion/session evidence](evidence/acceptance/main-180a2944.md); AI request and location privacy remain open. |
-| NFR-T08 | NFR-09 | Run implementation lint, tests, build and branch coverage report All implementation checks pass and backend coverage ≥80%. Requirements red tests are evidence of pending implementation, not a passing implementation gate. | Partial | [Coverage detail](evidence/coverage/backend-6b1c5b2f.md). 1184/1507 statements; 283/408 branch destinations; 1467/1915 combined, 76.61%. Integrated coverage/lint acceptance open. |
+| NFR-T07 | NFR-04 / NFR-08 | Seed synthetic email/name/phone in reviews; capture AI request; deny location permission; delete account; inspect public responses and storage PII absent from AI request; no unconsented stored location; account identifiers removed and review text redacted where needed; hashes/secrets absent from responses. | Partial | [Main and cloud deletion evidence](evidence/acceptance/main-7b824134.md); AI request and location privacy remain open. |
+| NFR-T08 | NFR-09 | Run implementation lint, tests, build and branch coverage report All implementation checks pass and backend coverage ≥80%. Requirements red tests are evidence of pending implementation, not a passing implementation gate. | Partial | [Local coverage](evidence/coverage/backend-7b824134.md): 1328/1676 statements; 303/436 branches; 1631/2112 combined, 77.23%. Final coverage and lint gate open. |
 | NFR-T09 | NFR-10 | Switch UI between Turkish and English across map, auth, errors and dashboard Labels/messages switch without losing filters; Turkish AI text remains explicitly identified. | Not run | — |
 
 ## Defects and retest
@@ -205,6 +217,6 @@ Record the affected requirement, reproduction steps, expected and observed resul
 
 ## Delivery decision and remaining dependencies
 
-The updated report is ready for review. #60 remains open because full integrated acceptance is pending. #72 has merged. Final feature merges must retain the real-DB gates and pass them on their final revisions. Core auth, map, reviews and analytics are merged. Account deletion is merged and TC-34 has been retested. AI integration remains on its draft branch. SonarQube access is still pending Özgür. Real-DB performance, complete security/privacy acceptance and the shared fixed-revision demo were not started on 19 November because their prerequisites are missing.
+The 24 November Markdown and PDF are ready for Özgür's internal review in #76. #60 remains open for fixed-revision integrated acceptance. The catalog's AI and browser-entry cases, independent Turkish review, final SonarQube and coverage, the prescribed load run, and full visual, accessibility, privacy and security assessments require further evidence. Repeat applicable service and UI gates after final feature integration.
 
-The PDF is a review snapshot generated from this Markdown. Review the linked daily records for commands, environments and source evidence. The final PDF must be regenerated after pending results are available and reviewed before the course submission.
+The PDF is a review snapshot of this Markdown. The test-document PR and Yeşim Hoca review are scheduled for 25 November. Özgür coordinates the reviewer assignment and the Learn submission due on 29 November after approval. Refresh the PDF with final evidence and review findings before course submission.

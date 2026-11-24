@@ -1,0 +1,24 @@
+{
+  "local_services_only": true,
+  "live_model_calls": 0,
+  "created_private_database": true,
+  "exit_code": 0,
+  "pytest_summary": [
+    "205 passed, 1 warning in 148.90s (0:02:28)"
+  ],
+  "junit_cases": 205,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "junit_guard_exit_code": 0,
+  "remaining_toilets": 13,
+  "remaining_users": 14,
+  "remaining_review_operations": 0,
+  "remaining_suggestions": 0,
+  "catalog_exit_code": 1,
+  "catalog_summary": [
+    "7 failed, 45 passed, 1 warning in 8.32s"
+  ],
+  "root_mongo_database_removed": true,
+  "private_database_removed": true
+}

@@ -10,6 +10,7 @@ RepositoryAccounts, an isolated in-memory double over the test state.
 
 import os
 import re
+import secrets
 import uuid
 import threading
 import time
@@ -37,7 +38,9 @@ MAX_PASSWORD_BYTES = 72
 GENERIC_LOGIN_ERROR = "Invalid email or password"
 EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 # Compared against when the email is unknown, so both failure paths cost one bcrypt check.
-DUMMY_HASH = bcrypt.hashpw(b"timing-equalizer", bcrypt.gensalt(rounds=BCRYPT_ROUNDS)).decode()
+# Hashed from a fresh random value at start-up: no password literal in the source, and no
+# input can ever match it, so an unknown email can never sign in.
+DUMMY_HASH = bcrypt.hashpw(secrets.token_hex(32).encode(), bcrypt.gensalt(rounds=BCRYPT_ROUNDS)).decode()
 
 
 class DuplicateEmail(Exception):
@@ -105,6 +108,7 @@ class RepositoryAccounts:
     """Isolated account store over the in-memory test state; not a production database."""
 
     def __init__(self, repository):
+        self.repository = repository
         self.users = repository.setdefault("users", {})
         self.failures = repository.setdefault("login_attempts", [])
         self.locks = repository.setdefault("account_locks", {})
@@ -147,6 +151,11 @@ class RepositoryAccounts:
     def delete(self, user_id, email):
         self.users.pop(user_id, None)
         self.failures[:] = [f for f in self.failures if f["email"] != email]
+        # Same effect as ON DELETE SET NULL in PostgreSQL: suggestions keep their facility data.
+        for suggestion in self.repository.get("suggestions", {}).values():
+            for link in ("submitted_by", "moderated_by"):
+                if suggestion.get(link) == user_id:
+                    suggestion[link] = None
 
 
 class PostgresAccounts:

@@ -2,7 +2,8 @@
 
 Run with SMARTLOO_TEST_POSTGIS=1, SMARTLOO_TEST_MONGO=1 and the usual DB/Mongo
 connection variables. Requires frontend npm ci. Provisions only a private facility,
-three accounts and a unique Mongo database; removes them in finally.
+three accounts and a unique Mongo database; removes them in finally. The import
+suite also writes only rows under its own unique source namespace and removes them.
 """
 import os
 import argparse
@@ -11,6 +12,7 @@ import shutil
 import socket
 import subprocess
 import sys
+import tempfile
 from threading import Thread
 import time
 import uuid
@@ -30,6 +32,7 @@ def main(suite="reviews"):
     marker = uuid.uuid4().hex
     facility = str(uuid.uuid4())
     facility_ids = [facility]
+    suggestion_ids = []
     mongo_db = f"smartloo_map_test_{marker}"
     original_mongo_db = os.environ.get("SMARTLOO_MONGO_DB")
     os.environ["SMARTLOO_MONGO_DB"] = mongo_db
@@ -39,6 +42,10 @@ def main(suite="reviews"):
     emails = []
     server = None
     thread = None
+    # Import suite: a namespace no real source uses, so cleanup touches only this run.
+    import_source = f"import-live-{marker}"
+    busy_flag = Path(tempfile.mkdtemp()) / "import-busy"
+    busy_thread = None
     listener = socket.socket()
     listener.bind(("127.0.0.1", 0))
     port = listener.getsockname()[1]
@@ -48,7 +55,8 @@ def main(suite="reviews"):
                 (id, source, source_id, name, latitude, longitude, district, opening_hours)
                 VALUES (%s, 'map-live-test', %s, 'Map review test', 41, 29, 'Kadıköy', '24/7')""",
                 (facility, marker))
-        env = dict(os.environ, SMARTLOO_LIVE_ORIGIN=f"http://127.0.0.1:{port}", SMARTLOO_LIVE_TOILET=facility)
+        env = dict(os.environ, SMARTLOO_LIVE_ORIGIN=f"http://127.0.0.1:{port}", SMARTLOO_LIVE_TOILET=facility,
+                   SMARTLOO_LIVE_IMPORT_SOURCE=import_source, SMARTLOO_LIVE_BUSY_FLAG=str(busy_flag))
         with TestClient(app) as client:
             for role in ("OWNER", "OTHER", "ADMIN"):
                 email = f"map-{role.lower()}-{marker}@example.com"
@@ -76,6 +84,17 @@ def main(suite="reviews"):
                             (blocked, marker + "-pending"))
                     with app.state.reviews.coordination.guard(blocked) as pending:
                         pending.begin(str(uuid.uuid4()), None, author_id=registered.json()["id"])
+            if suite == "moderation":
+                for name in ("Approve", "Reject", "Conflict"):
+                    response = client.post("/api/v1/toilets/suggest", headers={
+                        "Authorization": "Bearer " + env["SMARTLOO_LIVE_OWNER"]}, json={
+                        "name": "Moderation " + name + " test", "district": "Kadıköy",
+                        "latitude": 41.0005, "longitude": 29,
+                    })
+                    assert response.status_code == 202, response.text
+                    suggestion_ids.append(response.json()["id"])
+                env["SMARTLOO_LIVE_SUGGESTIONS"] = ",".join(suggestion_ids)
+                facility_ids.extend(suggestion_ids)
         server = uvicorn.Server(uvicorn.Config(app, log_level="error"))
         thread = Thread(target=server.run, kwargs={"sockets": [listener]}, daemon=True)
         thread.start()
@@ -90,13 +109,44 @@ def main(suite="reviews"):
         npm = shutil.which("npm.cmd" if os.name == "nt" else "npm")
         if not npm:
             raise RuntimeError("npm is required")
-        configs = {"analytics": "vitest.admin-live.config.js", "deletion": "vitest.deletion-live.config.js"}
+        if suite == "import":
+            # Hold the shared import mutex until the browser test has seen the real 503.
+            def hold_import_mutex():
+                with connect() as conn:
+                    conn.execute("SELECT pg_advisory_lock(-610061)")
+                    for _ in range(1200):
+                        if busy_flag.with_suffix(".done").exists():
+                            break
+                        time.sleep(.05)
+                    conn.execute("SELECT pg_advisory_unlock(-610061)")
+                busy_flag.with_suffix(".released").write_text("ok")
+            busy_thread = Thread(target=hold_import_mutex, daemon=True)
+            busy_thread.start()
+            time.sleep(.5)
+        configs = {"analytics": "vitest.admin-live.config.js", "deletion": "vitest.deletion-live.config.js",
+                   "import": "vitest.import-live.config.js", "moderation": "vitest.moderation-live.config.js"}
         command = ([npm, "test", "--", "--config", configs[suite]] if suite in configs
                    else [npm, "test", "--", "src/features/map/reviewSession.test.jsx"])
         if env.get("SMARTLOO_MAP_JUNIT"):
             command.extend(["--reporter=default", "--reporter=junit", f"--outputFile={env['SMARTLOO_MAP_JUNIT']}"])
         result = subprocess.run(command,
                                 cwd=ROOT / "frontend", env=env, timeout=90)
+        if suite == "import" and result.returncode == 0:
+            # Only the two CSV rows and the JSON row exist; the rejected batch wrote nothing.
+            with connect() as conn:
+                ids = sorted(r["source_id"] for r in conn.execute(
+                    "SELECT source_id FROM toilets WHERE source = %s", (import_source,)).fetchall())
+            print("import rows:", ids)
+            if ids != ["csv-1", "csv-2", "json-1"]:
+                return 1
+        if suite == "moderation" and result.returncode == 0:
+            with connect() as conn:
+                rows = conn.execute("SELECT id, status FROM suggestions WHERE id = ANY(%s::uuid[])", (suggestion_ids,)).fetchall()
+                statuses = {str(row["id"]): row["status"] for row in rows}
+                assert statuses == dict(zip(suggestion_ids, ("APPROVED", "REJECTED", "APPROVED")))
+                saved = conn.execute("SELECT status, review_version FROM toilets WHERE id = %s", (suggestion_ids[0],)).fetchone()
+                assert saved["status"] == "CLOSED" and saved["review_version"] == 2
+            print("moderation SQL status/revision checks passed")
         return result.returncode
     finally:
         if server:
@@ -104,11 +154,18 @@ def main(suite="reviews"):
         if thread:
             thread.join(timeout=10)
         listener.close()
+        if busy_thread:
+            busy_flag.with_suffix(".done").write_text("cleanup")
+            busy_thread.join(timeout=10)
         with pymongo.MongoClient(os.getenv("SMARTLOO_MONGO_URL", "mongodb://127.0.0.1:27017")) as mongo:
             mongo.drop_database(mongo_db)
         with connect() as conn:
             conn.execute("DELETE FROM review_operations WHERE toilet_id = ANY(%s::uuid[])", (facility_ids,))
+            if suggestion_ids:
+                conn.execute("DELETE FROM suggestions WHERE id = ANY(%s::uuid[])", (suggestion_ids,))
+                conn.execute("DELETE FROM toilets WHERE source = 'suggestion' AND id = ANY(%s::uuid[])", (suggestion_ids,))
             conn.execute("DELETE FROM toilets WHERE id = ANY(%s::uuid[]) AND source = 'map-live-test'", (facility_ids,))
+            conn.execute("DELETE FROM toilets WHERE source = %s", (import_source,))
             conn.execute("DELETE FROM users WHERE email = ANY(%s)", (emails,))
             conn.execute("DELETE FROM login_failures WHERE email = ANY(%s)", (emails,))
         if original_mongo_db is None:
@@ -119,5 +176,5 @@ def main(suite="reviews"):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--suite", choices=("reviews", "analytics", "deletion"), default="reviews")
+    parser.add_argument("--suite", choices=("reviews", "analytics", "deletion", "import", "moderation"), default="reviews")
     raise SystemExit(main(parser.parse_args().suite))
