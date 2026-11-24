@@ -1,0 +1,39 @@
+{
+  "revision": "9543ea65a2ade23940d958ab9b40af2cb8ec33bf",
+  "scope": "Headless Edge with the candidate's local production build and actual FastAPI routes. Isolated in-memory stores and synthetic model; external map tiles blocked.",
+  "browser": "Edg/158.0.4370.33",
+  "viewports": [
+    {
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "width": 375,
+      "height": 812
+    }
+  ],
+  "browser_checks": [
+    "Turkish desktop map and synthetic markers rendered",
+    "Turkish summary returned by local synthetic provider",
+    "English controls and original Turkish summary with lang annotation",
+    "375 x 812 mobile map fits without horizontal document overflow",
+    "English mobile recommendations panel opened with guest sign-in guidance",
+    "Language switch preserved summary without re-fetch"
+  ],
+  "summary_http": [
+    {
+      "path": "/api/v1/toilets/00000000-0000-4000-8000-000000000001/summary",
+      "status": 200
+    }
+  ],
+  "mobile_ai_launcher_accessible_name": "",
+  "mobile_ai_panel_bounds": {
+    "left": 0,
+    "right": 405,
+    "top": 669.015625,
+    "bottom": 812
+  },
+  "mobile_ai_panel_fits_original": false,
+  "mobile_ai_panel_right_edge_box_sizing_trial": 375,
+  "application_javascript_errors": 0
+}

@@ -145,6 +145,12 @@ The [#102 merged-main retest](evidence/acceptance/main-ca6e93b4.md) at ca6e93b4 
 
 The [independent AI draft retest](evidence/acceptance/ai-33fee172.md) at 33fee172 passed 292 frontend tests and build, plus **65 catalog and cloud checks** with no failures or skips. Selected AI modules recorded 123 passing and 24 service-dependent skips. The desktop browser preserved Turkish summary content while switching to English and made one summary request. At 375 × 812 the AI recommendations panel overflowed by **30 px**, and its launcher had **no accessible name**. These are candidate findings. Final merged/mobile and independent human AI acceptance remain open.
 
+## Published AI quality candidate — 24 November
+
+On [draft #89 head 9543ea65](evidence/acceptance/ai-9543ea65.md), the independent rerun passed **308 frontend tests and build**, **66 catalog and cloud checks without skips**, and **nine hosted workflows**. The candidate includes main ca6e93b4. Desktop TR/EN switching worked. The **30 px mobile overflow** and missing accessible name of the AI launcher remained reproducible.
+
+The contributor's real-store quality evidence reports **547 tests plus 59 subtests passed**, 21 mounted checks, and **92.98% combined backend coverage** on equivalent tested application source befd4226. The recorded **SonarQube gate passed**, with **86.9% overall coverage** and three existing maintenance findings. The gate evaluates new violations and duplication. Current-main coverage is still **77.23%**. Full mobile, approved native-provider, independent human, final security and prescribed load acceptance remain open. Deployment is a separate decision.
+
 ## Functional traceability
 
 Sources: [requirements](../REQUIREMENTS.MD) and [test catalog](../../tests/requirements_cases.json).
@@ -213,7 +219,7 @@ Functional result labels describe the stated baseline, not the latest unmerged f
 | NFR-T05 | NFR-05 / NFR-06 | Test three viewport widths; keyboard-only map alternatives/details; axe/Lighthouse plus manual focus/contrast checks; 500-marker pan/zoom No horizontal overflow blocking actions; labels/focus usable; ≥30 FPS; Lighthouse accessibility ≥90; no serious/critical axe findings. Record throttling/hardware. | Partial | Partial: #65 mobile/keyboard/axe evidence and [#101 marker/theme regressions](evidence/acceptance/main-46569db0.md). [Draft #89 mobile findings](evidence/acceptance/ai-33fee172.md) record an overflowing AI panel and an unnamed AI launcher. Lighthouse, keyboard alternatives and measured FPS remain open. |
 | NFR-T06 | NFR-07 | Disable AI then perform search/filter/details; monitor public API each minute for a calendar month Core requests continue; AI unavailable message appears. Availability ≥99% measured separately; short tests do not prove monthly uptime. | Not run | — |
 | NFR-T07 | NFR-04 / NFR-08 | Seed synthetic email/name/phone in reviews; capture AI request; deny location permission; delete account; inspect public responses and storage PII absent from AI request; no unconsented stored location; account identifiers removed and review text redacted where needed; hashes/secrets absent from responses. | Partial | [Main and cloud deletion evidence](evidence/acceptance/main-7b824134.md); AI request and location privacy remain open. |
-| NFR-T08 | NFR-09 | Run implementation lint, tests, build and branch coverage report All implementation checks pass and backend coverage ≥80%. Requirements red tests are evidence of pending implementation, not a passing implementation gate. | Partial | [Local coverage on ca6e93b4](evidence/acceptance/main-ca6e93b4.md): 1328/1676 statements; 303/436 branches; 1631/2112 combined, 77.23%. Final coverage and lint gate open. |
+| NFR-T08 | NFR-09 | Run implementation lint, tests, build and branch coverage report All implementation checks pass and backend coverage ≥80%. Requirements red tests are evidence of pending implementation, not a passing implementation gate. | Partial | [Local coverage on ca6e93b4](evidence/acceptance/main-ca6e93b4.md): 1328/1676 statements; 303/436 branches; 1631/2112 combined, 77.23%. Separate [draft candidate coverage](evidence/acceptance/ai-9543ea65.md) reached 92.98%. Release coverage and final lint gate remain open. |
 | NFR-T09 | NFR-10 | Switch UI between Turkish and English across map, auth, errors and dashboard Labels/messages switch without losing filters; Turkish AI text remains explicitly identified. | Not run | — |
 
 ## Defects and retest
@@ -229,6 +235,6 @@ Record the affected requirement, reproduction steps, expected and observed resul
 
 ## Delivery decision and remaining dependencies
 
-The 24 November Markdown and PDF are ready for Özgür's internal review in #76. #60 remains open for fixed-revision integrated acceptance. The catalog's AI and browser-entry cases, independent Turkish review, final SonarQube and coverage, the prescribed load run, and full visual, accessibility, privacy and security assessments require further evidence. Repeat applicable service and UI gates after final feature integration.
+The 24 November Markdown and PDF are ready for Özgür's internal review in #76. #60 remains open for fixed-revision integrated acceptance. The catalog's AI and browser-entry cases, independent Turkish review, release-revision quality and coverage evidence, the prescribed load run, and full visual, accessibility, privacy and security assessments require further evidence. Repeat applicable service and UI gates after final feature integration.
 
 The PDF is a review snapshot of this Markdown. The test-document PR and Yeşim Hoca review are scheduled for 25 November. Özgür coordinates the reviewer assignment and the Learn submission due on 29 November after approval. Refresh the PDF with final evidence and review findings before course submission.
