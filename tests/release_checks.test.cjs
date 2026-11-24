@@ -2,6 +2,19 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const { REQUIRED, verifyWorkflows, deployHookUrl, isLiveRevision } = require("../scripts/release_checks.cjs");
 const sha = "a".repeat(40);
+test("every required workflow actually runs on pushes to main", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const directory = path.join(__dirname, "../.github/workflows");
+  for (const name of REQUIRED) {
+    const source = fs.readdirSync(directory).filter(file => /\.ya?ml$/.test(file))
+      .map(file => fs.readFileSync(path.join(directory, file), "utf8"))
+      .find(text => text.split(/\r?\n/)[0] === `name: ${name}`);
+    assert.ok(source, `Workflow exists: ${name}`);
+    assert.match(source, /\n  push:\r?\n    branches: \[[^\]\r\n]*\bmain\b[^\]\r\n]*\]/,
+      `Exact-main deployment evidence must be generated: ${name}`);
+  }
+});
 const runs = () => REQUIRED.map((name, id) => ({ name, id, head_sha: sha, head_branch: "main",
   event: "push", status: "completed", conclusion: "success" }));
 

@@ -1,6 +1,8 @@
 name: AI Redis component checks
 
 on:
+  push:
+    branches: [main]
   pull_request:
     branches: [main]
     paths:
