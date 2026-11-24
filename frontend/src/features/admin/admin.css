@@ -369,3 +369,30 @@ body { margin: 0; }
   .admin select,
   .admin input[type="date"] { font-size: 16px; }
 }
+
+/* Moderation (FR-05) */
+.admin-mod h2 { margin-top: 0; }
+.admin-mod-intro { margin: 0 0 12px; }
+.admin-mod-tabs { display: inline-flex; gap: 2px; padding: 3px; margin-bottom: 12px; background: var(--sl-surface-sunken); border: 1px solid var(--admin-border); border-radius: 10px; }
+.admin .admin-mod-tabs button { min-height: 34px; padding: 0 14px; color: var(--sl-text-secondary); background: transparent; border: 0; border-radius: 8px; box-shadow: none; font-weight: 600; }
+.admin .admin-mod-tabs button:hover:not([aria-checked="true"]) { background: var(--sl-surface-hover); color: var(--admin-text); }
+.admin .admin-mod-tabs button[aria-checked="true"] { background: var(--sl-accent2-solid); color: var(--sl-on-accent2); }
+.admin-mod-notice[hidden] { display: none; }
+.admin-mod-list { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); }
+.admin-mod-item { padding: 14px 16px; background: var(--admin-surface); border: 1px solid var(--admin-border); border-radius: var(--admin-radius); box-shadow: var(--admin-shadow); }
+.admin-mod-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+.admin-mod-head h3 { margin: 0; font-size: 1rem; overflow-wrap: anywhere; }
+.admin-mod-pill--pending { background: var(--admin-sample-bg); color: var(--sl-warn); }
+.admin-mod-pill--approved { background: var(--sl-ok-soft); color: var(--admin-ok); }
+.admin-mod-pill--rejected { background: var(--sl-surface-sunken); color: var(--sl-text-secondary); }
+.admin-mod-facts { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; margin: 0 0 12px; font-size: 0.9rem; }
+.admin-mod-facts dt { color: var(--admin-muted); font-weight: 600; }
+.admin-mod-facts dd { margin: 0; overflow-wrap: anywhere; }
+.admin-mod-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.admin-mod-actions > button { flex: 1 1 120px; }
+.admin-mod-confirm { padding: 12px; border: 1px solid var(--admin-border); border-radius: 10px; background: var(--sl-surface-sunken); }
+.admin-mod-confirm--rejected { border-color: var(--sl-danger-border); background: var(--admin-critical-bg); }
+.admin-mod-confirm p { margin: 0 0 10px; }
+@media (pointer: coarse) {
+  .admin .admin-mod-tabs button { min-height: 44px; }
+}

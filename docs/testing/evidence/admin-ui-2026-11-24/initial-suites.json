@@ -1,0 +1,46 @@
+{
+  "local_services_only": true,
+  "live_model_calls": 0,
+  "suites": {
+    "moderation": {
+      "exit_code": 0,
+      "cases": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "remaining_sql": {
+        "toilets": 0,
+        "users": 0,
+        "suggestions": 0,
+        "review_operations": 0
+      }
+    },
+    "import": {
+      "exit_code": 0,
+      "cases": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "remaining_sql": {
+        "toilets": 0,
+        "users": 0,
+        "suggestions": 0,
+        "review_operations": 0
+      }
+    },
+    "reviews": {
+      "exit_code": 0,
+      "cases": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "remaining_sql": {
+        "toilets": 0,
+        "users": 0,
+        "suggestions": 0,
+        "review_operations": 0
+      }
+    }
+  },
+  "private_database_removed": true
+}

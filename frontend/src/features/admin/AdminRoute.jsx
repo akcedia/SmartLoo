@@ -15,7 +15,9 @@ export function adminDataMode(env = import.meta.env ?? {}) {
 }
 
 export function adminSection(path = "") {
-  return path === "/admin/import" ? "import" : "analytics";
+  if (path === "/admin/import") return "import";
+  if (path === "/admin/moderation") return "moderation";
+  return "analytics";
 }
 
 export default function AdminRoute({ path, mode = adminDataMode() }) {

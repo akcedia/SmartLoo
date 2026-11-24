@@ -9,6 +9,8 @@ export function MapApiProvider({ children }) {
   const methods = useMemo(() => createToiletApi(api.request), [api]);
   const value = useMemo(() => ({
     ...methods,
+    // Shared session client for ADMIN-only actions on the map (AdminFacilityStatus).
+    request: api.request,
     getCurrentSessionUser: () => session
       ? { id: session.userId, role: session.role.toUpperCase(), email: session.email, displayName: "" }
       : null,
