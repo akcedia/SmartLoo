@@ -48,7 +48,7 @@ describe("Mounted AI screens with real SQL/Mongo/Redis and synthetic model", () 
     }
     await mount(<AiSummaryBox toiletId={facility} />);
     await waitFor(() => host.textContent.includes("3 yoruma dayalı"));
-    expect(host.textContent).toContain("AI-generated summary");
+    expect(host.textContent).toContain("Yapay zeka tarafından oluşturuldu");
     expect(host.textContent).not.toContain("Sabun eksik");
     const changed = await fetch(`${origin}/api/v1/reviews/${firstId}`, { method: "PATCH",
       headers: { Authorization: `Bearer ${process.env.SMARTLOO_LIVE_OWNER}`, "Content-Type": "application/json" },
