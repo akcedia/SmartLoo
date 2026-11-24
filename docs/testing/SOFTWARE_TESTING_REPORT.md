@@ -2,7 +2,7 @@
 
 Draft for #60. Internal review target: 24 November. Test-document PR and Yeşim Hoca reviewer assignment: 25 November. Learn PDF submission after PR approval: 29 November. The announcement specifies dates without times. Özgür coordinates reviewer assignment and Learn submission. [Updated course calendar](https://github.com/akcedia/SmartLoo/issues/60#issuecomment-7059811141).
 
-Current QA baseline: [main 7b824134](https://github.com/akcedia/SmartLoo/tree/7b824134157c64913ec0ca8bdf2b25525992b190). The public Render handoff is recorded separately at d28502c. Results retain their tested revision and scope.
+Current frontend and catalog baseline: [main 46569db0](https://github.com/akcedia/SmartLoo/tree/46569db02f952d020aec9267cf266a961502a8b8). Full local backend coverage and the separate browser run remain pinned to 7b824134. The public Render handoff is recorded separately at d28502c. Results retain their tested revision and scope.
 
 | Area | Evidence to collect |
 | --- | --- |
@@ -133,6 +133,12 @@ The [public Render handoff](CLOUD-HANDOFF-2026-11-22.md) documents 40 semantic H
 
 The [#82 evidence map](evidence/INSTRUCTOR-REVIEW-82.md) records the pending SonarQube rerun after #95, final performance, security and accessibility evidence, and the draft PDF. The historical 358 ms short-run p95 exceeds the latency target. The specified five-minute run and a current Sonar scan still need evidence.
 
+## Post-merge retest after #101 — 24 November
+
+[Main 46569db0 retest](evidence/acceptance/main-46569db0.md): **295 frontend tests in 23 files** and the production build passed. The tests cover zoom-dependent marker limits, preserving selection and manual zoom, and theme defaults/persistence. The [author's browser record](MAP-DENSITY-REVIEW-2026-11-24.md) shows 16 overview markers and 44 after two zoom increments with 432 directory facilities. These observations support the rendering change. The required FPS, initial-load timing and complete accessibility acceptance remain open.
+
+The same main revision's 52-instance requirements catalog recorded **45 passed, 7 failed, 0 skipped**. The AI and legacy TC-21 failures remain in this main result. The [updated AI draft](https://github.com/akcedia/SmartLoo/pull/89) reports 65 separate local catalog/cloud checks passing after integrating #99/#100 and correcting the two catalog cases. It still needs reconciliation with #101 and final combined acceptance.
+
 ## Functional traceability
 
 Sources: [requirements](../REQUIREMENTS.MD) and [test catalog](../../tests/requirements_cases.json).
@@ -198,7 +204,7 @@ Functional result labels describe the stated baseline, not the latest unmerged f
 | NFR-T02 | NFR-03 | Exercise protected write/admin endpoints with absent, expired, tampered, USER and ADMIN tokens First three 401; USER admin access 403; ADMIN succeeds. No unauthorized writes. | Partial | Partial auth candidate evidence only: #51 18 real/isolated cases; full integrated protected endpoints pending. |
 | NFR-T03 | NFR-04 | Submit latitude 95, longitude 200, radius -50 and 50001, rating 0/6 and comment length 1001 Each returns 422 naming invalid input; stored state unchanged. This is a validation/security check, also functional. | Partial | Partial: 29 nearby safety checks passed on 19 November; rating/comment validation and stored-state acceptance on integrated DB pending. |
 | NFR-T04 | NFR-02 | Record 100 cache-hit requests and 20 healthy uncached requests; separately force provider timeout Cache p95 <100 ms; uncached p95 <8 s; timeout fallback by 10 s. Record environment and provider/mock separately. | Partial | Partial component evidence: 117 AI tests and 8 real Redis checks at #68 d9fa94df; specified 100/20 latency sample measurements pending. |
-| NFR-T05 | NFR-05 / NFR-06 | Test three viewport widths; keyboard-only map alternatives/details; axe/Lighthouse plus manual focus/contrast checks; 500-marker pan/zoom No horizontal overflow blocking actions; labels/focus usable; ≥30 FPS; Lighthouse accessibility ≥90; no serious/critical axe findings. Record throttling/hardware. | Partial | Partial: #65 edc8e020 mobile overflow fixed, keyboard/axe checks above; Lighthouse, map alternatives, FPS and live acceptance pending. |
+| NFR-T05 | NFR-05 / NFR-06 | Test three viewport widths; keyboard-only map alternatives/details; axe/Lighthouse plus manual focus/contrast checks; 500-marker pan/zoom No horizontal overflow blocking actions; labels/focus usable; ≥30 FPS; Lighthouse accessibility ≥90; no serious/critical axe findings. Record throttling/hardware. | Partial | Partial: #65 mobile/keyboard/axe evidence and [#101 marker/theme regressions](evidence/acceptance/main-46569db0.md). Lighthouse, full keyboard alternatives, measured FPS and final acceptance remain open. |
 | NFR-T06 | NFR-07 | Disable AI then perform search/filter/details; monitor public API each minute for a calendar month Core requests continue; AI unavailable message appears. Availability ≥99% measured separately; short tests do not prove monthly uptime. | Not run | — |
 | NFR-T07 | NFR-04 / NFR-08 | Seed synthetic email/name/phone in reviews; capture AI request; deny location permission; delete account; inspect public responses and storage PII absent from AI request; no unconsented stored location; account identifiers removed and review text redacted where needed; hashes/secrets absent from responses. | Partial | [Main and cloud deletion evidence](evidence/acceptance/main-7b824134.md); AI request and location privacy remain open. |
 | NFR-T08 | NFR-09 | Run implementation lint, tests, build and branch coverage report All implementation checks pass and backend coverage ≥80%. Requirements red tests are evidence of pending implementation, not a passing implementation gate. | Partial | [Local coverage](evidence/coverage/backend-7b824134.md): 1328/1676 statements; 303/436 branches; 1631/2112 combined, 77.23%. Final coverage and lint gate open. |
