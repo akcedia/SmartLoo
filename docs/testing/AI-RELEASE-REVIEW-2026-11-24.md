@@ -135,3 +135,19 @@ final quality/performance/report work, #82 ticks and Learn submission remain
 separate authorized steps.
 
 Machine-readable evidence: [review directory](evidence/ai-release-2026-11-24/).
+
+## Hosted review follow-up: stale OpenAI test expectation
+
+The first published head `7887634` passed eight hosted workflows, including all
+required real-store HTTP and mounted AI gates. The AI/Redis workflow failed
+before its real Redis step: an OpenAI transport/validator test still expected
+the exact whole-field paraphrase explicitly allowed by policy v3 to be rejected.
+The failure remains available in [the original run](https://github.com/akcedia/SmartLoo/actions/runs/45360664093).
+
+The test now checks that this one grounded equivalent is accepted, while a
+contradictory soap claim, appended unsupported safety claim and appended email
+are still rejected. No validator or production policy was weakened. All **127
+independent AI unittest cases** then passed locally, followed by **8 real Redis
+checks, zero failures/errors/skips**. The local Redis receipt retains its null
+GitHub commit/run identifiers; it is not relabelled as hosted CI evidence.
+The corrected test and updated candidate still require their own hosted run.

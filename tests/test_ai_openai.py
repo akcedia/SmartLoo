@@ -106,8 +106,15 @@ class ProviderTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(json.loads(request["messages"][1]["content"])["reviews"], EVIDENCE)
         validate = restricted_validator()
         self.assertEqual(await validate(result, EVIDENCE), OUTPUT)
-        with self.assertRaises(ValueError):
-            await validate({**result, "summary": "Temizdi fakat sabun yoktu."}, EVIDENCE)
+        # Policy v3 explicitly permits this full-field equivalent when grounded.
+        equivalent = "Temizdi fakat sabun yoktu."
+        accepted = await validate({**result, "summary": equivalent}, EVIDENCE)
+        self.assertEqual(accepted["summary"], equivalent)
+        for summary in ("Temizdi fakat sabun vardı.",
+                        equivalent + " Tesis güvenlidir.",
+                        equivalent + " ali@example.com"):
+            with self.subTest(summary=summary), self.assertRaises(ValueError):
+                await validate({**result, "summary": summary}, EVIDENCE)
 
     async def test_missing_key_fails_without_network_or_secret_in_repr(self):
         for key in (None, "", "bad\nkey"):
