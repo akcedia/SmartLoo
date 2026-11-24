@@ -18,7 +18,7 @@ import { decisionErrorMessage, facilityStatusErrorMessage, listErrorMessage } fr
 const EN = catalog("en");
 const SRC = join(process.cwd(), "src");
 // Screens owned by the shared app (Onur). Map screens join this list when Furkan wraps them.
-const TRANSLATED = ["app", "shared", "features/auth", "features/admin", "features/map/DirectionsButton.jsx", "features/map/SearchPage.jsx", "features/map/MapView.jsx", "features/map/FacilityMarkers.jsx", "features/map/RadiusPicker.jsx", "features/map/AdminFacilityStatus.jsx"];
+const TRANSLATED = ["app", "shared", "features/auth", "features/admin", "features/suggestions", "features/map/DirectionsButton.jsx", "features/map/SearchPage.jsx", "features/map/MapView.jsx", "features/map/FacilityMarkers.jsx", "features/map/RadiusPicker.jsx", "features/map/AdminFacilityStatus.jsx"];
 
 function sourceFiles(path) {
   const full = join(SRC, path);

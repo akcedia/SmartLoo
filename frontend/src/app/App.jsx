@@ -14,6 +14,7 @@ import RegisterPage from "../features/auth/RegisterPage.jsx";
 import AccountPage from "../features/auth/AccountPage.jsx";
 import RequireRole from "../features/auth/RequireRole.jsx";
 import AdminRoute from "../features/admin/AdminRoute.jsx";
+import SuggestionPage from "../features/suggestions/SuggestionPage.jsx";
 import "./app.css";
 
 export function routeFor(path) {
@@ -21,6 +22,7 @@ export function routeFor(path) {
   if (path === "/sign-in") return "sign-in";
   if (path === "/register") return "register";
   if (path === "/account") return "account";
+  if (path === "/suggest") return "suggest";
   if (path === "/admin" || path.startsWith("/admin/")) return "admin";
   return "not-found";
 }
@@ -75,7 +77,7 @@ function Routes() {
   const { t } = useI18n();
 
   useEffect(() => {
-    const titles = { home: "Harita", "sign-in": "Giriş yap", register: "Kayıt ol", account: "Hesabım", admin: "Yönetim", "not-found": "Sayfa bulunamadı" };
+    const titles = { home: "Harita", "sign-in": "Giriş yap", register: "Kayıt ol", account: "Hesabım", suggest: "Tesis öner", admin: "Yönetim", "not-found": "Sayfa bulunamadı" };
     document.title = `${t(titles[route])} · SmartLoo`;
   }, [route, t]);
 
@@ -96,6 +98,7 @@ function Routes() {
         {route === "home" && <HomeRoute />}
         {route === "sign-in" && <SignInPage search={search} />}
         {route === "register" && <RegisterPage />}
+        {route === "suggest" && <RequireRole path={path}><SuggestionPage /></RequireRole>}
         {route === "account" && (
           <RequireRole path={path}>
             <AccountPage />

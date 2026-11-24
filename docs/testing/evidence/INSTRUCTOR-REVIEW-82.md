@@ -4,8 +4,8 @@
 
 | Review item | Evidence | Remaining |
 | --- | --- | --- |
-| Requirements-related tests | [TC/NFR matrix](../SOFTWARE_TESTING_REPORT.md#functional-traceability); [latest catalog retest](acceptance/main-46569db0.md); [prior live-suite evidence](acceptance/main-7b824134.md); [separate TC-21 browser evidence](acceptance/tc21-browser-7b824134.md). | 7 automated instances remain failing; other manual and environment-gated checks remain open. |
-| Code coverage | [Local Python scope](coverage/backend-7b824134.md) at 7b824134, 1631/2112 combined (77.23%). | 80% target and integrated coverage/lint. Current measurement includes service skips. |
+| Requirements-related tests | [TC/NFR matrix](../SOFTWARE_TESTING_REPORT.md#functional-traceability); [latest main catalog retest](acceptance/main-ca6e93b4.md); [draft AI evidence](acceptance/ai-33fee172.md); [prior live-suite evidence](acceptance/main-7b824134.md); [separate TC-21 browser evidence](acceptance/tc21-browser-7b824134.md). | 7 automated instances remain failing; other manual and environment-gated checks remain open. |
+| Code coverage | [Local Python scope](acceptance/main-ca6e93b4.md) at ca6e93b4, 1631/2112 combined (77.23%). | 80% target and integrated coverage/lint. Current measurement includes service skips. |
 | Performance tests | [NFR-T01 plan](nfr/nearby-load-runbook.md). | Historical short-run p95 was 358 ms. Execute the specified five-minute test against the fixed test environment. |
 | Security tests | [Verified real-service authentication and authorization evidence](acceptance/main-180a2944.md), including session expiry, review ownership and account deletion; existing nearby input-safety tests documented via #72. | Full security and privacy acceptance remains open. |
 | SonarQube | [Execution plan and evidence checklist](quality/sonarqube-runbook.md). | Obtain access and record the current scanner and quality-gate results after #95. |

@@ -56,6 +56,7 @@ def main(suite="reviews"):
                 VALUES (%s, 'map-live-test', %s, 'Map review test', 41, 29, 'Kadıköy', '24/7')""",
                 (facility, marker))
         env = dict(os.environ, SMARTLOO_LIVE_ORIGIN=f"http://127.0.0.1:{port}", SMARTLOO_LIVE_TOILET=facility,
+                   SMARTLOO_LIVE_SUGGESTION_NAME=f"Form suggestion {marker}",
                    SMARTLOO_LIVE_IMPORT_SOURCE=import_source, SMARTLOO_LIVE_BUSY_FLAG=str(busy_flag))
         with TestClient(app) as client:
             for role in ("OWNER", "OTHER", "ADMIN"):
@@ -160,6 +161,12 @@ def main(suite="reviews"):
         with pymongo.MongoClient(os.getenv("SMARTLOO_MONGO_URL", "mongodb://127.0.0.1:27017")) as mongo:
             mongo.drop_database(mongo_db)
         with connect() as conn:
+            # Only the unique form fixture owned by this run's temporary users.
+            extra = conn.execute("""SELECT id FROM suggestions WHERE name = %s
+                AND submitted_by IN (SELECT id FROM users WHERE email = ANY(%s))""",
+                (f"Form suggestion {marker}", emails)).fetchall() if suite == "moderation" else []
+            suggestion_ids.extend(str(row["id"]) for row in extra)
+            facility_ids.extend(str(row["id"]) for row in extra)
             conn.execute("DELETE FROM review_operations WHERE toilet_id = ANY(%s::uuid[])", (facility_ids,))
             if suggestion_ids:
                 conn.execute("DELETE FROM suggestions WHERE id = ANY(%s::uuid[])", (suggestion_ids,))
