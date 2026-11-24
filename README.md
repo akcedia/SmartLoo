@@ -45,6 +45,8 @@ The published ports bind to loopback. To avoid a port conflict, change the relev
 ## Team workflow
 Start from current main, use a feature branch, reference the issue in a small PR, include actual verification results, and obtain another member's review. Coordinate changes to env names, package files and API contracts. No main merge is implied by this weekly review.
 
+Final-review references: [release/versioning policy](docs/planning/RELEASE_APPROACH.md), [AI working agreement](AGENTS.md), [AI pipeline and contribution record](docs/AI_WORKFLOW.md), [final release evidence](docs/testing/RELEASE-REVIEW-2026-11-24.md), [accepted performance exception](docs/testing/PERFORMANCE-ACCEPTANCE-2026-11-24.md), and [partial human AI review](docs/testing/evidence/ai/human-review-ozgur-2026-11-24.md). Each receipt identifies its own tested revision; candidate results are not automatically main, production or instructor acceptance. The public demo is [smartloo.onrender.com](https://smartloo.onrender.com); its deployment revision must be checked before reporting a feature as live.
+
 See [weekly status](docs/WEEKLY-2026-10-24.md), [database guide](db/README.md), and [frontend guide](frontend/README.md).
 
 ## Nearby search API — local development (#25)

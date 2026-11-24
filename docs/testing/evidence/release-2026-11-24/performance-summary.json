@@ -1,0 +1,184 @@
+[
+  {
+    "run": "final-load24-9543",
+    "phase": "measurement",
+    "formal_five_minute": true,
+    "application_sha": "befd4226f226a6823a002ff473ba429788bf4b68",
+    "workers": 1,
+    "cpus": 2,
+    "requests": 16406,
+    "latency_ms": {
+      "min": 346.68617,
+      "med": 848.4158915,
+      "max": 3105.873881,
+      "p(90)": 1215.7580755,
+      "p(95)": 1432.00118925,
+      "avg": 913.894842022923
+    },
+    "failures": 0,
+    "thresholds": {
+      "avg<250": {
+        "ok": false
+      },
+      "p(95)<250": {
+        "ok": false
+      }
+    }
+  },
+  {
+    "run": "final-load24-pool",
+    "phase": "measurement",
+    "formal_five_minute": true,
+    "application_sha": "95760d49ab10c9c24560f9a1ad44e6d991e06070",
+    "workers": 1,
+    "cpus": 2,
+    "requests": 49636,
+    "latency_ms": {
+      "max": 801.766651,
+      "p(90)": 389.129977,
+      "p(95)": 422.59664399999997,
+      "avg": 301.8967970752705,
+      "min": 140.301056,
+      "med": 297.094945
+    },
+    "failures": 0,
+    "thresholds": {
+      "avg<250": {
+        "ok": false
+      },
+      "p(95)<250": {
+        "ok": false
+      }
+    }
+  },
+  {
+    "run": "final-load24-compiled",
+    "phase": "measurement",
+    "formal_five_minute": true,
+    "application_sha": "948262d07388e362210d300b3e01dcc29fe771f7",
+    "workers": 1,
+    "cpus": 2,
+    "requests": 37420,
+    "latency_ms": {
+      "p(95)": 518.3642290999999,
+      "avg": 400.43412728655824,
+      "min": 169.194347,
+      "med": 397.174016,
+      "max": 772.63779,
+      "p(90)": 491.0479931
+    },
+    "failures": 0,
+    "thresholds": {
+      "avg<250": {
+        "ok": false
+      },
+      "p(95)<250": {
+        "ok": false
+      }
+    }
+  },
+  {
+    "run": "final-load24-readonly",
+    "phase": "warmup",
+    "formal_five_minute": false,
+    "application_sha": "099fd592d0bfe6b0c5d88945abfbe5be4f641a0b",
+    "workers": 1,
+    "cpus": 2,
+    "requests": 13766,
+    "latency_ms": {
+      "avg": 217.76126293825382,
+      "min": 113.857241,
+      "med": 215.5271495,
+      "max": 451.816519,
+      "p(90)": 274.90907500000003,
+      "p(95)": 291.182797
+    },
+    "failures": 0,
+    "thresholds": {
+      "avg<250": {
+        "ok": true
+      },
+      "p(95)<250": {
+        "ok": false
+      }
+    }
+  },
+  {
+    "run": "final-load24-limited",
+    "phase": "warmup",
+    "formal_five_minute": false,
+    "application_sha": "1a4670fd388fab4f0e22095df26f67571a557172",
+    "workers": 1,
+    "cpus": 2,
+    "requests": 16351,
+    "latency_ms": {
+      "min": 48.669993,
+      "med": 183.866754,
+      "max": 385.126172,
+      "p(90)": 244.521117,
+      "p(95)": 259.85506699999996,
+      "avg": 183.23655719699093
+    },
+    "failures": 0,
+    "thresholds": {
+      "avg<250": {
+        "ok": true
+      },
+      "p(95)<250": {
+        "ok": false
+      }
+    }
+  },
+  {
+    "run": "final-load24-two-readers",
+    "phase": "warmup",
+    "formal_five_minute": false,
+    "application_sha": "b2c031f779f2516476691b33cd30069054d1ffd3",
+    "workers": 1,
+    "cpus": 2,
+    "requests": 17088,
+    "latency_ms": {
+      "p(90)": 233.25272870000003,
+      "p(95)": 254.75793965,
+      "avg": 175.4071693964763,
+      "min": 51.979531,
+      "med": 172.4529035,
+      "max": 402.735326
+    },
+    "failures": 0,
+    "thresholds": {
+      "avg<250": {
+        "ok": true
+      },
+      "p(95)<250": {
+        "ok": false
+      }
+    }
+  },
+  {
+    "run": "final-measurement24",
+    "phase": "measurement",
+    "formal_five_minute": true,
+    "application_sha": "b2c031f779f2516476691b33cd30069054d1ffd3",
+    "workers": 1,
+    "cpus": 2,
+    "requests": 85510,
+    "latency_ms": {
+      "avg": 175.10482525093073,
+      "min": 53.136233,
+      "med": 171.53804200000002,
+      "max": 441.918082,
+      "p(90)": 232.6518739,
+      "p(95)": 253.73979575
+    },
+    "failures": 0,
+    "thresholds": {
+      "avg<250": {
+        "ok": true
+      },
+      "p(95)<250": {
+        "ok": false
+      }
+    }
+  }
+]

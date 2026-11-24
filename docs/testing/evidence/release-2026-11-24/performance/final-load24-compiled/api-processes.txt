@@ -1,0 +1,2 @@
+UID                 PID                 PPID                C                   STIME               TTY                 TIME                CMD
+10001               75798               75771               90                  18:19               ?                   00:00:03            python -m uvicorn src.app:create_app --factory --host 0.0.0.0 --port 8000 --workers 1 --no-access-log
