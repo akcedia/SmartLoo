@@ -93,8 +93,13 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
         working-directory: frontend
-      - run: npm test && npm run build
+      - run: npm test -- --coverage && npm run build
         working-directory: frontend
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontend-coverage
+          path: frontend/coverage/lcov.info
   database:
     runs-on: ubuntu-latest
     steps:
@@ -123,7 +128,7 @@ jobs:
         run: python -m pytest tests/test_requirements.py tests/test_cloud_app.py -q --junitxml=catalog-required.xml
       - name: Reject missing, failed or skipped catalog evidence
         if: always()
-        run: python scripts/check_required_junit.py catalog-required.xml --minimum 65
+        run: python scripts/check_required_junit.py catalog-required.xml --minimum 66
       - name: Unimplemented acceptance baseline (visible failure, not a passing gate)
         continue-on-error: true
         run: python -m pytest -v --junitxml=requirements-results.xml

@@ -1,6 +1,6 @@
 # SmartLoo
 
-The nearby search API uses PostGIS. The admin panel uses labelled sample data. The shared local environment also starts MongoDB and Redis for integration work.
+SmartLoo combines a React map with FastAPI, PostgreSQL/PostGIS, MongoDB reviews and Redis. The ADMIN panel uses the real analytics/export APIs; labelled sample mode remains available for demonstration. The application preserves unknown source facts and separates the complete İBB directory from nearby search. AI availability depends on the reviewed provider configuration and eligible reviews; fallback is explicit.
 
 ## Shared layout
 - `src/`: FastAPI application factory (`src.app:create_app`). Preserve the existing test injection interface.
@@ -10,7 +10,7 @@ The nearby search API uses PostGIS. The admin panel uses labelled sample data. T
 - `docs/DESIGN.MD`: architecture and decisions.
 
 ## Local setup
-Use Python 3.11, Node 24 and Docker Compose. From repository root:
+Use Python 3.13, Node 24 and Docker Compose. From repository root:
 ```sh
 cp .env.example .env
 docker compose up -d --wait
@@ -19,13 +19,14 @@ docker compose exec -T postgis sh /db/scripts/check.sh
 python -m venv .venv
 # Activate .venv for your shell, then:
 pip install -r requirements-test.txt
-python -m pytest -v
-cd frontend
-npm ci
-npm test
-npm run dev
+npm --prefix frontend ci
+npm --prefix frontend test
+npm --prefix frontend run build
+python -m pytest tests/test_requirements.py tests/test_cloud_app.py -q
 ```
-The acceptance baseline currently fails on unimplemented 501 responses. Do not interpret the baseline job's permitted failure as implemented features. Frontend and SQL checks are blocking CI jobs. Use `npm run build` for the frontend build.
+The isolated catalog now uses the real built web shell and synthetic AI providers. Its HTTP pass does not prove rendered map interaction or real-model quality. Real-store suites require explicit test flags and a private migrated database; do not enable them against personal or production data. Keep the broad Python baseline's result separate from the required no-skip catalog, frontend and real-store gates.
+
+For development, run `python -m uvicorn src.app:create_app --factory --host 127.0.0.1 --port 8000 --no-access-log` and `npm --prefix frontend run dev` in separate terminals. The Python process reads its environment; Compose's `.env` substitution does not export settings into that process. For a same-origin local production build, set `SMARTLOO_WEB_DIR` to the absolute `frontend/dist` path and use `src.cloud_app:create_cloud_app` instead. The API-only factory does not serve the React home page.
 
 Root docker-compose.yml is the shared environment; the standalone db/docker-compose.yml is retained for the original contribution. Do not run both at once. Credentials are local development examples only. Changing DB env values does not alter an existing volume's initialized account.
 
@@ -199,8 +200,7 @@ def summary(admin: Principal = Depends(require_admin)):
 
 `current_user` returns 401 for a missing, tampered or expired token, or when the
 account no longer exists. `require_admin` additionally returns 403 for a valid
-USER. Reviews are implemented. Suggestion and account-deletion routes check
-the token, then return 501 until their implementations are integrated. There is no admin registration
+USER. Reviews, account deletion, suggestions/moderation and facility status are implemented. Suggestions remain pending until ADMIN approval. There is no admin registration
 route; promote a local test account with SQL:
 
 ```powershell
@@ -217,7 +217,7 @@ $env:SMARTLOO_TEST_POSTGIS = "1"
 
 Verified locally on 13 November 2026: 13 isolated FR-08 cases and 9 PostgreSQL cases passed.
 TC-45 (admin analytics 200) and TC-46 (review ownership) are now implemented;
-TC-34 (account deletion) remains pending.
+TC-34 (account deletion) is now implemented; the verification numbers above retain their historical 13 November scope.
 
 ## Admin analytics and CSV/JSON export (#61, PR #71)
 
