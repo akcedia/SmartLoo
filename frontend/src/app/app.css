@@ -255,7 +255,7 @@ body { margin: 0; }
 }
 .app-field { display: grid; gap: 4px; }
 .app-field label { font-weight: 600; font-size: 0.9rem; }
-.app-field input {
+.app-field input, .app-field select {
   font: inherit;
   padding: 9px 11px;
   border: 1px solid var(--app-input-border);

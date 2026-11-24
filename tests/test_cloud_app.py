@@ -14,7 +14,7 @@ def client(tmp_path):
         yield browser
 
 
-@pytest.mark.parametrize("path", ["/", "/sign-in", "/register", "/account", "/admin", "/admin/import"])
+@pytest.mark.parametrize("path", ["/", "/sign-in", "/register", "/account", "/suggest", "/admin", "/admin/import"])
 def test_direct_browser_navigation(client, path):
     response = client.get(path)
     assert response.status_code == 200
