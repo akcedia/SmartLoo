@@ -1,0 +1,17 @@
+{
+  "commit": "d89a0832579156eb371a03699a937a7ec6cfb011",
+  "model": "gemini-3.1-flash-lite",
+  "policy": "restricted-tr-evidence-v3",
+  "maximum_requests": 1,
+  "synthetic_only": true,
+  "requests_attempted": 1,
+  "provider_http_statuses": [
+    200
+  ],
+  "http": 200,
+  "elapsed_ms": 1445,
+  "candidate_preserved": true,
+  "count": 1,
+  "fallback": false,
+  "validated": true
+}

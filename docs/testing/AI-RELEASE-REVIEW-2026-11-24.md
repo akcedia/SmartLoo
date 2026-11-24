@@ -67,7 +67,7 @@ Gemini returned HTTP 200; the application returned its explicit fallback in
 synthetic facility. This was not a 429 quota response. The receipt does not
 include raw text and cannot identify which field of the original model output
 was invalid. No credentials or arbitrary exception text were recorded. Total
-native requests authorized and attempted in this review: **three** (two initial,
+native requests authorized and attempted through this first follow-up: **three** (two initial,
 one separately approved follow-up); no automatic retry occurred.
 
 ## Grounded generation-schema correction after the follow-up
@@ -98,8 +98,24 @@ preserving the earlier fixed-name receipt and refusing another request on an
 already completed revision. A changed revision still requires separate explicit
 approval; this naming change does not authorize another request. Five focused
 diagnostic guards passed, including receipt preservation/repeat prevention.
-CI requires nine original-pilot/follow-up harness cases in total. No live request
-has been made after either the schema or receipt revision changes.
+CI requires nine original-pilot/follow-up harness cases in total. At that point,
+another native request still required separate approval.
+
+## Separately approved corrected-schema native result
+
+One request on clean commit `d89a083` succeeded: provider HTTP 200, application
+HTTP 200, **1445 ms**, one eligible candidate preserved, `fallback=false`, and
+the reason passed the grounding/response contract. See
+[corrected-schema receipt](evidence/ai-release-2026-11-24/native-recommendation-corrected.json).
+No automatic retry was made. The complete authorized native-call history for
+this review is now **four**: two initial requests, one diagnostic follow-up and
+one separately approved corrected-schema request. Earlier failed receipts remain.
+
+The earlier summary smoke and this recommendation smoke passed on their
+respective recorded commits. This is not a percentile/reliability measurement,
+independent human acceptance, physical browser acceptance or a combined native
+model + real SQL/Mongo/Redis release run. The current schema has one successful
+synthetic native recommendation sample; broader acceptance remains open.
 
 ## Requirements catalog and remaining gates
 
