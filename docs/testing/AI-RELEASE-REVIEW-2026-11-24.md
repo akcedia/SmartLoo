@@ -61,11 +61,37 @@ one successful synthetic summary smoke, not successful native recommendation
 acceptance, a reliability/latency percentile result or a full real-store native
 model end-to-end test.
 
-A separate single-request recommendation diagnostic is prepared but **not run**.
-It requires a distinct explicit approval flag, reserves its own non-overwritable
-receipt, exposes only HTTP status integers and allowlisted adapter error codes,
-and verifies whether the eligible candidate was preserved. No raw responses,
-credentials or exception text are recorded.
+A separately approved single-request diagnostic ran on clean commit `6122e28`.
+Gemini returned HTTP 200; the application returned its explicit fallback in
+4936 ms with `gemini_invalid_output`, while preserving the one eligible
+synthetic facility. This was not a 429 quota response. The receipt does not
+include raw text and cannot identify which field of the original model output
+was invalid. No credentials or arbitrary exception text were recorded. Total
+native requests authorized and attempted in this review: **three** (two initial,
+one separately approved follow-up); no automatic retry occurred.
+
+## Grounded generation-schema correction after the follow-up
+
+Offline inspection found that the request schema offered all global claim codes
+and an unconstrained reason string, even for candidates with only a small set
+of verified facts. The strict parser correctly rejected unsupported output, but
+the generation schema did not express the same constraints. This is a confirmed
+schema gap, not proof of the exact original native-output defect.
+
+Two new tests failed before correction. The generation schema now offers only
+claim codes present in the supplied evidence and a finite set of already
+accepted grounded sentences. Sentence combinations are built per candidate,
+never by combining different candidates' facts. The existing parser still
+independently checks each candidate/ref/claim/sentence association and the
+all-or-nothing fallback remains. No validator or language/privacy guard was
+relaxed and no synthetic reason is substituted for a failed model result.
+
+After correction, **87 focused tests and 8 subtests passed**, covering reason
+generation/validation, Gemini adapter, both pilot harnesses and Turkish policy.
+The two genuinely failing pre-change tests are retained in JUnit; no separate
+historical red commit is claimed. CI's recommendation-component minimum is now
+16. **No additional native request has been made on this corrected schema.**
+Native recommendation acceptance remains open.
 
 ## Requirements catalog and remaining gates
 

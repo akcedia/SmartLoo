@@ -171,6 +171,26 @@ class GeminiReasonTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(json.loads(request["contents"][0]["parts"][0]["text"]),
                          {"language": "tr", "reviews": evidence})
 
+    async def test_reason_schema_only_offers_sentences_grounded_in_the_given_candidate(self):
+        self.client.post.return_value = gemini_reply(json.dumps({"recommendations": [self.valid_row]}))
+        await self.run_recommendation()
+        schema = self.client.post.call_args.kwargs["json"]["generationConfig"]["responseJsonSchema"]
+        properties = schema["properties"]["recommendations"]["items"]["properties"]
+        self.assertEqual(properties["claims"]["items"]["enum"], ["free", "accessible"])
+        self.assertEqual(set(properties["reason"]["enum"]), {
+            "Tesis ücretsiz.", "Tesis engelli erişimine uygun.", "Tesis ücretsiz ve engelli erişimine uygun.",
+        })
+
+    async def test_schema_never_combines_facts_from_different_candidates_into_one_sentence(self):
+        from src.ai_recommendations import recommendation_reason_schema
+        schema = recommendation_reason_schema({"c1": ["free"], "c2": ["paid", "baby_changing"]})
+        properties = schema["properties"]["recommendations"]["items"]["properties"]
+        self.assertEqual(properties["claims"]["items"]["enum"], ["free", "paid", "baby_changing"])
+        self.assertEqual(set(properties["reason"]["enum"]), {
+            "Tesis ücretsiz.", "Tesis ücretli.", "Tesis bebek bakım ünitesine sahip.",
+            "Tesis ücretli ve bebek bakım ünitesine sahip.",
+        })
+
 
 if __name__ == "__main__":
     unittest.main()

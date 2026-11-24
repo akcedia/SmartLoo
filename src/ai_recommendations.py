@@ -59,6 +59,14 @@ def recommendation_reason_payload(evidence):
 
 
 def recommendation_reason_schema(payload):
+    # Constrain generation to the same finite grounded language the parser accepts.
+    # Union per-candidate sentences, never cross-candidate combinations of facts;
+    # the parser still verifies every ref/claim/sentence association independently.
+    allowed_claims = [code for code in REASON_CLAIMS if any(code in claims for claims in payload.values())]
+    sentences = sorted({_claim_sentence(group)
+                        for claims in payload.values()
+                        for size in range(1, len(claims) + 1)
+                        for group in combinations(claims, size)})
     return {
         "type": "object", "additionalProperties": False,
         "properties": {"recommendations": {
@@ -67,8 +75,8 @@ def recommendation_reason_schema(payload):
                       "properties": {
                           "candidate_ref": {"type": "string", "enum": list(payload)},
                           "claims": {"type": "array", "minItems": 1, "maxItems": 3,
-                                     "items": {"type": "string", "enum": list(REASON_CLAIMS)}},
-                          "reason": {"type": "string"}},
+                                     "items": {"type": "string", "enum": allowed_claims}},
+                          "reason": {"type": "string", "enum": sentences}},
                       "required": ["candidate_ref", "claims", "reason"]},
         }},
         "required": ["recommendations"],

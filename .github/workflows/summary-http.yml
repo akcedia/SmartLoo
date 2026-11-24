@@ -49,7 +49,7 @@ jobs:
           python scripts/check_required_junit.py summary-http.xml --minimum 41
           python scripts/check_required_junit.py gemini-adapter.xml --minimum 19
           python scripts/check_required_junit.py gemini-http-guards.xml --minimum 8
-          python scripts/check_required_junit.py recommendation-component.xml --minimum 14
+          python scripts/check_required_junit.py recommendation-component.xml --minimum 16
           python scripts/check_required_junit.py turkish-offline.xml --minimum 42
           python scripts/check_required_junit.py ai-ui-live.xml --minimum 4
       - uses: actions/upload-artifact@v4
