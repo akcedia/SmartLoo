@@ -72,6 +72,7 @@ export default function AccountMenu({ session, onSignOut, returnTo }) {
             {session.email} · {role}
           </p>
           <Link to="/account" onClick={() => setOpen(false)}>{t("Hesabım")}</Link>
+          <Link to="/suggest" onClick={() => setOpen(false)}>{t("Tesis öner")}</Link>
           {session.role === "ADMIN" && <Link to="/admin" onClick={() => setOpen(false)}>{t("Yönetim paneli")}</Link>}
           <button
             type="button"
