@@ -68,7 +68,12 @@ export function inspectImport({ text, size, format }) {
     records = countCsvRecords(text);
   }
   if (records < 1) return { records, problem: "Dosyada yüklenecek kayıt yok." };
-  if (records > MAX_RECORDS) return { records, problem: `Bir dosyada en fazla ${MAX_RECORDS} kayıt olabilir (bu dosyada ${records}).` };
+  if (records > MAX_RECORDS) {
+    // `problem` stays the filled Turkish text; the screen translates `template` with `vars`.
+    const template = "Bir dosyada en fazla {max} kayıt olabilir (bu dosyada {n}).";
+    const vars = { max: MAX_RECORDS, n: records };
+    return { records, problem: template.replace("{max}", vars.max).replace("{n}", vars.n), template, vars };
+  }
   return { records, problem: null };
 }
 

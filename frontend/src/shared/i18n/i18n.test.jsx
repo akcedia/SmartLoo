@@ -12,6 +12,7 @@ import { PRESETS, validateRange } from "../../features/admin/api/dateRange.js";
 import { SCENARIOS } from "../../features/admin/api/sampleAdapter.js";
 import { CRITICAL_ALERT_TEXT } from "../../features/admin/api/contract.js";
 import { exportErrorMessage } from "../../features/admin/components/ExportButtons.jsx";
+import { importErrorMessage, inspectImport } from "../../features/admin/import/importApi.js";
 
 const EN = catalog("en");
 const SRC = join(process.cwd(), "src");
@@ -74,6 +75,17 @@ describe("English catalog coverage", () => {
       ...Object.values(PRESETS).map((p) => p.label),
       ...Object.values(SCENARIOS),
       CRITICAL_ALERT_TEXT,
+      ...[401, 403, 409, 413, 415, 422, 503, 0, 500].map((status) => importErrorMessage({ status })),
+      ...[
+        { text: "", size: 1, format: null },
+        { text: "", size: 0, format: "csv" },
+        { text: "", size: 2_000_000, format: "csv" },
+        { text: "[oops", size: 5, format: "json" },
+        { text: "{}", size: 2, format: "json" },
+        { text: "[]", size: 2, format: "json" },
+      ].map((input) => inspectImport(input).problem),
+      inspectImport({ text: JSON.stringify(Array(1001).fill({})), size: 5000, format: "json" }).template,
+      "Dosya okunamadı.",
       "Oturumunuzun süresi doldu. Lütfen yeniden giriş yapın.",
       "Çıkış yaptınız.",
       "Hesabınız silindi. Yorumlarınız “Anonim” olarak kalır.",
