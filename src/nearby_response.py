@@ -1,6 +1,8 @@
 """Numeric/null-preserving public search schema, compiled by Pydantic."""
 from uuid import UUID
 
+from pydantic import TypeAdapter
+
 from typing_extensions import TypedDict
 
 
@@ -26,3 +28,12 @@ class NearbyToilet(TypedDict, total=False):
 class NearbyResponse(TypedDict):
     count: int
     results: list[NearbyToilet]
+
+
+_NEARBY_ADAPTER = TypeAdapter(NearbyResponse)
+
+
+def encode_nearby(rows):
+    """Validate and encode once in the existing database worker thread."""
+    value = _NEARBY_ADAPTER.validate_python({"count": len(rows), "results": rows})
+    return _NEARBY_ADAPTER.dump_json(value)

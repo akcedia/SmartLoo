@@ -23,7 +23,7 @@ def _connect():
 
 def create_nearby_pool():
     """App-owned, bounded read pool; no connection attempt at import/startup."""
-    return ConnectionPool(kwargs=_connection_options(), min_size=0, max_size=4,
+    return ConnectionPool(kwargs={**_connection_options(), "autocommit": True}, min_size=0, max_size=4,
                           timeout=5, max_waiting=50, max_idle=60, open=True,
                           check=ConnectionPool.check_connection)
 

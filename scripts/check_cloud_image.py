@@ -18,6 +18,9 @@ else:
 checks = []
 for path, expected in [('/', 200), ('/sign-in', 200), ('/admin', 200),
                        ('/healthz', 200), ('/assets/missing.js', 404),
+                       ('/manifest.webmanifest', 200), ('/icons/favicon-32.png', 200),
+                       ('/icons/apple-touch-icon.png', 200), ('/icons/icon-192.png', 200),
+                       ('/icons/icon-512.png', 200), ('/icons/icon-maskable-512.png', 200),
                        ('/api/v1/admin/metrics/summary', 401),
                        ('/api/v1/toilets/nearby?lat=100&lon=29', 422)]:
     try:

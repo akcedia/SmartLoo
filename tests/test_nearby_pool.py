@@ -75,10 +75,12 @@ def test_real_pool_reuses_connection_and_rolls_back_failed_transaction():
     pool = nearby_store.create_nearby_pool()
     try:
         with pool.connection() as conn:
+            assert conn.autocommit is True
             first_pid = conn.execute('SELECT pg_backend_pid() AS pid').fetchone()['pid']
         with pytest.raises(psycopg.errors.DivisionByZero):
             with pool.connection() as conn:
-                conn.execute('SELECT 1 / 0')
+                with conn.transaction():
+                    conn.execute('SELECT 1 / 0')
         with pool.connection() as conn:
             assert conn.execute('SELECT pg_backend_pid() AS pid').fetchone()['pid'] == first_pid
             assert conn.execute('SELECT 42 AS answer').fetchone()['answer'] == 42

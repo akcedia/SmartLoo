@@ -12,7 +12,7 @@ from uuid import UUID
 
 import psycopg
 from fastapi import Depends, FastAPI, HTTPException, Query
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 
 from src.accounts import router as accounts_router
 from src.facility_admin import router as facility_admin_router
@@ -21,7 +21,7 @@ from src.suggestions import router as suggestions_router
 from src.auth import PostgresAccounts, RepositoryAccounts, current_user, require_admin
 from src.auth import router as auth_router
 from src.nearby_store import create_nearby_pool, find_nearby, find_toilet, find_ibb_facilities
-from src.nearby_response import NearbyResponse
+from src.nearby_response import NearbyResponse, encode_nearby
 from src.review_scores import ReviewStoreError
 from src.reviews import MongoReviews, PostgresToilets, RepositoryReviews, RepositoryToilets, ReviewService
 from src.reviews import router as reviews_router
@@ -130,7 +130,7 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
                 detail="Database temporarily unavailable",
             ) from exc
 
-        return {"count": len(rows), "results": rows}
+        return Response(content=encode_nearby(rows), media_type="application/json")
 
     @app.get("/api/v1/toilets")
     def ibb_directory(open_now: bool = False, has_disabled_access: bool | None = None,
