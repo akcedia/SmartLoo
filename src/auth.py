@@ -10,6 +10,7 @@ RepositoryAccounts, an isolated in-memory double over the test state.
 
 import os
 import re
+import secrets
 import uuid
 import threading
 import time
@@ -37,7 +38,9 @@ MAX_PASSWORD_BYTES = 72
 GENERIC_LOGIN_ERROR = "Invalid email or password"
 EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 # Compared against when the email is unknown, so both failure paths cost one bcrypt check.
-DUMMY_HASH = bcrypt.hashpw(b"timing-equalizer", bcrypt.gensalt(rounds=BCRYPT_ROUNDS)).decode()
+# Hashed from a fresh random value at start-up: no password literal in the source, and no
+# input can ever match it, so an unknown email can never sign in.
+DUMMY_HASH = bcrypt.hashpw(secrets.token_hex(32).encode(), bcrypt.gensalt(rounds=BCRYPT_ROUNDS)).decode()
 
 
 class DuplicateEmail(Exception):
