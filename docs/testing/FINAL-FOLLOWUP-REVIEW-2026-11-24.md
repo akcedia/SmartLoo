@@ -47,7 +47,7 @@ commit `83e566b`. Independent Windows verification:
 Visual browser/mobile acceptance of #99 is still open; mounted tests are not a
 replacement. The map-only change has its own earlier browser evidence.
 
-### Open catalog decisions
+### Catalog review decisions (local proposal, not yet published)
 
 **TC-21:** API-only factory GET / is not the deployed frontend composition. The
 old initial-HTML element assertions also predate React's client rendering. Do
@@ -65,6 +65,20 @@ add a four-total/three-eligible case with an explicitly invalid provider return,
 one awaited call and a check that the unsafe text/PII never reaches it. Review
 the fixture and readable case description together; keep the original red result.
 No validation or privacy rule should be weakened.
+
+Implemented both corrections locally without changing application behavior.
+TC-21 requires the actual frontend build, checks the real module/CSS asset
+responses and remains explicitly limited to the HTTP shell. TC-28 is now two
+cases covering both sides of the eligible-review threshold and actually injects
+invalid provider output. The readable catalog and acceptance table were updated
+together; this changes obsolete test setup, not FR-04/FR-09 product requirements.
+The initial cloud-shell attempt failed because it copied a running repository's
+thread lock. The shell test now owns a fresh empty test state; no control was
+mocked into the HTML. Final combined result: **65 passed, zero skips** (53
+catalog instances plus 12 cloud tests). The original 50/2 receipt above remains.
+The CI catalog gate now builds the frontend and requires all 65 cases without
+failures or skips; the broad historical Python baseline remains separate.
+[Corrected JUnit](evidence/followups-2026-11-24/catalog-corrected.xml).
 
 ## Report review and release order
 

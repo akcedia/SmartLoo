@@ -113,6 +113,17 @@ jobs:
         with:
           python-version: '3.11'
       - run: pip install -r requirements-test.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Build the actual frontend for the TC-21 cloud shell contract
+        run: npm ci && npm run build
+        working-directory: frontend
+      - name: Require the isolated acceptance catalog and cloud shell tests
+        run: python -m pytest tests/test_requirements.py tests/test_cloud_app.py -q --junitxml=catalog-required.xml
+      - name: Reject missing, failed or skipped catalog evidence
+        if: always()
+        run: python scripts/check_required_junit.py catalog-required.xml --minimum 65
       - name: Unimplemented acceptance baseline (visible failure, not a passing gate)
         continue-on-error: true
         run: python -m pytest -v --junitxml=requirements-results.xml
@@ -120,7 +131,9 @@ jobs:
         if: always()
         with:
           name: requirements-baseline
-          path: requirements-results.xml
+          path: |
+            requirements-results.xml
+            catalog-required.xml
   search:
     name: Nearby search tests
     runs-on: ubuntu-latest
