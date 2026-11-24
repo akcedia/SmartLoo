@@ -2,11 +2,13 @@
 import React, { act } from "react";
 import { createRoot } from "react-dom/client";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import { I18nProvider, useI18n } from "../../shared/i18n/I18nProvider.jsx";
 import { SessionProvider } from "../../shared/session/SessionProvider.jsx";
 import { sessionFromToken } from "../../shared/session/sessionStore.js";
 import { fakeJwt } from "../../shared/session/testJwt.js";
 import { MapApiProvider } from "./MapApiProvider.jsx";
 import AiRecommendationsPanel from "./AiRecommendationsPanel.jsx";
+import AiSummaryBox from "./AiSummaryBox.jsx";
 
 let root, host;
 const filters = { pricing: "all" };
@@ -22,7 +24,7 @@ async function mount(fetchImpl, radius = 500) {
   </SessionProvider>));
 }
 beforeEach(() => { globalThis.IS_REACT_ACT_ENVIRONMENT = true; host = document.createElement("div"); document.body.append(host); root = createRoot(host); });
-afterEach(async () => { await act(async () => root.unmount()); host.remove(); sessionStorage.clear(); });
+afterEach(async () => { await act(async () => root.unmount()); host.remove(); sessionStorage.clear(); localStorage.clear(); });
 
 it("forwards the selected radius and shows a fallback notice beside real results", async () => {
   const fetchImpl = vi.fn(async () => response("Nearby"));
@@ -50,4 +52,57 @@ it("reports an unavailable recommendation store without showing invented results
   await mount(async () => response("Never display", 503));
   expect(host.textContent).toContain("normal harita aramasıyla devam edebilirsiniz");
   expect(host.textContent).not.toContain("Never display");
+});
+
+
+function LanguageSwitch() {
+  const { setLang } = useI18n();
+  return <button data-language-switch onClick={() => setLang("en")}>English</button>;
+}
+
+it("translates the recommendation fallback without requesting locations again", async () => {
+  const fetchImpl = vi.fn(async () => Response.json({
+    results: [{ id: "nearby", name: "Yakındaki tesis", latitude: 41, longitude: 29 }],
+    fallback: true,
+    ai_reasons_available: false,
+    message: "AI açıklaması mevcut değil; filtrelerinize uygun tesisler mesafeye göre listeleniyor.",
+  }));
+  await act(async () => root.render(
+    <I18nProvider initialLang="tr">
+      <LanguageSwitch />
+      <SessionProvider initialSession={current} fetchImpl={fetchImpl}>
+        <MapApiProvider>
+          <AiRecommendationsPanel isOpen searchCenter={center} filters={filters} />
+        </MapApiProvider>
+      </SessionProvider>
+    </I18nProvider>,
+  ));
+
+  expect(host.querySelector("aside").getAttribute("aria-label")).toBe("Yakındaki uygun tesisler");
+  await act(async () => host.querySelector("[data-language-switch]").click());
+  expect(host.querySelector("aside").getAttribute("aria-label")).toBe("Matching nearby facilities");
+  expect(host.querySelector("[role=status]").textContent).toContain("listed by distance");
+  expect(host.textContent).toContain("Yakındaki tesis");
+  expect(fetchImpl).toHaveBeenCalledTimes(1);
+});
+
+it("localises the summary interface while identifying the Turkish model output", async () => {
+  const fetchImpl = vi.fn(async () => Response.json({
+    summary: "Temizdi.",
+    pros: ["Temiz"],
+    based_on_reviews: 3,
+    recommendation: "recommended",
+  }));
+  await act(async () => root.render(
+    <I18nProvider initialLang="en">
+      <SessionProvider initialSession={current} fetchImpl={fetchImpl}>
+        <MapApiProvider><AiSummaryBox toiletId="12" /></MapApiProvider>
+      </SessionProvider>
+    </I18nProvider>,
+  ));
+
+  expect(host.querySelector("section").getAttribute("aria-label")).toBe("AI review summary");
+  expect(host.textContent).toContain("Recommended");
+  expect(host.textContent).toContain("Based on 3 reviews");
+  expect(host.querySelector('p[lang="tr"]').textContent).toBe("Temizdi.");
 });
