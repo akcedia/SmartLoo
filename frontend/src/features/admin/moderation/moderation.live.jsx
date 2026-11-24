@@ -5,6 +5,7 @@ import { createRoot } from "react-dom/client";
 import { expect, it } from "vitest";
 import AdminRoute from "../AdminRoute.jsx";
 import AdminFacilityStatus from "../../map/AdminFacilityStatus.jsx";
+import SuggestionPage from "../../suggestions/SuggestionPage.jsx";
 import { SessionProvider } from "../../../shared/session/SessionProvider.jsx";
 import { sessionFromToken } from "../../../shared/session/sessionStore.js";
 import { MapApiProvider } from "../../map/MapApiProvider.jsx";
@@ -75,6 +76,30 @@ it("moderates through real services, retains a conflict notice and closes withou
     expect(closed).toMatchObject({ status: "CLOSED", review_count: 1, average_cleanliness: 4 });
     expect((await (await api(`/api/v1/toilets/${ids[0]}/reviews`)).json()).count).toBe(1);
     expect((await api(`/api/v1/toilets/${ids[0]}/reviews`, "OTHER", "POST", { cleanliness_score: 2 })).status).toBe(404);
+    // Actual USER form -> HTTP 202 pending -> ADMIN approval -> public facility.
+    await mount("OWNER", <SuggestionPage />);
+    for (const [name,value] of Object.entries({ name:env.SMARTLOO_LIVE_SUGGESTION_NAME,
+      district:"Kadıköy", latitude:"41.0005", longitude:"29" })) {
+      await act(async () => {
+        const input = host.querySelector(`[name="${name}"]`);
+        Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value").set.call(input,value);
+        input.dispatchEvent(new Event("input", {bubbles:true}));
+      });
+    }
+    await act(async () => button("Öneriyi gönder").click());
+    await settle(() => host.textContent.includes("Henüz haritada yayımlanmadı"));
+    expect(requests.filter(r => r.path === "/api/v1/toilets/suggest" && r.method === "POST")).toHaveLength(1);
+    const pending = await (await api("/api/v1/admin/suggestions?status=pending")).json();
+    const formRow = pending.results.find(row => row.name === env.SMARTLOO_LIVE_SUGGESTION_NAME);
+    expect(formRow).toMatchObject({status:"pending",has_disabled_access:null,has_baby_changing:null,is_free:null});
+    const beforeApproval = await (await api("/api/v1/toilets/nearby?lat=41&lon=29&radius=5000")).json();
+    expect(beforeApproval.results.some(row => row.id === formRow.id)).toBe(false);
+    await mount("ADMIN", <AdminRoute path="/admin/moderation" mode="live" />);
+    await settle(() => Boolean(card(env.SMARTLOO_LIVE_SUGGESTION_NAME)));
+    await act(async () => button("Onayla",card(env.SMARTLOO_LIVE_SUGGESTION_NAME)).click());
+    await act(async () => button("Evet, onayla",card(env.SMARTLOO_LIVE_SUGGESTION_NAME)).click());
+    await settle(() => !card(env.SMARTLOO_LIVE_SUGGESTION_NAME));
+    expect((await api(`/api/v1/toilets/${formRow.id}`)).status).toBe(200);
   } finally {
     await act(async () => root.unmount()); host.remove();
   }

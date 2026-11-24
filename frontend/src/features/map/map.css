@@ -8,6 +8,20 @@
 
 .sl-search { height: 100%; font-family: inherit; color: var(--sl-text); }
 .sl-map-area { position: relative; height: 100%; overflow: hidden; }
+.sl-map-density {
+  position: absolute;
+  left: 64px;
+  bottom: 48px;
+  max-width: min(300px, calc(100% - 148px));
+  z-index: 700;
+  padding: 7px 10px;
+  border-radius: 8px;
+  color: var(--sl-text-secondary);
+  background: var(--sl-surface);
+  box-shadow: var(--sl-shadow-sm);
+  font-size: 12px;
+  pointer-events: none;
+}
 
 /* ---------- Top column: toolbar, filter panel, notices, list ---------- */
 .sl-top {
@@ -532,6 +546,7 @@ path.sl-radius { stroke: var(--sl-accent-solid); stroke-width: 2; fill: var(--sl
   .sl-source { left: 8px; bottom: calc(24px + env(safe-area-inset-bottom)); max-width: calc(100% - 84px); font-size: 11px; }
   .sl-source-note { display: none; }
   .sl-map-area .leaflet-control-zoom { display: none; }
+  .sl-map-density { left: 12px; bottom: calc(62px + env(safe-area-inset-bottom)); max-width: calc(100% - 92px); }
 
   /* List view: full screen under the control rows. */
   .sl-search--list .sl-top { inset: 0; padding: 8px; background: var(--sl-bg); }

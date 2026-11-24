@@ -16,7 +16,7 @@ class FrontendFiles(StaticFiles):
             # Only known browser routes receive index.html. API and missing asset
             # errors must retain their status instead of becoming successful HTML.
             route = path.replace("\\", "/").strip("/")
-            is_page = route in {"sign-in", "register", "account", "admin"} or route.startswith("admin/")
+            is_page = route in {"sign-in", "register", "account", "suggest", "admin"} or route.startswith("admin/")
             if exc.status_code != 404 or not is_page or scope["method"] not in {"GET", "HEAD"}:
                 raise
             return await super().get_response("index.html", scope)
