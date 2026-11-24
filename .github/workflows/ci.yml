@@ -178,7 +178,7 @@ jobs:
         run: python -m pytest tests/test_nearby_postgis.py tests/test_nearby_pool.py tests/test_nearby_response.py -q --junitxml=nearby-results.xml
 
       - name: Require all nearby and pool checks
-        run: python scripts/check_required_junit.py nearby-results.xml --minimum 12
+        run: python scripts/check_required_junit.py nearby-results.xml --minimum 13
 
       - uses: actions/upload-artifact@v4
         if: always()

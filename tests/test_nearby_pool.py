@@ -1,5 +1,8 @@
 from contextlib import contextmanager
+from concurrent.futures import ThreadPoolExecutor
 import os
+from threading import Lock
+import time
 from unittest.mock import Mock
 
 import psycopg
@@ -68,6 +71,35 @@ def test_repository_app_does_not_start_database_pool(monkeypatch):
     with TestClient(application.create_app(state={})):
         pass
     make_pool.assert_not_called()
+
+
+def test_parallel_nearby_reads_do_not_occupy_workers_waiting_for_pool_slots(monkeypatch):
+    pool = Mock()
+    monkeypatch.setattr(application, 'create_nearby_pool', Mock(return_value=pool), raising=False)
+    active = 0
+    maximum = 0
+    lock = Lock()
+
+    def search(**kwargs):
+        nonlocal active, maximum
+        with lock:
+            active += 1
+            maximum = max(maximum, active)
+        try:
+            time.sleep(.05)
+            return []
+        finally:
+            with lock:
+                active -= 1
+
+    monkeypatch.setattr(application, 'find_nearby', search)
+    with TestClient(application.create_app()) as client:
+        with ThreadPoolExecutor(max_workers=12) as requests:
+            responses=list(requests.map(lambda _: client.get('/api/v1/toilets/nearby?lat=41&lon=29'), range(24)))
+    assert all(response.status_code == 200 for response in responses)
+    assert maximum <= 4
+    assert active == 0
+    pool.close.assert_called_once_with()
 
 
 @pytest.mark.skipif(os.getenv('SMARTLOO_TEST_POSTGIS') != '1', reason='Requires private local PostGIS')

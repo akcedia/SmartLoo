@@ -11,6 +11,7 @@ from copy import deepcopy
 from uuid import UUID
 
 import psycopg
+from anyio import CapacityLimiter, to_thread
 from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.responses import JSONResponse, Response
 
@@ -39,6 +40,7 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
     async def lifespan(app):
         pool = create_nearby_pool() if state is None and nearby_search is None else None
         app.state.nearby_pool = pool
+        app.state.nearby_limiter = CapacityLimiter(4) if pool is not None else None
         try:
             async with ai_lifespan(app, provider=ai_provider, cache=ai_cache, profile=ai_profile,
                                    reason_provider=ai_reason_provider):
@@ -47,11 +49,13 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
             if pool is not None:
                 pool.close()
             app.state.nearby_pool = None
+            app.state.nearby_limiter = None
     app = FastAPI(title="SmartLoo requirements-stage API", lifespan=lifespan)
     app.state.repository = deepcopy(state or {})
     app.state.ai_provider = ai_provider
     app.state.jwt_secret = jwt_secret
     app.state.nearby_pool = None
+    app.state.nearby_limiter = None
 
     def default_nearby_search(**kwargs):
         pool = app.state.nearby_pool
@@ -105,7 +109,7 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
         return JSONResponse(status_code=503, content={"detail": "Database temporarily unavailable"})
 
     @app.get("/api/v1/toilets/nearby", response_model=NearbyResponse)
-    def nearby(
+    async def nearby(
         lat: float = Query(..., ge=-90, le=90, allow_inf_nan=False),
         lon: float = Query(..., ge=-180, le=180, allow_inf_nan=False),
         radius: float = Query(1000, ge=1, le=50000, allow_inf_nan=False),
@@ -114,7 +118,7 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
         has_baby_changing: bool | None = None,
         is_free: bool | None = None,
     ):
-        try:
+        def perform_search():
             rows = app.state.nearby_search(
                 lat=lat,
                 lon=lon,
@@ -124,13 +128,15 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
                 has_baby_changing=has_baby_changing,
                 is_free=is_free,
             )
+            return Response(content=encode_nearby(rows), media_type="application/json")
+
+        try:
+            return await to_thread.run_sync(perform_search, limiter=app.state.nearby_limiter)
         except (psycopg.OperationalError, psycopg.InterfaceError) as exc:
             raise HTTPException(
                 status_code=503,
                 detail="Database temporarily unavailable",
             ) from exc
-
-        return Response(content=encode_nearby(rows), media_type="application/json")
 
     @app.get("/api/v1/toilets")
     def ibb_directory(open_now: bool = False, has_disabled_access: bool | None = None,
