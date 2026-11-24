@@ -9,14 +9,16 @@ import io
 import time
 from copy import deepcopy
 from types import SimpleNamespace
-from unittest.mock import Mock
+from unittest.mock import AsyncMock
 
 import bcrypt
 import jwt
 import pytest
 from bs4 import BeautifulSoup
 from fastapi.testclient import TestClient
+from src.ai_restricted_policy import POLICY_VERSION, expected_candidate
 from src.app import create_app
+from tests.test_ai_summary_service import Cache
 
 BASE = "/api/v1"
 A, B, C, D = [f"00000000-0000-4000-8000-{n:012}" for n in range(1, 5)]
@@ -107,11 +109,12 @@ def env(monkeypatch):
                   [(U,"ali@example.com","USER"),(V,"other@example.com","USER"),
                    (ADMIN,"admin@example.com","ADMIN")]},
         "reviews": {}, "suggestions": {}, "summary_cache": {}, "login_attempts": []}
-    ai = Mock(return_value={"summary":"Temiz, ancak sabun eksik.","pros":["Temiz"],
-                           "cons":["Sabun eksik"],"recommendation":"acceptable",
-                           "categories":{"cleanliness":"positive","odor":"unknown",
-                                         "supplies":"negative","accessibility":"unknown","safety":"unknown"}})
-    app = create_app(state, ai, KEY)
+    ai = AsyncMock(side_effect=expected_candidate)
+    reasons = AsyncMock(return_value={"c1": "Tesis ücretsiz ve engelli erişimine uygun."})
+    app = create_app(
+        state=state, ai_provider=ai, jwt_secret=KEY,
+        ai_profile=POLICY_VERSION, ai_cache=Cache(), ai_reason_provider=reasons,
+    )
     # This isolated catalog mutates the in-memory repository. Its detail reads
     # must use that same state, not a developer's unrelated PostgreSQL instance.
     # Actual PostGIS detail behavior remains covered by test_toilet_detail.py.
@@ -121,7 +124,7 @@ def env(monkeypatch):
         app.state.repository, **params
     )
     with TestClient(app) as client:
-        yield SimpleNamespace(client=client, store=app.state.repository, ai=ai)
+        yield SimpleNamespace(client=client, store=app.state.repository, ai=ai, reasons=reasons)
 
 
 def seed_reviews(env, scores=(4,2), owner=None):
@@ -223,7 +226,7 @@ def test_tc_08(env):
     assert data["based_on_reviews"]==3 and len(data["summary"])<=400
     assert data["recommendation"] in ["recommended","acceptable","avoid"]
     assert data["categories"]["odor"]=="unknown"
-    env.ai.assert_called_once()
+    env.ai.assert_awaited_once()
 
 
 def test_tc_09(env):
@@ -271,8 +274,11 @@ def test_tc_15(env,count,outage):
     seed_reviews(env,tuple([4]*count))
     if outage:env.ai.side_effect=TimeoutError("mock outage")
     data=body(env.client.get(f"{BASE}/toilets/{A}/summary"));assert data["summary"] is None
-    if outage:assert data["review_count"]==count
-    else:env.ai.assert_not_called()
+    if outage:
+        assert data["review_count"] == count
+        env.ai.assert_awaited_once()
+    else:
+        env.ai.assert_not_awaited()
     assert nearby(env).status_code==200
 
 
@@ -280,10 +286,13 @@ def test_tc_16(env):
     seed_reviews(env,(4,2,4))
     first=body(env.client.get(f"{BASE}/toilets/{A}/summary"))
     second=body(env.client.get(f"{BASE}/toilets/{A}/summary"))
-    assert first==second;env.ai.assert_called_once()
+    assert first == second and first["summary"] is not None
+    env.ai.assert_awaited_once()
     # Editing a source review must invalidate the cached summary.
     assert env.client.patch(f"{BASE}/reviews/{R1}",headers=auth(V),json={"cleanliness_score":1,"comment":"Kirli"}).status_code==200
-    body(env.client.get(f"{BASE}/toilets/{A}/summary"));assert env.ai.call_count==2
+    after_edit = body(env.client.get(f"{BASE}/toilets/{A}/summary"))
+    assert after_edit["summary"] and after_edit["summary"] != first["summary"]
+    assert env.ai.await_count == 2
 
 
 def test_tc_17(env):
@@ -293,7 +302,9 @@ def test_tc_17(env):
     assert 0<len(data["results"])<=3
     for row in data["results"]:
         assert row["has_disabled_access"] is True and row["is_free"] is True
-        assert row["reason"]
+        assert row["reason"] == "Tesis ücretsiz ve engelli erişimine uygun."
+    assert data["ai_reasons_available"] is True and data["fallback"] is False
+    env.reasons.assert_awaited_once()
 
 
 def test_tc_18(env):
