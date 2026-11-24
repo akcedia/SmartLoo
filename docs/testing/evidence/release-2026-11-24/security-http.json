@@ -1,0 +1,215 @@
+{
+  "image": "smartloo:release24",
+  "image_id": "sha256:acf044d1265f19f579eb646e75410351ec84e1012b1fedc07a7e3411141b7c61",
+  "image_revision": "6b8d047d81bf68619e1deec776299bc4c9038d95",
+  "synthetic_only": true,
+  "live_model_calls": 0,
+  "cases": [
+    {
+      "case": "Guest ADMIN denied",
+      "expected": 401,
+      "actual": 401,
+      "passed": true
+    },
+    {
+      "case": "SQL-like coordinate rejected",
+      "expected": 422,
+      "actual": 422,
+      "passed": true
+    },
+    {
+      "case": "Nonfinite coordinate rejected",
+      "expected": 422,
+      "actual": 422,
+      "passed": true
+    },
+    {
+      "case": "Invalid amenity boolean rejected",
+      "expected": 422,
+      "actual": 422,
+      "passed": true
+    },
+    {
+      "case": "Invalid facility identifier rejected",
+      "expected": 422,
+      "actual": 422,
+      "passed": true
+    },
+    {
+      "case": "Private path denied: /.env",
+      "expected": 404,
+      "actual": 404,
+      "passed": true
+    },
+    {
+      "case": "Private path denied: /.venv/private.env",
+      "expected": 404,
+      "actual": 404,
+      "passed": true
+    },
+    {
+      "case": "Private path denied: /src/auth.py",
+      "expected": 404,
+      "actual": 404,
+      "passed": true
+    },
+    {
+      "case": "Private path denied: /assets/%2e%2e/%2e%2e/.env",
+      "expected": 404,
+      "actual": 404,
+      "passed": true
+    },
+    {
+      "case": "Register Owner",
+      "expected": 201,
+      "actual": 201,
+      "passed": true
+    },
+    {
+      "case": "Registration cannot promote Owner",
+      "passed": true
+    },
+    {
+      "case": "Login Owner",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "case": "Register Other",
+      "expected": 201,
+      "actual": 201,
+      "passed": true
+    },
+    {
+      "case": "Registration cannot promote Other",
+      "passed": true
+    },
+    {
+      "case": "Login Other",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "case": "USER cannot read ADMIN analytics",
+      "expected": 403,
+      "actual": 403,
+      "passed": true
+    },
+    {
+      "case": "USER cannot read moderation queue",
+      "expected": 403,
+      "actual": 403,
+      "passed": true
+    },
+    {
+      "case": "Forged ADMIN signature denied",
+      "expected": 401,
+      "actual": 401,
+      "passed": true
+    },
+    {
+      "case": "Malformed bearer denied",
+      "expected": 401,
+      "actual": 401,
+      "passed": true
+    },
+    {
+      "case": "Anonymous review write denied",
+      "expected": 401,
+      "actual": 401,
+      "passed": true
+    },
+    {
+      "case": "Oversized review rejected",
+      "expected": 422,
+      "actual": 422,
+      "passed": true
+    },
+    {
+      "case": "Fractional score rejected",
+      "expected": 422,
+      "actual": 422,
+      "passed": true
+    },
+    {
+      "case": "Owner creates synthetic review",
+      "expected": 201,
+      "actual": 201,
+      "passed": true
+    },
+    {
+      "case": "Other user edit denied",
+      "expected": 403,
+      "actual": 403,
+      "passed": true
+    },
+    {
+      "case": "Other user delete denied",
+      "expected": 403,
+      "actual": 403,
+      "passed": true
+    },
+    {
+      "case": "Denied edits preserve owner review",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "case": "IDOR attempts do not change persisted review",
+      "passed": true
+    },
+    {
+      "case": "Owner cleanup remains allowed",
+      "expected": 204,
+      "actual": 204,
+      "passed": true
+    },
+    {
+      "case": "Password byte limit enforced",
+      "expected": 422,
+      "actual": 422,
+      "passed": true
+    },
+    {
+      "case": "Failed login recorded 1",
+      "expected": 401,
+      "actual": 401,
+      "passed": true
+    },
+    {
+      "case": "Failed login recorded 2",
+      "expected": 401,
+      "actual": 401,
+      "passed": true
+    },
+    {
+      "case": "Failed login recorded 3",
+      "expected": 401,
+      "actual": 401,
+      "passed": true
+    },
+    {
+      "case": "Failed login recorded 4",
+      "expected": 401,
+      "actual": 401,
+      "passed": true
+    },
+    {
+      "case": "Failed login recorded 5",
+      "expected": 401,
+      "actual": 401,
+      "passed": true
+    },
+    {
+      "case": "Repeated login failures bounded",
+      "expected": 429,
+      "actual": 429,
+      "passed": true
+    }
+  ],
+  "status": "passed",
+  "private_stores_removed": true
+}

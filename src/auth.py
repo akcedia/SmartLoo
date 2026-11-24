@@ -14,7 +14,7 @@ import secrets
 import uuid
 import threading
 import time
-from contextlib import contextmanager
+from contextlib import contextmanager, nullcontext
 from contextvars import ContextVar
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -133,6 +133,10 @@ class RepositoryAccounts:
     def get(self, user_id):
         return self.users.get(user_id)
 
+    def redaction_terms(self, user_ids, connection=None):
+        return {key: (user["email"], user["display_name"]) for key in set(user_ids)
+                if (user := self.get(key)) is not None}
+
     def insert(self, email, password_hash, display_name):
         if self.find_by_email(email):
             raise DuplicateEmail
@@ -161,6 +165,14 @@ class RepositoryAccounts:
 class PostgresAccounts:
     def __init__(self):
         self.active_connection = ContextVar(f"account-connection-{id(self)}", default=None)
+
+    def redaction_terms(self, user_ids, connection=None):
+        ids = list(set(user_ids))
+        if not ids:
+            return {}
+        with (nullcontext(connection) if connection is not None else connect()) as conn:
+            rows = conn.execute("SELECT id::text, email, display_name FROM users WHERE id=ANY(%s::uuid[])", (ids,)).fetchall()
+        return {row["id"]: (row["email"], row["display_name"]) for row in rows}
 
     @contextmanager
     def guard(self, user_ids):

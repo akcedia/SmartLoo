@@ -64,7 +64,7 @@ export default function Dropdown({ label, value, options, onChange, className = 
         </svg>
       </button>
       {open && (
-        <div id={listId} className={`sl-dropdown-menu sl-dropdown-menu--${align}`} role="radiogroup" aria-label={label} onKeyDown={onMenuKey}>
+        <div id={listId} className={`sl-dropdown-menu sl-dropdown-menu--${align}`} role="radiogroup" tabIndex={-1} aria-label={label} onKeyDown={onMenuKey}>
           {options.map((o) => (
             <button key={o.value} type="button" role="radio" aria-checked={o.value === value} onClick={() => pick(o.value)}>
               {o.label}

@@ -1,0 +1,310 @@
+Browser tab: 1360366985, Title: "Yönetim · SmartLoo", URL: "http://127.0.0.1:5198/admin".
+0 AXWebArea Yönetim · SmartLoo, URL: 127.0.0.1:5198/admin
+	1 container root
+		2 link Description: İçeriğe geç, Value: 127.0.0.1:5198/admin#main
+		3 container
+			4 link Description: SmartLoo, Value: 127.0.0.1:5198/
+			7 button (collapsed) Description: Ayarlar, Secondary Actions: Expand
+			8 link Description: Giriş yap, Value: 127.0.0.1:5198/sign-in?next=%2Fadmin
+		9 container main
+			10 container
+				11 heading Yönetim Paneli, Value: 1
+					12 text Yönetim Paneli
+				13 text İlçe ve tarih bazlı hijyen analizi
+				14 container Yönetim bölümleri
+					15 text Analiz
+					16 link Description: Moderasyon, Value: 127.0.0.1:5198/admin/moderation
+					17 link Description: İçe aktarım, Value: 127.0.0.1:5198/admin/import
+				18 container
+					19 text ÖRNEK VERİ Bu ekran backend'e bağlı değildir (VITE_ADMIN_DATA=sample). Tesis adları, puanlar ve tarihler arayüz incelemesi için uydurulmuştur. Bu modda oturum ve yetki denetimi uygulanmaz.
+				20 container
+					21 text Demo senaryosu
+					22 pop up button (collapsed, settable) Demo senaryosu, Value: Normal yanıt, Secondary Actions: Expand
+						23 menu
+							24 (selected) Normal yanıt
+							25 Yavaş yanıt (yükleniyor)
+							26 Sunucu hatası (500)
+							27 Oturum yok (401)
+							28 Yetkisiz rol (403)
+				29 container Analiz filtreleri
+					30 container
+						31 text İlçe
+						32 pop up button (collapsed, settable) İlçe, Value: Tüm ilçeler, Secondary Actions: Expand
+							33 menu
+								34 (selected) Tüm ilçeler
+								35 Adalar
+								36 Arnavutköy
+								37 Ataşehir
+								38 Avcılar
+								39 Bağcılar
+								40 Bahçelievler
+								41 Bakırköy
+								42 Başakşehir
+								43 Bayrampaşa
+								44 Beşiktaş
+								45 Beykoz
+								46 Beylikdüzü
+								47 Beyoğlu
+								48 Büyükçekmece
+								49 Çatalca
+								50 Çekmeköy
+								51 Esenler
+								52 Esenyurt
+								53 Eyüpsultan
+								54 Fatih
+								55 Gaziosmanpaşa
+								56 Güngören
+								57 Kadıköy
+								58 Kağıthane
+								59 Kartal
+								60 Küçükçekmece
+								61 Maltepe
+								62 Pendik
+								63 Sancaktepe
+								64 Sarıyer
+								65 Silivri
+								66 Sultanbeyli
+								67 Sultangazi
+								68 Şile
+								69 Şişli
+								70 Tuzla
+								71 Ümraniye
+								72 Üsküdar
+								73 Zeytinburnu
+					74 container Dönem
+						75 text Dönem
+						76 radio button (settable, integer) Description: Son 30 gün, Value: 1
+						77 radio button (settable, integer) Description: Son 7 gün, Value: 0
+						78 radio button (settable, integer) Description: Özel aralık, Value: 0
+					79 container
+						80 text Başlangıç
+						81 date field (disabled, settable) Başlangıç, Value: 2026-10-26
+					82 container
+						83 text Bitiş
+						84 date field (disabled, settable) Bitiş, Value: 2026-11-24
+					85 text Tarihler Europe/Istanbul saatine göre, iki uç dahil. Filtre değerlendirme tarihine (created_at) uygulanır.
+				86 text Gösterilen:
+				87 text Tüm ilçeler
+				88 text  ·
+				89 container
+					90 text 26.10.2026  –  24.11.2026
+				91 container Özet göstergeler
+					92 heading Özet göstergeler, Value: 2, ID: kpi-title
+						93 text Özet göstergeler
+					94 heading Ortalama hijyen, Value: 3
+						95 text Ortalama hijyen
+					96 container
+						97 text 3.92 / 5
+					98 text Seçilen dönemdeki tüm değerlendirmelerin ortalaması
+					99 heading Değerlendirme sayısı, Value: 3
+						100 text Değerlendirme sayısı
+					101 text 13
+					102 heading Aktif tesis oranı, Value: 3
+						103 text Aktif tesis oranı
+					104 container
+						105 text %60 ( 3 / 5 )
+					106 text İdari durum (ACTIVE); anlık doluluk değildir
+				107 container Hijyen trendi
+					108 heading Hijyen trendi, Value: 2, ID: trend-title
+						109 text Hijyen trendi
+					110 container
+						111 container Günlük ortalama hijyen puanı trendi
+						112 text Günlük ortalama (1–5). Kesikli çizgi: 3.5 kritik eşik. Değerlendirme olmayan günler boş bırakılır.
+						113 table Günlük hijyen ortalamaları (17 gün değerlendirmesiz)
+							114 text Günlük hijyen ortalamaları (17 gün değerlendirmesiz)
+							115 row
+								116 cell
+									117 text Tarih
+								118 cell
+									119 text Ortalama
+								120 cell
+									121 text Değerlendirme
+							122 row
+								123 cell
+									124 text 2026-10-29
+								125 cell
+									126 text 3.00  (kritik)
+								127 cell
+									128 text 1
+							129 row
+								130 cell
+									131 text 2026-10-30
+								132 cell
+									133 text 5.00
+								134 cell
+									135 text 1
+							136 row
+								137 cell
+									138 text 2026-11-06
+								139 cell
+									140 text 4.00
+								141 cell
+									142 text 1
+							143 row
+								144 cell
+									145 text 2026-11-09
+								146 cell
+									147 text 5.00
+								148 cell
+									149 text 1
+							150 row
+								151 cell
+									152 text 2026-11-12
+								153 cell
+									154 text 2.00  (kritik)
+								155 cell
+									156 text 1
+							157 row
+								158 cell
+									159 text 2026-11-15
+								160 cell
+									161 text 4.00
+								162 cell
+									163 text 1
+							164 row
+								165 cell
+									166 text 2026-11-16
+								167 cell
+									168 text 5.00
+								169 cell
+									170 text 1
+							171 row
+								172 cell
+									173 text 2026-11-18
+								174 cell
+									175 text 3.00  (kritik)
+								176 cell
+									177 text 1
+							178 row
+								179 cell
+									180 text 2026-11-19
+								181 cell
+									182 text 5.00
+								183 cell
+									184 text 1
+							185 row
+								186 cell
+									187 text 2026-11-20
+								188 cell
+									189 text 4.00
+								190 cell
+									191 text 1
+							192 row
+								193 cell
+									194 text 2026-11-21
+								195 cell
+									196 text 2.00  (kritik)
+								197 cell
+									198 text 1
+							199 row
+								200 cell
+									201 text 2026-11-22
+								202 cell
+									203 text 4.00
+								204 cell
+									205 text 1
+							206 row
+								207 cell
+									208 text 2026-11-23
+								209 cell
+									210 text 5.00
+								211 cell
+									212 text 1
+				213 container Tesisler
+					214 heading Tesisler, Value: 2, ID: facilities-title
+						215 text Tesisler
+					216 table Seçilen dönemde tesis bazında hijyen
+						217 text Seçilen dönemde tesis bazında hijyen
+						218 row
+							219 cell
+								220 text Tesis
+							221 cell
+								222 text İlçe
+							223 cell
+								224 text Durum
+							225 cell
+								226 text Hijyen puanı
+							227 cell
+								228 text Değerlendirme
+						229 container
+							230 row
+								231 cell
+									232 text Örnek Tesis — Moda Sahil
+								233 cell
+									234 text İlçe
+									235 text Kadıköy
+								236 cell
+									237 text Durum
+									238 text Aktif
+								239 cell
+									240 text Hijyen puanı
+									241 text 4.20
+								242 cell
+									243 text Değerlendirme
+									244 text 5
+							245 row
+								246 cell
+									247 text Örnek Tesis — İskele
+								248 cell
+									249 text İlçe
+									250 text Kadıköy
+								251 cell
+									252 text Durum
+									253 text Bakımda
+								254 cell
+									255 text Hijyen puanı
+									256 text 2.33 ( kritik )
+								257 cell
+									258 text Değerlendirme
+									259 text 3
+							260 row
+								261 cell
+									262 text Örnek Tesis — Meydan
+								263 cell
+									264 text İlçe
+									265 text Beşiktaş
+								266 cell
+									267 text Durum
+									268 text Aktif
+								269 cell
+									270 text Hijyen puanı
+									271 text 4.60
+								272 cell
+									273 text Değerlendirme
+									274 text 5
+							275 row
+								276 cell
+									277 text Örnek Tesis — Park
+								278 cell
+									279 text İlçe
+									280 text Beşiktaş
+								281 cell
+									282 text Durum
+									283 text Kapalı
+								284 cell
+									285 text Hijyen puanı
+									286 text Veri yok
+								287 cell
+									288 text Değerlendirme
+									289 text 0
+							290 row
+								291 cell
+									292 text Örnek Tesis — Sahil Yolu
+								293 cell
+									294 text İlçe
+									295 text Üsküdar
+								296 cell
+									297 text Durum
+									298 text Aktif
+								299 cell
+									300 text Hijyen puanı
+									301 text Veri yok
+								302 cell
+									303 text Değerlendirme
+									304 text 0
+				305 container Dışa aktarım
+					306 button CSV dışa aktar
+					307 button JSON dışa aktar
+					308 text Sütunlar: facility_id, district, hygiene_score, open_issues_count, last_cleaned_at. Olmayan operasyonel değerler CSV'de boş, JSON'da null.
+
+The focused UI element is 9 container main

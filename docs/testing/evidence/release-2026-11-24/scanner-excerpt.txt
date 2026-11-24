@@ -1,0 +1,6 @@
+19:03:24.985 WARN  Property 'sonar.working.directory' with value '/tmp/.scannerwork' is overridden with value '/tmp/.scannerwork'
+19:03:25.056 INFO  SonarScanner CLI 8.4.0.16527
+19:06:11.490 WARN  Retrieving only language associated files, make sure to run the analysis inside a git repository to make use of inclusions specified via "sonar.text.inclusions"
+19:06:58.081 INFO  SCM revision ID '6b8d047d81bf68619e1deec776299bc4c9038d95'
+19:07:15.159 INFO  QUALITY GATE STATUS: PASSED - View details on http://host.docker.internal:9001/dashboard?id=smartloo-main-6b1c5b2f
+19:07:15.402 INFO  EXECUTION SUCCESS

@@ -44,3 +44,10 @@ def test_api_validation_and_admin_guard_still_apply(client):
 def test_missing_build_fails_before_serving(tmp_path):
     with pytest.raises(RuntimeError, match="index.html"):
         create_cloud_app(web_dir=tmp_path, state={})
+
+
+@pytest.mark.parametrize("revision", ["a" * 40, "not-a-public-commit"])
+def test_liveness_exposes_only_a_valid_public_release_revision(client, monkeypatch, revision):
+    monkeypatch.setenv("RENDER_GIT_COMMIT", revision)
+    expected = {"status": "ok", "revision": revision} if len(revision) == 40 else {"status": "ok"}
+    assert client.get("/healthz").json() == expected

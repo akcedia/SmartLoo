@@ -1,0 +1,9 @@
+{
+  "revision": "6b8d047d81bf68619e1deec776299bc4c9038d95",
+  "scanner_exit": 0,
+  "gate": "OK",
+  "rules_disabled": 0,
+  "scm_publisher_disabled": true,
+  "scm_ignore_disabled": true,
+  "source_revision_supplied_explicitly": true
+}

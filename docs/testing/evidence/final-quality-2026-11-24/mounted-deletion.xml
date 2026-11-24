@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="5" failures="0" errors="0" time="3.7977526">
+    <testsuite name="src/features/auth/accountDeletion.live.jsx" timestamp="2026-11-24T16:52:09.084Z" hostname="DESKTOP-MK26RE8" tests="5" failures="0" errors="0" skipped="0" time="3.7977526">
+        <testcase classname="src/features/auth/accountDeletion.live.jsx" name="Account screen with real PostgreSQL/MongoDB API &gt; cancels confirmation without deleting and restores keyboard focus" time="0.7121813">
+        </testcase>
+        <testcase classname="src/features/auth/accountDeletion.live.jsx" name="Account screen with real PostgreSQL/MongoDB API &gt; keeps session and focus on real 503 from pending author recovery" time="0.5235056">
+        </testcase>
+        <testcase classname="src/features/auth/accountDeletion.live.jsx" name="Account screen with real PostgreSQL/MongoDB API &gt; deletes on real 204, clears session, retains anonymous scores and rejects old login/token" time="1.9453764">
+        </testcase>
+        <testcase classname="src/features/auth/accountDeletion.live.jsx" name="Account screen with real PostgreSQL/MongoDB API &gt; expires a restored stale session when deletion receives real 401" time="0.116352">
+        </testcase>
+        <testcase classname="src/features/auth/accountDeletion.live.jsx" name="Account screen with real PostgreSQL/MongoDB API &gt; does not claim the account survived when the successful response is lost" time="0.4965964">
+        </testcase>
+    </testsuite>
+</testsuites>

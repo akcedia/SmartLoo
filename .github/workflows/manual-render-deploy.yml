@@ -1,0 +1,85 @@
+name: Manual verified Render deploy
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: smartloo-production-deploy
+  cancel-in-progress: false
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check deployment guards
+        run: node --test tests/release_checks.test.cjs
+      - name: Verify exact main CI, deploy once and observe the live revision
+        uses: actions/github-script@v7
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        with:
+          script: |
+            const fs = require('node:fs');
+            const {verifyWorkflows, deployHookUrl, isLiveRevision} = require('./scripts/release_checks.cjs');
+            const sha = context.sha;
+            const response = await github.rest.actions.listWorkflowRunsForRepo({
+              ...context.repo, head_sha: sha, event: 'push', per_page: 100,
+            });
+            const ci = verifyWorkflows(response.data.workflow_runs, sha);
+            const hook = deployHookUrl(process.env.RENDER_DEPLOY_HOOK_URL, sha);
+            let triggered;
+            try {
+              triggered = await fetch(hook, {method: 'POST', redirect: 'error', signal: AbortSignal.timeout(30000)});
+            } catch {
+              throw new Error('Deploy trigger outcome unknown. Inspect Render before manually retrying; no automatic retry was made.');
+            }
+            if (![200, 202].includes(triggered.status)) {
+              throw new Error(`Render rejected deployment (HTTP ${triggered.status}); private response omitted.`);
+            }
+            let deploymentId = null;
+            try {
+              const body = await triggered.json();
+              if (/^dep-[a-z0-9]+$/.test(body?.deploy?.id)) deploymentId = body.deploy.id;
+            } catch { /* Exact live revision remains the acceptance signal. */ }
+            const origin = 'https://smartloo.onrender.com';
+            let health;
+            const deadline = Date.now() + 15 * 60 * 1000;
+            for (let attempt = 0; attempt < 60 && Date.now() < deadline; attempt++) {
+              await new Promise(resolve => setTimeout(resolve, 15000));
+              try {
+                const result = await fetch(`${origin}/healthz`, {redirect: 'error', signal: AbortSignal.timeout(10000)});
+                if (result.ok) {
+                  const body = await result.json();
+                  if (isLiveRevision(body, sha)) { health = body; break; }
+                }
+              } catch { /* Bounded read-only polling; never repeat the deploy POST. */ }
+            }
+            if (!health) throw new Error('Exact new revision was not observed. Inspect Render and use the documented rollback plan.');
+            const checks = [];
+            for (const [path, expected] of [
+              ['/', 200], ['/sign-in', 200], ['/manifest.webmanifest', 200],
+              ['/api/v1/admin/metrics/summary', 401],
+              ['/api/v1/toilets/nearby?lat=100&lon=29', 422],
+              ['/assets/missing.js', 404], ['/api/v1/toilets', 200],
+            ]) {
+              const result = await fetch(origin + path, {redirect: 'error', signal: AbortSignal.timeout(15000)});
+              if (result.status !== expected) throw new Error(`Public smoke failed: ${path} HTTP ${result.status}`);
+              if (path === '/api/v1/toilets') {
+                const directory = await result.json();
+                if (!Array.isArray(directory.results) || directory.count < 1) throw new Error('Real directory is empty or malformed');
+              }
+              checks.push({path, status: result.status});
+            }
+            const receipt = {sha, deploymentId, health, ci, checks, model_calls: 0, data_writes: 0, time_utc: new Date().toISOString()};
+            fs.writeFileSync('release-receipt.json', JSON.stringify(receipt, null, 2));
+            await core.summary.addHeading('SmartLoo deployment verified')
+              .addRaw(`Exact live commit: ${sha}. No model calls or datastore writes in smoke checks.`)
+              .addTable([['Path', 'HTTP'], ...checks.map(row => [row.path, String(row.status)])]).write();
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verified-render-release
+          path: release-receipt.json
+          if-no-files-found: error

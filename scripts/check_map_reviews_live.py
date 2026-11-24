@@ -38,7 +38,17 @@ def main(suite="reviews"):
     os.environ["SMARTLOO_MONGO_DB"] = mongo_db
     from src.app import create_app
 
-    app = create_app(jwt_secret="map-live-check-only-signing-key-at-least-32-bytes")
+    original_redis_url = os.environ.get("SMARTLOO_REDIS_URL")
+    options = {}
+    if suite == "ai":
+        if not os.getenv("SMARTLOO_AI_TEST_REDIS_URL"):
+            raise SystemExit("Explicit test Redis URL required")
+        from src.ai_restricted_policy import POLICY_VERSION, expected_candidate
+        async def synthetic_provider(evidence):
+            return expected_candidate(evidence)
+        os.environ["SMARTLOO_REDIS_URL"] = os.environ["SMARTLOO_AI_TEST_REDIS_URL"]
+        options = dict(ai_provider=synthetic_provider, ai_profile=POLICY_VERSION)
+    app = create_app(jwt_secret="map-live-check-only-signing-key-at-least-32-bytes", **options)
     emails = []
     server = None
     thread = None
@@ -125,7 +135,8 @@ def main(suite="reviews"):
             busy_thread.start()
             time.sleep(.5)
         configs = {"analytics": "vitest.admin-live.config.js", "deletion": "vitest.deletion-live.config.js",
-                   "import": "vitest.import-live.config.js", "moderation": "vitest.moderation-live.config.js"}
+                   "import": "vitest.import-live.config.js", "ai": "vitest.ai-live.config.js",
+                   "moderation": "vitest.moderation-live.config.js"}
         command = ([npm, "test", "--", "--config", configs[suite]] if suite in configs
                    else [npm, "test", "--", "src/features/map/reviewSession.test.jsx"])
         if env.get("SMARTLOO_MAP_JUNIT"):
@@ -160,6 +171,20 @@ def main(suite="reviews"):
             busy_thread.join(timeout=10)
         with pymongo.MongoClient(os.getenv("SMARTLOO_MONGO_URL", "mongodb://127.0.0.1:27017")) as mongo:
             mongo.drop_database(mongo_db)
+        redis_failure = None
+        if suite == "ai":
+            import redis
+            try:
+                with redis.Redis.from_url(os.environ["SMARTLOO_AI_TEST_REDIS_URL"], decode_responses=True,
+                                         socket_connect_timeout=1, socket_timeout=1) as cache:
+                    for key in cache.scan_iter(match=f"smartloo:summary:*{facility}*"):
+                        cache.delete(key)
+            except Exception as exc:
+                redis_failure = exc  # Still remove SQL accounts/facilities below.
+        if original_redis_url is None:
+            os.environ.pop("SMARTLOO_REDIS_URL", None)
+        else:
+            os.environ["SMARTLOO_REDIS_URL"] = original_redis_url
         with connect() as conn:
             # Only the unique form fixture owned by this run's temporary users.
             extra = conn.execute("""SELECT id FROM suggestions WHERE name = %s
@@ -179,9 +204,11 @@ def main(suite="reviews"):
             os.environ.pop("SMARTLOO_MONGO_DB", None)
         else:
             os.environ["SMARTLOO_MONGO_DB"] = original_mongo_db
+        if redis_failure is not None:
+            raise RuntimeError("Test Redis cleanup failed") from redis_failure
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--suite", choices=("reviews", "analytics", "deletion", "import", "moderation"), default="reviews")
+    parser.add_argument("--suite", choices=("reviews", "analytics", "deletion", "import", "ai", "moderation"), default="reviews")
     raise SystemExit(main(parser.parse_args().suite))

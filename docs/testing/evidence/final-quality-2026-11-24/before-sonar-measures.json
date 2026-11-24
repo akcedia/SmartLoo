@@ -1,0 +1,86 @@
+{
+  "component": {
+    "key": "smartloo-main-6b1c5b2f",
+    "name": "SmartLoo local quality main and candidate",
+    "qualifier": "TRK",
+    "measures": [
+      {
+        "metric": "coverage",
+        "value": "62.6",
+        "bestValue": false
+      },
+      {
+        "metric": "reliability_rating",
+        "value": "1.0",
+        "bestValue": true
+      },
+      {
+        "metric": "code_smells",
+        "value": "8",
+        "bestValue": false
+      },
+      {
+        "metric": "duplicated_lines_density",
+        "value": "0.0",
+        "bestValue": true
+      },
+      {
+        "metric": "security_rating",
+        "value": "1.0",
+        "bestValue": true
+      },
+      {
+        "metric": "security_hotspots",
+        "value": "0",
+        "bestValue": true
+      },
+      {
+        "metric": "sqale_rating",
+        "value": "1.0",
+        "bestValue": true
+      },
+      {
+        "metric": "bugs",
+        "value": "0",
+        "bestValue": true
+      },
+      {
+        "metric": "lines_to_cover",
+        "value": "4196"
+      },
+      {
+        "metric": "uncovered_conditions",
+        "value": "99",
+        "bestValue": false
+      },
+      {
+        "metric": "branch_coverage",
+        "value": "87.3",
+        "bestValue": false
+      },
+      {
+        "metric": "uncovered_lines",
+        "value": "1765",
+        "bestValue": false
+      },
+      {
+        "metric": "ncloc",
+        "value": "10541"
+      },
+      {
+        "metric": "vulnerabilities",
+        "value": "0",
+        "bestValue": true
+      },
+      {
+        "metric": "conditions_to_cover",
+        "value": "782"
+      },
+      {
+        "metric": "line_coverage",
+        "value": "57.9",
+        "bestValue": false
+      }
+    ]
+  }
+}

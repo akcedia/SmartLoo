@@ -93,8 +93,15 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
         working-directory: frontend
-      - run: npm test && npm run build
+      - name: Verify manual deployment admission guards
+        run: node --test tests/release_checks.test.cjs
+      - run: npm test -- --coverage && npm run build
         working-directory: frontend
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontend-coverage
+          path: frontend/coverage/lcov.info
   database:
     runs-on: ubuntu-latest
     steps:
@@ -113,6 +120,17 @@ jobs:
         with:
           python-version: '3.11'
       - run: pip install -r requirements-test.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Build the actual frontend for the TC-21 cloud shell contract
+        run: npm ci && npm run build
+        working-directory: frontend
+      - name: Require the isolated acceptance catalog and cloud shell tests
+        run: python -m pytest tests/test_requirements.py tests/test_cloud_app.py -q --junitxml=catalog-required.xml
+      - name: Reject missing, failed or skipped catalog evidence
+        if: always()
+        run: python scripts/check_required_junit.py catalog-required.xml --minimum 68
       - name: Unimplemented acceptance baseline (visible failure, not a passing gate)
         continue-on-error: true
         run: python -m pytest -v --junitxml=requirements-results.xml
@@ -120,7 +138,9 @@ jobs:
         if: always()
         with:
           name: requirements-baseline
-          path: requirements-results.xml
+          path: |
+            requirements-results.xml
+            catalog-required.xml
   search:
     name: Nearby search tests
     runs-on: ubuntu-latest
@@ -157,7 +177,17 @@ jobs:
       - name: Run PostGIS integration tests
         env:
           SMARTLOO_TEST_POSTGIS: "1"
-        run: python -m pytest tests/test_nearby_postgis.py -q
+        run: python -m pytest tests/test_nearby_postgis.py tests/test_nearby_pool.py tests/test_nearby_response.py -q --junitxml=nearby-results.xml
+
+      - name: Require all nearby and pool checks
+        run: python scripts/check_required_junit.py nearby-results.xml --minimum 13
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nearby-pool-results
+          path: nearby-results.xml
+          if-no-files-found: error
 
       - name: Stop PostGIS
         if: always()

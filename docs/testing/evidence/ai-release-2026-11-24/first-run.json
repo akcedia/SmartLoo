@@ -1,0 +1,50 @@
+{
+  "local_services_only": true,
+  "live_model_calls": 0,
+  "created_private_database": true,
+  "exit_code": 1,
+  "pytest_summary": [
+    "1 failed, 184 passed, 1 warning, 25 subtests passed in 139.07s (0:02:19)"
+  ],
+  "junit_cases": 185,
+  "failures": 1,
+  "errors": 0,
+  "skipped": 0,
+  "junit_guard_exit_code": 1,
+  "mounted_suites": {
+    "ai": {
+      "exit_code": 0,
+      "cases": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "moderation": {
+      "exit_code": 0,
+      "cases": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "import": {
+      "exit_code": 0,
+      "cases": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "reviews": {
+      "exit_code": 0,
+      "cases": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "remaining_toilets": 13,
+  "remaining_users": 0,
+  "remaining_review_operations": 0,
+  "remaining_suggestions": 0,
+  "root_mongo_database_removed": true,
+  "private_database_removed": true
+}

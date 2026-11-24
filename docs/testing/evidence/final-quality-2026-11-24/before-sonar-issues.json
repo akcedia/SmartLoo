@@ -1,0 +1,90 @@
+[
+  {
+    "key": "79206ecb-12e4-4b55-95aa-cbd00360270e",
+    "rule": "javascript:S6843",
+    "severity": "MAJOR",
+    "component": "smartloo-main-6b1c5b2f:frontend/src/features/admin/components/FacilityTable.jsx",
+    "line": 32,
+    "message": "Interactive elements should not be assigned non-interactive roles.",
+    "type": "CODE_SMELL",
+    "status": "OPEN",
+    "resolution": null
+  },
+  {
+    "key": "c0faaa73-8542-4fe3-a982-d494b4fb10e4",
+    "rule": "javascript:S6843",
+    "severity": "MAJOR",
+    "component": "smartloo-main-6b1c5b2f:frontend/src/features/admin/components/FacilityTable.jsx",
+    "line": 33,
+    "message": "Interactive elements should not be assigned non-interactive roles.",
+    "type": "CODE_SMELL",
+    "status": "OPEN",
+    "resolution": null
+  },
+  {
+    "key": "67d8df32-7312-401b-812f-0c5210354189",
+    "rule": "javascript:S6843",
+    "severity": "MAJOR",
+    "component": "smartloo-main-6b1c5b2f:frontend/src/features/admin/components/FacilityTable.jsx",
+    "line": 38,
+    "message": "Interactive elements should not be assigned non-interactive roles.",
+    "type": "CODE_SMELL",
+    "status": "OPEN",
+    "resolution": null
+  },
+  {
+    "key": "632ca4ab-1763-4a71-8b22-95bd50c5e1d4",
+    "rule": "javascript:S6843",
+    "severity": "MAJOR",
+    "component": "smartloo-main-6b1c5b2f:frontend/src/features/admin/components/FacilityTable.jsx",
+    "line": 42,
+    "message": "Interactive elements should not be assigned non-interactive roles.",
+    "type": "CODE_SMELL",
+    "status": "OPEN",
+    "resolution": null
+  },
+  {
+    "key": "9c0adc4b-1481-4a2e-88d8-833519bbe405",
+    "rule": "javascript:S6852",
+    "severity": "MAJOR",
+    "component": "smartloo-main-6b1c5b2f:frontend/src/shared/ui/Dropdown.jsx",
+    "line": 67,
+    "message": "Elements with the 'radiogroup' interactive role must be focusable.",
+    "type": "CODE_SMELL",
+    "status": "OPEN",
+    "resolution": null
+  },
+  {
+    "key": "39285f59-e630-4055-8bfa-3c65c35f1d14",
+    "rule": "javascript:S8786",
+    "severity": "MAJOR",
+    "component": "smartloo-main-6b1c5b2f:frontend/src/features/auth/validation.js",
+    "line": 4,
+    "message": "Simplify this regular expression to reduce its runtime, as it has super-linear performance due to backtracking.",
+    "type": "CODE_SMELL",
+    "status": "OPEN",
+    "resolution": null
+  },
+  {
+    "key": "55b053df-cdd3-4db7-9f66-2f978ee9ee35",
+    "rule": "python:S8786",
+    "severity": "MAJOR",
+    "component": "smartloo-main-6b1c5b2f:src/auth.py",
+    "line": 39,
+    "message": "Simplify this regular expression to reduce its runtime, as it has super-linear performance due to backtracking.",
+    "type": "CODE_SMELL",
+    "status": "OPEN",
+    "resolution": null
+  },
+  {
+    "key": "ee45a634-bcad-4fd8-bd4d-2c98a4f3576f",
+    "rule": "python:S8786",
+    "severity": "MAJOR",
+    "component": "smartloo-main-6b1c5b2f:src/reviews.py",
+    "line": 34,
+    "message": "Simplify this regular expression to reduce its runtime, as it has super-linear performance due to backtracking.",
+    "type": "CODE_SMELL",
+    "status": "OPEN",
+    "resolution": null
+  }
+]

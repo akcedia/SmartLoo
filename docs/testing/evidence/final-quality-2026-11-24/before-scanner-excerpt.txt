@@ -1,0 +1,6 @@
+16:25:55.230 INFO  SonarScanner CLI 8.4.0.16527
+16:28:29.327 INFO  Parsing report '/usr/src/.venv/quality-8c41151/coverage.xml'
+16:29:16.064 WARN  Retrieving only language associated files, make sure to run the analysis inside a git repository to make use of inclusions specified via "sonar.text.inclusions"
+16:30:29.831 INFO  SCM revision ID '8c41151ebcbcc1d9ebd466750d4a24d9fa73b364'
+16:30:54.768 ERROR QUALITY GATE STATUS: FAILED - View details on http://host.docker.internal:9001/dashboard?id=smartloo-main-6b1c5b2f
+16:30:54.886 INFO  EXECUTION FAILURE

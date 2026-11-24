@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="1" failures="0" errors="0" time="4.3810136">
+    <testsuite name="src/features/admin/admin.live.jsx" timestamp="2026-11-24T16:51:42.212Z" hostname="DESKTOP-MK26RE8" tests="1" failures="0" errors="0" skipped="0" time="4.3810136">
+        <testcase classname="src/features/admin/admin.live.jsx" name="live ADMIN panel and both downloads follow real review create/edit/delete" time="4.3746144">
+        </testcase>
+    </testsuite>
+</testsuites>

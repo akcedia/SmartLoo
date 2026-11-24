@@ -433,6 +433,7 @@ export default function SearchPage({ onSwitchToAdmin }) {
           <button
             type="button"
             className="sl-fab sl-fab--ai"
+            aria-label={t("AI Önerileri")}
             aria-expanded={showRecommendations}
             onClick={() => setShowRecommendations((prev) => !prev)}
           >
@@ -457,6 +458,7 @@ export default function SearchPage({ onSwitchToAdmin }) {
         <AiRecommendationsPanel
           isOpen={showRecommendations}
           searchCenter={searchCenter}
+          radius={radius}
           filters={filters}
           hasLocationPermission={hasLocationPermission}
           onSelectToilet={(toilet) => setSelectedToilet(toilet)}
