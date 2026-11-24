@@ -1,0 +1,48 @@
+/* ADMIN facility status inside the facility panel. Tokens: shared/theme/theme.css. */
+.sl-admin-status {
+  margin-top: 14px;
+  padding: 12px;
+  background: var(--sl-surface-sunken);
+  border: 1px solid var(--sl-border);
+  border-radius: 12px;
+}
+.sl-admin-status-title { margin: 0 0 8px; font-size: 12.5px; font-weight: 700; color: var(--sl-text-muted); }
+.sl-admin-status-choices {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--sl-surface);
+  border: 1px solid var(--sl-border);
+  border-radius: 10px;
+}
+.sl-admin-status-choices button {
+  flex: 1;
+  min-height: 36px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--sl-text-secondary);
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.sl-admin-status-choices button:hover:not([aria-checked="true"]):not(:disabled) { background: var(--sl-surface-hover); color: var(--sl-text); }
+.sl-admin-status-choices button[aria-checked="true"] { background: var(--sl-accent2-solid); color: var(--sl-on-accent2); }
+.sl-admin-status-choices button:disabled { cursor: not-allowed; opacity: 0.6; }
+.sl-admin-status-confirm { margin-top: 10px; padding: 10px; background: var(--sl-surface); border: 1px solid var(--sl-border); border-radius: 10px; }
+.sl-admin-status-confirm.is-danger { background: var(--sl-danger-soft); border-color: var(--sl-danger-border); }
+.sl-admin-status-confirm p { margin: 0 0 10px; font-size: 13px; line-height: 1.45; color: var(--sl-text); }
+.sl-admin-status-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.sl-admin-status-actions button { flex: 1 1 120px; min-height: 40px; font: inherit; font-size: 13.5px; font-weight: 700; border-radius: 9px; cursor: pointer; }
+.sl-admin-status-primary { color: var(--sl-on-accent); background: var(--sl-accent-solid); border: 1px solid var(--sl-accent-solid); }
+.sl-admin-status-confirm.is-danger .sl-admin-status-primary { color: var(--sl-bg); background: var(--sl-danger); border-color: var(--sl-danger); }
+.sl-admin-status-secondary { color: var(--sl-text-secondary); background: var(--sl-surface); border: 1px solid var(--sl-border-strong); }
+.sl-admin-status-message { margin: 10px 0 0; font-size: 13px; }
+.sl-admin-status-message.is-ok { color: var(--sl-ok); }
+.sl-admin-status-message.is-error { color: var(--sl-danger); }
+.sl-admin-status :focus-visible { outline: 3px solid var(--sl-accent-ring); outline-offset: 2px; }
+@media (pointer: coarse) {
+  .sl-admin-status-choices button { min-height: 44px; }
+  .sl-admin-status-actions button { min-height: 48px; }
+}

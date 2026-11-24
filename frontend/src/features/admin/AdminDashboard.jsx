@@ -14,19 +14,21 @@ import ExportButtons from "./components/ExportButtons.jsx";
 import { ErrorPanel, LoadingPanel, NoDataPanel, SkeletonPanel } from "./components/StatusPanel.jsx";
 import { useI18n } from "../../shared/i18n/I18nProvider.jsx";
 import AdminImport from "./import/AdminImport.jsx";
+import ModerationPanel from "./moderation/ModerationPanel.jsx";
 import { Link } from "../../app/router.jsx";
 import "./admin.css";
 
-// Tabs from UI Spec Lite > Administration. Moderation waits for its backend contract.
+// Tabs from UI Spec Lite > Administration.
 const TABS = [
   { key: "analytics", label: "Analiz", to: "/admin" },
-  { key: "moderation", label: "Moderasyon", to: null },
+  { key: "moderation", label: "Moderasyon", to: "/admin/moderation" },
   { key: "import", label: "İçe aktarım", to: "/admin/import" },
 ];
 
 const SUBTITLES = {
   analytics: "İlçe ve tarih bazlı hijyen analizi",
   import: "CSV/JSON tesis verisi içe aktarımı",
+  moderation: "Kullanıcı tesis önerilerinin onayı",
 };
 
 function useSampleAdapter() {
@@ -158,7 +160,15 @@ export default function AdminDashboard({ adapter: injectedAdapter, section = "an
           <AdminImport api={importApi} />
         ) : (
           <p className="admin-status admin-status--warn" role="note">
-            İçe aktarım yalnızca canlı modda, gerçek yönetici oturumuyla kullanılabilir. Örnek veri modunda dosya yüklenmez.
+            {t("İçe aktarım yalnızca canlı modda, gerçek yönetici oturumuyla kullanılabilir. Örnek veri modunda dosya yüklenmez.")}
+          </p>
+        ))}
+
+        {section === "moderation" && (importApi ? (
+          <ModerationPanel api={importApi} />
+        ) : (
+          <p className="admin-status admin-status--warn" role="note">
+            {t("Moderasyon yalnızca canlı modda, gerçek yönetici oturumuyla kullanılabilir. Örnek veri modunda öneri gösterilmez.")}
           </p>
         ))}
 

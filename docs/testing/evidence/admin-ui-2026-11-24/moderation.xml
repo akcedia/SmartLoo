@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="1" failures="0" errors="0" time="3.5228757">
+    <testsuite name="src/features/admin/moderation/moderation.live.jsx" timestamp="2026-11-24T08:24:07.436Z" hostname="DESKTOP-MK26RE8" tests="1" failures="0" errors="0" skipped="0" time="3.5228757">
+        <testcase classname="src/features/admin/moderation/moderation.live.jsx" name="moderates through real services, retains a conflict notice and closes without losing reviews" time="3.5164003">
+        </testcase>
+    </testsuite>
+</testsuites>

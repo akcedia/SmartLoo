@@ -13,11 +13,12 @@ import { SCENARIOS } from "../../features/admin/api/sampleAdapter.js";
 import { CRITICAL_ALERT_TEXT } from "../../features/admin/api/contract.js";
 import { exportErrorMessage } from "../../features/admin/components/ExportButtons.jsx";
 import { importErrorMessage, inspectImport } from "../../features/admin/import/importApi.js";
+import { decisionErrorMessage, facilityStatusErrorMessage, listErrorMessage } from "../../features/admin/moderation/moderationApi.js";
 
 const EN = catalog("en");
 const SRC = join(process.cwd(), "src");
 // Screens owned by the shared app (Onur). Map screens join this list when Furkan wraps them.
-const TRANSLATED = ["app", "shared", "features/auth", "features/admin", "features/map/DirectionsButton.jsx", "features/map/SearchPage.jsx", "features/map/MapView.jsx", "features/map/RadiusPicker.jsx"];
+const TRANSLATED = ["app", "shared", "features/auth", "features/admin", "features/map/DirectionsButton.jsx", "features/map/SearchPage.jsx", "features/map/MapView.jsx", "features/map/RadiusPicker.jsx", "features/map/AdminFacilityStatus.jsx"];
 
 function sourceFiles(path) {
   const full = join(SRC, path);
@@ -86,6 +87,7 @@ describe("English catalog coverage", () => {
       ].map((input) => inspectImport(input).problem),
       inspectImport({ text: JSON.stringify(Array(1001).fill({})), size: 5000, format: "json" }).template,
       "Dosya okunamadı.",
+      ...[401, 403, 404, 409, 422, 503, 0].flatMap((status) => [decisionErrorMessage({ status }), facilityStatusErrorMessage({ status }), listErrorMessage({ status })]),
       "Oturumunuzun süresi doldu. Lütfen yeniden giriş yapın.",
       "Çıkış yaptınız.",
       "Hesabınız silindi. Yorumlarınız “Anonim” olarak kalır.",

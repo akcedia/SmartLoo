@@ -2,6 +2,7 @@ import React from "react";
 import AiSummaryBox from "./AiSummaryBox.jsx";
 import ReviewSection from "./ReviewSection.jsx";
 import DirectionsButton from "./DirectionsButton.jsx";
+import AdminFacilityStatus from "./AdminFacilityStatus.jsx";
 
 function formatBooleanField(val, trueText, falseText) {
   if (val === null || val === undefined) return "Bilinmiyor";
@@ -210,6 +211,8 @@ export default function FacilityDetailPanel({
           </ul>
 
           <DirectionsButton latitude={merged.latitude} longitude={merged.longitude} name={merged.name} />
+
+          <AdminFacilityStatus toiletId={merged.id} status={merged.status} onChanged={onReviewsMutated} />
 
           <AiSummaryBox
             toiletId={merged.id}
