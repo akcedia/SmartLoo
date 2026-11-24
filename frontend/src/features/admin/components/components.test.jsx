@@ -118,9 +118,10 @@ describe("AdminDashboard shell", () => {
     expect(html).toContain("Demo senaryosu");
     expect(html).not.toContain("admin-topbar");
     expect(html.match(/admin-tab--active/g)).toHaveLength(1);
-    // Moderation waits for its backend contract; Import is a real tab link.
-    expect(html.match(/aria-disabled="true"/g)).toHaveLength(1);
+    // Moderation (#93 contract) and Import are real tab links; nothing is disabled.
+    expect(html.match(/aria-disabled="true"/g)).toBeNull();
     expect(html).toContain('href="/admin/import"');
+    expect(html).toContain('href="/admin/moderation"');
   });
 
   it("formats dates in Turkish order", () => {

@@ -205,6 +205,12 @@ class RepositoryToilets:
     def version(self, toilet_id):
         return self.toilets[toilet_id].get("review_version", 0)
 
+    def set_status(self, toilet_id, status, connection=None):
+        toilet = self.toilets[toilet_id]
+        version = toilet.get("review_version", 0) + 1
+        toilet.update(status=status, review_version=version)
+        return {"id": toilet_id, "status": status, "review_version": version}
+
 
 class PostgresToilets:
     def get(self, toilet_id):
@@ -227,6 +233,14 @@ class PostgresToilets:
         with connect() as conn:
             return conn.execute("SELECT review_version FROM toilets WHERE id = %s",
                                 (toilet_id,)).fetchone()["review_version"]
+
+    def set_status(self, toilet_id, status, connection=None):
+        with (nullcontext(connection) if connection is not None else connect()) as conn:
+            return conn.execute(
+                """UPDATE toilets SET status = %s, review_version = review_version + 1, updated_at = now()
+                   WHERE id = %s RETURNING id::text AS id, status::text AS status, review_version""",
+                (status, toilet_id),
+            ).fetchone()
 
 
 def redact(text, personal_terms=()):
@@ -454,6 +468,17 @@ class ReviewService:
             return session.finish(operation["operation_id"], lambda: self.toilets.recompute(
                 key, self.reviews.scores, connection=session.connection,
             ))
+
+    def set_facility_status(self, toilet_id, status):
+        """FR-10/TC-27: an ADMIN closes or reopens a facility without deleting it.
+
+        Reviews and scores are kept. The change runs under the facility guard and bumps
+        review_version, so a summary generated before the change is not published after it.
+        """
+        key = self._toilet(toilet_id)
+        with self.coordination.guard(key) as session:
+            self._ready(session)
+            return self.toilets.set_status(key, status, connection=session.connection)
 
 
 router = APIRouter(prefix="/api/v1")

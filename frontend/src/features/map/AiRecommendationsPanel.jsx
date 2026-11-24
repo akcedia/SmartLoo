@@ -68,6 +68,7 @@ export default function AiRecommendationsPanel({
 
   return (
     <aside
+      className="sl-ai-recommendations"
       aria-label={aiReasonsAvailable ? "Yapay zeka tesis önerileri" : "Yakındaki uygun tesisler"}
       style={{
         position: "absolute",
