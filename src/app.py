@@ -21,6 +21,7 @@ from src.suggestions import router as suggestions_router
 from src.auth import PostgresAccounts, RepositoryAccounts, current_user, require_admin
 from src.auth import router as auth_router
 from src.nearby_store import create_nearby_pool, find_nearby, find_toilet, find_ibb_facilities
+from src.nearby_response import NearbyResponse
 from src.review_scores import ReviewStoreError
 from src.reviews import MongoReviews, PostgresToilets, RepositoryReviews, RepositoryToilets, ReviewService
 from src.reviews import router as reviews_router
@@ -103,7 +104,7 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
     async def database_unavailable(request, exc):
         return JSONResponse(status_code=503, content={"detail": "Database temporarily unavailable"})
 
-    @app.get("/api/v1/toilets/nearby")
+    @app.get("/api/v1/toilets/nearby", response_model=NearbyResponse)
     def nearby(
         lat: float = Query(..., ge=-90, le=90, allow_inf_nan=False),
         lon: float = Query(..., ge=-180, le=180, allow_inf_nan=False),

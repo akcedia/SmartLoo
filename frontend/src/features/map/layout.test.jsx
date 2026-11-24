@@ -64,6 +64,13 @@ describe("pin state", () => {
 });
 
 describe("map page layout", () => {
+  it("names the AI launcher when its visible text is hidden on phones", async () => {
+    await render();
+    const launcher = host.querySelector(".sl-fab--ai");
+    launcher.querySelector("span").style.display = "none";
+    expect(launcher.getAttribute("aria-label")).toBe("AI Önerileri");
+  });
+
   it("uses the map's selected radius for recommendations and refreshes an open panel when it changes", async () => {
     const session = sessionFromToken(fakeJwt({ sub: "viewer", role: "USER", exp: Date.now() / 1000 + 3600 }), "viewer@example.com");
     const fetchImpl = vi.fn(async () => ({ ok: true, status: 200, json: async () => ({ results: ROWS }) }));

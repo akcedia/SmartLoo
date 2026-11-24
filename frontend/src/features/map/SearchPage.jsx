@@ -433,6 +433,7 @@ export default function SearchPage({ onSwitchToAdmin }) {
           <button
             type="button"
             className="sl-fab sl-fab--ai"
+            aria-label={t("AI Önerileri")}
             aria-expanded={showRecommendations}
             onClick={() => setShowRecommendations((prev) => !prev)}
           >

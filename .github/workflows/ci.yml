@@ -175,7 +175,17 @@ jobs:
       - name: Run PostGIS integration tests
         env:
           SMARTLOO_TEST_POSTGIS: "1"
-        run: python -m pytest tests/test_nearby_postgis.py -q
+        run: python -m pytest tests/test_nearby_postgis.py tests/test_nearby_pool.py tests/test_nearby_response.py -q --junitxml=nearby-results.xml
+
+      - name: Require all nearby and pool checks
+        run: python scripts/check_required_junit.py nearby-results.xml --minimum 12
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nearby-pool-results
+          path: nearby-results.xml
+          if-no-files-found: error
 
       - name: Stop PostGIS
         if: always()

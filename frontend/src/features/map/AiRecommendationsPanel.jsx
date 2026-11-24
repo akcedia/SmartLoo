@@ -73,6 +73,7 @@ export default function AiRecommendationsPanel({
       className="sl-ai-recommendations"
       aria-label={t(aiReasonsAvailable ? "Yapay zeka tesis önerileri" : "Yakındaki uygun tesisler")}
       style={{
+        boxSizing: "border-box",
         position: "absolute",
         bottom: "24px",
         left: "16px",
