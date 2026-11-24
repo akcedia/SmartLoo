@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="4" failures="0" errors="0" time="4.469644">
+    <testsuite name="src/features/map/ai.live.jsx" timestamp="2026-11-24T08:40:57.890Z" hostname="DESKTOP-MK26RE8" tests="4" failures="0" errors="0" skipped="0" time="4.469644">
+        <testcase classname="src/features/map/ai.live.jsx" name="Mounted AI screens with real SQL/Mongo/Redis and synthetic model &gt; renders the actual summary response and refreshes after a real edit" time="3.7244341">
+        </testcase>
+        <testcase classname="src/features/map/ai.live.jsx" name="Mounted AI screens with real SQL/Mongo/Redis and synthetic model &gt; shows real nearby fallback facilities, the explanation, and selected coordinates" time="0.3780851">
+        </testcase>
+        <testcase classname="src/features/map/ai.live.jsx" name="Mounted AI screens with real SQL/Mongo/Redis and synthetic model &gt; returns a real empty-area message instead of invented suggestions" time="0.1664537">
+        </testcase>
+        <testcase classname="src/features/map/ai.live.jsx" name="Mounted AI screens with real SQL/Mongo/Redis and synthetic model &gt; does not interpret an unknown fee as free in the mounted filter" time="0.1955375">
+        </testcase>
+    </testsuite>
+</testsuites>

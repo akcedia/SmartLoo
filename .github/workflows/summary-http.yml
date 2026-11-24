@@ -34,7 +34,7 @@ jobs:
       - name: Gemini adapter and provider selection, no live requests
         run: python -m pytest tests/test_gemini_provider.py -q --junitxml=gemini-adapter.xml
       - name: Bounded native-pilot harness guards with fake HTTP only
-        run: python -m pytest tests/test_gemini_http_acceptance.py -q --junitxml=gemini-http-guards.xml
+        run: python -m pytest tests/test_gemini_http_acceptance.py tests/test_gemini_recommendation_followup.py -q --junitxml=gemini-http-guards.xml
       - name: Grounded recommendation component, no live requests
         run: python -m pytest tests/test_ai_recommendations.py -q --junitxml=recommendation-component.xml
       - run: docker compose up -d --wait postgis mongo redis
@@ -48,7 +48,7 @@ jobs:
         run: |
           python scripts/check_required_junit.py summary-http.xml --minimum 41
           python scripts/check_required_junit.py gemini-adapter.xml --minimum 19
-          python scripts/check_required_junit.py gemini-http-guards.xml --minimum 4
+          python scripts/check_required_junit.py gemini-http-guards.xml --minimum 8
           python scripts/check_required_junit.py recommendation-component.xml --minimum 14
           python scripts/check_required_junit.py turkish-offline.xml --minimum 42
           python scripts/check_required_junit.py ai-ui-live.xml --minimum 4

@@ -1,0 +1,20 @@
+{
+  "commit": "75dcca4b05c75b7072cfc0fb8e2177e25003b3b3",
+  "model": "gemini-3.1-flash-lite",
+  "policy": "restricted-tr-evidence-v3",
+  "tracked_changes": false,
+  "synthetic_only": true,
+  "maximum_requests": 2,
+  "requests_attempted": 2,
+  "summary": {
+    "http": 200,
+    "elapsed_ms": 3140,
+    "validated": true
+  },
+  "recommendation": {
+    "http": 200,
+    "elapsed_ms": 8022,
+    "fallback": true,
+    "validated": false
+  }
+}
