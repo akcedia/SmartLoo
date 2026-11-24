@@ -76,12 +76,14 @@ def main():
     from src.ai_restricted_policy import PROFILE_NAME, POLICY_VERSION
 
     folder = ROOT / ".venv"
-    output = folder / "gemini-recommendation-followup.json"
+    sha = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+    # Preserve earlier receipts; allow one separately approved probe per reviewed revision.
+    output = folder / f"gemini-recommendation-followup-{sha}.json"
     if folder.is_symlink() or output.exists() or output.is_symlink():
         raise SystemExit("Refusing an existing/redirected receipt; no request sent.")
     settings = private_settings(folder / "gemini.env", MODEL, PROFILE_NAME)
     os.environ.update(settings)
-    report = dict(commit=subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+    report = dict(commit=sha,
                   model=MODEL, policy=POLICY_VERSION, maximum_requests=1, synthetic_only=True)
     with output.open("x", encoding="utf-8") as receipt:
         try:

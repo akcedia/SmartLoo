@@ -44,3 +44,18 @@ def test_followup_requires_separate_explicit_approval(monkeypatch):
     monkeypatch.setattr(probe, "run_probe", lambda: pytest.fail("No request is authorized"))
     with pytest.raises(SystemExit, match="Separate approval"):
         probe.main()
+
+
+def test_followup_never_overwrites_or_repeats_a_completed_revision(tmp_path, monkeypatch):
+    folder = tmp_path / ".venv"
+    folder.mkdir()
+    sha = "a" * 40
+    receipt = folder / f"gemini-recommendation-followup-{sha}.json"
+    receipt.write_text("original receipt")
+    monkeypatch.setattr(probe, "ROOT", tmp_path)
+    monkeypatch.setattr(probe.subprocess, "check_output", lambda *args, **kwargs: sha)
+    monkeypatch.setattr("sys.argv", ["probe", "--confirm-one-extra-free-tier-request"])
+    monkeypatch.setattr(probe, "run_probe", lambda: pytest.fail("Completed revision must not repeat"))
+    with pytest.raises(SystemExit, match="Refusing"):
+        probe.main()
+    assert receipt.read_text() == "original receipt"

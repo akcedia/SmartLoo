@@ -93,6 +93,14 @@ historical red commit is claimed. CI's recommendation-component minimum is now
 16. **No additional native request has been made on this corrected schema.**
 Native recommendation acceptance remains open.
 
+The diagnostic now reserves a receipt named with the reviewed commit SHA,
+preserving the earlier fixed-name receipt and refusing another request on an
+already completed revision. A changed revision still requires separate explicit
+approval; this naming change does not authorize another request. Five focused
+diagnostic guards passed, including receipt preservation/repeat prevention.
+CI requires nine original-pilot/follow-up harness cases in total. No live request
+has been made after either the schema or receipt revision changes.
+
 ## Requirements catalog and remaining gates
 
 Unchanged catalog on this candidate: **47 passed / 5 failed / 0 skipped**.
