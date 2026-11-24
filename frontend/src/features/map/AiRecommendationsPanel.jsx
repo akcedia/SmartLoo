@@ -1,5 +1,6 @@
 import { useMapApi } from "./MapApiProvider.jsx";
 import React, { useEffect, useState } from "react";
+import { useI18n } from "../../shared/i18n/I18nProvider.jsx";
 import { buildSignInUrl } from "./toiletApi.js";
 
 export default function AiRecommendationsPanel({
@@ -11,6 +12,7 @@ export default function AiRecommendationsPanel({
   onSelectToilet,
   onClose,
 }) {
+  const { lang, t } = useI18n();
   const { fetchAiRecommendations, getCurrentSessionUser } = useMapApi();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -69,7 +71,7 @@ export default function AiRecommendationsPanel({
   return (
     <aside
       className="sl-ai-recommendations"
-      aria-label={aiReasonsAvailable ? "Yapay zeka tesis önerileri" : "Yakındaki uygun tesisler"}
+      aria-label={t(aiReasonsAvailable ? "Yapay zeka tesis önerileri" : "Yakındaki uygun tesisler")}
       style={{
         position: "absolute",
         bottom: "24px",
@@ -96,11 +98,11 @@ export default function AiRecommendationsPanel({
         }}
       >
         <strong style={{ fontSize: "14px", color: "var(--sl-text)" }}>
-          {aiReasonsAvailable ? "AI Tesis Önerileri (En Fazla 3)" : "Yakındaki Uygun Tesisler (En Fazla 3)"}
+          {t(aiReasonsAvailable ? "AI Tesis Önerileri (En Fazla 3)" : "Yakındaki Uygun Tesisler (En Fazla 3)")}
         </strong>
         <button
           type="button"
-          aria-label="Tesis önerileri panelini kapat"
+          aria-label={t("Tesis önerileri panelini kapat")}
           onClick={onClose}
           style={{
             border: "none",
@@ -118,7 +120,7 @@ export default function AiRecommendationsPanel({
       {!currentUser ? (
         <div style={{ fontSize: "13px", color: "var(--sl-text-secondary)" }}>
           <p style={{ margin: "0 0 8px 0", lineHeight: "1.45" }}>
-            Konum ve filtre tercihlerinize göre tesis önerilerini görmek için giriş yapın.
+            {t("Konum ve filtre tercihlerinize göre tesis önerilerini görmek için giriş yapın.")}
           </p>
           <button
             type="button"
@@ -138,16 +140,16 @@ export default function AiRecommendationsPanel({
               cursor: "pointer",
             }}
           >
-            Giriş Yap
+            {t("Giriş Yap")}
           </button>
         </div>
       ) : loading ? (
         <p style={{ margin: 0, fontSize: "13px", color: "var(--sl-text-muted)" }}>
-          Tercihlerinize uygun tesisler analiz ediliyor...
+          {t("Tercihlerinize uygun tesisler analiz ediliyor...")}
         </p>
       ) : fallbackMessage && items.length === 0 ? (
         <div style={{ fontSize: "12px", color: "var(--sl-text-muted)", display: "flex", flexDirection: "column", gap: "8px" }}>
-          <span>{fallbackMessage}</span>
+          <span>{t(fallbackMessage)}</span>
           <button
             type="button"
             onClick={() => setRetryToken((c) => c + 1)}
@@ -162,12 +164,12 @@ export default function AiRecommendationsPanel({
               cursor: "pointer",
             }}
           >
-            Tekrar Dene
+            {t("Tekrar Dene")}
           </button>
         </div>
       ) : (
         <div>
-        {fallbackMessage && <p role="status" style={{ fontSize: "12px", color: "#475569" }}>{fallbackMessage}</p>}
+        {fallbackMessage && <p role="status" style={{ fontSize: "12px", color: "#475569" }}>{t(fallbackMessage)}</p>}
         <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "8px" }}>
           {items.map((item, idx) => (
             <li key={item.id ?? idx}>
@@ -197,12 +199,12 @@ export default function AiRecommendationsPanel({
 
                 {hasLocationPermission && item.distance_m != null && (
                   <div style={{ fontSize: "11px", color: "var(--sl-text-muted)", marginTop: "2px" }}>
-                    Mesafe: {Math.round(item.distance_m)} m
+                    {t("Mesafe: {n} m", { n: Math.round(item.distance_m) })}
                   </div>
                 )}
 
                 {aiReasonsAvailable && (item.reason || item.explanation) && (
-                  <p style={{ margin: "4px 0 0 0", fontSize: "12px", color: "var(--sl-text-secondary)", lineHeight: "1.4" }}>
+                  <p lang={lang === "en" ? "tr" : undefined} style={{ margin: "4px 0 0 0", fontSize: "12px", color: "var(--sl-text-secondary)", lineHeight: "1.4" }}>
                     {item.reason || item.explanation}
                   </p>
                 )}
