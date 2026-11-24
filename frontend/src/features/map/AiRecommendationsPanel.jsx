@@ -169,7 +169,7 @@ export default function AiRecommendationsPanel({
         </div>
       ) : (
         <div>
-        {fallbackMessage && <p role="status" style={{ fontSize: "12px", color: "#475569" }}>{t(fallbackMessage)}</p>}
+        {fallbackMessage && <p role="status" style={{ fontSize: "12px", color: "var(--sl-text-secondary)" }}>{t(fallbackMessage)}</p>}
         <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "8px" }}>
           {items.map((item, idx) => (
             <li key={item.id ?? idx}>
