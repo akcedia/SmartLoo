@@ -93,6 +93,8 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
         working-directory: frontend
+      - name: Verify manual deployment admission guards
+        run: node --test tests/release_checks.test.cjs
       - run: npm test -- --coverage && npm run build
         working-directory: frontend
       - uses: actions/upload-artifact@v4
@@ -128,7 +130,7 @@ jobs:
         run: python -m pytest tests/test_requirements.py tests/test_cloud_app.py -q --junitxml=catalog-required.xml
       - name: Reject missing, failed or skipped catalog evidence
         if: always()
-        run: python scripts/check_required_junit.py catalog-required.xml --minimum 66
+        run: python scripts/check_required_junit.py catalog-required.xml --minimum 68
       - name: Unimplemented acceptance baseline (visible failure, not a passing gate)
         continue-on-error: true
         run: python -m pytest -v --junitxml=requirements-results.xml
