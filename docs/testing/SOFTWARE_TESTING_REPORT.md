@@ -238,3 +238,21 @@ Record the affected requirement, reproduction steps, expected and observed resul
 The 24 November Markdown and PDF are ready for Özgür's internal review in #76. #60 remains open for fixed-revision integrated acceptance. The catalog's AI and browser-entry cases, independent Turkish review, release-revision quality and coverage evidence, the prescribed load run, and full visual, accessibility, privacy and security assessments require further evidence. Repeat applicable service and UI gates after final feature integration.
 
 The PDF is a review snapshot of this Markdown. The test-document PR and Yeşim Hoca review are scheduled for 25 November. Özgür coordinates the reviewer assignment and the Learn submission due on 29 November after approval. Refresh the PDF with final evidence and review findings before course submission.
+
+
+## Final release verification addendum - 24 November
+
+Application source `6b8d047d81bf68619e1deec776299bc4c9038d95`. This is candidate evidence, not a claim that it is merged, deployed, instructor-approved or submitted.
+
+- Full real-store backend: **557 passed + 59 subtests**, zero failures/errors/skips (JUnit 616 includes subtests); all 29 modules, combined coverage **93.06%**.
+- Frontend **309 passed** and build passed; line coverage 83.14%.
+- Actual final nonroot image: **35 bounded HTTP security checks** and **13 cloud/manifest/icon checks** passed. **13 deployment-admission guard tests** passed; the pipeline remains unexecuted until secret setup and approval.
+- Sonar scanner gate **OK**, overall coverage **87.0%**. Three inherited regex-maintenance findings remain; final conditions and source revision retained. No quality rule disabled.
+- Prescribed load: **85,510 successful requests**, mean **175.10 ms**, p95 **253.74 ms**. Strict p95 failed by **3.74 ms**; Özgür accepted that specific release deviation. Original requirements/raw thresholds are unchanged; instructor exception approval is unverified.
+- The mobile AI panel overflow and launcher name findings were retested in real Brave at 320/375 px. Native-provider receipts retain their earlier source revisions; no new Gemini request was authorized or made. Human scoring remains partial.
+
+Candidate evidence packet: [#89](https://github.com/akcedia/SmartLoo/pull/89), `docs/testing/evidence/release-2026-11-24/`, `docs/testing/PERFORMANCE-ACCEPTANCE-2026-11-24.md`, and the final release checklist. The PDF appends the same verification scope and embeds the mobile evidence image; historical report pages are retained.
+
+Keep #76 open for review. Assign Yeşim Hoca by 25 November; upload the approved PDF to Learn by 29 November after approval. Final code ZIP delivery and its receipt are separate.
+
+Frozen evidence snapshot: [df667632cebb657f2e34628b9fb5d6288583ac22](https://github.com/akcedia/SmartLoo/tree/df667632cebb657f2e34628b9fb5d6288583ac22/docs/testing/evidence/release-2026-11-24). The final Sonar gate explicitly evaluates new-code coverage 97.5% against 80%, alongside zero new duplication and violations. The snapshot must be published before its remote links are available.
