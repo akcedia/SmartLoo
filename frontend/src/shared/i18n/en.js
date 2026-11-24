@@ -26,6 +26,7 @@ export default {
   "Oturumunuz sona erdi. Yeniden giriş yapın.": "Your session has ended. Sign in again.",
   "Bu işlem için yetkiniz yok.": "You are not authorized to do this.",
   "Önerinin kaydedilip kaydedilmediği doğrulanamadı. Tekrar göndermeden önce yöneticiye kontrol ettirin.": "It is unknown whether the suggestion was saved. Ask an administrator to check before submitting it again.",
+  "Bu görünümde {shown}/{total} tesis gösteriliyor. Daha fazlası için yakınlaştırın.": "Showing {shown}/{total} facilities in this view. Zoom in to see more.",
   // App shell
   "Ana menü": "Main menu",
   "Harita": "Map",
