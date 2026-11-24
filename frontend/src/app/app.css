@@ -90,14 +90,12 @@ body { margin: 0; }
   text-decoration: none;
 }
 .app-brand-mark {
-  display: inline-grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
+  display: block;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
   border-radius: 8px;
-  background: var(--app-accent-fill);
-  color: var(--app-on-accent);
-  font-size: 0.8rem;
+  object-fit: contain;
 }
 .app-topnav { display: flex; gap: 4px; flex: 1; }
 .app .app-topnav a {

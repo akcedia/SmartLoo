@@ -33,7 +33,7 @@ function Header({ path }) {
   return (
     <header className="app-topbar">
       <Link className="app-brand" to="/">
-        <span className="app-brand-mark" aria-hidden="true">SL</span>
+        <img className="app-brand-mark" src="/icons/icon-192.png?v=logo-20261124" width="36" height="36" alt="" />
         SmartLoo
       </Link>
       <nav className="app-topnav" aria-label={t("Ana menü")}>
