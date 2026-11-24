@@ -1,0 +1,34 @@
+{
+  "scope": "local Sonar maintainability findings only",
+  "reason": "Local source and Brave review: native td role=cell is inside table role=table; no focusable widget is assigned a cell role. W3C https://www.w3.org/TR/html-aria/#el-td permits this role. MDN https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/rowgroup_role explains preserving roles when CSS changes table display. At 375x812 actual cells have display:block, tabIndex -1, and are exposed under the facility table as rows/cells, without horizontal overflow. Existing accessibility regression and all 308 frontend tests pass. Retain explicit roles to preserve mobile semantics. Assessed as analyzer false positive, not a source-code fix or an independent human accessibility certification. Original issue/gate exports are retained in the review evidence; no rule is disabled.",
+  "records": [
+    {
+      "key": "79206ecb-12e4-4b55-95aa-cbd00360270e",
+      "rule": "javascript:S6843",
+      "line": 32,
+      "status": "RESOLVED",
+      "resolution": "FALSE-POSITIVE"
+    },
+    {
+      "key": "c0faaa73-8542-4fe3-a982-d494b4fb10e4",
+      "rule": "javascript:S6843",
+      "line": 33,
+      "status": "RESOLVED",
+      "resolution": "FALSE-POSITIVE"
+    },
+    {
+      "key": "67d8df32-7312-401b-812f-0c5210354189",
+      "rule": "javascript:S6843",
+      "line": 38,
+      "status": "RESOLVED",
+      "resolution": "FALSE-POSITIVE"
+    },
+    {
+      "key": "632ca4ab-1763-4a71-8b22-95bd50c5e1d4",
+      "rule": "javascript:S6843",
+      "line": 42,
+      "status": "RESOLVED",
+      "resolution": "FALSE-POSITIVE"
+    }
+  ]
+}
