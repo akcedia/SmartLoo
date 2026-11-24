@@ -3,6 +3,7 @@
 // Keep entries grouped by screen. i18n.test.jsx checks that every literal t() string in
 // the shared app, auth, admin and directions code has an entry here.
 export default {
+  "Bu görünümde {shown}/{total} tesis gösteriliyor. Daha fazlası için yakınlaştırın.": "Showing {shown}/{total} facilities in this view. Zoom in to see more.",
   // App shell
   "Ana menü": "Main menu",
   "Harita": "Map",

@@ -1,4 +1,4 @@
-// Theme preference: "system" (default), "light" or "dark".
+// Theme preference: "light" (default), "system" or "dark".
 // The preference is a per-browser convenience in localStorage; the resolved theme is
 // always written to <html data-theme>, which is the only switch the CSS reads.
 // index.html runs the same resolution inline before first paint, so there is no flash.
@@ -17,16 +17,15 @@ function storage() {
 export function loadPreference() {
   try {
     const value = storage()?.getItem(THEME_KEY);
-    return PREFERENCES.includes(value) ? value : "system";
+    return PREFERENCES.includes(value) ? value : "light";
   } catch {
-    return "system";
+    return "light";
   }
 }
 
 export function savePreference(preference) {
   try {
-    if (preference === "system") storage()?.removeItem(THEME_KEY);
-    else storage()?.setItem(THEME_KEY, preference);
+    storage()?.setItem(THEME_KEY, PREFERENCES.includes(preference) ? preference : "light");
   } catch {
     // Storage blocked (private mode): the choice still applies for this page.
   }

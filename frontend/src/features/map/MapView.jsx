@@ -6,7 +6,8 @@ import "leaflet/dist/leaflet.css";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
-import { PIN_STATE_LABELS, pinIcon, pinState, userLocationIcon } from "./mapPins.js";
+import { userLocationIcon } from "./mapPins.js";
+import FacilityMarkers from "./FacilityMarkers.jsx";
 import { useI18n } from "../../shared/i18n/I18nProvider.jsx";
 
 delete L.Icon.Default.prototype._getIconUrl;
@@ -18,12 +19,19 @@ L.Icon.Default.mergeOptions({
 
 function RecenterMap({ center, citywide, toilets }) {
   const map = useMap();
+  // A refreshed copy of the same results (or a late location fix in city mode)
+  // must not undo the user's zoom. Fit only when the actual result positions change.
+  const positions = citywide ? toilets.map((row) => [row.latitude, row.longitude]) : [];
+  const positionKey = JSON.stringify(positions);
+  const lat = citywide ? null : center.lat;
+  const lon = citywide ? null : center.lon;
   useEffect(() => {
     if (citywide) {
-      if (toilets.length) map.fitBounds(toilets.map(t => [t.latitude, t.longitude]), {padding:[30,30], maxZoom:14});
+      const points = JSON.parse(positionKey);
+      if (points.length) map.fitBounds(points, {padding:[30,30], maxZoom:14});
       else map.setView([41.05, 29.0], 10);
-    } else map.setView([center.lat, center.lon], 15);
-  }, [center.lat, center.lon, citywide, toilets, map]);
+    } else map.setView([lat, lon], 15);
+  }, [lat, lon, citywide, positionKey, map]);
   return null;
 }
 
@@ -131,23 +139,7 @@ export default function MapView({
 
         <ShowSelected toilet={selectedToilet} />
 
-        {toilets.map((toilet) => {
-          const state = pinState(toilet);
-          const selected = selectedToilet?.id === toilet.id;
-          return (
-            <Marker
-              key={toilet.id}
-              icon={pinIcon(state, selected)}
-              alt={toilet.name}
-              title={`${toilet.name} · ${t(PIN_STATE_LABELS[state])}`}
-              position={[toilet.latitude, toilet.longitude]}
-              zIndexOffset={selected ? 1000 : state === "open" ? 100 : 0}
-              eventHandlers={{
-                click: () => onSelectToilet(toilet),
-              }}
-            />
-          );
-        })}
+        <FacilityMarkers toilets={toilets} selectedToilet={selectedToilet} onSelectToilet={onSelectToilet} />
       </MapContainer>
     </div>
   );
