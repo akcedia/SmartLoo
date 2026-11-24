@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="7" skipped="0" tests="52" time="8.103" timestamp="2026-11-24T11:04:45.199880+03:00" hostname="DESKTOP-MK26RE8"><testcase classname="tests.test_requirements" name="test_tc_01" time="0.057" /><testcase classname="tests.test_requirements" name="test_tc_02" time="0.034" /><testcase classname="tests.test_requirements" name="test_tc_03" time="0.073" /><testcase classname="tests.test_requirements" name="test_tc_04" time="0.136" /><testcase classname="tests.test_requirements" name="test_tc_05" time="0.034" /><testcase classname="tests.test_requirements" name="test_tc_06" time="0.069" /><testcase classname="tests.test_requirements" name="test_tc_07" time="0.067" /><testcase classname="tests.test_requirements" name="test_tc_08" time="0.048"><failure message="AssertionError: {&quot;detail&quot;:&quot;Feature not implemented&quot;}&#10;assert 501 == 200&#10; +  where 501 = &lt;Response [501 Not Implemented]&gt;.status_code">tests\test_requirements.py:221: in test_tc_08
+    data=body(env.client.get(f"{BASE}/toilets/{A}/summary"))
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_requirements.py:141: in body
+    assert response.status_code == status, response.text
+E   AssertionError: {"detail":"Feature not implemented"}
+E   assert 501 == 200
+E    +  where 501 = &lt;Response [501 Not Implemented]&gt;.status_code</failure></testcase><testcase classname="tests.test_requirements" name="test_tc_09" time="0.051" /><testcase classname="tests.test_requirements" name="test_tc_10" time="0.059" /><testcase classname="tests.test_requirements" name="test_tc_11[params0]" time="0.033" /><testcase classname="tests.test_requirements" name="test_tc_11[params1]" time="0.052" /><testcase classname="tests.test_requirements" name="test_tc_11[params2]" time="0.049" /><testcase classname="tests.test_requirements" name="test_tc_11[params3]" time="0.057" /><testcase classname="tests.test_requirements" name="test_tc_12" time="0.111" /><testcase classname="tests.test_requirements" name="test_tc_13" time="0.061" /><testcase classname="tests.test_requirements" name="test_tc_14" time="0.036" /><testcase classname="tests.test_requirements" name="test_tc_15[3-True]" time="0.033"><failure message="AssertionError: {&quot;detail&quot;:&quot;Feature not implemented&quot;}&#10;assert 501 == 200&#10; +  where 501 = &lt;Response [501 Not Implemented]&gt;.status_code">tests\test_requirements.py:273: in test_tc_15
+    data=body(env.client.get(f"{BASE}/toilets/{A}/summary"));assert data["summary"] is None
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_requirements.py:141: in body
+    assert response.status_code == status, response.text
+E   AssertionError: {"detail":"Feature not implemented"}
+E   assert 501 == 200
+E    +  where 501 = &lt;Response [501 Not Implemented]&gt;.status_code</failure></testcase><testcase classname="tests.test_requirements" name="test_tc_15[2-False]" time="0.034"><failure message="AssertionError: {&quot;detail&quot;:&quot;Feature not implemented&quot;}&#10;assert 501 == 200&#10; +  where 501 = &lt;Response [501 Not Implemented]&gt;.status_code">tests\test_requirements.py:273: in test_tc_15
+    data=body(env.client.get(f"{BASE}/toilets/{A}/summary"));assert data["summary"] is None
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_requirements.py:141: in body
+    assert response.status_code == status, response.text
+E   AssertionError: {"detail":"Feature not implemented"}
+E   assert 501 == 200
+E    +  where 501 = &lt;Response [501 Not Implemented]&gt;.status_code</failure></testcase><testcase classname="tests.test_requirements" name="test_tc_16" time="0.063"><failure message="AssertionError: {&quot;detail&quot;:&quot;Feature not implemented&quot;}&#10;assert 501 == 200&#10; +  where 501 = &lt;Response [501 Not Implemented]&gt;.status_code">tests\test_requirements.py:281: in test_tc_16
+    first=body(env.client.get(f"{BASE}/toilets/{A}/summary"))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_requirements.py:141: in body
+    assert response.status_code == status, response.text
+E   AssertionError: {"detail":"Feature not implemented"}
+E   assert 501 == 200
+E    +  where 501 = &lt;Response [501 Not Implemented]&gt;.status_code</failure></testcase><testcase classname="tests.test_requirements" name="test_tc_17" time="0.128"><failure message="AssertionError: {&quot;detail&quot;:&quot;Feature not implemented&quot;}&#10;assert 501 == 200&#10; +  where 501 = &lt;Response [501 Not Implemented]&gt;.status_code">tests\test_requirements.py:291: in test_tc_17
+    data=body(env.client.get(BASE+"/recommendations",headers=auth(),params={"lat":41,"lon":29,"has_disabled_access":True,"is_free":True}))
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_requirements.py:141: in body
+    assert response.status_code == status, response.text
+E   AssertionError: {"detail":"Feature not implemented"}
+E   assert 501 == 200
+E    +  where 501 = &lt;Response [501 Not Implemented]&gt;.status_code</failure></testcase><testcase classname="tests.test_requirements" name="test_tc_18" time="0.086" /><testcase classname="tests.test_requirements" name="test_tc_19[csv]" time="0.067" /><testcase classname="tests.test_requirements" name="test_tc_19[json]" time="0.115" /><testcase classname="tests.test_requirements" name="test_tc_20" time="0.088" /><testcase classname="tests.test_requirements" name="test_tc_21" time="0.075"><failure message="assert 501 == 200&#10; +  where 501 = &lt;Response [501 Not Implemented]&gt;.status_code">tests\test_requirements.py:323: in test_tc_21
+    response=env.client.get("/");assert response.status_code==200
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   assert 501 == 200
+E    +  where 501 = &lt;Response [501 Not Implemented]&gt;.status_code</failure></testcase><testcase classname="tests.test_requirements" name="test_tc_24" time="0.075" /><testcase classname="tests.test_requirements" name="test_tc_25" time="0.037" /><testcase classname="tests.test_requirements" name="test_tc_29" time="0.037" /><testcase classname="tests.test_requirements" name="test_tc_30" time="0.387" /><testcase classname="tests.test_requirements" name="test_tc_31[0]" time="0.035" /><testcase classname="tests.test_requirements" name="test_tc_31[6]" time="0.035" /><testcase classname="tests.test_requirements" name="test_tc_32" time="0.036" /><testcase classname="tests.test_requirements" name="test_tc_33" time="0.037" /><testcase classname="tests.test_requirements" name="test_tc_34" time="0.046" /><testcase classname="tests.test_requirements" name="test_tc_35" time="0.041" /><testcase classname="tests.test_requirements" name="test_tc_36" time="0.044" /><testcase classname="tests.test_requirements" name="test_tc_37" time="0.026" /><testcase classname="tests.test_requirements" name="test_tc_38" time="0.754" /><testcase classname="tests.test_requirements" name="test_tc_39" time="0.125" /><testcase classname="tests.test_requirements" name="test_tc_40" time="0.519" /><testcase classname="tests.test_requirements" name="test_tc_41" time="0.030" /><testcase classname="tests.test_requirements" name="test_tc_42" time="0.025" /><testcase classname="tests.test_requirements" name="test_tc_43" time="0.034" /><testcase classname="tests.test_requirements" name="test_tc_44" time="0.052" /><testcase classname="tests.test_requirements" name="test_tc_45" time="0.228" /><testcase classname="tests.test_requirements" name="test_tc_46" time="0.071" /><testcase classname="tests.test_requirements" name="test_tc_47" time="0.641" /><testcase classname="tests.test_requirements" name="test_tc_26" time="0.055" /><testcase classname="tests.test_requirements" name="test_tc_27" time="0.038" /><testcase classname="tests.test_requirements" name="test_tc_28" time="0.067"><failure message="AssertionError: {&quot;detail&quot;:&quot;Feature not implemented&quot;}&#10;assert 501 == 200&#10; +  where 501 = &lt;Response [501 Not Implemented]&gt;.status_code">tests\test_requirements.py:463: in test_tc_28
+    data=body(env.client.get(f"{BASE}/toilets/{A}/summary"));assert data["summary"] is None
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\test_requirements.py:141: in body
+    assert response.status_code == status, response.text
+E   AssertionError: {"detail":"Feature not implemented"}
+E   assert 501 == 200
+E    +  where 501 = &lt;Response [501 Not Implemented]&gt;.status_code</failure></testcase><testcase classname="tests.test_requirements" name="test_tc_48" time="0.457" /></testsuite></testsuites>

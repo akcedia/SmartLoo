@@ -108,6 +108,7 @@ class RepositoryAccounts:
     """Isolated account store over the in-memory test state; not a production database."""
 
     def __init__(self, repository):
+        self.repository = repository
         self.users = repository.setdefault("users", {})
         self.failures = repository.setdefault("login_attempts", [])
         self.locks = repository.setdefault("account_locks", {})
@@ -150,6 +151,11 @@ class RepositoryAccounts:
     def delete(self, user_id, email):
         self.users.pop(user_id, None)
         self.failures[:] = [f for f in self.failures if f["email"] != email]
+        # Same effect as ON DELETE SET NULL in PostgreSQL: suggestions keep their facility data.
+        for suggestion in self.repository.get("suggestions", {}).values():
+            for link in ("submitted_by", "moderated_by"):
+                if suggestion.get(link) == user_id:
+                    suggestion[link] = None
 
 
 class PostgresAccounts:
