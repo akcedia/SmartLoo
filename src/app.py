@@ -21,7 +21,7 @@ from src.suggestions import PostgresSuggestions, RepositorySuggestions
 from src.suggestions import router as suggestions_router
 from src.auth import PostgresAccounts, RepositoryAccounts, current_user, require_admin
 from src.auth import router as auth_router
-from src.nearby_store import create_nearby_pool, find_nearby, find_toilet, find_ibb_facilities
+from src.nearby_store import NEARBY_READERS, create_nearby_pool, find_nearby, find_toilet, find_ibb_facilities
 from src.nearby_response import NearbyResponse, encode_nearby
 from src.review_scores import ReviewStoreError
 from src.reviews import MongoReviews, PostgresToilets, RepositoryReviews, RepositoryToilets, ReviewService
@@ -40,7 +40,7 @@ def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None
     async def lifespan(app):
         pool = create_nearby_pool() if state is None and nearby_search is None else None
         app.state.nearby_pool = pool
-        app.state.nearby_limiter = CapacityLimiter(4) if pool is not None else None
+        app.state.nearby_limiter = CapacityLimiter(NEARBY_READERS) if pool is not None else None
         try:
             async with ai_lifespan(app, provider=ai_provider, cache=ai_cache, profile=ai_profile,
                                    reason_provider=ai_reason_provider):

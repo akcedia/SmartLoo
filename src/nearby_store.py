@@ -4,6 +4,8 @@ import psycopg
 from psycopg.rows import dict_row
 from psycopg_pool import ConnectionPool
 
+NEARBY_READERS = 2
+
 
 def _connection_options():
     return dict(
@@ -23,7 +25,7 @@ def _connect():
 
 def create_nearby_pool():
     """App-owned, bounded read pool; no connection attempt at import/startup."""
-    return ConnectionPool(kwargs={**_connection_options(), "autocommit": True}, min_size=0, max_size=4,
+    return ConnectionPool(kwargs={**_connection_options(), "autocommit": True}, min_size=0, max_size=NEARBY_READERS,
                           timeout=5, max_waiting=50, max_idle=60, open=True,
                           check=ConnectionPool.check_connection)
 

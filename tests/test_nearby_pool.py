@@ -97,7 +97,7 @@ def test_parallel_nearby_reads_do_not_occupy_workers_waiting_for_pool_slots(monk
         with ThreadPoolExecutor(max_workers=12) as requests:
             responses=list(requests.map(lambda _: client.get('/api/v1/toilets/nearby?lat=41&lon=29'), range(24)))
     assert all(response.status_code == 200 for response in responses)
-    assert maximum <= 4
+    assert maximum <= 2
     assert active == 0
     pool.close.assert_called_once_with()
 
