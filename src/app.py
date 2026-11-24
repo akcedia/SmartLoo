@@ -6,6 +6,7 @@ isolated accounts, reviews and nearby search. Other features remain pending.
 """
 
 import time
+from contextlib import asynccontextmanager
 from copy import deepcopy
 from uuid import UUID
 
@@ -19,7 +20,7 @@ from src.suggestions import PostgresSuggestions, RepositorySuggestions
 from src.suggestions import router as suggestions_router
 from src.auth import PostgresAccounts, RepositoryAccounts, current_user, require_admin
 from src.auth import router as auth_router
-from src.nearby_store import find_nearby, find_toilet, find_ibb_facilities
+from src.nearby_store import create_nearby_pool, find_nearby, find_toilet, find_ibb_facilities
 from src.review_scores import ReviewStoreError
 from src.reviews import MongoReviews, PostgresToilets, RepositoryReviews, RepositoryToilets, ReviewService
 from src.reviews import router as reviews_router
@@ -33,16 +34,31 @@ from src.admin_import import PostgresAdminImport, RepositoryAdminImport, router 
 
 def create_app(state=None, ai_provider=None, jwt_secret=None, nearby_search=None,
                ai_cache=None, ai_profile=None, ai_reason_provider=None):
-    def lifespan(app):
-        return ai_lifespan(app, provider=ai_provider, cache=ai_cache, profile=ai_profile,
-                           reason_provider=ai_reason_provider)
+    @asynccontextmanager
+    async def lifespan(app):
+        pool = create_nearby_pool() if state is None and nearby_search is None else None
+        app.state.nearby_pool = pool
+        try:
+            async with ai_lifespan(app, provider=ai_provider, cache=ai_cache, profile=ai_profile,
+                                   reason_provider=ai_reason_provider):
+                yield
+        finally:
+            if pool is not None:
+                pool.close()
+            app.state.nearby_pool = None
     app = FastAPI(title="SmartLoo requirements-stage API", lifespan=lifespan)
     app.state.repository = deepcopy(state or {})
     app.state.ai_provider = ai_provider
     app.state.jwt_secret = jwt_secret
-    app.state.nearby_search = (
-        nearby_search if nearby_search is not None else find_nearby
-    )
+    app.state.nearby_pool = None
+
+    def default_nearby_search(**kwargs):
+        pool = app.state.nearby_pool
+        if pool is not None:
+            return find_nearby(**kwargs, connection_factory=pool.connection)
+        return find_nearby(**kwargs)
+
+    app.state.nearby_search = nearby_search if nearby_search is not None else default_nearby_search
     app.state.accounts = (
         RepositoryAccounts(app.state.repository) if state is not None else PostgresAccounts()
     )
