@@ -17,6 +17,9 @@ one shared token layer.
   (header button: Sistem → Açık → Koyu, stored in `localStorage["smartloo.theme"]`;
   "Sistem" follows the OS). Do not add a second switch (`.dark` class or
   `prefers-color-scheme` blocks in component CSS).
+- First visits default to light, even when the OS is dark (24 Nov decision).
+  Explicit light, dark and system choices are persisted. Missing, invalid or
+  inaccessible storage falls back to light, including before first paint.
 - Every token pair used for text is measured in both themes by
   `frontend/src/app/a11y.test.jsx` (text >= 4.5:1, borders/fills >= 3:1).
   If you add a token pair, add it to that test.
@@ -65,6 +68,13 @@ varsayılan yap"; a saved app opens directly and "Başka uygulama seç" resets i
 - Pins (`features/map/mapPins.js`): filled cyan = open now, cyan outline = opening
   hours unknown, grey = closed or not active; the selected pin is larger. The
   marker title states the same in words.
+- Marker density (`features/map/markerDensity.js`): render only visible bounds,
+  with spatial cells and a zoom-dependent cap (48 at zoom <=10, rising to 500
+  at zoom >=16). Prefer valid review averages, then review count; retain the
+  selected facility. Unrated facilities remain visible without invented scores.
+  The complete search, list, counts and filter results are unchanged. The map
+  notice explains that zooming reveals more. Identical refreshed citywide
+  positions do not reset manual zoom when a late location update arrives.
 - The facility panel has "Yol tarifi al" (`features/map/DirectionsButton.jsx`):
   Android opens a `geo:` link so the phone's own app chooser appears; iPhone/iPad
   and desktops get a small menu (Apple / Google / Yandex Haritalar). Only the
