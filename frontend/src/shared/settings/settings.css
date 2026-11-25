@@ -100,6 +100,5 @@
   .sl-settings-panel { position: fixed; top: 60px; right: 12px; left: 12px; width: auto; }
 }
 @media (pointer: coarse) {
-  .sl-settings-button { width: 44px; height: 44px; }
   .sl-setting-choices button { min-height: 42px; }
 }

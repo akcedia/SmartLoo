@@ -218,6 +218,7 @@ describe("Map detail, review and AI components static render tests", () => {
     );
     expect(loadingHtml).toContain("Tesis detayları yükleniyor...");
     expect(loadingHtml).toContain("145 m");
+    expect(loadingHtml).toContain(">Mesafe<");
     expect(loadingHtml).toContain("Bilinmiyor");
     expect(loadingHtml).toContain("Henüz puanlanmamış");
 
@@ -228,13 +229,13 @@ describe("Map detail, review and AI components static render tests", () => {
         hasLocationPermission={false}
       />
     );
-    expect(noPermHtml).not.toContain("Kullanıcı Mesafesi:");
+    expect(noPermHtml).not.toContain(">Mesafe<");
 
     const notFoundHtml = renderToStaticMarkup(
       <FacilityDetailPanel selectedToilet={baseToilet} notFound={true} />
     );
     expect(notFoundHtml).toContain("404");
-    expect(notFoundHtml).not.toContain("Hijyen Puanı:");
+    expect(notFoundHtml).not.toContain(">Hijyen puanı<");
 
     const errorHtml = renderToStaticMarkup(
       <FacilityDetailPanel
