@@ -3,10 +3,19 @@ import AiSummaryBox from "./AiSummaryBox.jsx";
 import ReviewSection from "./ReviewSection.jsx";
 import DirectionsButton from "./DirectionsButton.jsx";
 import AdminFacilityStatus from "./AdminFacilityStatus.jsx";
+import { useI18n } from "../../shared/i18n/I18nProvider.jsx";
 
 function formatBooleanField(val, trueText, falseText) {
   if (val === null || val === undefined) return "Bilinmiyor";
   return val ? trueText : falseText;
+}
+
+function formatStatus(item) {
+  if (item.status === "CLOSED") return "Kapalı";
+  if (item.status === "MAINTENANCE") return "Bakımda";
+  if (item.is_open_now === true) return "Şu an açık";
+  if (item.is_open_now === false) return "Kapalı";
+  return "Bilinmiyor";
 }
 
 function formatPricing(isFree, priceTry) {
@@ -30,6 +39,7 @@ export default function FacilityDetailPanel({
   onReviewsMutated,
   onClose,
 }) {
+  const { t } = useI18n();
   if (!selectedToilet) return null;
 
   const merged = detail
@@ -71,12 +81,14 @@ export default function FacilityDetailPanel({
           gap: "8px",
         }}
       >
-        <h3 style={{ margin: 0, fontSize: "16px", color: "var(--sl-text)", overflowWrap: "anywhere" }}>
-          {merged.name}
-        </h3>
+        <div className="sl-detail-title">
+          <h3>{merged.name}</h3>
+          {merged.district && <p className="sl-detail-sub">{merged.district}</p>}
+        </div>
         <button
           type="button"
-          aria-label="Detay panelini kapat"
+          className="sl-detail-close"
+          aria-label={t("Detay panelini kapat")}
           onClick={onClose}
           style={{
             border: "none",
@@ -160,55 +172,25 @@ export default function FacilityDetailPanel({
 
       {!notFound && (
         <>
-          <ul
-            style={{
-              listStyle: "none",
-              padding: 0,
-              marginTop: "12px",
-              marginBottom: 0,
-              fontSize: "14px",
-              lineHeight: "1.9",
-              color: "var(--sl-text-secondary)",
-            }}
-          >
-            {merged.district && (
-              <li>
-                <strong>İlçe:</strong> {merged.district}
-              </li>
-            )}
+          <dl className="sl-facts">
             {hasLocationPermission && merged.distance_m != null && (
-              <li>
-                <strong>Kullanıcı Mesafesi:</strong> {Math.round(merged.distance_m)} m
-              </li>
+              <Fact label={t("Mesafe")} value={`${Math.round(merged.distance_m)} m`} />
             )}
-            <li>
-              <strong>Durum:</strong>{" "}
-              {formatBooleanField(merged.is_open_now, "Açık", "Kapalı")}
-              {merged.status && merged.status !== "ACTIVE" ? ` (${merged.status})` : ""}
-            </li>
-            <li>
-              <strong>Engelli Erişimi:</strong>{" "}
-              {formatBooleanField(merged.has_disabled_access, "Var", "Yok")}
-            </li>
-            <li>
-              <strong>Bebek Bakım:</strong>{" "}
-              {formatBooleanField(merged.has_baby_changing, "Var", "Yok")}
-            </li>
-            <li>
-              <strong>Ücret:</strong>{" "}
-              {formatPricing(merged.is_free, merged.price_try)}
-            </li>
-            <li>
-              <strong>Hijyen Puanı:</strong>{" "}
-              {merged.average_cleanliness != null
+            <Fact label={t("Durum")} value={t(formatStatus(merged))} />
+            <Fact label={t("Ücret")} value={translatePrice(formatPricing(merged.is_free, merged.price_try), t)} />
+            <Fact label={t("Engelli erişimi")} value={t(formatBooleanField(merged.has_disabled_access, "Var", "Yok"))} />
+            <Fact label={t("Bebek bakım")} value={t(formatBooleanField(merged.has_baby_changing, "Var", "Yok"))} />
+            <Fact
+              wide
+              label={t("Hijyen puanı")}
+              value={merged.average_cleanliness != null
                 ? `${Number(merged.average_cleanliness).toFixed(1)} / 5${
-                    merged.review_count != null
-                      ? ` (${merged.review_count} değerlendirme)`
-                      : ""
+                    merged.review_count != null ? ` · ${t("{n} değerlendirme", { n: merged.review_count })}` : ""
                   }`
-                : "Henüz puanlanmamış"}
-            </li>
-          </ul>
+                : t("Henüz puanlanmamış")}
+              unknown={merged.average_cleanliness == null}
+            />
+          </dl>
 
           <DirectionsButton latitude={merged.latitude} longitude={merged.longitude} name={merged.name} />
 
@@ -227,4 +209,20 @@ export default function FacilityDetailPanel({
       )}
     </aside>
   );
+}
+
+// One fact as a small card; unknown values are dimmed but still say "Bilinmiyor".
+function Fact({ label, value, wide = false, unknown }) {
+  const isUnknown = unknown ?? (value === "Bilinmiyor" || value === "Unknown");
+  return (
+    <div className={`sl-fact${wide ? " sl-fact--wide" : ""}${isUnknown ? " is-unknown" : ""}`}>
+      <dt>{label}</dt>
+      <dd>{value}</dd>
+    </div>
+  );
+}
+
+function translatePrice(text, t) {
+  const paid = /^Ücretli \((.+) TL\)$/.exec(text);
+  return paid ? t("Ücretli ({price} TL)", { price: paid[1] }) : t(text);
 }

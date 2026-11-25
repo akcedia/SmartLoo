@@ -18,7 +18,7 @@ import { decisionErrorMessage, facilityStatusErrorMessage, listErrorMessage } fr
 const EN = catalog("en");
 const SRC = join(process.cwd(), "src");
 // Screens owned by the shared app (Onur). Map screens join this list when Furkan wraps them.
-const TRANSLATED = ["app", "shared", "features/auth", "features/admin", "features/suggestions", "features/map/DirectionsButton.jsx", "features/map/SearchPage.jsx", "features/map/MapView.jsx", "features/map/FacilityMarkers.jsx", "features/map/RadiusPicker.jsx", "features/map/AdminFacilityStatus.jsx", "features/map/AiRecommendationsPanel.jsx", "features/map/AiSummaryBox.jsx"];
+const TRANSLATED = ["app", "shared", "features/auth", "features/admin", "features/suggestions", "features/map/DirectionsButton.jsx", "features/map/SearchPage.jsx", "features/map/MapView.jsx", "features/map/FacilityMarkers.jsx", "features/map/RadiusPicker.jsx", "features/map/AdminFacilityStatus.jsx", "features/map/AiRecommendationsPanel.jsx", "features/map/AiSummaryBox.jsx", "features/map/FacilityDetailPanel.jsx"];
 
 function sourceFiles(path) {
   const full = join(SRC, path);
@@ -148,7 +148,9 @@ describe("language switch in the app", () => {
     expect(host.querySelector("main label").textContent).toBe("Email");
     expect(host.querySelector(".sl-settings-button").getAttribute("aria-label")).toBe("Settings");
     expect(host.querySelector('input[type="email"]').value).toBe("ayse@example.com");
-    expect(host.querySelector(".app-topnav").textContent).toContain("Map");
+    // Guests have no tab row (only admins get "Map · Admin"); the header sign-in link is translated.
+    expect(host.querySelector(".app-topnav")).toBeNull();
+    expect(host.querySelector(".app-signin").textContent).toBe("Sign in");
     expect(localStorage.getItem(LANG_KEY)).toBe("en");
 
     await act(async () => turkish().click());

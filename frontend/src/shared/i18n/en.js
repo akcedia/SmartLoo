@@ -431,6 +431,20 @@ export default {
   "Özet için en az 3 uygun yorum gerekli.": "At least 3 eligible reviews are needed for a summary.",
   "AI özeti şu anda kullanılamıyor.": "The AI summary is unavailable right now.",
 
+  // UI pass 25 Nov: one-line map notices and facility fact cards
+  "Konum izni bekleniyor…": "Waiting for location permission…",
+  "Konum izni yok": "No location permission",
+  "Çalışma saati bilgisi yok": "No opening hours data",
+  "Tesisler yüklenemedi": "Could not load facilities",
+  "Uygun İBB kaydı yok": "No matching İBB records",
+  "Bu bölgede uygun tesis yok": "No matching facilities here",
+  "Filtreleri temizle": "Clear filters",
+  "Detay panelini kapat": "Close details",
+  "Mesafe": "Distance",
+  "Bebek bakım": "Baby changing",
+  "Henüz puanlanmamış": "Not rated yet",
+  "Ücretli ({price} TL)": "Paid ({price} TL)",
+
   // Shared words for map screens (Furkan: add more here as you wrap strings)
   "Yorumlar": "Reviews",
 };

@@ -97,7 +97,8 @@ describe("map page layout", () => {
     expect(mode.textContent).toContain("İstanbul geneli");
     expect(mode.textContent).toContain("Yakınımda");
     expect(filters.textContent).toContain("Şu An Açık");
-    expect(filters.textContent).toContain("Ücretsiz");
+    // Price lives only in the Filtreler panel (23 Nov UI pass), not as a top chip.
+    expect(filters.textContent).not.toContain("Ücretsiz");
     expect(host.querySelector(".sl-filter-panel").hidden).toBe(true);
   });
 
@@ -135,12 +136,13 @@ describe("map page layout", () => {
     expect(document.activeElement).toBe(toggle);
   });
 
-  it("the Ücretsiz chip and the panel share one price filter", async () => {
+  it("sets the price in the panel and counts it on the Filtreler badge", async () => {
     const fetchImpl = await render();
-    await act(async () => host.querySelector(".sl-group-filters .sl-chip:nth-child(2)").click());
-    expect(fetchImpl.mock.calls.at(-1)[0]).toContain("is_free=true");
     const panelFree = [...host.querySelectorAll('.sl-filter-panel [aria-label="Ücret filtresi"] button')].find((b) => b.textContent === "Ücretsiz");
+    await act(async () => panelFree.click());
+    expect(fetchImpl.mock.calls.at(-1)[0]).toContain("is_free=true");
     expect(panelFree.getAttribute("aria-pressed")).toBe("true");
+    expect(host.querySelector(".sl-chip--filters .sl-badge").textContent).toBe("1");
   });
 
   it("lists facilities nearest first in nearby mode and opens one on the map", async () => {

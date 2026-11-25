@@ -36,14 +36,17 @@ function Header({ path }) {
         <img className="app-brand-mark" src="/icons/icon-192.png?v=logo-20261124" width="36" height="36" alt="" />
         SmartLoo
       </Link>
-      <nav className="app-topnav" aria-label={t("Ana menü")}>
-        <Link to="/" aria-current={path === "/" ? "page" : undefined}>{t("Harita")}</Link>
-        {session?.role === "ADMIN" && (
+      {/* A single "Harita" tab is noise (the logo already goes to the map); admins get two. */}
+      {session?.role === "ADMIN" && (
+        <nav className="app-topnav" aria-label={t("Ana menü")}>
+          <Link to="/" aria-current={path === "/" ? "page" : undefined}>{t("Harita")}</Link>
           <Link to="/admin" aria-current={routeFor(path) === "admin" ? "page" : undefined}>{t("Yönetim")}</Link>
-        )}
-      </nav>
-      <SettingsMenu />
-      <AccountMenu session={session} onSignOut={signOut} returnTo={path} />
+        </nav>
+      )}
+      <div className="app-topbar-actions">
+        <SettingsMenu />
+        <AccountMenu session={session} onSignOut={signOut} returnTo={path} />
+      </div>
     </header>
   );
 }
