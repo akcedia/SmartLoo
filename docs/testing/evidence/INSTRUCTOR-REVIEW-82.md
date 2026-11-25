@@ -1,5 +1,21 @@
 # Instructor review #82 - Software testing evidence
 
+## Submission-instruction check - 25 November 2026
+
+The active review is [PR #76](https://github.com/akcedia/SmartLoo/pull/76), on the dedicated `selim-aksu/qa-60-main-evidence` branch. `test_work` in the announcement is an example name, not a required literal branch name. The latest publication status is in the report's 25 November addendum; earlier dated measurements below remain historical.
+
+| Instructor instruction | Location / verified status |
+| --- | --- |
+| Dedicated test branch | Existing PR #76 source branch above, targeting main. |
+| Requirement-to-test matrix and coverage | [Functional/NFR traceability](../SOFTWARE_TESTING_REPORT.md#functional-traceability), `evidence/coverage/`; final all-29-module backend coverage 93.06% and frontend line coverage 83.14% retain their source scopes in the [frozen release evidence](https://github.com/akcedia/SmartLoo/tree/df667632cebb657f2e34628b9fb5d6288583ac22/docs/testing/evidence/release-2026-11-24). |
+| Non-functional tests and results | `evidence/nfr/` and frozen final performance/security receipts linked by the report. Strict p95 253.74 ms vs 250 ms remains an owner-accepted exception, not an instructor-approved pass. |
+| SonarQube results and mitigation | `evidence/quality/` and frozen release Sonar exports; gate OK, three inherited maintenance findings and mitigation/residual scope retained. |
+| Important tests and interpretation | Report sections for test results/interpretation, defects/retest, and final verification/publication addenda. |
+| PR and Yesim reviewer by 25 November | #76 is open; `yesimyigitbasi` and `akcedia` are requested reviewers (verified 25 November). No instructor approval is claimed. |
+| Approved PDF on Learn by 29 November | Updated review PDF has 14 pages; previous 13 pages retained and final publication page appended. Prior evidence image remains embedded. Instructor approval and actual Learn upload remain pending. |
+
+Final application main is `c84fbcbeff37c8be1c8a6e8642cac777f886df18`; [verified exact-revision deployment](https://github.com/akcedia/SmartLoo/actions/runs/45477558291) passed. The new deployment record is separate from the earlier local full-suite measurements. No new Gemini request was made for this report update.
+
 [Yeşim Hoca's checklist, section D](https://github.com/akcedia/SmartLoo/issues/82) is a team checklist. This map records evidence and gaps for #60. Final acceptance is coordinated through Özgür and the instructor review.
 
 The original table below retains its independently measured main/candidate scopes. The final local release addendum follows it; pending historical measurements are not silently relabelled as current passes.

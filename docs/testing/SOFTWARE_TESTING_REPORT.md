@@ -256,3 +256,17 @@ Candidate evidence packet: [#89](https://github.com/akcedia/SmartLoo/pull/89), `
 Keep #76 open for review. Assign Yeşim Hoca by 25 November; upload the approved PDF to Learn by 29 November after approval. Final code ZIP delivery and its receipt are separate.
 
 Frozen evidence snapshot: [df667632cebb657f2e34628b9fb5d6288583ac22](https://github.com/akcedia/SmartLoo/tree/df667632cebb657f2e34628b9fb5d6288583ac22/docs/testing/evidence/release-2026-11-24). The final Sonar gate explicitly evaluates new-code coverage 97.5% against 80%, alongside zero new duplication and violations. The snapshot must be published before its remote links are available.
+
+## 25 November publication and submission status
+
+This addendum records later publication, not a new full-suite or native-model measurement. Earlier failures, source revisions and scope limits remain unchanged.
+
+- Final published main: `c84fbcbeff37c8be1c8a6e8642cac777f886df18`; logo PR #104 merged. All nine exact-main push workflows passed. [Verified deployment](https://github.com/akcedia/SmartLoo/actions/runs/45477558291): exact live revision and seven public HTTP checks passed, zero model calls and zero datastore writes in that smoke.
+- The existing free Render service has Gemini configuration enabled. No additional native-model acceptance request was made. Earlier synthetic-provider and native-provider receipts retain their own source scope.
+- Before promotion, a private database backup was made and additive migration 008 applied; all 432 IBB facilities were preserved. No production reset or fixture seed was used.
+- Yusuf independently retested merged main `4a5d11a0`: 309 frontend tests/build and 68 acceptance/cloud controls passed; real Edge at 320/375 px verified the mobile fixes. [Independent record](https://github.com/akcedia/SmartLoo/issues/60). This is independent testing and does not invent a formal GitHub approval.
+- Deployment guard coverage increased from the earlier 13 to 14 checks in #103, including the actual main push trigger configuration. Historical 13-check results above remain correct for their recorded revision.
+- Latest Learn instructions: Software Test Plan PDF due 29 November 2026 23:59; codebase and presentation due 30 November 2026 23:59 (Europe/Istanbul). The original Charter's 22 November test date is superseded by the instructor's announcement. All three assignment pages showed no submission during this review.
+- Code delivery must exclude bundled libraries and large report images/PDFs. A separate lean code review ZIP is prepared from current main, retaining required application icons and test fixtures. Rebuild the final ZIP after the accepted report changes reach main.
+- Instructor review of #76, final source peer-review scope, approved report PDF upload, code ZIP upload and presentation delivery remain pending. The presentation must cover selected use cases, task/repository/deployment/artifact/AI workflows, design decisions, tests, and serious AI-agent errors caught by the team. The total presentation slot is 20 minutes including 1-2 questions.
+- Unchanged limitations: strict p95 is 253.74 ms against 250 ms (owner-accepted 3.74 ms exception, instructor acceptance unverified); three inherited Sonar maintainability findings; partial independent human AI scoring. No claim of universal Turkish language/privacy acceptance is made.
