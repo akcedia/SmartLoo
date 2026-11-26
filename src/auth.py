@@ -68,7 +68,7 @@ class RegisterRequest(BaseModel):
     @classmethod
     def valid_email(cls, value):
         value = normalize_email(value)
-        if len(value) > 254 or not EMAIL_PATTERN.match(value):
+        if len(value) > 254 or any(ord(char) < 32 or ord(char) == 127 for char in value) or not EMAIL_PATTERN.match(value):
             raise ValueError("Enter a valid email address")
         return value
 
@@ -93,6 +93,16 @@ class RegisterRequest(BaseModel):
 class LoginRequest(BaseModel):
     email: str
     password: str
+
+    @field_validator("email")
+    @classmethod
+    def bounded_email(cls, value):
+        # Match the database limit after Unicode lowercasing; reject NUL/control
+        # characters before either account lookup or the failure-counter write.
+        value = normalize_email(value)
+        if len(value) > 254 or any(ord(char) < 32 or ord(char) == 127 for char in value):
+            raise ValueError("Enter a valid email address of at most 254 characters")
+        return value
 
 
 def public_account(user):
