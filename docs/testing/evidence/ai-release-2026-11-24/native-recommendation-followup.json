@@ -1,0 +1,18 @@
+{
+  "commit": "6122e28d1ea69e27c3e21266f09ada3a126c2d2f",
+  "model": "gemini-3.1-flash-lite",
+  "policy": "restricted-tr-evidence-v3",
+  "maximum_requests": 1,
+  "synthetic_only": true,
+  "requests_attempted": 1,
+  "provider_http_statuses": [
+    200
+  ],
+  "provider_error_code": "gemini_invalid_output",
+  "http": 200,
+  "elapsed_ms": 4936,
+  "candidate_preserved": true,
+  "count": 1,
+  "fallback": true,
+  "validated": false
+}

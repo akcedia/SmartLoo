@@ -1,0 +1,17 @@
+{
+  "suite": "ai-real-redis",
+  "commit": null,
+  "run_id": null,
+  "python": "3.13.14",
+  "redis_py": "8.1.0",
+  "redis_server": "7.4.12",
+  "expected": 8,
+  "tests": 8,
+  "passed": 8,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "seconds": 5.208,
+  "success": true,
+  "scope": "real Redis; synthetic provider and in-memory review coordinator; no live OpenAI/DB acceptance"
+}

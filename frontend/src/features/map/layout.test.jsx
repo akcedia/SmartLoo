@@ -5,6 +5,8 @@ import { createRoot } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import SearchPage from "./SearchPage.jsx";
 import { SessionProvider } from "../../shared/session/SessionProvider.jsx";
+import { sessionFromToken } from "../../shared/session/sessionStore.js";
+import { fakeJwt } from "../../shared/session/testJwt.js";
 import { MapApiProvider } from "./MapApiProvider.jsx";
 import { pinState } from "./mapPins.js";
 
@@ -37,10 +39,10 @@ afterEach(async () => {
 
 const button = (text) => [...host.querySelectorAll("button")].find((b) => b.textContent.trim() === text);
 
-async function render(fetchImpl = vi.fn(async () => ({ ok: true, status: 200, json: async () => ({ results: ROWS }) }))) {
+async function render(fetchImpl = vi.fn(async () => ({ ok: true, status: 200, json: async () => ({ results: ROWS }) })), initialSession = null) {
   await act(async () =>
     root.render(
-      <SessionProvider initialSession={null} fetchImpl={fetchImpl}>
+      <SessionProvider initialSession={initialSession} fetchImpl={fetchImpl}>
         <MapApiProvider>
           <SearchPage />
         </MapApiProvider>
@@ -62,6 +64,32 @@ describe("pin state", () => {
 });
 
 describe("map page layout", () => {
+  it("names the AI launcher when its visible text is hidden on phones", async () => {
+    await render();
+    const launcher = host.querySelector(".sl-fab--ai");
+    launcher.querySelector("span").style.display = "none";
+    expect(launcher.getAttribute("aria-label")).toBe("AI Önerileri");
+  });
+
+  it("uses the map's selected radius for recommendations and refreshes an open panel when it changes", async () => {
+    const session = sessionFromToken(fakeJwt({ sub: "viewer", role: "USER", exp: Date.now() / 1000 + 3600 }), "viewer@example.com");
+    const fetchImpl = vi.fn(async () => ({ ok: true, status: 200, json: async () => ({ results: ROWS }) }));
+    await render(fetchImpl, session);
+    const selectRadius = async (label) => {
+      await act(async () => host.querySelector(".sl-radius-button").click());
+      const option = [...host.querySelectorAll(".sl-dropdown-menu button")].find((b) => b.textContent === label);
+      await act(async () => option.click());
+    };
+    const recommendationUrls = () => fetchImpl.mock.calls.map(([url]) => new URL(url, "http://localhost"))
+      .filter((url) => url.pathname === "/api/v1/recommendations");
+    await selectRadius("5 km");
+    await act(async () => button("AI Önerileri").click());
+    expect(recommendationUrls().at(-1).searchParams.get("radius")).toBe("5000");
+    await selectRadius("500 m");
+    expect(recommendationUrls()).toHaveLength(2);
+    expect(recommendationUrls().at(-1).searchParams.get("radius")).toBe("500");
+  });
+
   it("groups the search mode and the main filters, with the rest in a closed panel", async () => {
     await render();
     const mode = host.querySelector(".sl-group-mode");
@@ -69,7 +97,8 @@ describe("map page layout", () => {
     expect(mode.textContent).toContain("İstanbul geneli");
     expect(mode.textContent).toContain("Yakınımda");
     expect(filters.textContent).toContain("Şu An Açık");
-    expect(filters.textContent).toContain("Ücretsiz");
+    // Price lives only in the Filtreler panel (23 Nov UI pass), not as a top chip.
+    expect(filters.textContent).not.toContain("Ücretsiz");
     expect(host.querySelector(".sl-filter-panel").hidden).toBe(true);
   });
 
@@ -107,12 +136,13 @@ describe("map page layout", () => {
     expect(document.activeElement).toBe(toggle);
   });
 
-  it("the Ücretsiz chip and the panel share one price filter", async () => {
+  it("sets the price in the panel and counts it on the Filtreler badge", async () => {
     const fetchImpl = await render();
-    await act(async () => host.querySelector(".sl-group-filters .sl-chip:nth-child(2)").click());
-    expect(fetchImpl.mock.calls.at(-1)[0]).toContain("is_free=true");
     const panelFree = [...host.querySelectorAll('.sl-filter-panel [aria-label="Ücret filtresi"] button')].find((b) => b.textContent === "Ücretsiz");
+    await act(async () => panelFree.click());
+    expect(fetchImpl.mock.calls.at(-1)[0]).toContain("is_free=true");
     expect(panelFree.getAttribute("aria-pressed")).toBe("true");
+    expect(host.querySelector(".sl-chip--filters .sl-badge").textContent).toBe("1");
   });
 
   it("lists facilities nearest first in nearby mode and opens one on the map", async () => {

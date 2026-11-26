@@ -597,14 +597,14 @@ The table below retains the acceptance outcomes; some combined API/UI outcomes a
 | TC-18 | FR-05 | Moderate suggestions | http_status=200; public_facility_ids=["A"]; rejected_facility_B_visible=false |
 | TC-19 | FR-07 | Idempotent CSV and JSON import | http_status=200; first_inserted=1; second_inserted=0; second_updated=1; records_with_source_id=1; formats=["csv", "json"] |
 | TC-20 | FR-07 | Invalid import is atomic | http_status=422; existing_count=4; state_unchanged=true; row_errors_present=true |
-| TC-21 | FR-09 | Initial map HTML and manual marker details | http_status=200; content_type_contains="text/html"; element_ids=["map", "location-control", "search-radius", "filters"]; manual_marker_details_check="section 5.1" |
+| TC-21 | FR-09 | Built SPA shell and separate rendered map acceptance | cloud factory serves actual frontend build: http_status=200; content_type_contains="text/html"; root exists; module/CSS assets return 200; rendered controls and marker details require separate browser evidence in section 5.1 |
 | TC-22 | FR-09 | Map without geolocation | map_usable=true; permission_message_visible=true; fabricated_distance=false |
 | TC-23 | FR-09 | Filter markers remain consistent | marker_ids=["A"]; active_filter_visible=true |
 | TC-24 | FR-07 | JSON report export | all_exported_rows_district="Kadıköy"; results_nonempty=true; http_status=200 |
 | TC-25 | FR-06 | Dashboard has no data | http_status=200; average_cleanliness=null; review_count=0 |
 | TC-26 | FR-03 | Edit and delete own review | edit_status=200; after_edit_average=3.5; delete_status=204; after_delete_average=2.0; after_delete_count=1 |
 | TC-27 | FR-10 | Close reviewed facility | reviews=2; hard_deleted=false; facility_status="CLOSED"; http_status=200 |
-| TC-28 | FR-04 | Untrusted review content | http_status=200; summary=null; review_count=3; provider_calls=1; email_absent_from_provider_arguments=true |
+| TC-28 | FR-04 | Untrusted review content | http_status=200; summary=null; 3 total/2 eligible reviews: zero provider calls; 4 total/3 eligible reviews: one awaited call with invalid output; unsafe text and email absent from provider arguments |
 | TC-29 | FR-10 | Invalid toilet coordinates | saved=false; http_status=422 |
 | TC-30 | FR-08 | Case insensitive email | http_status=409 |
 | TC-31 | FR-03 | Invalid review rating | saved=false; http_status=422 |
@@ -628,7 +628,7 @@ The table below retains the acceptance outcomes; some combined API/UI outcomes a
 
 ### 5.1 Manual map interaction specifications
 
-These procedures are defined now and will be run once the React/Leaflet interface exists. Status: **Not run — frontend not implemented**. TC-21's automated HTTP test checks only the initial HTML contract (`map`, `location-control`, `search-radius`, `filters` IDs are proposed test hooks), not JavaScript behavior.
+The React/Leaflet frontend now exists. TC-21's automated HTTP portion checks the actual built SPA shell and its module/CSS assets through the cloud factory. React creates the controls after JavaScript, so HTTP success does not prove rendered controls, marker details or the browser procedures below. Record each browser result separately with its revision and scope; see the testing report for executed evidence and remaining acceptance.
 
 | Case | Setup | Steps | Expected result |
 |---|---|---|---|

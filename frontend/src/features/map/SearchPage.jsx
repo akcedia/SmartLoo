@@ -223,7 +223,7 @@ export default function SearchPage({ onSwitchToAdmin }) {
   const activeFilterCount =
     (filters.open_now ? 1 : 0) + (filters.has_disabled_access ? 1 : 0) + (filters.has_baby_changing ? 1 : 0) + (filters.pricing !== "all" ? 1 : 0);
   const activeExtraFilters =
-    (filters.has_disabled_access ? 1 : 0) + (filters.has_baby_changing ? 1 : 0) + (filters.pricing === "paid" ? 1 : 0);
+    (filters.has_disabled_access ? 1 : 0) + (filters.has_baby_changing ? 1 : 0) + (filters.pricing !== "all" ? 1 : 0);
   const anyFilter = filters.open_now || filters.has_disabled_access || filters.has_baby_changing || filters.pricing !== "all";
   const pricingUnavailable = (value) => citywide && value !== "all" && filterCoverage?.is_free === 0;
   const countLabel = loading
@@ -300,13 +300,6 @@ export default function SearchPage({ onSwitchToAdmin }) {
               filters.open_now,
               () => toggleFilter("open_now"),
               (filterUnavailable("open_now") || loading) && !filters.open_now,
-            )}
-            {chip(
-              "free",
-              `Ücretsiz${pricingUnavailable("free") ? " (bilgi yok)" : ""}`,
-              filters.pricing === "free",
-              () => setPricingFilter(filters.pricing === "free" ? "all" : "free"),
-              pricingUnavailable("free") && filters.pricing !== "free",
             )}
             <button
               ref={filtersButtonRef}
@@ -387,34 +380,37 @@ export default function SearchPage({ onSwitchToAdmin }) {
 
         <div className="sl-notices">
           {locateError && <p className="sl-notice sl-notice--warn" role="alert">{locateError}</p>}
+          {/* One-line notices: a short visible text; the full sentence stays for screen readers. */}
           {!citywide && locationStatus === "pending" && (
-            <p className="sl-notice sl-notice--info">{t("Konum izni bekleniyor… Şimdilik varsayılan merkez gösteriliyor.")}</p>
+            <Notice kind="info" short={t("Konum izni bekleniyor…")}
+              full={t("Konum izni bekleniyor… Şimdilik varsayılan merkez gösteriliyor.")} />
           )}
           {!citywide && locationStatus === "denied" && (
-            <p className="sl-notice sl-notice--warn">
-              {t("Konum izni yok; haritanın merkezi kullanılıyor ve mesafe gösterilmez.")}{" "}
+            <Notice kind="warn" short={t("Konum izni yok")}
+              full={t("Konum izni yok; haritanın merkezi kullanılıyor ve mesafe gösterilmez.")}>
               <button type="button" className="sl-link-button" onClick={() => { setCitywide(true); setPendingCenter(null); }}>
                 {t("İstanbul geneline dön")}
               </button>
-            </p>
+            </Notice>
           )}
           {!citywide && !loading && !error && openHoursUnavailable && (
-            <p role="status" className="sl-notice sl-notice--info">
-              Bu sonuçlarda çalışma saati bilgisi yok. Şu An Açık filtresi kullanılamıyor; tesisler gösterilmeye devam ediyor.
-            </p>
+            <Notice kind="info" role="status" short={t("Çalışma saati bilgisi yok")}
+              full="Bu sonuçlarda çalışma saati bilgisi yok. Şu An Açık filtresi kullanılamıyor; tesisler gösterilmeye devam ediyor." />
           )}
           {error && (
-            <p className="sl-notice sl-notice--error" role="alert">
-              <span>{error}</span>{" "}
+            <Notice kind="error" role="alert" short={t("Tesisler yüklenemedi")} full={error}>
               <button type="button" className="sl-link-button" onClick={() => setRetryToken((c) => c + 1)}>Yeniden Dene</button>
-            </p>
+            </Notice>
           )}
           {!loading && !error && toilets.length === 0 && (
-            <p className="sl-notice sl-notice--info">
-              {citywide
+            <Notice kind="info" short={citywide ? t("Uygun İBB kaydı yok") : t("Bu bölgede uygun tesis yok")}
+              full={citywide
                 ? "Seçili filtrelere uygun İBB kaydı bulunamadı. Filtreleri temizlemeyi deneyin."
-                : "Bu bölgede seçili kriterlere uygun tuvalet bulunamadı. Yarıçapı artırmayı, haritayı kaydırmayı veya filtreleri temizlemeyi deneyin."}
-            </p>
+                : "Bu bölgede seçili kriterlere uygun tuvalet bulunamadı. Yarıçapı artırmayı, haritayı kaydırmayı veya filtreleri temizlemeyi deneyin."}>
+              {anyFilter && (
+                <button type="button" className="sl-link-button" onClick={resetFilters}>{t("Filtreleri temizle")}</button>
+              )}
+            </Notice>
           )}
         </div>
 
@@ -433,6 +429,7 @@ export default function SearchPage({ onSwitchToAdmin }) {
           <button
             type="button"
             className="sl-fab sl-fab--ai"
+            aria-label={t("AI Önerileri")}
             aria-expanded={showRecommendations}
             onClick={() => setShowRecommendations((prev) => !prev)}
           >
@@ -457,6 +454,7 @@ export default function SearchPage({ onSwitchToAdmin }) {
         <AiRecommendationsPanel
           isOpen={showRecommendations}
           searchCenter={searchCenter}
+          radius={radius}
           filters={filters}
           hasLocationPermission={hasLocationPermission}
           onSelectToilet={(toilet) => setSelectedToilet(toilet)}
@@ -481,6 +479,26 @@ export default function SearchPage({ onSwitchToAdmin }) {
 }
 
 const OPEN_NOW_LABEL = "Şu An Açık";
+
+const NOTICE_ICONS = {
+  info: <path d="M12 16v-5M12 8h.01" />,
+  warn: <path d="M12 9v4M12 17h.01" />,
+  error: <path d="M15 9l-6 6M9 9l6 6" />,
+};
+
+function Notice({ kind, role, short, full, children }) {
+  return (
+    <p className={`sl-notice sl-notice--${kind}`} role={role} title={typeof full === "string" ? full : undefined}>
+      <svg className="sl-notice-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+        <circle cx="12" cy="12" r="9.5" />
+        {NOTICE_ICONS[kind]}
+      </svg>
+      <span className="sl-notice-text" aria-hidden="true">{short}</span>
+      <span className="app-sr">{full}</span>
+      {children && <span className="sl-notice-action">{children}</span>}
+    </p>
+  );
+}
 
 function useMediaQuery(query) {
   const get = () => (typeof window !== "undefined" && window.matchMedia ? window.matchMedia(query).matches : false);

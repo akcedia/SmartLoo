@@ -1,0 +1,7 @@
+16:48:17.252 INFO  SonarScanner CLI 8.4.0.16527
+16:51:26.874 INFO  Parsing report '/usr/src/.venv/quality-security24/coverage.xml'
+16:52:32.999 INFO  Analysing [/usr/src/frontend/coverage/lcov.info]
+16:52:37.640 WARN  Retrieving only language associated files, make sure to run the analysis inside a git repository to make use of inclusions specified via "sonar.text.inclusions"
+16:53:37.900 INFO  SCM revision ID 'befd4226f226a6823a002ff473ba429788bf4b68'
+16:53:50.639 INFO  QUALITY GATE STATUS: PASSED - View details on http://host.docker.internal:9001/dashboard?id=smartloo-main-6b1c5b2f
+16:53:51.007 INFO  EXECUTION SUCCESS

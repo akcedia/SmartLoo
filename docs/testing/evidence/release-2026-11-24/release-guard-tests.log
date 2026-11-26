@@ -1,0 +1,21 @@
+✔ requires all nine successful main workflows for this exact SHA (1.5434ms)
+✔ rejects missing evidence before deployment (1.6328ms)
+✔ rejects old SHA evidence before deployment (0.204ms)
+✔ rejects PR result evidence before deployment (0.1253ms)
+✔ rejects pending evidence before deployment (0.1607ms)
+✔ rejects failed evidence before deployment (0.1233ms)
+✔ a newer failed attempt cannot hide behind older success (0.1716ms)
+✔ pins the existing service hook to the selected SHA (0.3228ms)
+✔ rejects an absent or wrong-service hook without disclosing it (0.2123ms)
+✔ rejects an absent or wrong-service hook without disclosing it (0.1793ms)
+✔ rejects an absent or wrong-service hook without disclosing it (0.1723ms)
+✔ rejects an absent or wrong-service hook without disclosing it (0.1064ms)
+✔ HTTP 200 from the previous release is not proof of deployment (0.1708ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 188.7223

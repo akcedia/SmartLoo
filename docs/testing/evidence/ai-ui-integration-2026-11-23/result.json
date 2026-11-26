@@ -1,0 +1,34 @@
+{
+  "local_services_only": true,
+  "live_model_calls": 0,
+  "created_private_database": true,
+  "exit_code": 0,
+  "pytest_summary": [
+    "159 passed, 1 warning, 25 subtests passed in 133.29s (0:02:13)"
+  ],
+  "junit_cases": 159,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "junit_guard_exit_code": 0,
+  "mounted_suites": {
+    "ai": {
+      "exit_code": 0,
+      "cases": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "import": {
+      "exit_code": 0,
+      "cases": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "remaining_toilets": 0,
+  "remaining_users": 0,
+  "remaining_review_operations": 0,
+  "private_database_removed": true
+}

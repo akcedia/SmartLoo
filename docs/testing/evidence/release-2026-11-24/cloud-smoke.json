@@ -1,0 +1,58 @@
+{
+  "checks": [
+    {
+      "path": "/",
+      "status": 200
+    },
+    {
+      "path": "/sign-in",
+      "status": 200
+    },
+    {
+      "path": "/admin",
+      "status": 200
+    },
+    {
+      "path": "/healthz",
+      "status": 200
+    },
+    {
+      "path": "/assets/missing.js",
+      "status": 404
+    },
+    {
+      "path": "/manifest.webmanifest",
+      "status": 200
+    },
+    {
+      "path": "/icons/favicon-32.png",
+      "status": 200
+    },
+    {
+      "path": "/icons/apple-touch-icon.png",
+      "status": 200
+    },
+    {
+      "path": "/icons/icon-192.png",
+      "status": 200
+    },
+    {
+      "path": "/icons/icon-512.png",
+      "status": 200
+    },
+    {
+      "path": "/icons/icon-maskable-512.png",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/admin/metrics/summary",
+      "status": 401
+    },
+    {
+      "path": "/api/v1/toilets/nearby?lat=100&lon=29",
+      "status": 422
+    }
+  ],
+  "uid": 10001,
+  "ca_bundle": true
+}

@@ -1,5 +1,6 @@
 import { useMapApi } from "./MapApiProvider.jsx";
 import React, { useEffect, useState } from "react";
+import { useI18n } from "../../shared/i18n/I18nProvider.jsx";
 
 const RECOMMENDATION_BADGES = {
   recommended: {
@@ -22,11 +23,11 @@ const RECOMMENDATION_BADGES = {
   },
 };
 
-function formatGeneratedAt(isoDate) {
+function formatGeneratedAt(isoDate, locale) {
   if (!isoDate) return "";
   const parsed = new Date(isoDate);
   if (Number.isNaN(parsed.getTime())) return "";
-  return parsed.toLocaleString("tr-TR", {
+  return parsed.toLocaleString(locale, {
     day: "2-digit",
     month: "short",
     hour: "2-digit",
@@ -35,6 +36,8 @@ function formatGeneratedAt(isoDate) {
 }
 
 export default function AiSummaryBox({ toiletId, refreshKey = 0 }) {
+  const { lang, locale, t } = useI18n();
+  const contentLanguage = lang === "en" ? "tr" : undefined;
   const { fetchToiletAiSummary } = useMapApi();
   const [summaryData, setSummaryData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -78,11 +81,11 @@ export default function AiSummaryBox({ toiletId, refreshKey = 0 }) {
 
   const pros = Array.isArray(summaryData?.pros) ? summaryData.pros.slice(0, 3) : [];
   const cons = Array.isArray(summaryData?.cons) ? summaryData.cons.slice(0, 3) : [];
-  const generatedLabel = formatGeneratedAt(summaryData?.generated_at);
+  const generatedLabel = formatGeneratedAt(summaryData?.generated_at, locale);
 
   return (
     <section
-      aria-label="Yapay zeka yorum özeti"
+      aria-label={t("Yapay zeka yorum özeti")}
       style={{
         marginTop: "14px",
         padding: "10px 12px",
@@ -101,7 +104,7 @@ export default function AiSummaryBox({ toiletId, refreshKey = 0 }) {
         }}
       >
         <strong style={{ fontSize: "13px", color: "var(--sl-text)" }}>
-          Yapay Zeka Özeti
+          {t("Yapay Zeka Özeti")}
         </strong>
         {!loading && !errorMessage && !isFallback && badge && (
           <span
@@ -115,20 +118,20 @@ export default function AiSummaryBox({ toiletId, refreshKey = 0 }) {
               border: `1px solid ${badge.border}`,
             }}
           >
-            {badge.label}
+            {t(badge.label)}
           </span>
         )}
       </div>
 
       {loading && (
         <p style={{ margin: 0, fontSize: "12px", color: "var(--sl-text-muted)" }}>
-          Yapay zeka yorum özeti hazırlanıyor...
+          {t("Yapay zeka yorum özeti hazırlanıyor...")}
         </p>
       )}
 
       {!loading && errorMessage && (
         <div style={{ fontSize: "12px", color: "var(--sl-text-muted)", display: "flex", flexDirection: "column", gap: "6px" }}>
-          <span>{errorMessage}</span>
+          <span>{t(errorMessage)}</span>
           <button
             type="button"
             onClick={() => setRetryToken((c) => c + 1)}
@@ -143,33 +146,33 @@ export default function AiSummaryBox({ toiletId, refreshKey = 0 }) {
               cursor: "pointer",
             }}
           >
-            Özeti Yenile
+            {t("Özeti Yenile")}
           </button>
         </div>
       )}
 
       {!loading && !errorMessage && isFallback && (
         <p style={{ margin: 0, fontSize: "12px", color: "var(--sl-text-muted)", lineHeight: "1.45" }}>
-          {summaryData?.message ||
+          {t(summaryData?.message ||
             summaryData?.reason ||
-            "Bu tesis için henüz yapay zeka özeti oluşturulmadı veya AI servisi şu anda devre dışı."}
+            "Bu tesis için henüz yapay zeka özeti oluşturulmadı veya AI servisi şu anda devre dışı.")}
         </p>
       )}
 
       {!loading && !errorMessage && !isFallback && (
         <div style={{ fontSize: "13px", color: "var(--sl-text-secondary)" }}>
-          <p style={{ margin: "0 0 8px 0", lineHeight: "1.45" }}>
+          <p lang={contentLanguage} style={{ margin: "0 0 8px 0", lineHeight: "1.45" }}>
             {summaryData.summary}
           </p>
 
           {pros.length > 0 && (
             <div style={{ marginBottom: "6px" }}>
               <div style={{ fontSize: "11px", fontWeight: "600", color: "var(--sl-ok)", marginBottom: "2px" }}>
-                Öne Çıkan Artılar
+                {t("Öne Çıkan Artılar")}
               </div>
               <ul style={{ margin: 0, paddingLeft: "16px", fontSize: "12px", color: "var(--sl-ok)", lineHeight: "1.45" }}>
                 {pros.map((item, idx) => (
-                  <li key={idx}>{item}</li>
+                  <li key={idx} lang={contentLanguage}>{item}</li>
                 ))}
               </ul>
             </div>
@@ -178,19 +181,19 @@ export default function AiSummaryBox({ toiletId, refreshKey = 0 }) {
           {cons.length > 0 && (
             <div style={{ marginBottom: "6px" }}>
               <div style={{ fontSize: "11px", fontWeight: "600", color: "var(--sl-danger)", marginBottom: "2px" }}>
-                Dikkat Edilmesi Gerekenler
+                {t("Dikkat Edilmesi Gerekenler")}
               </div>
               <ul style={{ margin: 0, paddingLeft: "16px", fontSize: "12px", color: "var(--sl-danger)", lineHeight: "1.45" }}>
                 {cons.map((item, idx) => (
-                  <li key={idx}>{item}</li>
+                  <li key={idx} lang={contentLanguage}>{item}</li>
                 ))}
               </ul>
             </div>
           )}
 
           <div style={{ fontSize: "11px", color: "var(--sl-text-muted)", marginTop: "6px" }}>
-            AI-generated summary
-            {summaryData.based_on_reviews != null ? ` · ${summaryData.based_on_reviews} yoruma dayalı` : ""}
+            {t("Yapay zeka tarafından oluşturuldu")}
+            {summaryData.based_on_reviews != null ? ` · ${t("{n} yoruma dayalı", { n: summaryData.based_on_reviews })}` : ""}
             {generatedLabel ? ` · ${generatedLabel}` : ""}
           </div>
         </div>

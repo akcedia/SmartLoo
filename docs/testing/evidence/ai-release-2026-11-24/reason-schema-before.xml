@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="2" time="0.276" timestamp="2026-11-24T11:51:00.526255+03:00" hostname="DESKTOP-MK26RE8"><testcase classname="tests.test_ai_recommendations.GeminiReasonTests" name="test_reason_schema_only_offers_sentences_grounded_in_the_given_candidate" time="0.032"><failure message="AssertionError: Lists differ: ['free', 'paid', 'accessible', 'baby_changing'] != ['free', 'accessible']&#10;&#10;First differing element 1:&#10;'paid'&#10;'accessible'&#10;&#10;First list contains 2 additional elements.&#10;First extra element 2:&#10;'accessible'&#10;&#10;- ['free', 'paid', 'accessible', 'baby_changing']&#10;+ ['free', 'accessible']">tests\test_ai_recommendations.py:179: in test_reason_schema_only_offers_sentences_grounded_in_the_given_candidate
+    self.assertEqual(properties["claims"]["items"]["enum"], ["free", "accessible"])
+E   AssertionError: Lists differ: ['free', 'paid', 'accessible', 'baby_changing'] != ['free', 'accessible']
+E
+E   First differing element 1:
+E   'paid'
+E   'accessible'
+E
+E   First list contains 2 additional elements.
+E   First extra element 2:
+E   'accessible'
+E
+E   - ['free', 'paid', 'accessible', 'baby_changing']
+E   + ['free', 'accessible']</failure></testcase><testcase classname="tests.test_ai_recommendations.GeminiReasonTests" name="test_schema_never_combines_facts_from_different_candidates_into_one_sentence" time="0.014"><failure message="AssertionError: Lists differ: ['free', 'paid', 'accessible', 'baby_changing'] != ['free', 'paid', 'baby_changing']&#10;&#10;First differing element 2:&#10;'accessible'&#10;'baby_changing'&#10;&#10;First list contains 1 additional elements.&#10;First extra element 3:&#10;'baby_changing'&#10;&#10;- ['free', 'paid', 'accessible', 'baby_changing']&#10;?                 --------------&#10;&#10;+ ['free', 'paid', 'baby_changing']">tests\test_ai_recommendations.py:188: in test_schema_never_combines_facts_from_different_candidates_into_one_sentence
+    self.assertEqual(properties["claims"]["items"]["enum"], ["free", "paid", "baby_changing"])
+E   AssertionError: Lists differ: ['free', 'paid', 'accessible', 'baby_changing'] != ['free', 'paid', 'baby_changing']
+E
+E   First differing element 2:
+E   'accessible'
+E   'baby_changing'
+E
+E   First list contains 1 additional elements.
+E   First extra element 3:
+E   'baby_changing'
+E
+E   - ['free', 'paid', 'accessible', 'baby_changing']
+E   ?                 --------------
+E
+E   + ['free', 'paid', 'baby_changing']</failure></testcase></testsuite></testsuites>

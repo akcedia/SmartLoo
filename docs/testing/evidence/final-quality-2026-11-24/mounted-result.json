@@ -1,0 +1,55 @@
+{
+  "revision": "befd4226f226a6823a002ff473ba429788bf4b68",
+  "live_model_calls": 0,
+  "suites": {
+    "ai": {
+      "exit_code": 0,
+      "cases": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "moderation": {
+      "exit_code": 0,
+      "cases": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "import": {
+      "exit_code": 0,
+      "cases": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "reviews": {
+      "exit_code": 0,
+      "cases": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "analytics": {
+      "exit_code": 0,
+      "cases": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "deletion": {
+      "exit_code": 0,
+      "cases": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "remaining": {
+    "toilets": 13,
+    "users": 0,
+    "suggestions": 0,
+    "review_operations": 0
+  },
+  "private_database_removed": true
+}

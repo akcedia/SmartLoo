@@ -102,8 +102,10 @@ sonunda temizler. `SMARTLOO_MAP_JUNIT` verilirse JUnit çıktısı da yazar.
 zorunlu kontrol eklenmesi bu değişikliğe dahil değildir.
 
 Bu kanıt jsdom üzerinde etkileşim ve gerçek HTTP/veritabanı entegrasyonudur;
-mobil/klavye tarayıcı kabulü değildir. AI uçları henüz main'de 501 döner ve
-ekran kullanılamama mesajı gösterir. Gerçek model ve öneriler ayrı kalan işlerdir;
+mobil/klavye tarayıcı kabulü değildir. Taslak #68'de özet ve mesafeye dayalı
+öneri uçlarının gerçek veri bağlantısı hazırlanmıştır; model varsayılan olarak
+kapalıdır. [Çalışma ayarları ve sınırlar](../docs/integration/ai-runtime.md).
+Canlı model ve doğrulanmış AI açıklamaları ayrı kalan işlerdir;
 İBB konum verisi main'de entegredir. Bu kontrol #57/#56'nın tamamını kapatmaz.
 
 ### Hesap silme ekranı ve gerçek backend (#63 / #75)

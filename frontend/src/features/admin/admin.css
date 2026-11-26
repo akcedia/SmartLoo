@@ -19,7 +19,7 @@
   --admin-shadow: var(--sl-shadow-sm);
   --admin-radius: 10px;
   /* Fluid spacing: grows smoothly from small phones to desktop, no fixed device list. */
-  --admin-gutter: clamp(12px, 4vw, 24px);
+  --admin-gutter: clamp(12px, 3.2vw, 24px); /* 12px on phones, same edge as the header */
   --admin-gap: clamp(10px, 2.5vw, 16px);
   --admin-touch: 36px;
 
@@ -395,4 +395,15 @@ body { margin: 0; }
 .admin-mod-confirm p { margin: 0 0 10px; }
 @media (pointer: coarse) {
   .admin .admin-mod-tabs button { min-height: 44px; }
+}
+
+/* UI pass 25 Nov (phones): the three period choices share one row. */
+@container admin-main (max-width: 600px) {
+  .admin-presets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .admin-presets .admin-radio { position: relative; justify-content: center; padding: 6px 4px; text-align: center; white-space: nowrap; }
+  /* The fill already shows the choice; the radio stays for keyboard and screen readers. */
+  .admin-presets .admin-radio input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; }
+  .admin-presets .admin-radio:has(input:focus-visible) { outline: 3px solid var(--sl-accent-ring); outline-offset: 2px; }
+  .admin-tabs { gap: 0; }
+  .admin-tab { padding: 10px 12px; }
 }

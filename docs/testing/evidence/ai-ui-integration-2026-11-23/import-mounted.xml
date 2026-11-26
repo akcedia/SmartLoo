@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="1" failures="0" errors="0" time="1.4588819">
+    <testsuite name="src/features/admin/import/adminImport.live.jsx" timestamp="2026-11-23T09:01:01.358Z" hostname="DESKTOP-MK26RE8" tests="1" failures="0" errors="0" skipped="0" time="1.4588819">
+        <testcase classname="src/features/admin/import/adminImport.live.jsx" name="ADMIN uploads CSV/JSON through the real API; repeats, bad rows, busy store and USER access behave" time="1.4537889">
+        </testcase>
+    </testsuite>
+</testsuites>

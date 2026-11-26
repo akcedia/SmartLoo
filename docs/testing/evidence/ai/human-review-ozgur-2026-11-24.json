@@ -1,0 +1,208 @@
+{
+  "reviewer": "Özgür Kılıç",
+  "date": "2026-11-24",
+  "candidate": "9543ea65a2ade23940d958ab9b40af2cb8ec33bf",
+  "case_source_revision": "90e1241",
+  "preliminary_labels_read": false,
+  "exposure_source": "User self-report in chat",
+  "status": "28 grouped input decisions and 3 grouped output decisions; 7 outputs unreviewed; further individual questions declined",
+  "decisions": [
+    {
+      "id": "input-01",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "U bu kullanabilirsin bu gözlemi; 14 yorumun tamamı için"
+    },
+    {
+      "id": "input-02",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "U bu kullanabilirsin bu gözlemi; 14 yorumun tamamı için"
+    },
+    {
+      "id": "input-03",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "U bu kullanabilirsin bu gözlemi; 14 yorumun tamamı için"
+    },
+    {
+      "id": "input-04",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "U bu kullanabilirsin bu gözlemi; 14 yorumun tamamı için"
+    },
+    {
+      "id": "input-05",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "U bu kullanabilirsin bu gözlemi; 14 yorumun tamamı için"
+    },
+    {
+      "id": "input-06",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "U bu kullanabilirsin bu gözlemi; 14 yorumun tamamı için"
+    },
+    {
+      "id": "input-07",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "U bu kullanabilirsin bu gözlemi; 14 yorumun tamamı için"
+    },
+    {
+      "id": "input-08",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "U bu kullanabilirsin bu gözlemi; 14 yorumun tamamı için"
+    },
+    {
+      "id": "input-09",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "U bu kullanabilirsin bu gözlemi; 14 yorumun tamamı için"
+    },
+    {
+      "id": "input-10",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "U bu kullanabilirsin bu gözlemi; 14 yorumun tamamı için"
+    },
+    {
+      "id": "input-11",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "U bu kullanabilirsin bu gözlemi; 14 yorumun tamamı için"
+    },
+    {
+      "id": "input-12",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "U bu kullanabilirsin bu gözlemi; 14 yorumun tamamı için"
+    },
+    {
+      "id": "input-13",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "U bu kullanabilirsin bu gözlemi; 14 yorumun tamamı için"
+    },
+    {
+      "id": "input-14",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "U bu kullanabilirsin bu gözlemi; 14 yorumun tamamı için"
+    },
+    {
+      "id": "input-15",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "bunlar da okey yorumlar"
+    },
+    {
+      "id": "input-16",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "bunlar da okey yorumlar"
+    },
+    {
+      "id": "input-17",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "bunlar da okey yorumlar"
+    },
+    {
+      "id": "input-18",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "bunlar da okey yorumlar"
+    },
+    {
+      "id": "input-19",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "bunlar da okey yorumlar"
+    },
+    {
+      "id": "input-20",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "bunlar da okey yorumlar"
+    },
+    {
+      "id": "input-21",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "bunlar da okey yorumlar"
+    },
+    {
+      "id": "input-22",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "bunlar da okey yorumlar"
+    },
+    {
+      "id": "input-23",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "bunlar da okey yorumlar"
+    },
+    {
+      "id": "input-24",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "bunlar da okey yorumlar"
+    },
+    {
+      "id": "input-25",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "bunlar da okey yorumlar"
+    },
+    {
+      "id": "input-26",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "bunlar da okey yorumlar"
+    },
+    {
+      "id": "input-27",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "bunlar da okey yorumlar"
+    },
+    {
+      "id": "input-28",
+      "decision": "U",
+      "reason_source": "grouped user response",
+      "verbatim": "bunlar da okey yorumlar"
+    }
+  ],
+  "output_decisions": [
+    {
+      "id": "output-01",
+      "decision": "D",
+      "verbatim": "tamam hepsi okey diğerlerini de teker teker bana sorma",
+      "scope": "Only the three examples displayed immediately before this reply"
+    },
+    {
+      "id": "output-02",
+      "decision": "D",
+      "verbatim": "tamam hepsi okey diğerlerini de teker teker bana sorma",
+      "scope": "Only the three examples displayed immediately before this reply"
+    },
+    {
+      "id": "output-03",
+      "decision": "D",
+      "verbatim": "tamam hepsi okey diğerlerini de teker teker bana sorma",
+      "scope": "Only the three examples displayed immediately before this reply"
+    }
+  ],
+  "unreviewed_outputs": [
+    "output-04",
+    "output-05",
+    "output-06",
+    "output-07",
+    "output-08",
+    "output-09",
+    "output-10"
+  ]
+}

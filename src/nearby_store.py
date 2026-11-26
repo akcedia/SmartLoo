@@ -2,10 +2,13 @@ import os
 
 import psycopg
 from psycopg.rows import dict_row
+from psycopg_pool import ConnectionPool
+
+NEARBY_READERS = 2
 
 
-def _connect():
-    return psycopg.connect(
+def _connection_options():
+    return dict(
         host=os.getenv("SMARTLOO_DB_HOST", "127.0.0.1"),
         port=int(os.getenv("SMARTLOO_DB_PORT", "5432")),
         dbname=os.getenv("SMARTLOO_DB_NAME", "smartloo"),
@@ -16,6 +19,17 @@ def _connect():
     )
 
 
+def _connect():
+    return psycopg.connect(**_connection_options())
+
+
+def create_nearby_pool():
+    """App-owned, bounded read pool; no connection attempt at import/startup."""
+    return ConnectionPool(kwargs={**_connection_options(), "autocommit": True}, min_size=0, max_size=NEARBY_READERS,
+                          timeout=5, max_waiting=50, max_idle=60, open=True,
+                          check=ConnectionPool.check_connection)
+
+
 def find_nearby(
     lat,
     lon,
@@ -24,8 +38,10 @@ def find_nearby(
     has_disabled_access=None,
     has_baby_changing=None,
     is_free=None,
+    *,
+    connection_factory=None,
 ):
-    with _connect() as conn:
+    with (connection_factory or _connect)() as conn:
         rows = conn.execute(
             """
             SELECT * FROM nearby_toilets(

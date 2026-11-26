@@ -703,14 +703,14 @@
   {
     "id": "TC-21",
     "requirement": "FR-09",
-    "title": "Initial map HTML and manual marker details",
+    "title": "Built SPA shell and separate rendered map acceptance",
     "given": {
       "facilities": [
         "A",
         "B"
       ],
       "location_allowed": true,
-      "fixture": "env in test_requirements.py"
+      "fixture": "Actual frontend/dist build through create_cloud_app; A/B and geolocation belong to separate browser acceptance"
     },
     "action": {
       "open_page": true,
@@ -720,18 +720,14 @@
     "expected": {
       "http_status": 200,
       "content_type_contains": "text/html",
-      "element_ids": [
-        "map",
-        "location-control",
-        "search-radius",
-        "filters"
-      ],
+      "element_ids": ["root"],
+      "module_and_stylesheet_assets_http_status": 200,
       "manual_marker_details_check": "section 5.1"
     },
     "verification": {
       "mode": "automated_http",
       "function": "test_tc_21",
-      "scope": "Initial HTML map shell only; marker interactions require the manual procedure in report section 5.1.",
+      "scope": "Built frontend through create_cloud_app: root and real module/CSS assets only. Rendered controls and marker interactions need separate browser evidence, not an HTTP-only pass.",
       "note": "Readable acceptance specification; executable fixture values and assertions are in the named Python function. UI outcomes beyond HTTP are manual, not claimed as automated."
     }
   },
@@ -901,6 +897,8 @@
       ],
       "pii": "ali@example.com",
       "ai": "invalid JSON",
+      "eligible_review_counts": [2, 3],
+      "total_review_counts": [3, 4],
       "fixture": "env in test_requirements.py"
     },
     "action": {
@@ -909,8 +907,9 @@
     "expected": {
       "http_status": 200,
       "summary": null,
-      "review_count": 3,
-      "provider_calls": 1,
+      "review_counts": [3, 4],
+      "provider_calls_below_three_eligible": 0,
+      "provider_calls_with_three_eligible": 1,
       "email_absent_from_provider_arguments": true
     },
     "verification": {

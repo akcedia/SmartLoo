@@ -1,5 +1,6 @@
 """Same-origin cloud entry point; the development API factory stays unchanged."""
 import os
+import re
 from pathlib import Path
 
 from starlette.exceptions import HTTPException
@@ -34,7 +35,11 @@ def create_cloud_app(web_dir=None, **app_options):
     @app.get("/healthz", include_in_schema=False)
     def health():
         # Process liveness only; datastore acceptance is tested separately.
-        return {"status": "ok"}
+        result = {"status": "ok"}
+        revision = os.getenv("RENDER_GIT_COMMIT", "")
+        if re.fullmatch(r"[0-9a-f]{40}", revision):
+            result["revision"] = revision
+        return result
 
     app.mount("/", FrontendFiles(directory=directory, html=True), name="frontend")
     return app

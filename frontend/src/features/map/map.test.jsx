@@ -218,6 +218,7 @@ describe("Map detail, review and AI components static render tests", () => {
     );
     expect(loadingHtml).toContain("Tesis detayları yükleniyor...");
     expect(loadingHtml).toContain("145 m");
+    expect(loadingHtml).toContain(">Mesafe<");
     expect(loadingHtml).toContain("Bilinmiyor");
     expect(loadingHtml).toContain("Henüz puanlanmamış");
 
@@ -228,13 +229,13 @@ describe("Map detail, review and AI components static render tests", () => {
         hasLocationPermission={false}
       />
     );
-    expect(noPermHtml).not.toContain("Kullanıcı Mesafesi:");
+    expect(noPermHtml).not.toContain(">Mesafe<");
 
     const notFoundHtml = renderToStaticMarkup(
       <FacilityDetailPanel selectedToilet={baseToilet} notFound={true} />
     );
     expect(notFoundHtml).toContain("404");
-    expect(notFoundHtml).not.toContain("Hijyen Puanı:");
+    expect(notFoundHtml).not.toContain(">Hijyen puanı<");
 
     const errorHtml = renderToStaticMarkup(
       <FacilityDetailPanel
@@ -276,7 +277,8 @@ describe("Map detail, review and AI components static render tests", () => {
     const openGuestRecHtml = renderToStaticMarkup(
       <AiRecommendationsPanel isOpen={true} searchCenter={{ lat: 41, lon: 29 }} filters={{}} />
     );
-    expect(openGuestRecHtml).toContain("AI Tesis Önerileri (En Fazla 3)");
+    expect(openGuestRecHtml).toContain("Yakındaki Uygun Tesisler (En Fazla 3)");
+    expect(openGuestRecHtml).not.toContain("AI Tesis Önerileri (En Fazla 3)");
     expect(openGuestRecHtml).toContain("Giriş Yap");
   });
 

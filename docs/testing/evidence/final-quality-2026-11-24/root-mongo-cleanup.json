@@ -1,0 +1,11 @@
+{
+  "loopback_test_mongo_only": true,
+  "documents_before_cleanup": {
+    "smartloo_final_quality_8c41151": 0,
+    "smartloo_final_security_24": 0
+  },
+  "removed": [
+    "smartloo_final_quality_8c41151",
+    "smartloo_final_security_24"
+  ]
+}

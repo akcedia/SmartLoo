@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="9" failures="0" errors="0" time="4.8092796">
+    <testsuite name="src/features/map/reviewSession.test.jsx" timestamp="2026-11-24T16:51:13.810Z" hostname="DESKTOP-MK26RE8" tests="9" failures="0" errors="0" skipped="0" time="4.8092796">
+        <testcase classname="src/features/map/reviewSession.test.jsx" name="Shared session and mounted review controls &gt; shows the backend permissions for owner" time="0.2429636">
+        </testcase>
+        <testcase classname="src/features/map/reviewSession.test.jsx" name="Shared session and mounted review controls &gt; shows the backend permissions for other user" time="0.0660131">
+        </testcase>
+        <testcase classname="src/features/map/reviewSession.test.jsx" name="Shared session and mounted review controls &gt; shows the backend permissions for admin" time="0.0605742">
+        </testcase>
+        <testcase classname="src/features/map/reviewSession.test.jsx" name="Shared session and mounted review controls &gt; a rejected review token signs out the header and review form together" time="0.1003874">
+        </testcase>
+        <testcase classname="src/features/map/reviewSession.test.jsx" name="Shared session and mounted review controls &gt; guest reads omit credentials and a guest 401 does not create an expiry notice" time="0.0395269">
+        </testcase>
+        <testcase classname="src/features/map/reviewSession.test.jsx" name="Shared session and mounted review controls &gt; uses the in-memory session even when browser storage is blocked" time="0.0967662">
+        </testcase>
+        <testcase classname="src/features/map/reviewSession.test.jsx" name="Shared session and mounted review controls &gt; signing out removes author actions without remounting the detail panel" time="0.1076811">
+        </testcase>
+        <testcase classname="src/features/map/reviewSession.test.jsx" name="Shared session and mounted review controls &gt; keeps the session on 403 and displays a failed delete without hiding the review" time="0.0531726">
+        </testcase>
+        <testcase classname="src/features/map/reviewSession.test.jsx" name="real FastAPI/PostGIS/Mongo: author edit/delete, other user denied, admin delete-only, refreshed aggregates" time="4.0375804">
+        </testcase>
+    </testsuite>
+</testsuites>
