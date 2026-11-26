@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="15" skipped="0" tests="15" time="10.660" timestamp="2026-11-26T21:37:37.776475+03:00" hostname="DESKTOP-MK26RE8"><testcase classname="tests.test_zap_regressions" name="test_login_rejects_unsafe_email_before_repository_access[xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx]" time="0.263"><failure message="assert 401 == 422&#10; +  where 401 = &lt;Response [401 Unauthorized]&gt;.status_code">email = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx...xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+
+    @pytest.mark.parametrize("email", ["x" * 255, "İ" * 128 + "@example.com", "a\x00@example.com"])
+    def test_login_rejects_unsafe_email_before_repository_access(email):
+        state = {"users": {}, "login_attempts": []}
+        with TestClient(create_app(state, jwt_secret=KEY)) as client:
+            response = client.post("/api/v1/auth/login", json={"email": email, "password": "Guvenli123"})
+&gt;       assert response.status_code == 422
+E       assert 401 == 422
+E        +  where 401 = &lt;Response [401 Unauthorized]&gt;.status_code
+
+tests\test_zap_regressions.py:19: AssertionError</failure></testcase><testcase classname="tests.test_zap_regressions" name="test_login_rejects_unsafe_email_before_repository_access[\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130\u0130@example.com]" time="0.259"><failure message="assert 401 == 422&#10; +  where 401 = &lt;Response [401 Unauthorized]&gt;.status_code">email = 'İİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİİ@example.com'
+
+    @pytest.mark.parametrize("email", ["x" * 255, "İ" * 128 + "@example.com", "a\x00@example.com"])
+    def test_login_rejects_unsafe_email_before_repository_access(email):
+        state = {"users": {}, "login_attempts": []}
+        with TestClient(create_app(state, jwt_secret=KEY)) as client:
+            response = client.post("/api/v1/auth/login", json={"email": email, "password": "Guvenli123"})
+&gt;       assert response.status_code == 422
+E       assert 401 == 422
+E        +  where 401 = &lt;Response [401 Unauthorized]&gt;.status_code
+
+tests\test_zap_regressions.py:19: AssertionError</failure></testcase><testcase classname="tests.test_zap_regressions" name="test_login_rejects_unsafe_email_before_repository_access[a\x00@example.com]" time="0.276"><failure message="assert 401 == 422&#10; +  where 401 = &lt;Response [401 Unauthorized]&gt;.status_code">email = 'a\x00@example.com'
+
+    @pytest.mark.parametrize("email", ["x" * 255, "İ" * 128 + "@example.com", "a\x00@example.com"])
+    def test_login_rejects_unsafe_email_before_repository_access(email):
+        state = {"users": {}, "login_attempts": []}
+        with TestClient(create_app(state, jwt_secret=KEY)) as client:
+            response = client.post("/api/v1/auth/login", json={"email": email, "password": "Guvenli123"})
+&gt;       assert response.status_code == 422
+E       assert 401 == 422
+E        +  where 401 = &lt;Response [401 Unauthorized]&gt;.status_code
+
+tests\test_zap_regressions.py:19: AssertionError</failure></testcase><testcase classname="tests.test_zap_regressions" name="test_registration_rejects_embedded_nul" time="0.272"><failure message="assert 201 == 422&#10; +  where 201 = &lt;Response [201 Created]&gt;.status_code">def test_registration_rejects_embedded_nul():
+        with TestClient(create_app({}, jwt_secret=KEY)) as client:
+            response = client.post("/api/v1/auth/register", json={"email": "a\x00@example.com", "password": "Guvenli123", "display_name": "Test User"})
+&gt;       assert response.status_code == 422
+E       assert 201 == 422
+E        +  where 201 = &lt;Response [201 Created]&gt;.status_code
+
+tests\test_zap_regressions.py:26: AssertionError</failure></testcase><testcase classname="tests.test_zap_regressions" name="test_normalized_maximum_length_login_keeps_generic_401" time="0.270"><failure message="assert 0 == 1&#10; +  where 0 = len([])">def test_normalized_maximum_length_login_keeps_generic_401():
+        email = "a" * 242 + "@example.com"
+        assert len(email) == 254
+        state = {"users": {}, "login_attempts": []}
+        with TestClient(create_app(state, jwt_secret=KEY)) as client:
+            response = client.post("/api/v1/auth/login", json={"email": email.upper(), "password": "Guvenli123"})
+        assert response.status_code == 401
+        assert response.json()["detail"] == "Invalid email or password"
+&gt;       assert len(state["login_attempts"]) == 1
+E       assert 0 == 1
+E        +  where 0 = len([])
+
+tests\test_zap_regressions.py:37: AssertionError</failure></testcase><testcase classname="tests.test_zap_regressions" name="test_security_headers_cover_pages_assets_and_api_errors[/-200]" time="0.247"><failure message="KeyError: 'x-frame-options'">web_client = &lt;starlette.testclient.TestClient object at 0x00000212B62ECB90&gt;
+path = '/', status = 200
+
+    @pytest.mark.parametrize("path,status", [("/", 200), ("/sign-in", 200), ("/assets/app.js", 200), ("/missing", 404), ("/api/v1/toilets/nearby?lat=100&amp;lon=29", 422), ("/api/v1/admin/metrics/summary", 401)])
+    def test_security_headers_cover_pages_assets_and_api_errors(web_client, path, status):
+        response = web_client.get(path)
+        assert response.status_code == status
+&gt;       assert response.headers["x-frame-options"] == "DENY"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_zap_regressions.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = Headers({'content-type': 'text/html; charset=utf-8', 'accept-ranges': 'bytes', 'content-length': '89', 'last-modified': 'Thu, 26 Nov 2026 18:37:47 GMT', 'etag': '"b1a9fb57f5b1cd9cf42e19d2c373363a"'})
+key = 'x-frame-options'
+
+    def __getitem__(self, key: str) -&gt; str:
+        """
+        Return a single header value.
+    
+        If there are multiple headers with the same key, then we concatenate
+        them with commas. See: https://tools.ietf.org/html/rfc7230#section-3.2.2
+        """
+        normalized_key = key.lower().encode(self.encoding)
+    
+        items = [
+            header_value.decode(self.encoding)
+            for _, header_key, header_value in self._list
+            if header_key == normalized_key
+        ]
+    
+        if items:
+            return ", ".join(items)
+    
+&gt;       raise KeyError(key)
+E       KeyError: 'x-frame-options'
+
+..\work-security-final\.venv\runtime\Lib\site-packages\httpx\_models.py:302: KeyError</failure></testcase><testcase classname="tests.test_zap_regressions" name="test_security_headers_cover_pages_assets_and_api_errors[/sign-in-200]" time="0.050"><failure message="KeyError: 'x-frame-options'">web_client = &lt;starlette.testclient.TestClient object at 0x00000212B631BBD0&gt;
+path = '/sign-in', status = 200
+
+    @pytest.mark.parametrize("path,status", [("/", 200), ("/sign-in", 200), ("/assets/app.js", 200), ("/missing", 404), ("/api/v1/toilets/nearby?lat=100&amp;lon=29", 422), ("/api/v1/admin/metrics/summary", 401)])
+    def test_security_headers_cover_pages_assets_and_api_errors(web_client, path, status):
+        response = web_client.get(path)
+        assert response.status_code == status
+&gt;       assert response.headers["x-frame-options"] == "DENY"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_zap_regressions.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = Headers({'content-type': 'text/html; charset=utf-8', 'accept-ranges': 'bytes', 'content-length': '89', 'last-modified': 'Thu, 26 Nov 2026 18:37:47 GMT', 'etag': '"18c854184113c311e77204b4d930c1c3"'})
+key = 'x-frame-options'
+
+    def __getitem__(self, key: str) -&gt; str:
+        """
+        Return a single header value.
+    
+        If there are multiple headers with the same key, then we concatenate
+        them with commas. See: https://tools.ietf.org/html/rfc7230#section-3.2.2
+        """
+        normalized_key = key.lower().encode(self.encoding)
+    
+        items = [
+            header_value.decode(self.encoding)
+            for _, header_key, header_value in self._list
+            if header_key == normalized_key
+        ]
+    
+        if items:
+            return ", ".join(items)
+    
+&gt;       raise KeyError(key)
+E       KeyError: 'x-frame-options'
+
+..\work-security-final\.venv\runtime\Lib\site-packages\httpx\_models.py:302: KeyError</failure></testcase><testcase classname="tests.test_zap_regressions" name="test_security_headers_cover_pages_assets_and_api_errors[/assets/app.js-200]" time="0.075"><failure message="KeyError: 'x-frame-options'">web_client = &lt;starlette.testclient.TestClient object at 0x00000212B63DDE10&gt;
+path = '/assets/app.js', status = 200
+
+    @pytest.mark.parametrize("path,status", [("/", 200), ("/sign-in", 200), ("/assets/app.js", 200), ("/missing", 404), ("/api/v1/toilets/nearby?lat=100&amp;lon=29", 422), ("/api/v1/admin/metrics/summary", 401)])
+    def test_security_headers_cover_pages_assets_and_api_errors(web_client, path, status):
+        response = web_client.get(path)
+        assert response.status_code == status
+&gt;       assert response.headers["x-frame-options"] == "DENY"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_zap_regressions.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = Headers({'content-type': 'application/javascript', 'accept-ranges': 'bytes', 'content-length': '9', 'last-modified': 'Thu, 26 Nov 2026 18:37:47 GMT', 'etag': '"1387e732e8868c6ebc65dd51e007119c"'})
+key = 'x-frame-options'
+
+    def __getitem__(self, key: str) -&gt; str:
+        """
+        Return a single header value.
+    
+        If there are multiple headers with the same key, then we concatenate
+        them with commas. See: https://tools.ietf.org/html/rfc7230#section-3.2.2
+        """
+        normalized_key = key.lower().encode(self.encoding)
+    
+        items = [
+            header_value.decode(self.encoding)
+            for _, header_key, header_value in self._list
+            if header_key == normalized_key
+        ]
+    
+        if items:
+            return ", ".join(items)
+    
+&gt;       raise KeyError(key)
+E       KeyError: 'x-frame-options'
+
+..\work-security-final\.venv\runtime\Lib\site-packages\httpx\_models.py:302: KeyError</failure></testcase><testcase classname="tests.test_zap_regressions" name="test_security_headers_cover_pages_assets_and_api_errors[/missing-404]" time="0.044"><failure message="KeyError: 'x-frame-options'">web_client = &lt;starlette.testclient.TestClient object at 0x00000212B63199D0&gt;
+path = '/missing', status = 404
+
+    @pytest.mark.parametrize("path,status", [("/", 200), ("/sign-in", 200), ("/assets/app.js", 200), ("/missing", 404), ("/api/v1/toilets/nearby?lat=100&amp;lon=29", 422), ("/api/v1/admin/metrics/summary", 401)])
+    def test_security_headers_cover_pages_assets_and_api_errors(web_client, path, status):
+        response = web_client.get(path)
+        assert response.status_code == status
+&gt;       assert response.headers["x-frame-options"] == "DENY"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_zap_regressions.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = Headers({'content-length': '22', 'content-type': 'application/json'})
+key = 'x-frame-options'
+
+    def __getitem__(self, key: str) -&gt; str:
+        """
+        Return a single header value.
+    
+        If there are multiple headers with the same key, then we concatenate
+        them with commas. See: https://tools.ietf.org/html/rfc7230#section-3.2.2
+        """
+        normalized_key = key.lower().encode(self.encoding)
+    
+        items = [
+            header_value.decode(self.encoding)
+            for _, header_key, header_value in self._list
+            if header_key == normalized_key
+        ]
+    
+        if items:
+            return ", ".join(items)
+    
+&gt;       raise KeyError(key)
+E       KeyError: 'x-frame-options'
+
+..\work-security-final\.venv\runtime\Lib\site-packages\httpx\_models.py:302: KeyError</failure></testcase><testcase classname="tests.test_zap_regressions" name="test_security_headers_cover_pages_assets_and_api_errors[/api/v1/toilets/nearby?lat=100&amp;lon=29-422]" time="0.041"><failure message="KeyError: 'x-frame-options'">web_client = &lt;starlette.testclient.TestClient object at 0x00000212B6559590&gt;
+path = '/api/v1/toilets/nearby?lat=100&amp;lon=29', status = 422
+
+    @pytest.mark.parametrize("path,status", [("/", 200), ("/sign-in", 200), ("/assets/app.js", 200), ("/missing", 404), ("/api/v1/toilets/nearby?lat=100&amp;lon=29", 422), ("/api/v1/admin/metrics/summary", 401)])
+    def test_security_headers_cover_pages_assets_and_api_errors(web_client, path, status):
+        response = web_client.get(path)
+        assert response.status_code == status
+&gt;       assert response.headers["x-frame-options"] == "DENY"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_zap_regressions.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = Headers({'content-length': '142', 'content-type': 'application/json'})
+key = 'x-frame-options'
+
+    def __getitem__(self, key: str) -&gt; str:
+        """
+        Return a single header value.
+    
+        If there are multiple headers with the same key, then we concatenate
+        them with commas. See: https://tools.ietf.org/html/rfc7230#section-3.2.2
+        """
+        normalized_key = key.lower().encode(self.encoding)
+    
+        items = [
+            header_value.decode(self.encoding)
+            for _, header_key, header_value in self._list
+            if header_key == normalized_key
+        ]
+    
+        if items:
+            return ", ".join(items)
+    
+&gt;       raise KeyError(key)
+E       KeyError: 'x-frame-options'
+
+..\work-security-final\.venv\runtime\Lib\site-packages\httpx\_models.py:302: KeyError</failure></testcase><testcase classname="tests.test_zap_regressions" name="test_security_headers_cover_pages_assets_and_api_errors[/api/v1/admin/metrics/summary-401]" time="0.038"><failure message="KeyError: 'x-frame-options'">web_client = &lt;starlette.testclient.TestClient object at 0x00000212B65A9590&gt;
+path = '/api/v1/admin/metrics/summary', status = 401
+
+    @pytest.mark.parametrize("path,status", [("/", 200), ("/sign-in", 200), ("/assets/app.js", 200), ("/missing", 404), ("/api/v1/toilets/nearby?lat=100&amp;lon=29", 422), ("/api/v1/admin/metrics/summary", 401)])
+    def test_security_headers_cover_pages_assets_and_api_errors(web_client, path, status):
+        response = web_client.get(path)
+        assert response.status_code == status
+&gt;       assert response.headers["x-frame-options"] == "DENY"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_zap_regressions.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = Headers({'www-authenticate': 'Bearer', 'content-length': '36', 'content-type': 'application/json'})
+key = 'x-frame-options'
+
+    def __getitem__(self, key: str) -&gt; str:
+        """
+        Return a single header value.
+    
+        If there are multiple headers with the same key, then we concatenate
+        them with commas. See: https://tools.ietf.org/html/rfc7230#section-3.2.2
+        """
+        normalized_key = key.lower().encode(self.encoding)
+    
+        items = [
+            header_value.decode(self.encoding)
+            for _, header_key, header_value in self._list
+            if header_key == normalized_key
+        ]
+    
+        if items:
+            return ", ".join(items)
+    
+&gt;       raise KeyError(key)
+E       KeyError: 'x-frame-options'
+
+..\work-security-final\.venv\runtime\Lib\site-packages\httpx\_models.py:302: KeyError</failure></testcase><testcase classname="tests.test_zap_regressions" name="test_theme_script_hash_and_external_module_remain_allowed" time="0.044"><failure message="KeyError: 'content-security-policy'">web_client = &lt;starlette.testclient.TestClient object at 0x00000212B649D7B0&gt;
+
+    def test_theme_script_hash_and_external_module_remain_allowed(web_client):
+        response = web_client.get("/")
+        digest = base64.b64encode(hashlib.sha256(b'window.theme="light";').digest()).decode()
+&gt;       assert "'sha256-" + digest + "'" in response.headers["content-security-policy"]
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_zap_regressions.py:64: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = Headers({'content-type': 'text/html; charset=utf-8', 'accept-ranges': 'bytes', 'content-length': '89', 'last-modified': 'Thu, 26 Nov 2026 18:37:48 GMT', 'etag': '"b29666c9f8ca14fd0d5b5682fb7616ea"'})
+key = 'content-security-policy'
+
+    def __getitem__(self, key: str) -&gt; str:
+        """
+        Return a single header value.
+    
+        If there are multiple headers with the same key, then we concatenate
+        them with commas. See: https://tools.ietf.org/html/rfc7230#section-3.2.2
+        """
+        normalized_key = key.lower().encode(self.encoding)
+    
+        items = [
+            header_value.decode(self.encoding)
+            for _, header_key, header_value in self._list
+            if header_key == normalized_key
+        ]
+    
+        if items:
+            return ", ".join(items)
+    
+&gt;       raise KeyError(key)
+E       KeyError: 'content-security-policy'
+
+..\work-security-final\.venv\runtime\Lib\site-packages\httpx\_models.py:302: KeyError</failure></testcase><testcase classname="tests.test_zap_regressions" name="test_framework_docs_keep_their_trusted_inline_scripts[/docs]" time="0.033"><failure message="KeyError: 'content-security-policy'">web_client = &lt;starlette.testclient.TestClient object at 0x00000212B6475040&gt;
+path = '/docs'
+
+    @pytest.mark.parametrize("path", ["/docs", "/redoc", "/docs/oauth2-redirect"])
+    def test_framework_docs_keep_their_trusted_inline_scripts(web_client, path):
+        response = web_client.get(path)
+        assert response.status_code == 200
+&gt;       assert "'sha256-" in response.headers["content-security-policy"]
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_zap_regressions.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = Headers({'content-length': '1030', 'content-type': 'text/html; charset=utf-8'})
+key = 'content-security-policy'
+
+    def __getitem__(self, key: str) -&gt; str:
+        """
+        Return a single header value.
+    
+        If there are multiple headers with the same key, then we concatenate
+        them with commas. See: https://tools.ietf.org/html/rfc7230#section-3.2.2
+        """
+        normalized_key = key.lower().encode(self.encoding)
+    
+        items = [
+            header_value.decode(self.encoding)
+            for _, header_key, header_value in self._list
+            if header_key == normalized_key
+        ]
+    
+        if items:
+            return ", ".join(items)
+    
+&gt;       raise KeyError(key)
+E       KeyError: 'content-security-policy'
+
+..\work-security-final\.venv\runtime\Lib\site-packages\httpx\_models.py:302: KeyError</failure></testcase><testcase classname="tests.test_zap_regressions" name="test_framework_docs_keep_their_trusted_inline_scripts[/redoc]" time="0.018"><failure message="KeyError: 'content-security-policy'">web_client = &lt;starlette.testclient.TestClient object at 0x00000212B6476CF0&gt;
+path = '/redoc'
+
+    @pytest.mark.parametrize("path", ["/docs", "/redoc", "/docs/oauth2-redirect"])
+    def test_framework_docs_keep_their_trusted_inline_scripts(web_client, path):
+        response = web_client.get(path)
+        assert response.status_code == 200
+&gt;       assert "'sha256-" in response.headers["content-security-policy"]
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_zap_regressions.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = Headers({'content-length': '912', 'content-type': 'text/html; charset=utf-8'})
+key = 'content-security-policy'
+
+    def __getitem__(self, key: str) -&gt; str:
+        """
+        Return a single header value.
+    
+        If there are multiple headers with the same key, then we concatenate
+        them with commas. See: https://tools.ietf.org/html/rfc7230#section-3.2.2
+        """
+        normalized_key = key.lower().encode(self.encoding)
+    
+        items = [
+            header_value.decode(self.encoding)
+            for _, header_key, header_value in self._list
+            if header_key == normalized_key
+        ]
+    
+        if items:
+            return ", ".join(items)
+    
+&gt;       raise KeyError(key)
+E       KeyError: 'content-security-policy'
+
+..\work-security-final\.venv\runtime\Lib\site-packages\httpx\_models.py:302: KeyError</failure></testcase><testcase classname="tests.test_zap_regressions" name="test_framework_docs_keep_their_trusted_inline_scripts[/docs/oauth2-redirect]" time="0.020"><failure message="KeyError: 'content-security-policy'">web_client = &lt;starlette.testclient.TestClient object at 0x00000212B64A49E0&gt;
+path = '/docs/oauth2-redirect'
+
+    @pytest.mark.parametrize("path", ["/docs", "/redoc", "/docs/oauth2-redirect"])
+    def test_framework_docs_keep_their_trusted_inline_scripts(web_client, path):
+        response = web_client.get(path)
+        assert response.status_code == 200
+&gt;       assert "'sha256-" in response.headers["content-security-policy"]
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_zap_regressions.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = Headers({'content-length': '3012', 'content-type': 'text/html; charset=utf-8'})
+key = 'content-security-policy'
+
+    def __getitem__(self, key: str) -&gt; str:
+        """
+        Return a single header value.
+    
+        If there are multiple headers with the same key, then we concatenate
+        them with commas. See: https://tools.ietf.org/html/rfc7230#section-3.2.2
+        """
+        normalized_key = key.lower().encode(self.encoding)
+    
+        items = [
+            header_value.decode(self.encoding)
+            for _, header_key, header_value in self._list
+            if header_key == normalized_key
+        ]
+    
+        if items:
+            return ", ".join(items)
+    
+&gt;       raise KeyError(key)
+E       KeyError: 'content-security-policy'
+
+..\work-security-final\.venv\runtime\Lib\site-packages\httpx\_models.py:302: KeyError</failure></testcase></testsuite></testsuites>

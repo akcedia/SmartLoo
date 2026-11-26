@@ -1,0 +1,54 @@
+[
+  {
+    "phase": "baseline",
+    "exit_code": 2,
+    "seconds": 44.61,
+    "report_exists": true,
+    "completed": true,
+    "alerts": [
+      {
+        "id": "10109",
+        "risk": "0",
+        "name": "Modern Web Application",
+        "instances": 1
+      }
+    ],
+    "image": "ghcr.io/zaproxy/zaproxy@sha256:9624669db72f54d86c4b46a7064518bd9bf79d8c61a4c31befa9923489f328af",
+    "target": "http://api:8000",
+    "synthetic_only": true,
+    "production_touched": false,
+    "model_calls": 0
+  },
+  {
+    "phase": "api-active",
+    "exit_code": 2,
+    "seconds": 76.42,
+    "report_exists": true,
+    "completed": true,
+    "alerts": [
+      {
+        "id": "100001",
+        "risk": "1",
+        "name": "Unexpected Content-Type was returned",
+        "instances": 2
+      },
+      {
+        "id": "100000",
+        "risk": "0",
+        "name": "A Client Error response code was returned by the server",
+        "instances": 83
+      },
+      {
+        "id": "10111",
+        "risk": "0",
+        "name": "Authentication Request Identified",
+        "instances": 1
+      }
+    ],
+    "image": "ghcr.io/zaproxy/zaproxy@sha256:9624669db72f54d86c4b46a7064518bd9bf79d8c61a4c31befa9923489f328af",
+    "target": "http://api:8000",
+    "synthetic_only": true,
+    "production_touched": false,
+    "model_calls": 0
+  }
+]

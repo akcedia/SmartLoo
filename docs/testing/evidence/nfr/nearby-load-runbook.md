@@ -1,3 +1,5 @@
+> Historical reproduction procedure. Final executed results and their source scopes are indexed in [README.md](README.md); any earlier pending status below is superseded.
+
 # NFR-T01 nearby search load test plan
 
 Status: ready for coordination; measurement pending. Run on Özgür's isolated Docker setup. Use the same application SHA, PostgreSQL/PostGIS versions, migrations and index configuration as the review build. Record CPU, memory, model/version of tools, worker count, connection settings, seed revision and request mix without secrets.

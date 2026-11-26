@@ -1,0 +1,65 @@
+{
+  "component": {
+    "key": "smartloo-main-6b1c5b2f",
+    "name": "SmartLoo",
+    "qualifier": "TRK",
+    "measures": [
+      {
+        "metric": "coverage",
+        "value": "87.1",
+        "bestValue": false
+      },
+      {
+        "metric": "bugs",
+        "value": "0",
+        "bestValue": true
+      },
+      {
+        "metric": "code_smells",
+        "value": "3",
+        "bestValue": false
+      },
+      {
+        "metric": "duplicated_lines_density",
+        "value": "0.0",
+        "bestValue": true
+      },
+      {
+        "metric": "branch_coverage",
+        "value": "80.7",
+        "bestValue": false
+      },
+      {
+        "metric": "new_violations",
+        "period": {
+          "index": 1,
+          "value": "0",
+          "bestValue": true
+        }
+      },
+      {
+        "metric": "new_coverage",
+        "period": {
+          "index": 1,
+          "value": "93.2",
+          "bestValue": false
+        }
+      },
+      {
+        "metric": "vulnerabilities",
+        "value": "0",
+        "bestValue": true
+      },
+      {
+        "metric": "line_coverage",
+        "value": "90.6",
+        "bestValue": false
+      },
+      {
+        "metric": "security_hotspots",
+        "value": "0",
+        "bestValue": true
+      }
+    ]
+  }
+}

@@ -1,3 +1,5 @@
+> Historical reproduction procedure. Final executed results and their source scopes are indexed in [README.md](README.md); any earlier pending status below is superseded.
+
 # SonarQube quality evidence plan
 
 Status: ready for coordination; measurement pending. Runner: Özgür's Docker environment. Obtain the SonarQube URL, project key, scanner version and a project-scoped token through the team. Record the pinned application SHA, server/scanner versions and active quality gate before scanning. Keep the token outside the repository and terminal output.

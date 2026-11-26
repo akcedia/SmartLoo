@@ -1,0 +1,12 @@
+{
+  "source": "3033321573bb66554df53a9a834b51312a8a61c3",
+  "requests": 116433,
+  "failed_requests": 0,
+  "check_rate": 1,
+  "mean_ms": 128.60472886386847,
+  "p95_ms": 167.2585096,
+  "strict_mean_pass": true,
+  "strict_p95_pass": true,
+  "scope": "local Docker candidate; 10000 synthetic records; 50 constant clients; 60s warmup +300s measurement; 1 worker; 2 CPU; 1 GiB",
+  "production": false
+}

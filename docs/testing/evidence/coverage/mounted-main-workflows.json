@@ -1,0 +1,16 @@
+{
+  "scope": "Historical published-main workflow evidence; these mounted suites were not rerun for the local security follow-up.",
+  "source": "a683e9537b19affed79c6b03134454a83a302148",
+  "deployment": "https://github.com/akcedia/SmartLoo/actions/runs/45684183568",
+  "deployment_job": 139452299627,
+  "exact_main_ci_guard": "success",
+  "candidate_retest_scope": "572 backend tests, 309 frontend component tests, 14 deployment guards; real Redis backend tests included",
+  "definitions": [
+    ".github/workflows/account-deletion-live.yml",
+    ".github/workflows/admin-import-live.yml",
+    ".github/workflows/admin-panel-live.yml",
+    ".github/workflows/ai-redis.yml",
+    ".github/workflows/map-reviews-live.yml",
+    ".github/workflows/summary-http.yml"
+  ]
+}

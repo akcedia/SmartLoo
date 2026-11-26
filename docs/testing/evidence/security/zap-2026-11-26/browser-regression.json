@@ -1,0 +1,19 @@
+{
+  "source": "3033321573bb66554df53a9a834b51312a8a61c3",
+  "url": "http://127.0.0.1:8776",
+  "target": "private Docker candidate with two synthetic catalog entries",
+  "method": "interactive browser accessibility state and rendered map screenshot",
+  "checks": [
+    "OpenStreetMap tiles and marker visibly rendered",
+    "Light default, Dark and Light toggle",
+    "English and Turkish labels switched",
+    "List displayed both synthetic entries",
+    "Facility detail displayed unknown attributes and review/AI unavailable states",
+    "Swagger UI loaded endpoints",
+    "ReDoc rendered specification"
+  ],
+  "result": "passed within stated scope",
+  "model_calls": 0,
+  "real_accounts_used": false,
+  "limitations": "No native model call; no real geolocation permission; not a full accessibility or mobile certification"
+}

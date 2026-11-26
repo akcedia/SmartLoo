@@ -1,0 +1,237 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.cloud
+#1 transferring dockerfile: 1.43kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:24-alpine@sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea8017f6e85f5
+#2 DONE 0.1s
+
+#3 [internal] load metadata for docker.io/library/python:3.13.14-slim@sha256:9662417aace5ae7b8e2609cce472b72a8958e134ba372808abe9cc1a0c0125e6
+#3 DONE 0.1s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 223B done
+#4 DONE 0.0s
+
+#5 [stage-1 1/6] FROM docker.io/library/python:3.13.14-slim@sha256:9662417aace5ae7b8e2609cce472b72a8958e134ba372808abe9cc1a0c0125e6
+#5 resolve docker.io/library/python:3.13.14-slim@sha256:9662417aace5ae7b8e2609cce472b72a8958e134ba372808abe9cc1a0c0125e6 0.0s done
+#5 DONE 0.1s
+
+#6 [frontend 1/6] FROM docker.io/library/node:24-alpine@sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea8017f6e85f5
+#6 resolve docker.io/library/node:24-alpine@sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea8017f6e85f5 0.0s done
+#6 DONE 0.1s
+
+#7 [internal] load build context
+#7 transferring context: 2.57MB 0.9s done
+#7 DONE 0.9s
+
+#8 [stage-1 2/6] WORKDIR /app
+#8 CACHED
+
+#9 [stage-1 3/6] COPY requirements-runtime.txt ./
+#9 CACHED
+
+#10 [frontend 2/6] WORKDIR /build/frontend
+#10 CACHED
+
+#11 [frontend 3/6] COPY frontend/package.json frontend/package-lock.json ./
+#11 CACHED
+
+#12 [frontend 4/6] RUN npm ci --no-audit --no-fund
+#12 CACHED
+
+#13 [frontend 5/6] COPY frontend/ ./
+#13 DONE 0.1s
+
+#14 [stage-1 4/6] RUN python -m pip install --no-cache-dir --upgrade pip==26.2     && python -m pip install --no-cache-dir -r requirements-runtime.txt     && python -m pip check     && useradd --uid 10001 --create-home smartloo
+#14 1.783 Collecting pip==26.2
+#14 2.002   Downloading pip-26.2-py3-none-any.whl.metadata (4.6 kB)
+#14 2.066 Downloading pip-26.2-py3-none-any.whl (1.8 MB)
+#14 2.420    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.8/1.8 MB 7.8 MB/s  0:00:00
+#14 2.459 Installing collected packages: pip
+#14 2.459   Attempting uninstall: pip
+#14 2.464     Found existing installation: pip 26.1.2
+#14 2.533     Uninstalling pip-26.1.2:
+#14 2.684       Successfully uninstalled pip-26.1.2
+#14 4.264 Successfully installed pip-26.2
+#14 4.265 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#14 5.578 Collecting annotated-doc==0.0.5 (from -r requirements-runtime.txt (line 2))
+#14 5.730   Downloading annotated_doc-0.0.5-py3-none-any.whl.metadata (6.5 kB)
+#14 5.777 Collecting annotated-types==0.8.0 (from -r requirements-runtime.txt (line 3))
+#14 5.823   Downloading annotated_types-0.8.0-py3-none-any.whl.metadata (15 kB)
+#14 5.889 Collecting anyio==4.15.1 (from -r requirements-runtime.txt (line 4))
+#14 5.937   Downloading anyio-4.15.1-py3-none-any.whl.metadata (4.7 kB)
+#14 6.047 Collecting bcrypt==5.0.0 (from -r requirements-runtime.txt (line 5))
+#14 6.092   Downloading bcrypt-5.0.0-cp39-abi3-manylinux_2_34_x86_64.whl.metadata (10 kB)
+#14 6.147 Collecting certifi==2026.11.20 (from -r requirements-runtime.txt (line 6))
+#14 ...
+
+#15 [frontend 6/6] RUN npm test && npm run build
+#15 0.378 
+#15 0.378 > smartloo-frontend@0.0.0 test
+#15 0.378 > vitest run
+#15 0.378 
+#15 0.792 
+#15 0.792  RUN  v5.1.1 /build/frontend
+#15 0.792 
+#15 1.973  ✓ src/features/map/map.test.jsx (9 tests) 101ms
+#15 2.114  ✓ src/features/admin/contract.test.jsx (23 tests) 214ms
+#15 2.220  ✓ src/app/a11y.test.jsx (71 tests) 109ms
+#15 2.607  ✓ src/features/auth/auth.test.jsx (18 tests) 89ms
+#15 2.615  ✓ src/shared/http/apiClient.test.js (11 tests) 91ms
+#15 2.646  ✓ src/features/admin/import/importApi.test.js (9 tests) 87ms
+#15 3.022  ✓ src/features/map/directions.test.jsx (10 tests) 302ms
+#15 3.274  ✓ src/features/admin/components/components.test.jsx (18 tests) 156ms
+#15 3.397  ✓ src/features/map/reviewSession.test.jsx (8 tests) 673ms
+#15 3.602  ✓ src/features/admin/api/admin.test.js (20 tests) 2094ms
+#15 3.602    ✓ sample adapter (6)
+#15 3.602      ✓ is labelled as sample and produces data for the default period 480ms
+#15 3.602      ✓ returns no data for a district without reviews 304ms
+#15 3.602      ✓ simulates unauthorized 304ms
+#15 3.602      ✓ simulates forbidden 301ms
+#15 3.602      ✓ simulates error 302ms
+#15 3.602      ✓ rejects invalid filters with 422 304ms
+#15 3.631  ✓ src/features/map/cityDirectory.test.jsx (9 tests) 674ms
+#15 3.673  ✓ src/shared/i18n/i18n.test.jsx (8 tests) 309ms
+#15 3.893  ✓ src/features/auth/accountDeletion.test.jsx (8 tests) 160ms
+#15 4.020  ✓ src/features/admin/moderation/moderation.test.jsx (10 tests) 699ms
+#15 4.093  ✓ src/shared/session/session.test.js (9 tests) 28ms
+#15 4.100  ✓ src/features/map/layout.test.jsx (10 tests) 1134ms
+#15 4.100    ✓ map page layout (9)
+#15 4.100      ✓ uses the map's selected radius for recommendations and refreshes an open panel when it changes 361ms
+#15 4.168  ✓ src/features/map/markerDensity.test.js (6 tests) 110ms
+#15 4.209  ✓ src/features/admin/api/httpAdapter.test.js (5 tests) 116ms
+#15 4.249  ✓ src/features/admin/import/AdminImport.test.jsx (21 tests) 930ms
+#15 4.707  ✓ src/features/map/recommendationPanel.test.jsx (5 tests) 286ms
+#15 4.899  ✓ src/shared/theme/theme.test.jsx (6 tests) 207ms
+#15 4.972  ✓ src/features/suggestions/suggestion.test.jsx (7 tests) 467ms
+#15 5.126  ✓ src/shared/settings/settings.test.jsx (3 tests) 202ms
+#15 5.283  ✓ src/features/admin/moderation/moderationRace.test.jsx (3 tests) 123ms
+#15 5.417  ✓ src/features/map/MapView.density.test.jsx (2 tests) 108ms
+#15 5.425 
+#15 5.426  Test Files  25 passed (25)
+#15 5.426       Tests  309 passed (309)
+#15 5.426    Start at  18:43:32
+#15 5.428    Duration  4.62s (environment 44%, tests 27%, transform 20%, import 8%, worker 1%)
+#15 5.431 
+#15 5.431     Isolate  25 workers spawned · ~874ms startup each (spawn + environment, per file)
+#15 5.431              at least ~1.11s faster with isolate: false — reuses workers across files instead of one per file
+#15 5.431 
+#15 5.567 
+#15 5.567 > smartloo-frontend@0.0.0 build
+#15 5.567 > vite build
+#15 5.567 
+#15 5.783 vite v8.3.8 building client environment for production...
+#15 5.792 transforming...
+#15 5.882 ✓ 125 modules transformed.
+#15 5.940 rendering chunks...
+#15 5.982 computing gzip size...
+#15 5.986 dist/index.html                        1.80 kB │ gzip:  0.80 kB
+#15 5.986 dist/assets/index-CiHwvk5h.css        33.98 kB │ gzip:  6.97 kB
+#15 5.986 dist/assets/SearchPage-BiLB74gH.css   36.75 kB │ gzip: 10.67 kB
+#15 5.986 dist/assets/SearchPage-B5JD3quW.js   209.90 kB │ gzip: 65.07 kB
+#15 5.986 dist/assets/index-D15xFByJ.js        254.08 kB │ gzip: 81.79 kB
+#15 5.986 
+#15 5.987 ✓ built in 203ms
+#15 DONE 6.0s
+
+#14 [stage-1 4/6] RUN python -m pip install --no-cache-dir --upgrade pip==26.2     && python -m pip install --no-cache-dir -r requirements-runtime.txt     && python -m pip check     && useradd --uid 10001 --create-home smartloo
+#14 6.191   Downloading certifi-2026.11.20-py3-none-any.whl.metadata (2.5 kB)
+#14 6.237 Collecting click==8.5.1 (from -r requirements-runtime.txt (line 7))
+#14 6.281   Downloading click-8.5.1-py3-none-any.whl.metadata (2.6 kB)
+#14 6.366 Collecting fastapi==0.143.0 (from -r requirements-runtime.txt (line 8))
+#14 6.413   Downloading fastapi-0.143.0-py3-none-any.whl.metadata (26 kB)
+#14 6.476 Collecting h11==0.16.0 (from -r requirements-runtime.txt (line 9))
+#14 6.525   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+#14 6.571 Collecting httpcore==1.0.9 (from -r requirements-runtime.txt (line 10))
+#14 6.616   Downloading httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+#14 6.676 Collecting httpx==0.28.1 (from -r requirements-runtime.txt (line 11))
+#14 6.722   Downloading httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+#14 6.766 Collecting idna==3.20 (from -r requirements-runtime.txt (line 12))
+#14 6.811   Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+#14 6.862 Collecting opentelemetry-api==1.45.2 (from -r requirements-runtime.txt (line 13))
+#14 6.905   Downloading opentelemetry_api-1.45.2-py3-none-any.whl.metadata (1.4 kB)
+#14 7.037 Collecting pydantic==2.14.0 (from -r requirements-runtime.txt (line 14))
+#14 7.088   Downloading pydantic-2.14.0-py3-none-any.whl.metadata (131 kB)
+#14 7.895 Collecting pydantic_core==2.50.0 (from -r requirements-runtime.txt (line 15))
+#14 7.944   Downloading pydantic_core-2.50.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (6.5 kB)
+#14 7.993 Collecting PyJWT==2.15.1 (from -r requirements-runtime.txt (line 16))
+#14 8.041   Downloading pyjwt-2.15.1-py3-none-any.whl.metadata (3.5 kB)
+#14 8.096 Collecting starlette==1.7.0 (from -r requirements-runtime.txt (line 17))
+#14 8.142   Downloading starlette-1.7.0-py3-none-any.whl.metadata (6.6 kB)
+#14 8.185 Collecting typing-inspection==0.4.4 (from -r requirements-runtime.txt (line 18))
+#14 8.230   Downloading typing_inspection-0.4.4-py3-none-any.whl.metadata (2.6 kB)
+#14 8.277 Collecting typing_extensions==4.16.0 (from -r requirements-runtime.txt (line 19))
+#14 8.321   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+#14 8.368 Collecting psycopg==3.3.6 (from psycopg[binary]==3.3.6->-r requirements-runtime.txt (line 20))
+#14 8.416   Downloading psycopg-3.3.6-py3-none-any.whl.metadata (4.4 kB)
+#14 8.463 Collecting psycopg-pool==3.3.3 (from -r requirements-runtime.txt (line 21))
+#14 8.509   Downloading psycopg_pool-3.3.3-py3-none-any.whl.metadata (2.8 kB)
+#14 8.560 Collecting uvicorn==0.54.0 (from -r requirements-runtime.txt (line 22))
+#14 8.609   Downloading uvicorn-0.54.0-py3-none-any.whl.metadata (6.6 kB)
+#14 8.918 Collecting pymongo==4.20.1 (from -r requirements-runtime.txt (line 23))
+#14 8.965   Downloading pymongo-4.20.1-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (10 kB)
+#14 9.012 Collecting dnspython==2.9.2 (from -r requirements-runtime.txt (line 24))
+#14 9.061   Downloading dnspython-2.9.2-py3-none-any.whl.metadata (5.8 kB)
+#14 9.114 Collecting redis==8.1.0 (from -r requirements-runtime.txt (line 25))
+#14 9.164   Downloading redis-8.1.0-py3-none-any.whl.metadata (16 kB)
+#14 9.212 Collecting tzdata==2026.6 (from -r requirements-runtime.txt (line 26))
+#14 9.259   Downloading tzdata-2026.6-py2.py3-none-any.whl.metadata (1.4 kB)
+#14 9.454 Collecting psycopg-binary==3.3.6 (from psycopg[binary]==3.3.6->-r requirements-runtime.txt (line 20))
+#14 9.502   Downloading psycopg_binary-3.3.6-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.7 kB)
+#14 9.549 Downloading annotated_doc-0.0.5-py3-none-any.whl (5.3 kB)
+#14 9.595 Downloading annotated_types-0.8.0-py3-none-any.whl (13 kB)
+#14 9.644 Downloading anyio-4.15.1-py3-none-any.whl (132 kB)
+#14 9.734 Downloading bcrypt-5.0.0-cp39-abi3-manylinux_2_34_x86_64.whl (278 kB)
+#14 9.825 Downloading certifi-2026.11.20-py3-none-any.whl (127 kB)
+#14 9.876 Downloading click-8.5.1-py3-none-any.whl (126 kB)
+#14 9.934 Downloading fastapi-0.143.0-py3-none-any.whl (144 kB)
+#14 9.989 Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+#14 10.04 Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+#14 10.09 Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+#14 10.14 Downloading idna-3.20-py3-none-any.whl (69 kB)
+#14 10.19 Downloading opentelemetry_api-1.45.2-py3-none-any.whl (60 kB)
+#14 10.24 Downloading pydantic-2.14.0-py3-none-any.whl (487 kB)
+#14 10.32 Downloading pydantic_core-2.50.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.2 MB)
+#14 10.57    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.2/2.2 MB 8.6 MB/s  0:00:00
+#14 10.69 Downloading pyjwt-2.15.1-py3-none-any.whl (33 kB)
+#14 10.74 Downloading starlette-1.7.0-py3-none-any.whl (78 kB)
+#14 10.79 Downloading typing_inspection-0.4.4-py3-none-any.whl (14 kB)
+#14 10.83 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+#14 10.88 Downloading psycopg-3.3.6-py3-none-any.whl (215 kB)
+#14 10.94 Downloading psycopg_pool-3.3.3-py3-none-any.whl (40 kB)
+#14 10.99 Downloading uvicorn-0.54.0-py3-none-any.whl (87 kB)
+#14 11.05 Downloading pymongo-4.20.1-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (1.1 MB)
+#14 11.16    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.1/1.1 MB 8.8 MB/s  0:00:00
+#14 11.21 Downloading dnspython-2.9.2-py3-none-any.whl (360 kB)
+#14 11.29 Downloading redis-8.1.0-py3-none-any.whl (560 kB)
+#14 11.33    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 560.6/560.6 kB 15.7 MB/s  0:00:00
+#14 11.38 Downloading tzdata-2026.6-py2.py3-none-any.whl (348 kB)
+#14 11.46 Downloading psycopg_binary-3.3.6-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.2 MB)
+#14 12.25    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 6.4 MB/s  0:00:00
+#14 12.35 Installing collected packages: tzdata, typing_extensions, redis, PyJWT, psycopg-binary, psycopg, idna, h11, dnspython, click, certifi, bcrypt, annotated-types, annotated-doc, uvicorn, typing-inspection, pymongo, pydantic_core, psycopg-pool, opentelemetry-api, httpcore, anyio, starlette, pydantic, httpx, fastapi
+#14 14.42 
+#14 14.42 Successfully installed PyJWT-2.15.1 annotated-doc-0.0.5 annotated-types-0.8.0 anyio-4.15.1 bcrypt-5.0.0 certifi-2026.11.20 click-8.5.1 dnspython-2.9.2 fastapi-0.143.0 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 idna-3.20 opentelemetry-api-1.45.2 psycopg-3.3.6 psycopg-binary-3.3.6 psycopg-pool-3.3.3 pydantic-2.14.0 pydantic_core-2.50.0 pymongo-4.20.1 redis-8.1.0 starlette-1.7.0 typing-inspection-0.4.4 typing_extensions-4.16.0 tzdata-2026.6 uvicorn-0.54.0
+#14 14.42 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#14 14.99 No broken requirements found.
+#14 DONE 15.2s
+
+#16 [stage-1 5/6] COPY --chown=10001:10001 src ./src
+#16 DONE 0.1s
+
+#17 [stage-1 6/6] COPY --from=frontend --chown=10001:10001 /build/frontend/dist ./web
+#17 DONE 0.1s
+
+#18 exporting to image
+#18 exporting layers
+#18 exporting layers 1.8s done
+#18 exporting manifest sha256:bde11274a969370f858d27fd7e93c441eb28906adb55dac6850bcea478c1578d 0.0s done
+#18 exporting config sha256:9d25179b930ec65b8252150d548080c349eb21ba9a8e1ff7a2799bd1efed1de0 0.0s done
+#18 exporting attestation manifest sha256:a383a6690726fa0a27cff362865326ee7ee3906edab92a3de04dc28c32e903d3 0.0s done
+#18 exporting manifest list sha256:038717473bda70cfad7d65597986a2d8952e3e907669828b4287f7a06c995a2a 0.0s done
+#18 naming to docker.io/library/smartloo:report26-fixed
+#18 naming to docker.io/library/smartloo:report26-fixed done
+#18 unpacking to docker.io/library/smartloo:report26-fixed
+#18 unpacking to docker.io/library/smartloo:report26-fixed 0.6s done
+#18 DONE 2.6s

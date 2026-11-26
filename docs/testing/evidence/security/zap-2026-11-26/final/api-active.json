@@ -1,0 +1,1045 @@
+{
+	"@programName": "ZAP",
+	"@version": "2.17.0",
+	"@generated": "Thu, 26 Nov 2026 18:49:14",
+	"created": "2026-11-26T18:49:14.607185086Z",
+	"insights":[
+		{
+			"level": "Medium",
+			"reason": "Exceeded High",
+			"site": "http://api:8000",
+			"key": "insight.code.4xx",
+			"description": "Percentage of responses with status code 4xx",
+			"statistic": "99"
+		},
+		{
+			"level": "Low",
+			"reason": "Warning",
+			"site": "",
+			"key": "insight.log.error",
+			"description": "ZAP errors logged - see the zap.log file for details",
+			"statistic": "22"
+		},
+		{
+			"level": "Low",
+			"reason": "Warning",
+			"site": "",
+			"key": "insight.log.warn",
+			"description": "ZAP warnings logged - see the zap.log file for details",
+			"statistic": "30"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "",
+			"key": "insight.network.failure",
+			"description": "Percentage of network failures",
+			"statistic": "1"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://api:8000",
+			"key": "insight.code.2xx",
+			"description": "Percentage of responses with status code 2xx",
+			"statistic": "2"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://api:8000",
+			"key": "insight.endpoint.ctype.application/json",
+			"description": "Percentage of endpoints with content type application/json",
+			"statistic": "98"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://api:8000",
+			"key": "insight.endpoint.ctype.text/html",
+			"description": "Percentage of endpoints with content type text/html",
+			"statistic": "1"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://api:8000",
+			"key": "insight.endpoint.method.DELETE",
+			"description": "Percentage of endpoints with method DELETE",
+			"statistic": "4"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://api:8000",
+			"key": "insight.endpoint.method.GET",
+			"description": "Percentage of endpoints with method GET",
+			"statistic": "66"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://api:8000",
+			"key": "insight.endpoint.method.PATCH",
+			"description": "Percentage of endpoints with method PATCH",
+			"statistic": "7"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://api:8000",
+			"key": "insight.endpoint.method.POST",
+			"description": "Percentage of endpoints with method POST",
+			"statistic": "20"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://api:8000",
+			"key": "insight.endpoint.total",
+			"description": "Count of total endpoints",
+			"statistic": "81"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://api:8000",
+			"key": "insight.response.slow",
+			"description": "Percentage of slow responses",
+			"statistic": "3"
+		}
+	],
+	"site":[ 
+		{
+			"@name": "http://api:8000",
+			"@host": "api",
+			"@port": "8000",
+			"@ssl": "false",
+			"alerts": [ 
+				{
+					"pluginid": "100001",
+					"alertRef": "100001",
+					"alert": "Unexpected Content-Type was returned",
+					"name": "Unexpected Content-Type was returned",
+					"riskcode": "1",
+					"confidence": "3",
+					"riskdesc": "Low (High)",
+					"desc": "<p>A Content-Type of text/html was returned by the server.</p><p>This is not one of the types expected to be returned by an API.</p><p>Raised by the 'Alert on Unexpected Content Types' script</p>",
+					"instances":[ 
+						{
+							"id": "32",
+							"uri": "http://api:8000",
+							"nodeName": "http:\/\/api:8000",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						},
+						{
+							"id": "4325",
+							"uri": "http://api:8000/",
+							"nodeName": "http:\/\/api:8000\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "text/html",
+							"otherinfo": ""
+						}
+					],
+					"count": "2",
+					"systemic": false,
+					"solution": "",
+					"otherinfo": "",
+					"reference": "",
+					"cweid": "-1",
+					"wascid": "-1",
+					"sourceid": "60"
+				},
+				{
+					"pluginid": "100000",
+					"alertRef": "100000-1",
+					"alert": "A Client Error response code was returned by the server",
+					"name": "A Client Error response code was returned by the server",
+					"riskcode": "0",
+					"confidence": "3",
+					"riskdesc": "Informational (High)",
+					"desc": "<p>A response code of 401 was returned by the server.</p><p>This may indicate that the application is failing to handle unexpected input correctly.</p><p>Raised by the 'Alert on HTTP Response Code Error' script</p>",
+					"instances":[ 
+						{
+							"id": "4",
+							"uri": "http://api:8000/api/v1/reviews/review_id",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/reviews\/review_id",
+							"method": "DELETE",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "4319",
+							"uri": "http://api:8000/api/v1/reviews/review_id/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/reviews\/review_id\/",
+							"method": "DELETE",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "6",
+							"uri": "http://api:8000/api/v1/users/me",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/users\/me",
+							"method": "DELETE",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "4323",
+							"uri": "http://api:8000/api/v1/users/me/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/users\/me\/",
+							"method": "DELETE",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "19",
+							"uri": "http://api:8000/2484406369278706560",
+							"nodeName": "http:\/\/api:8000\/2484406369278706560",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "38",
+							"uri": "http://api:8000/api",
+							"nodeName": "http:\/\/api:8000\/api",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "4327",
+							"uri": "http://api:8000/api/",
+							"nodeName": "http:\/\/api:8000\/api\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "20",
+							"uri": "http://api:8000/api/7901156403810840550",
+							"nodeName": "http:\/\/api:8000\/api\/7901156403810840550",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "45",
+							"uri": "http://api:8000/api/v1",
+							"nodeName": "http:\/\/api:8000\/api\/v1",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "4329",
+							"uri": "http://api:8000/api/v1/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "21",
+							"uri": "http://api:8000/api/v1/5403552316342564373",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/5403552316342564373",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "52",
+							"uri": "http://api:8000/api/v1/admin",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "4330",
+							"uri": "http://api:8000/api/v1/admin/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "22",
+							"uri": "http://api:8000/api/v1/admin/399293602600446976",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/399293602600446976",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "4892",
+							"uri": "http://api:8000/api/v1/admin/actuator/health",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/actuator\/health",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "61",
+							"uri": "http://api:8000/api/v1/admin/analytics",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/analytics",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "4334",
+							"uri": "http://api:8000/api/v1/admin/analytics/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/analytics\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "23",
+							"uri": "http://api:8000/api/v1/admin/analytics/8528955405171225429",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/analytics\/8528955405171225429",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "15",
+							"uri": "http://api:8000/api/v1/admin/analytics/export?format=csv&district=&from=&to=",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/analytics\/export (district,format,from,to)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "4332",
+							"uri": "http://api:8000/api/v1/admin/analytics/export/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/analytics\/export\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "64",
+							"uri": "http://api:8000/api/v1/admin/metrics",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/metrics",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "4337",
+							"uri": "http://api:8000/api/v1/admin/metrics/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/metrics\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "24",
+							"uri": "http://api:8000/api/v1/admin/metrics/6515130387194854268",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/metrics\/6515130387194854268",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "14",
+							"uri": "http://api:8000/api/v1/admin/metrics/summary?district=&from=&to=",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/metrics\/summary (district,from,to)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "4336",
+							"uri": "http://api:8000/api/v1/admin/metrics/summary/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/metrics\/summary\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "72",
+							"uri": "http://api:8000/api/v1/admin/suggestions",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/suggestions",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "11",
+							"uri": "http://api:8000/api/v1/admin/suggestions?status=pending&limit=50&offset=0",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/suggestions (limit,offset,status)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "4338",
+							"uri": "http://api:8000/api/v1/admin/suggestions/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/suggestions\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "25",
+							"uri": "http://api:8000/api/v1/admin/suggestions/6357668535715065540",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/suggestions\/6357668535715065540",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "84",
+							"uri": "http://api:8000/api/v1/admin/toilets",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/toilets",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "4341",
+							"uri": "http://api:8000/api/v1/admin/toilets/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/toilets\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "26",
+							"uri": "http://api:8000/api/v1/admin/toilets/8825062492116289009",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/toilets\/8825062492116289009",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "95",
+							"uri": "http://api:8000/api/v1/auth",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/auth",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "4343",
+							"uri": "http://api:8000/api/v1/auth/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/auth\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "27",
+							"uri": "http://api:8000/api/v1/auth/4310789308160645782",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/auth\/4310789308160645782",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "7",
+							"uri": "http://api:8000/api/v1/recommendations?lat=1.2&lon=1.2&radius=1000&open_now=false&has_disabled_access=&has_baby_changing=&is_free=",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/recommendations (has_baby_changing,has_disabled_access,is_free,lat,lon,open_now,radius)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "422",
+							"otherinfo": ""
+						},
+						{
+							"id": "4345",
+							"uri": "http://api:8000/api/v1/recommendations/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/recommendations\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "101",
+							"uri": "http://api:8000/api/v1/reviews",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/reviews",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "4346",
+							"uri": "http://api:8000/api/v1/reviews/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/reviews\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "28",
+							"uri": "http://api:8000/api/v1/reviews/2993698472716863986",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/reviews\/2993698472716863986",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "17",
+							"uri": "http://api:8000/api/v1/toilets?open_now=false&has_disabled_access=&has_baby_changing=&is_free=",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/toilets (has_baby_changing,has_disabled_access,is_free,open_now)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "422",
+							"otherinfo": ""
+						},
+						{
+							"id": "4350",
+							"uri": "http://api:8000/api/v1/toilets/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/toilets\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "29",
+							"uri": "http://api:8000/api/v1/toilets/999503081583319010",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/toilets\/999503081583319010",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "422",
+							"otherinfo": ""
+						},
+						{
+							"id": "16",
+							"uri": "http://api:8000/api/v1/toilets/nearby?lat=1.2&lon=1.2&radius=1000&open_now=false&has_disabled_access=&has_baby_changing=&is_free=",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/toilets\/nearby (has_baby_changing,has_disabled_access,is_free,lat,lon,open_now,radius)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "422",
+							"otherinfo": ""
+						},
+						{
+							"id": "4347",
+							"uri": "http://api:8000/api/v1/toilets/nearby/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/toilets\/nearby\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "18",
+							"uri": "http://api:8000/api/v1/toilets/toilet_id",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/toilets\/toilet_id",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "422",
+							"otherinfo": ""
+						},
+						{
+							"id": "4353",
+							"uri": "http://api:8000/api/v1/toilets/toilet_id/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/toilets\/toilet_id\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "30",
+							"uri": "http://api:8000/api/v1/toilets/toilet_id/8662066786213827354",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/toilets\/toilet_id\/8662066786213827354",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "2",
+							"uri": "http://api:8000/api/v1/toilets/toilet_id/reviews?limit=20&offset=0",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/toilets\/toilet_id\/reviews (limit,offset)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "123",
+							"uri": "http://api:8000/api/v1/toilets/toilet_id/reviews?limit=http%3A%2F%2Fwww.google.com%2F&offset=0",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/toilets\/toilet_id\/reviews (limit,offset)",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "422",
+							"otherinfo": ""
+						},
+						{
+							"id": "4351",
+							"uri": "http://api:8000/api/v1/toilets/toilet_id/reviews/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/toilets\/toilet_id\/reviews\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "8",
+							"uri": "http://api:8000/api/v1/toilets/toilet_id/summary",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/toilets\/toilet_id\/summary",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "422",
+							"otherinfo": ""
+						},
+						{
+							"id": "4348",
+							"uri": "http://api:8000/api/v1/toilets/toilet_id/summary/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/toilets\/toilet_id\/summary\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "129",
+							"uri": "http://api:8000/api/v1/users",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/users",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "4355",
+							"uri": "http://api:8000/api/v1/users/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/users\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "31",
+							"uri": "http://api:8000/api/v1/users/7803286955138245371",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/users\/7803286955138245371",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "4354",
+							"uri": "http://api:8000/openapi.json/",
+							"nodeName": "http:\/\/api:8000\/openapi.json\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "404",
+							"otherinfo": ""
+						},
+						{
+							"id": "12",
+							"uri": "http://api:8000/api/v1/admin/suggestions/suggestion_id",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/suggestions\/suggestion_id ()({status})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "4314",
+							"uri": "http://api:8000/api/v1/admin/suggestions/suggestion_id/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/suggestions\/suggestion_id\/ ()({status})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "9",
+							"uri": "http://api:8000/api/v1/admin/toilets/toilet_id",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/toilets\/toilet_id ()({status})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "4315",
+							"uri": "http://api:8000/api/v1/admin/toilets/toilet_id/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/toilets\/toilet_id\/ ()({status})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "5",
+							"uri": "http://api:8000/api/v1/reviews/review_id",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/reviews\/review_id ()({\"cleanliness_score\":10,\"comment\":Zaproxy dolore alias impedit expedita quisquam.,\"tags\":[\"John Doe\"]})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "422",
+							"otherinfo": ""
+						},
+						{
+							"id": "4320",
+							"uri": "http://api:8000/api/v1/reviews/review_id/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/reviews\/review_id\/ ()({\"cleanliness_score\":10,\"comment\":Zaproxy dolore alias impedit expedita quisquam.,\"tags\":[\"John Doe\"]})",
+							"method": "PATCH",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "13",
+							"uri": "http://api:8000/api/v1/admin/import",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/import",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "4313",
+							"uri": "http://api:8000/api/v1/admin/import/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/admin\/import\/",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "128",
+							"uri": "http://api:8000/api/v1/auth/login",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/auth\/login ()({email,password})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "3966",
+							"uri": "http://api:8000/api/v1/auth/login",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/auth\/login ()({email,password})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "422",
+							"otherinfo": ""
+						},
+						{
+							"id": "1",
+							"uri": "http://api:8000/api/v1/auth/login",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/auth\/login ()({email,password})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "429",
+							"otherinfo": ""
+						},
+						{
+							"id": "4317",
+							"uri": "http://api:8000/api/v1/auth/login/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/auth\/login\/ ()({email,password})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "173",
+							"uri": "http://api:8000/api/v1/auth/register",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/auth\/register ()({email,password,display_name})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "409",
+							"otherinfo": ""
+						},
+						{
+							"id": "0",
+							"uri": "http://api:8000/api/v1/auth/register",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/auth\/register ()({email,password,display_name})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "422",
+							"otherinfo": ""
+						},
+						{
+							"id": "4316",
+							"uri": "http://api:8000/api/v1/auth/register/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/auth\/register\/ ()({email,password,display_name})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "10",
+							"uri": "http://api:8000/api/v1/toilets/suggest",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/toilets\/suggest ()({name,district,latitude,longitude,has_disabled_access,has_baby_changing,is_free})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "401",
+							"otherinfo": ""
+						},
+						{
+							"id": "4322",
+							"uri": "http://api:8000/api/v1/toilets/suggest/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/toilets\/suggest\/ ()({name,district,latitude,longitude,has_disabled_access,has_baby_changing,is_free})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "3",
+							"uri": "http://api:8000/api/v1/toilets/toilet_id/reviews",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/toilets\/toilet_id\/reviews ()({\"cleanliness_score\":10,\"comment\":Zaproxy dolore alias impedit expedita quisquam.,\"tags\":[\"John Doe\"]})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "422",
+							"otherinfo": ""
+						},
+						{
+							"id": "4318",
+							"uri": "http://api:8000/api/v1/toilets/toilet_id/reviews/",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/toilets\/toilet_id\/reviews\/ ()({\"cleanliness_score\":10,\"comment\":Zaproxy dolore alias impedit expedita quisquam.,\"tags\":[\"John Doe\"]})",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "3216",
+							"uri": "http://api:8000/computeMetadata/v1/",
+							"nodeName": "http:\/\/api:8000\/computeMetadata\/v1\/",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "3212",
+							"uri": "http://api:8000/latest/meta-data/",
+							"nodeName": "http:\/\/api:8000\/latest\/meta-data\/",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "3243",
+							"uri": "http://api:8000/metadata/instance",
+							"nodeName": "http:\/\/api:8000\/metadata\/instance",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "3248",
+							"uri": "http://api:8000/metadata/v1",
+							"nodeName": "http:\/\/api:8000\/metadata\/v1",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "3221",
+							"uri": "http://api:8000/opc/v1/instance/",
+							"nodeName": "http:\/\/api:8000\/opc\/v1\/instance\/",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "3229",
+							"uri": "http://api:8000/opc/v2/instance/",
+							"nodeName": "http:\/\/api:8000\/opc\/v2\/instance\/",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						},
+						{
+							"id": "3251",
+							"uri": "http://api:8000/openstack/latest/meta_data.json",
+							"nodeName": "http:\/\/api:8000\/openstack\/latest\/meta_data.json",
+							"method": "POST",
+							"param": "",
+							"attack": "",
+							"evidence": "405",
+							"otherinfo": ""
+						}
+					],
+					"count": "83",
+					"systemic": false,
+					"solution": "",
+					"otherinfo": "",
+					"reference": "",
+					"cweid": "388",
+					"wascid": "20",
+					"sourceid": "12"
+				},
+				{
+					"pluginid": "10111",
+					"alertRef": "10111",
+					"alert": "Authentication Request Identified",
+					"name": "Authentication Request Identified",
+					"riskcode": "0",
+					"confidence": "3",
+					"riskdesc": "Informational (High)",
+					"desc": "<p>The given request has been identified as an authentication request. The 'Other Info' field contains a set of key=value lines which identify any relevant fields. If the request is in a context which has an Authentication Method set to \"Auto-Detect\" then this rule will change the authentication to match the request identified.</p>",
+					"instances":[ 
+						{
+							"id": "156",
+							"uri": "http://api:8000/api/v1/auth/login",
+							"nodeName": "http:\/\/api:8000\/api\/v1\/auth\/login ()({email,password})",
+							"method": "POST",
+							"param": "email",
+							"attack": "",
+							"evidence": "password",
+							"otherinfo": "userParam=email\nuserValue=zaproxy@example.com\npasswordParam=password"
+						}
+					],
+					"count": "1",
+					"systemic": false,
+					"solution": "<p>This is an informational alert rather than a vulnerability and so there is nothing to fix.</p>",
+					"otherinfo": "<p>userParam=email</p><p>userValue=zaproxy@example.com</p><p>passwordParam=password</p>",
+					"reference": "<p>https://www.zaproxy.org/docs/desktop/addons/authentication-helper/auth-req-id/</p>",
+					"cweid": "-1",
+					"wascid": "-1",
+					"sourceid": "7"
+				}
+			]
+		}
+	],
+	"sequences":[
+	]
+
+}

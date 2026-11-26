@@ -1,0 +1,28 @@
+{
+  "source": "3033321573bb66554df53a9a834b51312a8a61c3",
+  "modules": 29,
+  "totals": {
+    "covered_lines": 2538,
+    "num_statements": 2674,
+    "percent_covered": 93.20667818077145,
+    "percent_covered_display": "93",
+    "missing_lines": 136,
+    "excluded_lines": 11,
+    "percent_statements_covered": 94.91398653702319,
+    "percent_statements_covered_display": "95",
+    "num_branches": 800,
+    "num_partial_branches": 98,
+    "covered_branches": 700,
+    "missing_branches": 100,
+    "percent_branches_covered": 87.5,
+    "percent_branches_covered_display": "88"
+  },
+  "statement_percent": 94.91398653702319,
+  "branch_percent": 87.5,
+  "combined_percent": 93.20667818077145,
+  "pytest_cases": 572,
+  "subtests": 59,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0
+}
