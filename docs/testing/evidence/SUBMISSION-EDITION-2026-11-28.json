@@ -1,0 +1,18 @@
+{
+  "document_date": "2026-11-28",
+  "pages": 16,
+  "pdf_sha256": "460d970459e8c1cbfd40fed3d1ef3dd8e40c422b4dcbdc26fb376ff678a2c891",
+  "runtime_source": "3033321573bb66554df53a9a834b51312a8a61c3",
+  "evidence_snapshot": "d9b54e8bdd1b206a0d10956355134e066c437ab9",
+  "runtime_changed": false,
+  "owner_authorized_publication_and_squash_merge": true,
+  "owner_authorized_superseded_pr76_closure": true,
+  "instructor_approval_recorded": false,
+  "learn_uploaded": false,
+  "changes": [
+    "Add explicit test plan and team responsibilities",
+    "Pin raw evidence links and include successful published-candidate CI receipts",
+    "Replace canonical and legacy PDF with the exact owner-reviewed Learn submission PDF",
+    "Keep academic review status separate from repository merge"
+  ]
+}

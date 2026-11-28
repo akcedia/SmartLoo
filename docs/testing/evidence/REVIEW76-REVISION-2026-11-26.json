@@ -404,5 +404,7 @@
       "bytes": 8807,
       "sha256": "6a954c88f631b031373bf5c6263d19e31b0ff146081e5601a05b1c7aed1896d6"
     }
-  ]
+  ],
+  "artifact_snapshot_commit": "d9b54e8bdd1b206a0d10956355134e066c437ab9",
+  "snapshot_note": "Historical 26 November receipt; artifact hashes refer to the pinned snapshot, not subsequent submission-edition changes."
 }

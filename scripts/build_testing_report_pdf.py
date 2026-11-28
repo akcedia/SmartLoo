@@ -117,9 +117,11 @@ def main():
             continue
         if line.startswith("# "):
             story.append(Paragraph(inline(line[2:]), styles["ReportTitle"]))
+        elif line == "**Software Test Plan and Testing Report**":
+            story.append(Paragraph(inline(line), styles["ReportH1"]))
         elif line.startswith("## "):
             heading = line[3:]
-            if heading.startswith(("Appendix A", "Appendix B")):
+            if heading.startswith(("1. Scope", "Appendix A", "Appendix B")):
                 story.append(PageBreak())
             story.append(Paragraph(inline(heading), styles["ReportH1"]))
         elif line.startswith("### "):
@@ -128,17 +130,18 @@ def main():
             # Paragraphs are single source lines; list markers stay as readable bullets.
             if line.startswith("- "):
                 line = "• " + line[2:]
-            story.append(Paragraph(inline(line), styles["ReportBody"]))
+            paragraph = Paragraph(inline(line), styles["ReportBody"])
+            story.append(KeepTogether([paragraph]) if line.startswith("The reported candidate meets") else paragraph)
             if line.startswith("Statement coverage counts"):
                 story.append(KeepTogether([coverage_figure(), Paragraph("Figure 1. Final coverage measures retain their separate denominators; bars are not interchangeable acceptance scores.", styles["ReportBody"])]))
         index += 1
 
     def decorate(canvas, doc):
-        canvas.setTitle("SmartLoo Software Testing Report - 26 November 2026")
+        canvas.setTitle("SmartLoo Software Test Plan and Testing Report - 28 November 2026")
         canvas.setAuthor("SmartLoo team")
         canvas.setFont("Report", 8)
         canvas.setFillColor(colors.HexColor("#536979"))
-        canvas.drawString(42, 25, "SmartLoo | Final release verification | 26 November 2026")
+        canvas.drawString(42, 25, "SmartLoo | Software Test Plan and Report | 28 November 2026")
         canvas.drawRightString(A4[0] - 42, 25, str(doc.page))
     output = BASE / "SOFTWARE_TESTING_REPORT.pdf"
     doc = SimpleDocTemplate(str(output), pagesize=A4, rightMargin=42, leftMargin=42, topMargin=38, bottomMargin=43)
@@ -149,7 +152,7 @@ def main():
     from pypdf import PdfReader
     pdf = PdfReader(output)
     text = "\n".join(page.extract_text() or "" for page in pdf.pages)
-    for phrase in ["1. Scope", "3. Tests by requirement", "4. Code coverage", "5. Non-functional", "6. Security", "7. SonarQube", "8. AI evidence", "Appendix A", "Appendix B", "TC-48", "test_zap_regressions.py"]:
+    for phrase in ["1. Scope", "4. Tests by requirement", "5. Code coverage", "6. Non-functional", "7. Security", "8. SonarQube", "9. AI evidence", "Appendix A", "Appendix B", "TC-48", "test_zap_regressions.py"]:
         assert phrase in text, "Missing PDF content: " + phrase
     print(json.dumps(dict(pdf=str(output), pages=len(pdf.pages), bytes=output.stat().st_size, content_checks="passed")))
 

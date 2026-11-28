@@ -1,14 +1,34 @@
-# SmartLoo Software Testing Report
+# SmartLoo
 
-Final release verification and instructor-review revision · 26 November 2026
+**Software Test Plan and Testing Report**
 
-Repository: [akcedia/SmartLoo](https://github.com/akcedia/SmartLoo). Review: [PR #76](https://github.com/akcedia/SmartLoo/pull/76). Local test branch: `test_work`.
+CMPE 331 · Software Engineering Concepts
+
+Learn assignment: 05 - Software Test Plan
+
+Submission edition: **28 November 2026**
+
+Test/evidence baseline: **26 November 2026** · CI status rechecked: **28 November 2026**
+
+## Project team
+
+Özgür Kılıç · Yusuf Selim Aksu · Emir Miraç İslamoğlu · Fırat Karadoğan · Onur Arda Buldağ · Ahmet Furkan Yardımcı
+
+## Document guide
+
+Scope and release identity · Test plan and responsibilities · Environment and counting rules · Requirement traceability · Code coverage · Non-functional results · Security and OWASP ZAP · SonarQube findings/actions · AI limitations · Reproduction and publication evidence
+
+Appendix A contains the complete 75-file test mapping. Appendix B contains all 48 acceptance-case IDs. Raw result artifacts are linked to an immutable repository snapshot; the coverage figure is embedded in this PDF.
+
+Repository: [akcedia/SmartLoo](https://github.com/akcedia/SmartLoo)
+
+Review: [PR #106 / test_work](https://github.com/akcedia/SmartLoo/pull/106) · Original review: [PR #76](https://github.com/akcedia/SmartLoo/pull/76)
 
 ## 1. Scope, release identity and conclusion
 
-This report presents the final measured results first. It supersedes the daily status narrative through 25 November, retained only in [the historical appendix](archive/REPORT-HISTORY-through-2026-11-25.md). The corresponding historical PDF is archived alongside it. The primary report no longer carries the obsolete Sonar-pending statement or the six stale failed acceptance rows.
+This submission edition combines the testing plan, requirement traceability, executed results and interpretation for SmartLoo. Measurements are tied to the identified release candidate and evidence snapshot. The earlier daily working history is retained only as an optional [historical appendix](https://github.com/akcedia/SmartLoo/blob/d9b54e8bdd1b206a0d10956355134e066c437ab9/docs/testing/archive/REPORT-HISTORY-through-2026-11-25.md), not as the main report. The document was assembled on 28 November 2026; the full local measurements are from 26 November and the published CI status was rechecked on 28 November.
 
-Published application baseline: `a683e9537b19affed79c6b03134454a83a302148` (Onur UI update, PR #105). This report's tested follow-up candidate: `3033321573bb66554df53a9a834b51312a8a61c3`, local `test_work`, descendant of PR #76's `4695853` and published main. The candidate adds validation and browser-security-header fixes discovered by the requested actual ZAP assessment. Those source changes are local at report preparation time; they are not represented as already deployed or instructor-approved. Documentation-only commits following that candidate do not change the measured runtime source.
+Tested runtime source: `3033321573bb66554df53a9a834b51312a8a61c3`. Published report/evidence snapshot: `d9b54e8bdd1b206a0d10956355134e066c437ab9`, branch `test_work`, [correction PR #106](https://github.com/akcedia/SmartLoo/pull/106). The runtime source files are unchanged between these two commits. The published application baseline for this assessment was `a683e9537b19affed79c6b03134454a83a302148`; deployment and test-candidate identity are separate. The candidate includes validation and browser-header fixes identified by the real local OWASP ZAP assessment. This submission edition changes presentation and adds an explicit test plan and publication references; no measured result is replaced or reclassified.
 
 The complete backend run passed **572 pytest cases +59 subtests**, with zero failures/errors/skips. All 29 source modules were included. **309 frontend component tests across 25 files**, **14 Node release guards**, the production frontend/image build and the new Sonar gate passed. ZAP identified a real oversized-login-email HTTP500 and missing browser headers; these were corrected and retested. The load result below is from this candidate, not copied from an older release.
 
@@ -21,19 +41,62 @@ The complete backend run passed **572 pytest cases +59 subtests**, with zero fai
 | Final ZAP baseline /active API | No High/Medium; one remaining Low API alert type is the expected HTML root (2 instances) |
 | Requirement traceability | 10/10 FR +10/10 NFR linked (100%); conformance is qualified below |
 
-## 2. Environment, test layers and counting rules
+## 2. Test plan, responsibilities and execution criteria
+
+### 2.1 Objectives and scope
+
+Validate the requirement-defined core journeys: public map/distance search and filters; registration/login and role boundaries; owned review creation/edit/deletion; ADMIN analytics and consistent export; facility suggestions/moderation and atomic import; account cleanup and linked-data consistency; grounded AI summary/recommendation contracts with safe fallback. The plan retains the current architecture and contracts rather than introducing additional product scope.
+
+Quality objectives are reproducible evidence, requirement-to-test traceability, explicit failure handling and accurate interpretation of non-functional limits. Staff scheduling, IoT sensing, payments and native mobile application delivery are outside this test scope. Browser access to an external directions application is a UI handoff; it is not an in-house route-optimization claim.
+
+### 2.2 Test levels and workflow
+
+Unit/component tests exercise validation, service policy, cache identity, UI state and error presentation. Real PostgreSQL/PostGIS, MongoDB and Redis integration tests check persistence, geometry, role enforcement, consistency and failure recovery. HTTP and mounted React tests exercise the API/consumer boundary. Cloud-composition checks validate built assets, browser routes and headers. Performance tests and actual ZAP/Sonar executions provide separate non-functional evidence.
+
+The execution workflow is: identify the candidate; provision and migrate disposable stores; seed known synthetic fixtures; run backend and frontend suites; build the production composition; exercise mounted/HTTP/browser flows; perform isolated security and load/static assessments; triage findings; add regression tests and rerun affected checks; freeze raw evidence and publish the review candidate. Heavy scans and the measured load phase are not run concurrently. Release acceptance is evaluated against declared criteria, not merely an absence of runtime crashes.
+
+Tests use boundary values, negative inputs, role/ownership partitions, state transitions, idempotency and dependency-outage simulation. A discovered defect is recorded with its trigger, expected/actual behavior, correction, regression result and source identity. The ZAP-discovered login failure is an executed example of this cycle. Historical failed runs remain available instead of being silently relabelled.
+
+### 2.3 Environment and test-data controls
+
+Use uniquely named disposable SQL/Mongo test stores and a reserved Redis test database, with explicit integration-test flags. Fixtures include known coordinates, null/unknown source attributes, controlled prices/hours, owner/other-user/ADMIN accounts and deterministic review scores. Synthetic source import tests preserve source identities and do not alter the live directory. Unknown real-source amenities or schedules remain unknown.
+
+Keep credentials outside version control and reports. Do not print passwords, hashes, signing keys or provider responses containing personal data. AI providers are faked for repeatable contracts; native-provider smoke evidence is explicitly labelled and quota-bounded. An unavailable dependency must produce an honest error/fallback rather than fabricated empty data. Cleanup is restricted to resources belonging to the test run; no load or active security scan targets production.
+
+### 2.4 Ownership and triage
+
+| Team member | Project test/implementation ownership |
+|---|---|
+| Özgür Kılıç | Backend analytics/detail integration, cross-service acceptance and release/report coordination |
+| Yusuf Selim Aksu | QA evidence, real-store CI, infrastructure and deployment checks |
+| Fırat Karadoğan | Authentication, SQL/Mongo consistency, reviews and account-deletion/security boundaries |
+| Emir Miraç İslamoğlu | AI adapter, grounding, cache, timeout and fallback behavior |
+| Onur Arda Buldağ | Shared frontend session/HTTP, ADMIN panel and accessibility/component behavior |
+| Ahmet Furkan Yardımcı | Map, filter/detail/review UI, responsive interaction and directions handoff |
+
+These assignments describe project ownership, not an assertion that each member personally executed every reported command. Failures are triaged to the owning service and coordinated through the repository's issues/PRs. Security/data-integrity or core-flow defects require correction and regression evidence; cosmetic and maintenance findings are documented with their impact and disposition. Retesting preserves the requirement and original threshold.
+
+### 2.5 Entry, exit and acceptance criteria
+
+Entry criteria: known source revision and dependency versions; valid configuration without committed secrets; reachable isolated stores and applied migrations; known synthetic fixtures; working test/build commands; explicit distinction between live-provider calls and fake-provider tests. Pause environment-dependent acceptance if these prerequisites fail; do not count skipped service tests as passed.
+
+Execution exit criteria: required automated runs finish without unaccounted failures/errors/skips; all required CI workflows succeed on the published head; backend implementation coverage meets at least 80%; each declared requirement has an evidence path; defects and residual risks have an explicit disposition. The measured nearby-search target is mean and p95 below 250 ms for 10,000 records and 50 clients. Tool warnings, manual cases and incomplete quality targets are interpreted separately rather than converted to unconditional passes.
+
+The reported candidate meets the stated automated execution, build, coverage and local search-load criteria. This is not blanket acceptance of all non-functional goals: monthly availability, full WCAG/mobile/FPS measurements, broad native-AI accuracy/latency and complete human AI evaluation retain the limitations documented below. Faculty review and actual assignment submission are independent process steps.
+
+## 3. Environment, test layers and counting rules
 
 Reproducible tests used synthetic facilities/accounts/reviews in disposable local PostgreSQL 16/PostGIS 3.4, MongoDB 7 and Redis 7.4 Docker services. The API candidate used the production cloud composition and frontend build. The scan target network had external egress disabled; no production datastore or real account was used. Python coverage 7.14.1 ran with branch measurement and `--source=src`. Vitest/V8 measured frontend source, excluding test files. AI test providers were deterministic; **no new native Gemini call** was made.
 
-Backend commands: `python -m coverage run --branch --source=src -m pytest tests -q --junitxml=pytest.xml`, then coverage JSON/XML exports. Explicit service opt-ins were `SMARTLOO_TEST_POSTGIS=1`, `SMARTLOO_TEST_MONGO=1` and a private test Redis URL. Frontend commands: `npm ci`, `npm test -- --coverage`, `npm run build`. Release guards: `node --test tests/release_checks.test.cjs`. Build receipt: [cloud-build.log](evidence/coverage/cloud-build.log).
+Backend commands: `python -m coverage run --branch --source=src -m pytest tests -q --junitxml=pytest.xml`, then coverage JSON/XML exports. Explicit service opt-ins were `SMARTLOO_TEST_POSTGIS=1`, `SMARTLOO_TEST_MONGO=1` and a private test Redis URL. Frontend commands: `npm ci`, `npm test -- --coverage`, `npm run build`. Release guards: `node --test tests/release_checks.test.cjs`. Build receipt: [cloud-build.log](https://github.com/akcedia/SmartLoo/blob/d9b54e8bdd1b206a0d10956355134e066c437ab9/docs/testing/evidence/coverage/cloud-build.log).
 
-JUnit aggregate `tests=631` includes 59 subtests; it does not mean 631 independent test functions. There are 572 `<testcase>` records. The 53 acceptance-catalog instances are a subset of these 572 and are not added again. The 309 component tests cover 25 frontend files; the additional five mounted frontend files are mapped separately and retain their historical main-CI scope. The 14 Node guards are a separate runner. These layers are not collapsed into an inflated single total.
+JUnit aggregate `tests=631` includes 59 subtests; it does not mean 631 independent test functions. There are 572 `<testcase>` records. The 53 acceptance-catalog instances are a subset of these 572 and are not added again. The 309 component tests cover 25 frontend files; five additional mounted frontend files are mapped separately. The frozen local matrix preserves its preparation-time evidence scope; subsequent published-candidate CI also passed the mounted suites. The workflow receipts in section 10 identify the exact candidate checks. The 14 Node guards are a separate runner. These layers are not collapsed into an inflated single total.
 
 An initial local run had one health assertion fail because the inherited Render revision environment variable changed the expected liveness body. The final run explicitly cleared that deployment-only setting; no assertion was relaxed. A first Sonar import also failed because its source prefix resolved `src/src/...`; both the failed receipt and corrected import are retained. Final results are the retests identified here, not the initial failures.
 
-## 3. Tests by requirement and requirement coverage
+## 4. Tests by requirement and requirement coverage
 
-Requirement baseline: [REQUIREMENTS.MD](../REQUIREMENTS.MD), [DB/security subrequirements](../requirements/db-security.md) and the existing 48-case catalog. Every discovered test file has an explicit mapping; `scripts/build_test_traceability.py` rejects newly added/unmapped Python or frontend files. See [complete 75-file matrix](evidence/coverage/TEST-REQUIREMENT-MATRIX.md) and its [machine-readable source](evidence/coverage/test-requirement-map.json).
+Requirement baseline: [REQUIREMENTS.MD](https://github.com/akcedia/SmartLoo/blob/d9b54e8bdd1b206a0d10956355134e066c437ab9/docs/REQUIREMENTS.MD), [DB/security subrequirements](https://github.com/akcedia/SmartLoo/blob/d9b54e8bdd1b206a0d10956355134e066c437ab9/docs/requirements/db-security.md) and the existing 48-case catalog. Every discovered test file has an explicit mapping; `scripts/build_test_traceability.py` rejects newly added/unmapped Python or frontend files. See [complete 75-file matrix](https://github.com/akcedia/SmartLoo/blob/d9b54e8bdd1b206a0d10956355134e066c437ab9/docs/testing/evidence/coverage/TEST-REQUIREMENT-MATRIX.md) and its [machine-readable source](https://github.com/akcedia/SmartLoo/blob/d9b54e8bdd1b206a0d10956355134e066c437ab9/docs/testing/evidence/coverage/test-requirement-map.json).
 
 | Coverage definition | Numerator /denominator | Percentage /meaning |
 | --- | --- | --- |
@@ -50,7 +113,7 @@ These percentages measure requirement-to-test association, not code execution co
 | FR-01 Nearby distance search | TC-01, TC-11, TC-14 | 8 files linked; full paths in Appendix A | Automated contract/integration evidence passed |
 | FR-02 Accessibility / baby / price filters | TC-02, TC-03, TC-12, TC-13 | 9 files linked; full paths in Appendix A | Automated contract/integration evidence passed |
 | FR-03 Create, edit and delete owned reviews | TC-05, TC-06, TC-26, TC-31, TC-32, TC-35, TC-46 | 12 files linked; full paths in Appendix A | Automated contract/integration evidence passed |
-| FR-04 Grounded Turkish AI summaries and recommendations | TC-08, TC-15, TC-16, TC-17, TC-28 | 22 files linked; full paths in Appendix A | Automated fake-provider/cache/grounding checks passed; native and human acceptance limited (section 8) |
+| FR-04 Grounded Turkish AI summaries and recommendations | TC-08, TC-15, TC-16, TC-17, TC-28 | 22 files linked; full paths in Appendix A | Automated fake-provider/cache/grounding checks passed; native and human acceptance limited (section 9) |
 | FR-05 Suggest facilities and ADMIN moderation | TC-07, TC-18 | 7 files linked; full paths in Appendix A | Automated contract/integration evidence passed |
 | FR-06 District/date hygiene analytics and alerts | TC-09, TC-25 | 9 files linked; full paths in Appendix A | Automated contract/integration evidence passed |
 | FR-07 CSV/JSON import and filtered export | TC-10, TC-19, TC-20, TC-24, TC-36 | 18 files linked; full paths in Appendix A | Automated contract/integration evidence passed |
@@ -60,7 +123,7 @@ These percentages measure requirement-to-test association, not code execution co
 
 TC-08/15/16/17/28 and TC-21 are no longer shown as failing in the final matrix: their executable instances passed in the final run. The full catalog with all 48 IDs is in Appendix B. Manual TC-22/23 retain their procedure and scoped historical/browser evidence instead of a false automated status.
 
-## 4. Code coverage: definitions, denominators and final results
+## 5. Code coverage: definitions, denominators and final results
 
 | Measure | Covered /total | Result | Meaning |
 | --- | --- | --- | --- |
@@ -77,11 +140,11 @@ TC-08/15/16/17/28 and TC-21 are no longer shown as failing in the final matrix: 
 
 Statement coverage counts executable Python statements reached at least once. Branch coverage counts possible control-flow destinations reached; a line can execute while one conditional outcome remains untested. Coverage.py's combined percentage is `(covered statements +covered branch destinations)/(all statements +all branch destinations)`: **(2538+700)/(2674+800)=93.21%**. It is weighted by opportunities, not the mean of 94.91% and 87.50%. Eleven inherited excluded lines remain declared; **no src module was omitted**.
 
-Frontend line 83.31%, statement 81.35%, branch 77.57% and function 78.99% refer to different V8 counters. The old shorthand backend 93% /frontend 83% /Sonar 87% compared different measures. The current exact values are 93.21% backend combined, 83.31% frontend lines and 87.1% Sonar combined. Sonar combines imported Python coverage and frontend LCOV through its own executable-line/condition definitions across languages, with a different denominator; it is not `(93.21+83.31)/2`. Its 93.2% **new-code** coverage concerns the unchanged previous-version baseline subset, not overall coverage. The raw XML/JSON/LCOV files allow independent inspection.
+Frontend line 83.31%, statement 81.35%, branch 77.57% and function 78.99% refer to different V8 counters. The shorthand backend 93% /frontend 83% /Sonar 87% compared different measures. The current exact values are 93.21% backend combined, 83.31% frontend lines and 87.1% Sonar combined. Sonar combines imported Python coverage and frontend LCOV through its own executable-line/condition definitions across languages, with a different denominator; it is not `(93.21+83.31)/2`. Its 93.2% **new-code** coverage concerns the unchanged previous-version baseline subset, not overall coverage. The raw XML/JSON/LCOV files allow independent inspection.
 
 Interpretation: the backend exceeds the implementation target>=80%, but 136 statements and 100 branch destinations remain uncovered. Frontend branch 77.57% is weaker than its line measure; uncommon/error interactions deserve further work. A green gate is useful regression evidence, not proof that every behavior or security boundary is correct.
 
-## 5. Non-functional tests and interpretation
+## 6. Non-functional tests and interpretation
 
 | Requirement | Target | Result /limitation | Actual evidence |
 | --- | --- | --- | --- |
@@ -93,24 +156,24 @@ Interpretation: the backend exceeds the implementation target>=80%, but 136 stat
 | NFR-06 | Keyboard, focus, labels; WCAG 2.1 AA target | Focus/labels/menu component tests and bounded browser checks pass. No complete independent WCAG conformance audit. | Frontend accessibility test paths |
 | NFR-07 | 99% monthly uptime; AI outage must not disable search | Provider/Redis/Mongo outage and fallback paths tested. Monthly99% cannot be inferred from a short observation. | AI/HTTP/error tests |
 | NFR-08 | Location consent, deletion/anonymization and PII redaction | Deletion/consistency and restricted-policy PII guards pass; no new real location collected. Broad human semantic/PII acceptance remains incomplete. | Deletion/privacy/AI modules; partial human-review record |
-| NFR-09 | Backend ≥80%; lint/test/build merge gates | All29 backend modules combined 93.21%;572+59 tests;309 frontend tests;14 guards; build and Sonar gate passed. Candidate GitHub CI runs only after publication. | coverage/ and quality/ |
+| NFR-09 | Backend ≥80%; lint/test/build merge gates | All29 backend modules combined 93.21%;572+59 tests;309 frontend tests;14 guards; build and Sonar gate passed. All nine published-candidate workflows passed; see section 10. | coverage/ and quality/ |
 | NFR-10 | TR/EN interface; Turkish AI summary | Settings/core labels and components tested; browser switched TR/EN. Some legacy map/detail strings remain Turkish in English mode. No universal translation claim. | i18n/settings component tests; browser-regression.json |
 
-### 5.1 Current nearby-search load result
+### 6.1 Current nearby-search load result
 
-The same ten-request mixed spatial/filter workload used for the earlier benchmark was run against this candidate with 10,000 synthetic rows and 50 constant virtual clients. A 60-second warm-up preceded a separate 300-second measurement. API resources were one worker, 2 CPU and 1 GiB; PostgreSQL/PostGIS and API shared the private Docker network. ZAP/Sonar/full-suite executions had finished before measurement. Exact runner settings, k6 pinned digest, exit codes and raw values are retained in [the NFR packet](evidence/nfr/final-candidate-2026-11-26/summary.json).
+The same ten-request mixed spatial/filter workload used for the earlier benchmark was run against this candidate with 10,000 synthetic rows and 50 constant virtual clients. A 60-second warm-up preceded a separate 300-second measurement. API resources were one worker, 2 CPU and 1 GiB; PostgreSQL/PostGIS and API shared the private Docker network. ZAP/Sonar/full-suite executions had finished before measurement. Exact runner settings, k6 pinned digest, exit codes and raw values are retained in [the NFR packet](https://github.com/akcedia/SmartLoo/blob/d9b54e8bdd1b206a0d10956355134e066c437ab9/docs/testing/evidence/nfr/final-candidate-2026-11-26/summary.json).
 
 Measurement: **116,433 requests**, **0 failed requests**, checks rate **100.00%**, mean **128.60 ms**, p95 **167.26 ms**. Original thresholds remain `avg<250` and `p(95)<250`; result **PASS**. This single local benchmark does not establish cloud cold-start latency or monthly service reliability. The previous 253.74 ms p95 remains a historical strict-threshold miss accepted by the project owner, not an instructor-approved pass; the current measurement does not rewrite that receipt. The network path is now private Docker-to-Docker; this is not a controlled before/after comparison isolating code changes from environment effects.
 
-### 5.2 Resilience, UI, privacy and internationalization
+### 6.2 Resilience, UI, privacy and internationalization
 
 Cache invalidation uses review changes/policy identity; provider timeout and Redis outage return safe fallback rather than preventing ordinary search. Mongo failure must surface as unavailable, not fabricated zero reviews. ADMIN analytics/export share filters, Istanbul day boundaries and individual-review averages; no reviews means null and the critical threshold remains<3.5. Deletion tests cover anonymization and interrupted cleanup/data integrity.
 
 Keyboard/menu/focus tests and the local post-CSP browser check demonstrate bounded usability. They do not measure 500 visible markers at 30 FPS, all mobile network profiles, or complete WCAG 2.1 AA. TR/EN switching works for tested labels, but visible legacy detail/map strings can remain Turkish. These limits are carried forward without blanket NFR acceptance.
 
-## 6. Security assessment, penetration tool and remediation
+## 7. Security assessment, penetration tool and remediation
 
-The requested real tool was **OWASP ZAP**, using the official pinned Docker image. A passive baseline assessed the SPA and an active OpenAPI scan exercised API endpoints in the isolated local Docker environment. Full commands, image digest, before/intermediate/final raw JSON/HTML/Markdown, exit codes and exact dispositions are in [the ZAP packet](evidence/security/zap-2026-11-26/README.md). No scan targeted the public Render application. The official tool descriptions distinguish [baseline](https://www.zaproxy.org/docs/docker/baseline-scan/) and [active API scanning](https://www.zaproxy.org/docs/docker/api-scan/).
+The requested real tool was **OWASP ZAP**, using the official pinned Docker image. A passive baseline assessed the SPA and an active OpenAPI scan exercised API endpoints in the isolated local Docker environment. Full commands, image digest, before/intermediate/final raw JSON/HTML/Markdown, exit codes and exact dispositions are in [the ZAP packet](https://github.com/akcedia/SmartLoo/blob/d9b54e8bdd1b206a0d10956355134e066c437ab9/docs/testing/evidence/security/zap-2026-11-26/README.md). No scan targeted the public Render application. The official tool descriptions distinguish [baseline](https://www.zaproxy.org/docs/docker/baseline-scan/) and [active API scanning](https://www.zaproxy.org/docs/docker/api-scan/).
 
 | Finding /severity | What was done | Retest interpretation |
 | --- | --- | --- |
@@ -121,13 +184,13 @@ The requested real tool was **OWASP ZAP**, using the official pinned Docker imag
 | Unexpected root content type /Low | Root deliberately serves the HTML SPA; keep raw alert, no rule suppression | Contextual false positive; one Low alert type/two instances remains |
 | 4xx/authentication/modern SPA /Informational | Keep validation/auth boundaries and tool inventory observations | 83 final client-error instances; not hidden or counted as exploitable findings |
 
-Final baseline has no High/Medium/Low alert; final active API has no High/Medium, one Low type with 2 expected HTML-root instances, and informational observations. Both tools return exit 2 (WARN), not a clean exit 0. This is an **unauthenticated automated penetration assessment**, complemented by actual auth/ownership tests and the historical35-case Docker HTTP assessment. It is not an exhaustive authenticated pentest or a security certification. Local HTTP findings do not prove production HTTPS. Historical dependency audits and HTTP receipts retain their own source/date scopes; they are not relabelled current rescans.
+Final baseline has no High/Medium/Low alert; final active API has no High/Medium, one Low type with 2 expected HTML-root instances, and informational observations. Both tools return exit 2 (WARN), not a clean exit 0. This is an **unauthenticated automated penetration assessment**, complemented by actual auth/ownership tests and the historical 35-case Docker HTTP assessment. It is not an exhaustive authenticated pentest or a security certification. Local HTTP findings do not prove production HTTPS. Historical dependency audits and HTTP receipts retain their own source/date scopes; they are not relabelled current rescans.
 
 The defect-to-regression chain is preserved: initial failing email/header tests, source validation/header changes, green focused suite, full backend run and final ZAP scan. No legitimate password-byte boundary, login throttling or unknown-user generic response was weakened to satisfy the scanner.
 
-## 7. SonarQube results, issue actions and interpretation
+## 8. SonarQube results, issue actions and interpretation
 
-The corrected candidate scan completed with scanner exit 0 and gate **OK**: new-code coverage 93.2%>=80%, new duplication 0.0%<=3%, new violations 0. Overall 87.1%, lines 90.6%, branches 80.7%; bugs 0, vulnerabilities 0, hotspots 0. The exact revision and unchanged baseline are recorded in [sonar-result.json](evidence/quality/sonar-result.json) and [sonar-gate.json](evidence/quality/sonar-gate.json). No analysis rule was disabled.
+The corrected candidate scan completed with scanner exit 0 and gate **OK**: new-code coverage 93.2%>=80%, new duplication 0.0%<=3%, new violations 0. Overall 87.1%, lines 90.6%, branches 80.7%; bugs 0, vulnerabilities 0, hotspots 0. The exact revision and unchanged baseline are recorded in [sonar-result.json](https://github.com/akcedia/SmartLoo/blob/d9b54e8bdd1b206a0d10956355134e066c437ab9/docs/testing/evidence/quality/sonar-result.json) and [sonar-gate.json](https://github.com/akcedia/SmartLoo/blob/d9b54e8bdd1b206a0d10956355134e066c437ab9/docs/testing/evidence/quality/sonar-gate.json). No analysis rule was disabled.
 
 The required issue table below includes every exported issue, including historical closed/false-positive records and the three still-open MAJOR maintainability issues. A resolved false positive is a disposition, not a source fix.
 
@@ -150,32 +213,53 @@ The required issue table below includes every exported issue, including historic
 
 The three open regex-complexity findings are bounded by email/comment length validation but remain maintenance debt. No new critical/high-severity vulnerability is asserted from the issue list; static analyzer category/severity is not the same as ZAP risk. The former literal dummy password hash (BLOCKER rule S6437) is closed after generating the timing-protection hash from fresh random bytes. Accessibility fixes and historic semantic false-positive classifications are separately identified. Full measures, hotspots, scanner log and corrected coverage input sit in the quality folder with a short README.
 
-## 8. AI evidence and known limitations
+## 9. AI evidence and known limitations
 
 Deterministic providers exercise structured output, grounding, PII/injection rejection, cache invalidation, recommendation fallback and provider configuration. Native Gemini Free-tier smoke evidence is historical and limited by quota. No new Gemini request was authorized for this report correction, and none was made. An empty/insufficient-review summary safely returns unavailable/null rather than invented observations.
 
-The human evaluation is **partial**: 28 grouped input labels and3/10 grouped output labels; seven outputs were not evaluated. The original uniformly positive answers are retained, but output 03 contains an unsupported water assertion. It remains a technical grounding failure despite the grouped human approval. Restricted-policy fixture agreement is not broad Turkish-language accuracy, an independent blinded study or complete human acceptance. See [the unchanged human-review record](evidence/ai/human-review-ozgur-2026-11-24.md).
+The human evaluation is **partial**: 28 grouped input labels and 3/10 grouped output labels; seven outputs were not evaluated. The original uniformly positive answers are retained, but output 03 contains an unsupported water assertion. It remains a technical grounding failure despite the grouped human approval. Restricted-policy fixture agreement is not broad Turkish-language accuracy, an independent blinded study or complete human acceptance. See [the unchanged human-review record](https://github.com/akcedia/SmartLoo/blob/d9b54e8bdd1b206a0d10956355134e066c437ab9/docs/testing/evidence/ai/human-review-ozgur-2026-11-24.md).
 
-Remaining limitations are explicit: native AI latency/semantic acceptance, monthly 99% uptime, full mobile/FPS/WCAG measurement, incomplete English translation, and three inherited Sonar maintenance findings. No unavailable measurement is replaced by a claimed pass. Production re-verification and candidate CI are distinct from this local packet; instructor approval and Learn submission are separate events.
+Remaining limitations are explicit: native AI latency/semantic acceptance, monthly 99% uptime, full mobile/FPS/WCAG measurement, incomplete English translation, and three inherited Sonar maintenance findings. No unavailable measurement is replaced by a claimed pass. Production verification is distinct from the local packet and published-candidate CI. Academic review and Learn submission are also separate events.
 
-## 9. Reproduction, artifact index and delivery state
+## 10. Reproduction, artifact index and delivery state
 
 Current primary artifacts:
 
-- [Coverage README](evidence/coverage/README.md): raw backend JUnit/XML/summary, frontend JSON/LCOV/logs, build, guards and complete traceability.
-- [NFR README](evidence/nfr/README.md): executed current 5-minute load result plus the unchanged historical benchmark context.
-- [Quality README](evidence/quality/README.md): actual Sonar gate, measures, issues, hotspot export and issue/action table.
-- [Security README](evidence/security/zap-2026-11-26/README.md): real tool commands, all scan stages, remediation, regression and browser scope.
-- [Historical release packet](evidence/release-2026-11-24/README.md): previous35-case HTTP assessment, dependency audit and source-specific runs.
-- [Historical diary appendix](archive/REPORT-HISTORY-through-2026-11-25.md): prior day-by-day record, superseded for final acceptance results.
+- [Coverage README](https://github.com/akcedia/SmartLoo/blob/d9b54e8bdd1b206a0d10956355134e066c437ab9/docs/testing/evidence/coverage/README.md): raw backend JUnit/XML/summary, frontend JSON/LCOV/logs, build, guards and complete traceability.
+- [NFR README](https://github.com/akcedia/SmartLoo/blob/d9b54e8bdd1b206a0d10956355134e066c437ab9/docs/testing/evidence/nfr/README.md): executed current 5-minute load result plus the unchanged historical benchmark context.
+- [Quality README](https://github.com/akcedia/SmartLoo/blob/d9b54e8bdd1b206a0d10956355134e066c437ab9/docs/testing/evidence/quality/README.md): actual Sonar gate, measures, issues, hotspot export and issue/action table.
+- [Security README](https://github.com/akcedia/SmartLoo/blob/d9b54e8bdd1b206a0d10956355134e066c437ab9/docs/testing/evidence/security/zap-2026-11-26/README.md): real tool commands, all scan stages, remediation, regression and browser scope.
+- [Historical release packet](https://github.com/akcedia/SmartLoo/blob/d9b54e8bdd1b206a0d10956355134e066c437ab9/docs/testing/evidence/release-2026-11-24/README.md): previous 35-case HTTP assessment, dependency audit and source-specific runs.
+- [Historical diary appendix](https://github.com/akcedia/SmartLoo/blob/d9b54e8bdd1b206a0d10956355134e066c437ab9/docs/testing/archive/REPORT-HISTORY-through-2026-11-25.md): prior day-by-day record, superseded for final acceptance results.
 
-Reproduce in fresh disposable services with explicit test flags; never point test/scanner/import runners at Neon/Atlas/production. Build the production Docker image, run the full backend and frontend commands in section2, retain branch-enabled coverage, then run pinned ZAP on the private Docker alias and pinned Sonar with the correct `/usr/src` coverage root. Keep raw failed runs and classify them; do not alter acceptance thresholds or exclude source files to improve percentages.
+Reproduce in fresh disposable services with explicit test flags; never point test/scanner/import runners at Neon/Atlas/production. Build the production Docker image, run the full backend and frontend commands in section 3, retain branch-enabled coverage, then run pinned ZAP on the private Docker alias and pinned Sonar with the correct `/usr/src` coverage root. Keep raw failed runs and classify them; do not alter acceptance thresholds or exclude source files to improve percentages.
 
-For the teaching review, the existing PR76 conversation and requested-changes review must be preserved. The required local branch is now named `test_work`; publishing the prepared candidate requires the owner's GitHub approval. GitHub closes an open PR when its head branch is renamed, so the proposed delivery preserves PR #76 and its review, updates its current branch, and opens a linked correction PR from `test_work` for the required branch name. No automatic branch rename or closure is proposed. The report must not be merged solely to clear the checklist. After instructor approval, submit the PDF to Learn by 29 November23:59; codebase/presentation deadlines remain 30 November23:59. The codebase package excludes bundled dependencies, PDFs and large images as required by its assignment. Actual Learn upload and instructor approval are not claimed by this report.
+### Publication and review record
+
+The revised package was published from the required `test_work` branch in [PR #106](https://github.com/akcedia/SmartLoo/pull/106), linked to the original [PR #76](https://github.com/akcedia/SmartLoo/pull/76) and its 26 November requested-changes review. The original review history remains available. All nine workflows below passed on exact head `d9b54e8bdd1b206a0d10956355134e066c437ab9`; their status was reverified on 28 November. No new native model calls were made for this submission edition.
+
+| Workflow | Result | Execution receipt |
+|---|---|---|
+| AI summary HTTP integration | Passed | [Run 45882371703](https://github.com/akcedia/SmartLoo/actions/runs/45882371703) |
+| SmartLoo review checks | Passed | [Run 45882371806](https://github.com/akcedia/SmartLoo/actions/runs/45882371806) |
+| Map review live integration | Passed | [Run 45882371805](https://github.com/akcedia/SmartLoo/actions/runs/45882371805) |
+| Admin panel live integration | Passed | [Run 45882371721](https://github.com/akcedia/SmartLoo/actions/runs/45882371721) |
+| Admin import live integration | Passed | [Run 45882371730](https://github.com/akcedia/SmartLoo/actions/runs/45882371730) |
+| Free cloud image checks | Passed | [Run 45882371733](https://github.com/akcedia/SmartLoo/actions/runs/45882371733) |
+| Account deletion live integration | Passed | [Run 45882371727](https://github.com/akcedia/SmartLoo/actions/runs/45882371727) |
+| IBB source import checks | Passed | [Run 45882371728](https://github.com/akcedia/SmartLoo/actions/runs/45882371728) |
+| AI Redis component checks | Passed | [Run 45882371834](https://github.com/akcedia/SmartLoo/actions/runs/45882371834) |
+
+These successful workflows include real-store HTTP checks, Redis component checks and mounted UI integration for map/reviews, ADMIN analytics/import, moderation, account deletion and AI fallback. They complement the local full-suite coverage measurement; the counts and coverage denominators remain separate. No CI failure was overridden to mark a run successful.
+
+Review status checked on 28 November: PR #106 is open with `yesimyigitbasi` requested as reviewer; no submitted review is recorded on that correction PR. The requested report corrections and successful CI do not themselves constitute a recorded academic approval. Submission to Learn is tracked independently of this PDF's preparation.
+
+The Learn assignment is **05 - Software Test Plan**, due **29 November 2026, 23:59, Europe/Istanbul**, as shown by the current assignment and the 17 November course announcement. This supersedes the original 22 November testing date in the Charter. The report and embedded figure are self-contained; immutable GitHub snapshot links provide the underlying raw artifacts.
+
 
 ## Appendix A. Complete test-file traceability
 
-43 Python test modules,30 frontend test files (25 component +5 mounted), one Redis integration suite and one Node guard file:75 mapped files. The execution column preserves fresh versus historical mounted scope. The JSON companion includes evidence paths and JUnit counts.
+43 Python test modules, 30 frontend test files (25 component +5 mounted), one Redis integration suite and one Node guard file: 75 mapped files. The JSON companion contains paths and JUnit counts from the frozen preparation packet. The table below also cross-references the subsequent successful candidate CI for mounted suites; it does not add these tests to the 309 component-test total.
 
 | Test file | Requirements | Execution scope |
 | --- | --- | --- |
@@ -223,22 +307,22 @@ For the teaching review, the existing PR76 conversation and requested-changes re
 | tests/test_turkish_ai_acceptance.py | FR-04, NFR-08 | passed; 42 cases |
 | tests/test_zap_regressions.py | FR-08, FR-09, NFR-04 | passed; 15 cases |
 | frontend/src/app/a11y.test.jsx | FR-09, NFR-05, NFR-06 | frontend component scope |
-| frontend/src/features/admin/admin.live.jsx | FR-06, FR-07, NFR-03, NFR-08 | mounted integration scope; historical main workflow, not fresh candidate retest |
+| frontend/src/features/admin/admin.live.jsx | FR-06, FR-07, NFR-03, NFR-08 | mounted integration passed in published-candidate CI; section 10 |
 | frontend/src/features/admin/api/admin.test.js | FR-06, FR-07, NFR-04 | frontend component scope |
 | frontend/src/features/admin/api/httpAdapter.test.js | FR-06, FR-07, FR-08, NFR-03 | frontend component scope |
 | frontend/src/features/admin/components/components.test.jsx | FR-06, FR-07, NFR-05, NFR-06 | frontend component scope |
 | frontend/src/features/admin/contract.test.jsx | FR-06, FR-07, NFR-04 | frontend component scope |
 | frontend/src/features/admin/import/AdminImport.test.jsx | FR-07, NFR-03, NFR-04 | frontend component scope |
-| frontend/src/features/admin/import/adminImport.live.jsx | FR-07, NFR-03, NFR-04 | mounted integration scope; historical main workflow, not fresh candidate retest |
+| frontend/src/features/admin/import/adminImport.live.jsx | FR-07, NFR-03, NFR-04 | mounted integration passed in published-candidate CI; section 10 |
 | frontend/src/features/admin/import/importApi.test.js | FR-07, NFR-03, NFR-04 | frontend component scope |
-| frontend/src/features/admin/moderation/moderation.live.jsx | FR-05, FR-10, NFR-03, NFR-08 | mounted integration scope; historical main workflow, not fresh candidate retest |
+| frontend/src/features/admin/moderation/moderation.live.jsx | FR-05, FR-10, NFR-03, NFR-08 | mounted integration passed in published-candidate CI; section 10 |
 | frontend/src/features/admin/moderation/moderation.test.jsx | FR-05, FR-10, NFR-03, NFR-08 | frontend component scope |
 | frontend/src/features/admin/moderation/moderationRace.test.jsx | FR-05, FR-10, NFR-03, NFR-08 | frontend component scope |
-| frontend/src/features/auth/accountDeletion.live.jsx | FR-10, NFR-03, NFR-08 | mounted integration scope; historical main workflow, not fresh candidate retest |
+| frontend/src/features/auth/accountDeletion.live.jsx | FR-10, NFR-03, NFR-08 | mounted integration passed in published-candidate CI; section 10 |
 | frontend/src/features/auth/accountDeletion.test.jsx | FR-10, NFR-03, NFR-08 | frontend component scope |
 | frontend/src/features/auth/auth.test.jsx | FR-08, NFR-03, NFR-04 | frontend component scope |
 | frontend/src/features/map/MapView.density.test.jsx | FR-09, NFR-05 | frontend component scope |
-| frontend/src/features/map/ai.live.jsx | FR-04, NFR-02, NFR-08 | mounted integration scope; historical main workflow, not fresh candidate retest |
+| frontend/src/features/map/ai.live.jsx | FR-04, NFR-02, NFR-08 | mounted integration passed in published-candidate CI; section 10 |
 | frontend/src/features/map/cityDirectory.test.jsx | FR-01, FR-02, FR-07, FR-09, NFR-04 | frontend component scope |
 | frontend/src/features/map/directions.test.jsx | FR-09, NFR-08 | frontend component scope |
 | frontend/src/features/map/layout.test.jsx | FR-02, FR-09, NFR-05, NFR-06 | frontend component scope |
@@ -253,7 +337,7 @@ For the teaching review, the existing PR76 conversation and requested-changes re
 | frontend/src/shared/settings/settings.test.jsx | FR-09, NFR-05, NFR-06, NFR-10 | frontend component scope |
 | frontend/src/shared/theme/theme.test.jsx | NFR-05, NFR-06 | frontend component scope |
 | tests/release_checks.test.cjs | NFR-09 | Node deployment guards |
-| integration/ai_redis_suite.py | FR-04, NFR-02, NFR-07 | real Redis component scope; historical main workflow, not fresh candidate retest |
+| integration/ai_redis_suite.py | FR-04, NFR-02, NFR-07 | real Redis component passed in published-candidate CI; section 10 |
 
 ## Appendix B. All 48 acceptance-case IDs
 
