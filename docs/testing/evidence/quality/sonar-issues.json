@@ -1,0 +1,694 @@
+{
+  "total": 13,
+  "p": 1,
+  "ps": 500,
+  "paging": {
+    "pageIndex": 1,
+    "pageSize": 500,
+    "total": 13
+  },
+  "effortTotal": 165,
+  "issues": [
+    {
+      "key": "79206ecb-12e4-4b55-95aa-cbd00360270e",
+      "rule": "javascript:S6843",
+      "severity": "MAJOR",
+      "component": "smartloo-main-6b1c5b2f:frontend/src/features/admin/components/FacilityTable.jsx",
+      "project": "smartloo-main-6b1c5b2f",
+      "line": 32,
+      "hash": "2cb9ef085f8a0ecfe02fa84b4d838753",
+      "textRange": {
+        "startLine": 32,
+        "endLine": 32,
+        "startOffset": 20,
+        "endOffset": 31
+      },
+      "flows": [],
+      "resolution": "FALSE-POSITIVE",
+      "status": "RESOLVED",
+      "message": "Interactive elements should not be assigned non-interactive roles.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "",
+      "tags": [
+        "accessibility",
+        "react"
+      ],
+      "creationDate": "2026-11-24T16:26:22+0000",
+      "updateDate": "2026-11-24T16:43:45+0000",
+      "type": "CODE_SMELL",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "CONVENTIONAL",
+      "cleanCodeAttributeCategory": "CONSISTENT",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        },
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "FALSE_POSITIVE",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "c0faaa73-8542-4fe3-a982-d494b4fb10e4",
+      "rule": "javascript:S6843",
+      "severity": "MAJOR",
+      "component": "smartloo-main-6b1c5b2f:frontend/src/features/admin/components/FacilityTable.jsx",
+      "project": "smartloo-main-6b1c5b2f",
+      "line": 33,
+      "hash": "c78c6a985918bcc35ede517f29265a9c",
+      "textRange": {
+        "startLine": 33,
+        "endLine": 33,
+        "startOffset": 20,
+        "endOffset": 31
+      },
+      "flows": [],
+      "resolution": "FALSE-POSITIVE",
+      "status": "RESOLVED",
+      "message": "Interactive elements should not be assigned non-interactive roles.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "",
+      "tags": [
+        "accessibility",
+        "react"
+      ],
+      "creationDate": "2026-11-24T16:26:22+0000",
+      "updateDate": "2026-11-24T16:43:48+0000",
+      "type": "CODE_SMELL",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "CONVENTIONAL",
+      "cleanCodeAttributeCategory": "CONSISTENT",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        },
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "FALSE_POSITIVE",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "67d8df32-7312-401b-812f-0c5210354189",
+      "rule": "javascript:S6843",
+      "severity": "MAJOR",
+      "component": "smartloo-main-6b1c5b2f:frontend/src/features/admin/components/FacilityTable.jsx",
+      "project": "smartloo-main-6b1c5b2f",
+      "line": 38,
+      "hash": "e6c0cc52b0cf0f8619497ffc04bfd83e",
+      "textRange": {
+        "startLine": 38,
+        "endLine": 38,
+        "startOffset": 20,
+        "endOffset": 31
+      },
+      "flows": [],
+      "resolution": "FALSE-POSITIVE",
+      "status": "RESOLVED",
+      "message": "Interactive elements should not be assigned non-interactive roles.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "",
+      "tags": [
+        "accessibility",
+        "react"
+      ],
+      "creationDate": "2026-11-24T16:26:22+0000",
+      "updateDate": "2026-11-24T16:43:49+0000",
+      "type": "CODE_SMELL",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "CONVENTIONAL",
+      "cleanCodeAttributeCategory": "CONSISTENT",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        },
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "FALSE_POSITIVE",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "632ca4ab-1763-4a71-8b22-95bd50c5e1d4",
+      "rule": "javascript:S6843",
+      "severity": "MAJOR",
+      "component": "smartloo-main-6b1c5b2f:frontend/src/features/admin/components/FacilityTable.jsx",
+      "project": "smartloo-main-6b1c5b2f",
+      "line": 42,
+      "hash": "4ff2af092314a43fcbcc6ab267e2366c",
+      "textRange": {
+        "startLine": 42,
+        "endLine": 42,
+        "startOffset": 20,
+        "endOffset": 31
+      },
+      "flows": [],
+      "resolution": "FALSE-POSITIVE",
+      "status": "RESOLVED",
+      "message": "Interactive elements should not be assigned non-interactive roles.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "",
+      "tags": [
+        "accessibility",
+        "react"
+      ],
+      "creationDate": "2026-11-24T16:26:22+0000",
+      "updateDate": "2026-11-24T16:43:53+0000",
+      "type": "CODE_SMELL",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "CONVENTIONAL",
+      "cleanCodeAttributeCategory": "CONSISTENT",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        },
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "FALSE_POSITIVE",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "9c0adc4b-1481-4a2e-88d8-833519bbe405",
+      "rule": "javascript:S6852",
+      "severity": "MAJOR",
+      "component": "smartloo-main-6b1c5b2f:frontend/src/shared/ui/Dropdown.jsx",
+      "project": "smartloo-main-6b1c5b2f",
+      "hash": "07bafb6f12dcf3a4d16749a9920f22d7",
+      "textRange": {
+        "startLine": 67,
+        "endLine": 67,
+        "startOffset": 8,
+        "endOffset": 142
+      },
+      "flows": [],
+      "resolution": "FIXED",
+      "status": "CLOSED",
+      "message": "Elements with the 'radiogroup' interactive role must be focusable.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "",
+      "tags": [
+        "accessibility",
+        "react"
+      ],
+      "creationDate": "2026-11-24T16:26:22+0000",
+      "updateDate": "2026-11-24T16:48:42+0000",
+      "closeDate": "2026-11-24T16:48:42+0000",
+      "type": "CODE_SMELL",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "CONVENTIONAL",
+      "cleanCodeAttributeCategory": "CONSISTENT",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        },
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "FIXED",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "42588475-630d-458c-a0ce-150b8fcbdf4a",
+      "rule": "javascript:S6843",
+      "severity": "MAJOR",
+      "component": "smartloo-main-6b1c5b2f:frontend/src/features/admin/components/FacilityTable.jsx",
+      "project": "smartloo-main-6b1c5b2f",
+      "hash": "298f315a079121aa58115f4ab1fe7710",
+      "textRange": {
+        "startLine": 40,
+        "endLine": 40,
+        "startOffset": 20,
+        "endOffset": 31
+      },
+      "flows": [],
+      "resolution": "FIXED",
+      "status": "CLOSED",
+      "message": "Interactive elements should not be assigned non-interactive roles.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "",
+      "tags": [
+        "accessibility",
+        "react"
+      ],
+      "creationDate": "2026-11-22T07:38:18+0000",
+      "updateDate": "2026-11-24T16:26:22+0000",
+      "closeDate": "2026-11-24T16:26:22+0000",
+      "type": "CODE_SMELL",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "CONVENTIONAL",
+      "cleanCodeAttributeCategory": "CONSISTENT",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        },
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "FIXED",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "56babffe-bb00-4254-83a5-1f14bcf8b339",
+      "rule": "javascript:S6843",
+      "severity": "MAJOR",
+      "component": "smartloo-main-6b1c5b2f:frontend/src/features/admin/components/FacilityTable.jsx",
+      "project": "smartloo-main-6b1c5b2f",
+      "hash": "28413bd36c8761e02ee3b8a94ee4ad0c",
+      "textRange": {
+        "startLine": 31,
+        "endLine": 31,
+        "startOffset": 20,
+        "endOffset": 31
+      },
+      "flows": [],
+      "resolution": "FIXED",
+      "status": "CLOSED",
+      "message": "Interactive elements should not be assigned non-interactive roles.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "",
+      "tags": [
+        "accessibility",
+        "react"
+      ],
+      "creationDate": "2026-11-22T07:38:18+0000",
+      "updateDate": "2026-11-24T16:26:22+0000",
+      "closeDate": "2026-11-24T16:26:22+0000",
+      "type": "CODE_SMELL",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "CONVENTIONAL",
+      "cleanCodeAttributeCategory": "CONSISTENT",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        },
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "FIXED",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "a39fc908-ff4c-445f-9e21-40a9e97c49fc",
+      "rule": "javascript:S6843",
+      "severity": "MAJOR",
+      "component": "smartloo-main-6b1c5b2f:frontend/src/features/admin/components/FacilityTable.jsx",
+      "project": "smartloo-main-6b1c5b2f",
+      "hash": "485c11df3d982844c039482eed05a821",
+      "textRange": {
+        "startLine": 36,
+        "endLine": 36,
+        "startOffset": 20,
+        "endOffset": 31
+      },
+      "flows": [],
+      "resolution": "FIXED",
+      "status": "CLOSED",
+      "message": "Interactive elements should not be assigned non-interactive roles.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "",
+      "tags": [
+        "accessibility",
+        "react"
+      ],
+      "creationDate": "2026-11-22T07:38:18+0000",
+      "updateDate": "2026-11-24T16:26:22+0000",
+      "closeDate": "2026-11-24T16:26:22+0000",
+      "type": "CODE_SMELL",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "CONVENTIONAL",
+      "cleanCodeAttributeCategory": "CONSISTENT",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        },
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "FIXED",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "e54bb752-7c25-4fcf-a266-828aa6e25eb6",
+      "rule": "javascript:S6843",
+      "severity": "MAJOR",
+      "component": "smartloo-main-6b1c5b2f:frontend/src/features/admin/components/FacilityTable.jsx",
+      "project": "smartloo-main-6b1c5b2f",
+      "hash": "7fdb2ee10a42cffdf74eaf5b923451a3",
+      "textRange": {
+        "startLine": 30,
+        "endLine": 30,
+        "startOffset": 20,
+        "endOffset": 31
+      },
+      "flows": [],
+      "resolution": "FIXED",
+      "status": "CLOSED",
+      "message": "Interactive elements should not be assigned non-interactive roles.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "",
+      "tags": [
+        "accessibility",
+        "react"
+      ],
+      "creationDate": "2026-11-22T07:38:18+0000",
+      "updateDate": "2026-11-24T16:26:22+0000",
+      "closeDate": "2026-11-24T16:26:22+0000",
+      "type": "CODE_SMELL",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "CONVENTIONAL",
+      "cleanCodeAttributeCategory": "CONSISTENT",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        },
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "FIXED",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "39285f59-e630-4055-8bfa-3c65c35f1d14",
+      "rule": "javascript:S8786",
+      "severity": "MAJOR",
+      "component": "smartloo-main-6b1c5b2f:frontend/src/features/auth/validation.js",
+      "project": "smartloo-main-6b1c5b2f",
+      "line": 4,
+      "hash": "cf13bfb3f833f6f4a3754633e428e1f9",
+      "textRange": {
+        "startLine": 4,
+        "endLine": 4,
+        "startOffset": 22,
+        "endOffset": 50
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Simplify this regular expression to reduce its runtime, as it has super-linear performance due to backtracking.",
+      "effort": "20min",
+      "debt": "20min",
+      "author": "",
+      "tags": [
+        "regex",
+        "performance"
+      ],
+      "creationDate": "2026-11-22T07:38:18+0000",
+      "updateDate": "2026-11-22T07:38:18+0000",
+      "type": "CODE_SMELL",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "EFFICIENT",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "69492ef2-c353-4761-b67c-1e3c4cc0778e",
+      "rule": "python:S6437",
+      "severity": "BLOCKER",
+      "component": "smartloo-main-6b1c5b2f:src/auth.py",
+      "project": "smartloo-main-6b1c5b2f",
+      "hash": "f44bac8a4d5d53c623ff4530cf35c54d",
+      "textRange": {
+        "startLine": 40,
+        "endLine": 40,
+        "startOffset": 27,
+        "endOffset": 46
+      },
+      "flows": [],
+      "resolution": "FIXED",
+      "status": "CLOSED",
+      "message": "Revoke and change this password, as it is compromised.",
+      "effort": "1h",
+      "debt": "1h",
+      "author": "",
+      "tags": [
+        "cwe",
+        "secret"
+      ],
+      "creationDate": "2026-11-22T07:38:18+0000",
+      "updateDate": "2026-11-24T16:26:22+0000",
+      "closeDate": "2026-11-24T16:26:22+0000",
+      "type": "VULNERABILITY",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "TRUSTWORTHY",
+      "cleanCodeAttributeCategory": "RESPONSIBLE",
+      "impacts": [
+        {
+          "softwareQuality": "SECURITY",
+          "severity": "BLOCKER"
+        }
+      ],
+      "issueStatus": "FIXED",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "55b053df-cdd3-4db7-9f66-2f978ee9ee35",
+      "rule": "python:S8786",
+      "severity": "MAJOR",
+      "component": "smartloo-main-6b1c5b2f:src/auth.py",
+      "project": "smartloo-main-6b1c5b2f",
+      "line": 39,
+      "hash": "ced8265151bf0647f3071cf449da1023",
+      "textRange": {
+        "startLine": 39,
+        "endLine": 39,
+        "startOffset": 29,
+        "endOffset": 55
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Simplify this regular expression to reduce its runtime, as it has super-linear performance due to backtracking.",
+      "effort": "20min",
+      "debt": "20min",
+      "author": "",
+      "tags": [
+        "regex",
+        "performance"
+      ],
+      "creationDate": "2026-11-22T07:38:18+0000",
+      "updateDate": "2026-11-22T07:38:18+0000",
+      "type": "CODE_SMELL",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "EFFICIENT",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    },
+    {
+      "key": "ee45a634-bcad-4fd8-bd4d-2c98a4f3576f",
+      "rule": "python:S8786",
+      "severity": "MAJOR",
+      "component": "smartloo-main-6b1c5b2f:src/reviews.py",
+      "project": "smartloo-main-6b1c5b2f",
+      "line": 34,
+      "hash": "3e531212befc50f596b7d1e0243c4b1b",
+      "textRange": {
+        "startLine": 34,
+        "endLine": 34,
+        "startOffset": 27,
+        "endOffset": 77
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Simplify this regular expression to reduce its runtime, as it has super-linear performance due to backtracking.",
+      "effort": "20min",
+      "debt": "20min",
+      "author": "",
+      "tags": [
+        "regex",
+        "performance"
+      ],
+      "creationDate": "2026-11-22T07:38:18+0000",
+      "updateDate": "2026-11-22T07:38:18+0000",
+      "type": "CODE_SMELL",
+      "scope": "MAIN",
+      "quickFixAvailable": false,
+      "messageFormattings": [],
+      "codeVariants": [],
+      "cleanCodeAttribute": "EFFICIENT",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "prioritizedRule": false,
+      "fromSonarQubeUpdate": false,
+      "internalTags": [],
+      "linkedTicketStatus": "NOT_LINKED"
+    }
+  ],
+  "components": [
+    {
+      "key": "smartloo-main-6b1c5b2f:frontend/src/shared/ui/Dropdown.jsx",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "Dropdown.jsx",
+      "longName": "frontend/src/shared/ui/Dropdown.jsx",
+      "path": "frontend/src/shared/ui/Dropdown.jsx"
+    },
+    {
+      "key": "smartloo-main-6b1c5b2f",
+      "enabled": true,
+      "qualifier": "TRK",
+      "name": "SmartLoo",
+      "longName": "SmartLoo"
+    },
+    {
+      "key": "smartloo-main-6b1c5b2f:src/reviews.py",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "reviews.py",
+      "longName": "src/reviews.py",
+      "path": "src/reviews.py"
+    },
+    {
+      "key": "smartloo-main-6b1c5b2f:frontend/src/features/auth/validation.js",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "validation.js",
+      "longName": "frontend/src/features/auth/validation.js",
+      "path": "frontend/src/features/auth/validation.js"
+    },
+    {
+      "key": "smartloo-main-6b1c5b2f:frontend/src/features/admin/components/FacilityTable.jsx",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "FacilityTable.jsx",
+      "longName": "frontend/src/features/admin/components/FacilityTable.jsx",
+      "path": "frontend/src/features/admin/components/FacilityTable.jsx"
+    },
+    {
+      "key": "smartloo-main-6b1c5b2f:src/auth.py",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "auth.py",
+      "longName": "src/auth.py",
+      "path": "src/auth.py"
+    }
+  ],
+  "facets": []
+}

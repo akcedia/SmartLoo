@@ -1,0 +1,147 @@
+{
+	"@programName": "ZAP",
+	"@version": "2.17.0",
+	"@generated": "Thu, 26 Nov 2026 18:47:52",
+	"created": "2026-11-26T18:47:52.645850528Z",
+	"insights":[
+		{
+			"level": "Low",
+			"reason": "Warning",
+			"site": "",
+			"key": "insight.log.error",
+			"description": "ZAP errors logged - see the zap.log file for details",
+			"statistic": "9"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "",
+			"key": "insight.network.failure",
+			"description": "Percentage of network failures",
+			"statistic": "52"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://api:8000",
+			"key": "insight.code.2xx",
+			"description": "Percentage of responses with status code 2xx",
+			"statistic": "77"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://api:8000",
+			"key": "insight.code.4xx",
+			"description": "Percentage of responses with status code 4xx",
+			"statistic": "22"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://api:8000",
+			"key": "insight.endpoint.ctype.application/json",
+			"description": "Percentage of endpoints with content type application/json",
+			"statistic": "25"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://api:8000",
+			"key": "insight.endpoint.ctype.application/manifest+json",
+			"description": "Percentage of endpoints with content type application/manifest+json",
+			"statistic": "12"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://api:8000",
+			"key": "insight.endpoint.ctype.image/png",
+			"description": "Percentage of endpoints with content type image/png",
+			"statistic": "25"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://api:8000",
+			"key": "insight.endpoint.ctype.text/css",
+			"description": "Percentage of endpoints with content type text/css",
+			"statistic": "12"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://api:8000",
+			"key": "insight.endpoint.ctype.text/html",
+			"description": "Percentage of endpoints with content type text/html",
+			"statistic": "12"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://api:8000",
+			"key": "insight.endpoint.ctype.text/javascript",
+			"description": "Percentage of endpoints with content type text/javascript",
+			"statistic": "12"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://api:8000",
+			"key": "insight.endpoint.method.GET",
+			"description": "Percentage of endpoints with method GET",
+			"statistic": "100"
+		},
+		{
+			"level": "Info",
+			"reason": "Informational",
+			"site": "http://api:8000",
+			"key": "insight.endpoint.total",
+			"description": "Count of total endpoints",
+			"statistic": "8"
+		}
+	],
+	"site":[ 
+		{
+			"@name": "http://api:8000",
+			"@host": "api",
+			"@port": "8000",
+			"@ssl": "false",
+			"alerts": [ 
+				{
+					"pluginid": "10109",
+					"alertRef": "10109",
+					"alert": "Modern Web Application",
+					"name": "Modern Web Application",
+					"riskcode": "0",
+					"confidence": "2",
+					"riskdesc": "Informational (Medium)",
+					"desc": "<p>The application appears to be a modern web application. If you need to explore it automatically then the Client Spider may well be more effective than the standard one.</p>",
+					"instances":[ 
+						{
+							"id": "1",
+							"uri": "http://api:8000/",
+							"nodeName": "http:\/\/api:8000\/",
+							"method": "GET",
+							"param": "",
+							"attack": "",
+							"evidence": "<script>\r\n      // Resolve the theme before first paint (same rules as src/shared/theme/theme.js).\r\n      (function () {\r\n        var pref = \"light\";\r\n        try {\r\n          var saved = localStorage.getItem(\"smartloo.theme\");\r\n          if ([\"system\", \"light\", \"dark\"].indexOf(saved) !== -1) pref = saved;\r\n        } catch (e) {}\r\n        var dark = pref === \"dark\" || (pref === \"system\" && window.matchMedia && window.matchMedia(\"(prefers-color-scheme: dark)\").matches);\r\n        document.documentElement.setAttribute(\"data-theme\", dark ? \"dark\" : \"light\");\r\n        document.querySelector('meta[name=\"theme-color\"]').setAttribute(\"content\", dark ? \"#030405\" : \"#ffffff\");\r\n        try { if (localStorage.getItem(\"smartloo.reduceMotion\") === \"on\") document.documentElement.setAttribute(\"data-motion\", \"reduce\"); } catch (e) {}\r\n      })();\r\n    </script>",
+							"otherinfo": "No links have been found while there are scripts, which is an indication that this is a modern web application."
+						}
+					],
+					"count": "1",
+					"systemic": false,
+					"solution": "<p>This is an informational alert and so no changes are required.</p>",
+					"otherinfo": "<p>No links have been found while there are scripts, which is an indication that this is a modern web application.</p>",
+					"reference": "",
+					"cweid": "-1",
+					"wascid": "-1",
+					"sourceid": "7"
+				}
+			]
+		}
+	],
+	"sequences":[
+	]
+
+}

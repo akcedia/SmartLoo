@@ -1,0 +1,10 @@
+{
+  "source": "3033321573bb66554df53a9a834b51312a8a61c3",
+  "frontend_source_equivalent_to": "a683e9537b19affed79c6b03134454a83a302148",
+  "files": 25,
+  "tests": 309,
+  "failed": 0,
+  "coverage": "frontend-coverage-summary.json",
+  "build": "passed in Docker cloud image build",
+  "build_log": "cloud-build.log"
+}

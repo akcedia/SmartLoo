@@ -1,0 +1,34 @@
+{
+  "revision": "7b824134157c64913ec0ca8bdf2b25525992b190",
+  "scope": "Local production build, Windows, headless Chromium (Edge). Synthetic in-memory data behind real FastAPI routes; external map tiles blocked.",
+  "browser": "Edg/158.0.4370.33",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "initial_shell": "200 text/html with empty root before JavaScript",
+  "browser_checks": [
+    "React and Leaflet mounted",
+    "Location, radius and filter controls rendered",
+    "Two synthetic city markers rendered",
+    "Filter panel opened via browser click",
+    "Filter panel closed via browser click",
+    "Marker opened facility A details with data from its detail route",
+    "Facility detail panel closed via browser click"
+  ],
+  "required_http": [
+    {
+      "path": "/",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/toilets",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/toilets/00000000-0000-4000-8000-000000000001",
+      "status": 200
+    }
+  ],
+  "application_javascript_errors": 0
+}

@@ -1,0 +1,84 @@
+[
+  {
+    "phase": "baseline",
+    "exit_code": 2,
+    "seconds": 31.94,
+    "report_exists": true,
+    "completed": true,
+    "alerts": [
+      {
+        "id": "10038",
+        "risk": "2",
+        "name": "Content Security Policy (CSP) Header Not Set",
+        "instances": 1
+      },
+      {
+        "id": "10020",
+        "risk": "2",
+        "name": "Missing Anti-clickjacking Header",
+        "instances": 1
+      },
+      {
+        "id": "10021",
+        "risk": "1",
+        "name": "X-Content-Type-Options Header Missing",
+        "instances": 4
+      },
+      {
+        "id": "10109",
+        "risk": "0",
+        "name": "Modern Web Application",
+        "instances": 1
+      }
+    ],
+    "image": "ghcr.io/zaproxy/zaproxy@sha256:9624669db72f54d86c4b46a7064518bd9bf79d8c61a4c31befa9923489f328af",
+    "target": "http://api:8000",
+    "synthetic_only": true,
+    "production_touched": false,
+    "model_calls": 0
+  },
+  {
+    "phase": "api-active",
+    "exit_code": 2,
+    "seconds": 75.2,
+    "report_exists": true,
+    "completed": true,
+    "alerts": [
+      {
+        "id": "100000",
+        "risk": "1",
+        "name": "A Server Error response code was returned by the server",
+        "instances": 2
+      },
+      {
+        "id": "100001",
+        "risk": "1",
+        "name": "Unexpected Content-Type was returned",
+        "instances": 2
+      },
+      {
+        "id": "10021",
+        "risk": "1",
+        "name": "X-Content-Type-Options Header Missing",
+        "instances": 1
+      },
+      {
+        "id": "100000",
+        "risk": "0",
+        "name": "A Client Error response code was returned by the server",
+        "instances": 82
+      },
+      {
+        "id": "10111",
+        "risk": "0",
+        "name": "Authentication Request Identified",
+        "instances": 1
+      }
+    ],
+    "image": "ghcr.io/zaproxy/zaproxy@sha256:9624669db72f54d86c4b46a7064518bd9bf79d8c61a4c31befa9923489f328af",
+    "target": "http://api:8000",
+    "synthetic_only": true,
+    "production_touched": false,
+    "model_calls": 0
+  }
+]

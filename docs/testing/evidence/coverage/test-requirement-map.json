@@ -1,0 +1,1220 @@
+{
+  "definition": "A linked test module counts as traced; this is not full acceptance or production conformance.",
+  "python_modules": 43,
+  "frontend_modules": 30,
+  "modules": [
+    {
+      "file": "tests/test_account_deletion.py",
+      "requirements": [
+        "FR-10",
+        "NFR-03",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 8,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_account_deletion_integration.py",
+      "requirements": [
+        "FR-10",
+        "NFR-03",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 6,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_admin_analytics.py",
+      "requirements": [
+        "FR-06",
+        "FR-07",
+        "NFR-03",
+        "NFR-04"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 22,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_admin_analytics_integration.py",
+      "requirements": [
+        "FR-06",
+        "FR-07",
+        "NFR-03",
+        "NFR-04"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 12,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_admin_import.py",
+      "requirements": [
+        "FR-07",
+        "NFR-03",
+        "NFR-04"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 26,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_admin_import_postgres.py",
+      "requirements": [
+        "FR-07",
+        "NFR-03",
+        "NFR-04"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 9,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_ai_boundaries.py",
+      "requirements": [
+        "FR-04",
+        "NFR-02",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 18,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_ai_consistency_contract.py",
+      "requirements": [
+        "FR-03",
+        "FR-04",
+        "FR-10",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 15,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_ai_guarded_publication.py",
+      "requirements": [
+        "FR-03",
+        "FR-04",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 14,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_ai_openai.py",
+      "requirements": [
+        "FR-04",
+        "NFR-02",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 18,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_ai_recommendations.py",
+      "requirements": [
+        "FR-02",
+        "FR-04",
+        "NFR-02"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 16,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_ai_restricted_policy.py",
+      "requirements": [
+        "FR-04",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 16,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_ai_review_adapter.py",
+      "requirements": [
+        "FR-03",
+        "FR-04",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 12,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_ai_summary_service.py",
+      "requirements": [
+        "FR-04",
+        "NFR-02",
+        "NFR-07",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 18,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_auth_password_bytes.py",
+      "requirements": [
+        "FR-08",
+        "NFR-03",
+        "NFR-04"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 8,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_auth_postgres.py",
+      "requirements": [
+        "FR-08",
+        "NFR-03"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 10,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_auth_timing_dummy.py",
+      "requirements": [
+        "FR-08",
+        "NFR-03",
+        "NFR-04"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 3,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_cloud_app.py",
+      "requirements": [
+        "FR-09",
+        "NFR-04",
+        "NFR-07"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 15,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_facility_admin.py",
+      "requirements": [
+        "FR-05",
+        "FR-10",
+        "NFR-03"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 5,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_gemini_http_acceptance.py",
+      "requirements": [
+        "FR-04",
+        "NFR-02",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 4,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_gemini_provider.py",
+      "requirements": [
+        "FR-04",
+        "NFR-02",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 21,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_gemini_recommendation_followup.py",
+      "requirements": [
+        "FR-04",
+        "NFR-02",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 5,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_ibb_geojson.py",
+      "requirements": [
+        "FR-07",
+        "NFR-04"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 20,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_ibb_import.py",
+      "requirements": [
+        "FR-07",
+        "NFR-04"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 11,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_ibb_import_postgres.py",
+      "requirements": [
+        "FR-07",
+        "NFR-04"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 7,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_local_runtime.py",
+      "requirements": [
+        "NFR-09"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 4,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_nearby_pool.py",
+      "requirements": [
+        "FR-01",
+        "NFR-01",
+        "NFR-07"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 7,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_nearby_postgis.py",
+      "requirements": [
+        "FR-01",
+        "FR-02",
+        "NFR-01",
+        "NFR-04"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 5,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_nearby_response.py",
+      "requirements": [
+        "FR-01",
+        "FR-02",
+        "NFR-01",
+        "NFR-04"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 1,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_nearby_safety.py",
+      "requirements": [
+        "FR-01",
+        "FR-02",
+        "NFR-04"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 29,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_recommendation_http.py",
+      "requirements": [
+        "FR-02",
+        "FR-04",
+        "NFR-02",
+        "NFR-04"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 17,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_recommendation_wiring.py",
+      "requirements": [
+        "FR-01",
+        "FR-04",
+        "NFR-07"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 10,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_requirements.py",
+      "requirements": [
+        "FR-01",
+        "FR-02",
+        "FR-03",
+        "FR-04",
+        "FR-05",
+        "FR-06",
+        "FR-07",
+        "FR-08",
+        "FR-09",
+        "FR-10",
+        "NFR-03",
+        "NFR-04",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 53,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_review_consistency.py",
+      "requirements": [
+        "FR-03",
+        "FR-04",
+        "FR-10",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 5,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_review_publication.py",
+      "requirements": [
+        "FR-03",
+        "FR-04",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 5,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_review_scores_mongo.py",
+      "requirements": [
+        "FR-03",
+        "FR-06",
+        "FR-07",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 6,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_reviews.py",
+      "requirements": [
+        "FR-03",
+        "NFR-03",
+        "NFR-04",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 18,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_reviews_integration.py",
+      "requirements": [
+        "FR-03",
+        "FR-10",
+        "NFR-03",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 7,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_suggestions.py",
+      "requirements": [
+        "FR-05",
+        "FR-10",
+        "NFR-03",
+        "NFR-04"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 9,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_summary_http.py",
+      "requirements": [
+        "FR-03",
+        "FR-04",
+        "NFR-02",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 14,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_toilet_detail.py",
+      "requirements": [
+        "FR-01",
+        "FR-09",
+        "NFR-04"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 6,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_turkish_ai_acceptance.py",
+      "requirements": [
+        "FR-04",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 42,
+      "execution": "passed"
+    },
+    {
+      "file": "tests/test_zap_regressions.py",
+      "requirements": [
+        "FR-08",
+        "FR-09",
+        "NFR-04"
+      ],
+      "evidence": "evidence/coverage/backend-junit.xml",
+      "junit_cases": 15,
+      "execution": "passed"
+    },
+    {
+      "file": "frontend/src/app/a11y.test.jsx",
+      "requirements": [
+        "FR-09",
+        "NFR-05",
+        "NFR-06"
+      ],
+      "evidence": "evidence/coverage/frontend-test-summary.json",
+      "execution": "frontend component scope"
+    },
+    {
+      "file": "frontend/src/features/admin/admin.live.jsx",
+      "requirements": [
+        "FR-06",
+        "FR-07",
+        "NFR-03",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/mounted-main-workflows.json",
+      "execution": "mounted integration scope"
+    },
+    {
+      "file": "frontend/src/features/admin/api/admin.test.js",
+      "requirements": [
+        "FR-06",
+        "FR-07",
+        "NFR-04"
+      ],
+      "evidence": "evidence/coverage/frontend-test-summary.json",
+      "execution": "frontend component scope"
+    },
+    {
+      "file": "frontend/src/features/admin/api/httpAdapter.test.js",
+      "requirements": [
+        "FR-06",
+        "FR-07",
+        "FR-08",
+        "NFR-03"
+      ],
+      "evidence": "evidence/coverage/frontend-test-summary.json",
+      "execution": "frontend component scope"
+    },
+    {
+      "file": "frontend/src/features/admin/components/components.test.jsx",
+      "requirements": [
+        "FR-06",
+        "FR-07",
+        "NFR-05",
+        "NFR-06"
+      ],
+      "evidence": "evidence/coverage/frontend-test-summary.json",
+      "execution": "frontend component scope"
+    },
+    {
+      "file": "frontend/src/features/admin/contract.test.jsx",
+      "requirements": [
+        "FR-06",
+        "FR-07",
+        "NFR-04"
+      ],
+      "evidence": "evidence/coverage/frontend-test-summary.json",
+      "execution": "frontend component scope"
+    },
+    {
+      "file": "frontend/src/features/admin/import/AdminImport.test.jsx",
+      "requirements": [
+        "FR-07",
+        "NFR-03",
+        "NFR-04"
+      ],
+      "evidence": "evidence/coverage/frontend-test-summary.json",
+      "execution": "frontend component scope"
+    },
+    {
+      "file": "frontend/src/features/admin/import/adminImport.live.jsx",
+      "requirements": [
+        "FR-07",
+        "NFR-03",
+        "NFR-04"
+      ],
+      "evidence": "evidence/coverage/mounted-main-workflows.json",
+      "execution": "mounted integration scope"
+    },
+    {
+      "file": "frontend/src/features/admin/import/importApi.test.js",
+      "requirements": [
+        "FR-07",
+        "NFR-03",
+        "NFR-04"
+      ],
+      "evidence": "evidence/coverage/frontend-test-summary.json",
+      "execution": "frontend component scope"
+    },
+    {
+      "file": "frontend/src/features/admin/moderation/moderation.live.jsx",
+      "requirements": [
+        "FR-05",
+        "FR-10",
+        "NFR-03",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/mounted-main-workflows.json",
+      "execution": "mounted integration scope"
+    },
+    {
+      "file": "frontend/src/features/admin/moderation/moderation.test.jsx",
+      "requirements": [
+        "FR-05",
+        "FR-10",
+        "NFR-03",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/frontend-test-summary.json",
+      "execution": "frontend component scope"
+    },
+    {
+      "file": "frontend/src/features/admin/moderation/moderationRace.test.jsx",
+      "requirements": [
+        "FR-05",
+        "FR-10",
+        "NFR-03",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/frontend-test-summary.json",
+      "execution": "frontend component scope"
+    },
+    {
+      "file": "frontend/src/features/auth/accountDeletion.live.jsx",
+      "requirements": [
+        "FR-10",
+        "NFR-03",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/mounted-main-workflows.json",
+      "execution": "mounted integration scope"
+    },
+    {
+      "file": "frontend/src/features/auth/accountDeletion.test.jsx",
+      "requirements": [
+        "FR-10",
+        "NFR-03",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/frontend-test-summary.json",
+      "execution": "frontend component scope"
+    },
+    {
+      "file": "frontend/src/features/auth/auth.test.jsx",
+      "requirements": [
+        "FR-08",
+        "NFR-03",
+        "NFR-04"
+      ],
+      "evidence": "evidence/coverage/frontend-test-summary.json",
+      "execution": "frontend component scope"
+    },
+    {
+      "file": "frontend/src/features/map/MapView.density.test.jsx",
+      "requirements": [
+        "FR-09",
+        "NFR-05"
+      ],
+      "evidence": "evidence/coverage/frontend-test-summary.json",
+      "execution": "frontend component scope"
+    },
+    {
+      "file": "frontend/src/features/map/ai.live.jsx",
+      "requirements": [
+        "FR-04",
+        "NFR-02",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/mounted-main-workflows.json",
+      "execution": "mounted integration scope"
+    },
+    {
+      "file": "frontend/src/features/map/cityDirectory.test.jsx",
+      "requirements": [
+        "FR-01",
+        "FR-02",
+        "FR-07",
+        "FR-09",
+        "NFR-04"
+      ],
+      "evidence": "evidence/coverage/frontend-test-summary.json",
+      "execution": "frontend component scope"
+    },
+    {
+      "file": "frontend/src/features/map/directions.test.jsx",
+      "requirements": [
+        "FR-09",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/frontend-test-summary.json",
+      "execution": "frontend component scope"
+    },
+    {
+      "file": "frontend/src/features/map/layout.test.jsx",
+      "requirements": [
+        "FR-02",
+        "FR-09",
+        "NFR-05",
+        "NFR-06"
+      ],
+      "evidence": "evidence/coverage/frontend-test-summary.json",
+      "execution": "frontend component scope"
+    },
+    {
+      "file": "frontend/src/features/map/map.test.jsx",
+      "requirements": [
+        "FR-03",
+        "FR-04",
+        "FR-09",
+        "NFR-04",
+        "NFR-06"
+      ],
+      "evidence": "evidence/coverage/frontend-test-summary.json",
+      "execution": "frontend component scope"
+    },
+    {
+      "file": "frontend/src/features/map/markerDensity.test.js",
+      "requirements": [
+        "FR-09",
+        "NFR-05"
+      ],
+      "evidence": "evidence/coverage/frontend-test-summary.json",
+      "execution": "frontend component scope"
+    },
+    {
+      "file": "frontend/src/features/map/recommendationPanel.test.jsx",
+      "requirements": [
+        "FR-02",
+        "FR-04",
+        "NFR-10"
+      ],
+      "evidence": "evidence/coverage/frontend-test-summary.json",
+      "execution": "frontend component scope"
+    },
+    {
+      "file": "frontend/src/features/map/reviewSession.test.jsx",
+      "requirements": [
+        "FR-03",
+        "FR-08",
+        "NFR-03",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/frontend-test-summary.json",
+      "execution": "frontend component scope"
+    },
+    {
+      "file": "frontend/src/features/suggestions/suggestion.test.jsx",
+      "requirements": [
+        "FR-05",
+        "FR-08",
+        "NFR-03",
+        "NFR-04"
+      ],
+      "evidence": "evidence/coverage/frontend-test-summary.json",
+      "execution": "frontend component scope"
+    },
+    {
+      "file": "frontend/src/shared/http/apiClient.test.js",
+      "requirements": [
+        "FR-08",
+        "NFR-03",
+        "NFR-04"
+      ],
+      "evidence": "evidence/coverage/frontend-test-summary.json",
+      "execution": "frontend component scope"
+    },
+    {
+      "file": "frontend/src/shared/i18n/i18n.test.jsx",
+      "requirements": [
+        "NFR-10"
+      ],
+      "evidence": "evidence/coverage/frontend-test-summary.json",
+      "execution": "frontend component scope"
+    },
+    {
+      "file": "frontend/src/shared/session/session.test.js",
+      "requirements": [
+        "FR-08",
+        "FR-10",
+        "NFR-03",
+        "NFR-08"
+      ],
+      "evidence": "evidence/coverage/frontend-test-summary.json",
+      "execution": "frontend component scope"
+    },
+    {
+      "file": "frontend/src/shared/settings/settings.test.jsx",
+      "requirements": [
+        "FR-09",
+        "NFR-05",
+        "NFR-06",
+        "NFR-10"
+      ],
+      "evidence": "evidence/coverage/frontend-test-summary.json",
+      "execution": "frontend component scope"
+    },
+    {
+      "file": "frontend/src/shared/theme/theme.test.jsx",
+      "requirements": [
+        "NFR-05",
+        "NFR-06"
+      ],
+      "evidence": "evidence/coverage/frontend-test-summary.json",
+      "execution": "frontend component scope"
+    },
+    {
+      "file": "tests/release_checks.test.cjs",
+      "requirements": [
+        "NFR-09"
+      ],
+      "evidence": "evidence/coverage/release-guards.log",
+      "execution": "Node deployment guards"
+    },
+    {
+      "file": "integration/ai_redis_suite.py",
+      "requirements": [
+        "FR-04",
+        "NFR-02",
+        "NFR-07"
+      ],
+      "evidence": "evidence/coverage/mounted-main-workflows.json",
+      "execution": "real Redis component scope"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "TC-01",
+      "requirement": "FR-01",
+      "title": "Nearby open toilets",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-02",
+      "requirement": "FR-02",
+      "title": "Accessibility filter",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-03",
+      "requirement": "FR-02",
+      "title": "Baby changing filter",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-04",
+      "requirement": "FR-08",
+      "title": "Successful login",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-05",
+      "requirement": "FR-03",
+      "title": "Reject guest review",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-06",
+      "requirement": "FR-03",
+      "title": "Create review and aggregate",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-07",
+      "requirement": "FR-05",
+      "title": "Suggest location",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-08",
+      "requirement": "FR-04",
+      "title": "Structured Turkish AI summary",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-09",
+      "requirement": "FR-06",
+      "title": "Filtered dashboard",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-10",
+      "requirement": "FR-07",
+      "title": "CSV report export",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-11",
+      "requirement": "FR-01",
+      "title": "Reject invalid search",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-12",
+      "requirement": "FR-02",
+      "title": "Combined filters and clearing",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-13",
+      "requirement": "FR-02",
+      "title": "Pricing filter",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-14",
+      "requirement": "FR-01",
+      "title": "Empty nearby results",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-15",
+      "requirement": "FR-04",
+      "title": "AI outage and insufficient reviews",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-16",
+      "requirement": "FR-04",
+      "title": "Summary cache",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-17",
+      "requirement": "FR-04",
+      "title": "Preference recommendations",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-18",
+      "requirement": "FR-05",
+      "title": "Moderate suggestions",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-19",
+      "requirement": "FR-07",
+      "title": "Idempotent CSV and JSON import",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-20",
+      "requirement": "FR-07",
+      "title": "Invalid import is atomic",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-21",
+      "requirement": "FR-09",
+      "title": "Built SPA shell and separate rendered map acceptance",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-22",
+      "requirement": "FR-09",
+      "title": "Map without geolocation",
+      "file": "docs/REQUIREMENTS.MD section 5.1; historical browser evidence and final UI review scopes",
+      "mode": "manual_ui",
+      "automated_pass": false
+    },
+    {
+      "id": "TC-23",
+      "requirement": "FR-09",
+      "title": "Filter markers remain consistent",
+      "file": "docs/REQUIREMENTS.MD section 5.1; historical browser evidence and final UI review scopes",
+      "mode": "manual_ui",
+      "automated_pass": false
+    },
+    {
+      "id": "TC-24",
+      "requirement": "FR-07",
+      "title": "JSON report export",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-25",
+      "requirement": "FR-06",
+      "title": "Dashboard has no data",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-26",
+      "requirement": "FR-03",
+      "title": "Edit and delete own review",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-27",
+      "requirement": "FR-10",
+      "title": "Close reviewed facility",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-28",
+      "requirement": "FR-04",
+      "title": "Untrusted review content",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-29",
+      "requirement": "FR-10",
+      "title": "Invalid toilet coordinates",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-30",
+      "requirement": "FR-08",
+      "title": "Case insensitive email",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-31",
+      "requirement": "FR-03",
+      "title": "Invalid review rating",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-32",
+      "requirement": "FR-03",
+      "title": "Duplicate review",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-33",
+      "requirement": "FR-10",
+      "title": "Nonexistent toilet",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-34",
+      "requirement": "FR-10",
+      "title": "Account deletion",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-35",
+      "requirement": "FR-03",
+      "title": "Recalculate aggregate",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-36",
+      "requirement": "FR-07",
+      "title": "Stable source identity",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-37",
+      "requirement": "FR-08",
+      "title": "Weak password",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-38",
+      "requirement": "FR-08",
+      "title": "Password storage and response",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-39",
+      "requirement": "FR-08",
+      "title": "JWT claims",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-40",
+      "requirement": "FR-08",
+      "title": "Generic login error",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-41",
+      "requirement": "FR-08",
+      "title": "Missing token",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-42",
+      "requirement": "FR-08",
+      "title": "Tampered token",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-43",
+      "requirement": "FR-08",
+      "title": "Expired token",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-44",
+      "requirement": "FR-08",
+      "title": "User cannot access admin",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-45",
+      "requirement": "FR-08",
+      "title": "Admin access",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-46",
+      "requirement": "FR-03",
+      "title": "Review ownership",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-47",
+      "requirement": "FR-08",
+      "title": "Login throttling",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    },
+    {
+      "id": "TC-48",
+      "requirement": "FR-08",
+      "title": "Public registration cannot grant administrator privileges",
+      "file": "tests/test_requirements.py",
+      "mode": "automated_http",
+      "automated_pass": true
+    }
+  ],
+  "requirements": {
+    "functional_mapped": 10,
+    "functional_total": 10,
+    "functional_percent": 100.0,
+    "nonfunctional_mapped": 10,
+    "nonfunctional_total": 10,
+    "nonfunctional_percent": 100.0
+  },
+  "acceptance_mapped_percent": 100.0,
+  "automated_acceptance_ids": 46,
+  "automated_acceptance_percent": 95.83333333333333,
+  "automated_catalog_instances": 53
+}

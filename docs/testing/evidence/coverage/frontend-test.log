@@ -1,0 +1,96 @@
+
+> smartloo-frontend@0.0.0 test
+> vitest run --coverage --reporter=dot
+
+
+ RUN  v5.1.1 C:/Users/Özgür/Documents/ChatGPT/SmartLoo/work-test-work/frontend
+      Coverage enabled with v8
+
+(node:4828) ExperimentalWarning: localStorage is not available because --localstorage-file was not provided.
+(Use `node --trace-warnings ...` to show where the warning was created)
+·····················································································································································································································································································································
+
+ Test Files  25 passed (25)
+      Tests  309 passed (309)
+   Start at  21:33:59
+   Duration  12.78s (environment 65%, tests 17%, transform 9%, import 6%, worker 2%)
+
+    Isolate  25 workers spawned · ~2.82s startup each (spawn + environment, per file)
+             at least ~3.59s faster with isolate: false — reuses workers across files instead of one per file
+
+ % Coverage report from v8
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   81.35 |    77.57 |   78.99 |   83.31 |                   
+ src               |       0 |      100 |     100 |       0 |                   
+  main.jsx         |       0 |      100 |     100 |       0 | 6                 
+ src/app           |   72.89 |    54.34 |   63.63 |    78.4 |                   
+  AccountMenu.jsx  |   70.58 |     42.1 |      50 |   73.33 | 21-26,52,74-76    
+  App.jsx          |   90.47 |    64.58 |     100 |   93.93 | 58,92             
+  HomeRoute.jsx    |   33.33 |      100 |       0 |      50 | 13                
+  router.jsx       |   53.57 |       44 |   63.63 |   65.21 | 14-17,45-48       
+ ...features/admin |   69.38 |    71.95 |   54.54 |   74.02 |                   
+  ...Dashboard.jsx |   77.08 |    77.96 |    64.7 |    77.5 | 39-40,108-117,150 
+  AdminRoute.jsx   |     100 |     92.3 |     100 |     100 | 13                
+  ...hboardData.js |   60.86 |       25 |      25 |   76.47 | 13,19-22          
+  ...ementWidth.js |   28.57 |        0 |      25 |   36.36 | 10-17             
+ ...ures/admin/api |   94.15 |    93.69 |   96.49 |    92.8 |                   
+  httpAdapter.js   |     100 |    91.66 |     100 |     100 | 37-38,76          
+  sampleAdapter.js |   74.35 |    78.94 |   84.61 |   68.75 | 52-53,81-89       
+ ...min/components |      79 |    84.26 |   72.72 |   77.41 |                   
+  ...rtButtons.jsx |   33.33 |    61.53 |      50 |   33.33 | 7-13,36-42,53     
+  ...lityTable.jsx |     100 |    93.75 |     100 |     100 | 31                
+  FilterBar.jsx    |      50 |       50 |    37.5 |      50 | 9-12,29-56        
+  KpiCards.jsx     |     100 |    88.88 |     100 |     100 | 11,36             
+  StatusPanel.jsx  |    87.5 |      100 |      75 |    87.5 | 7-8               
+  TrendChart.jsx   |     100 |    90.47 |     100 |     100 | 33,75             
+ ...s/admin/import |   93.91 |     87.7 |     100 |   95.34 |                   
+  AdminImport.jsx  |   87.87 |    81.66 |     100 |   90.32 | 61-62,71-74       
+  importApi.js     |   98.78 |    93.54 |     100 |     100 | 16,19,21,42       
+ ...min/moderation |   90.83 |    86.44 |   94.73 |   96.22 |                   
+  ...tionPanel.jsx |   90.42 |    83.54 |   93.54 |   95.77 | 124,174-175       
+  moderationApi.js |   91.89 |     92.3 |     100 |   97.14 | 62                
+ src/features/auth |   64.02 |    73.14 |   61.11 |   65.24 |                   
+  AccountPage.jsx  |   42.85 |    43.47 |   16.66 |   46.87 | 28-51,85-99       
+  RegisterPage.jsx |   40.62 |       20 |   28.57 |   44.44 | 28-44             
+  SignInPage.jsx   |   47.36 |    46.15 |      50 |   46.87 | 27,39-56          
+  validation.js    |     100 |    96.42 |     100 |     100 | 32                
+ src/features/map  |   77.18 |    73.56 |   74.75 |   78.95 |                   
+  ...ityStatus.jsx |   93.75 |    81.57 |   77.77 |   94.87 | 90-97             
+  ...ionsPanel.jsx |   83.33 |    62.06 |      60 |   86.11 | 57,129-156,179    
+  AiSummaryBox.jsx |    67.5 |    77.35 |      60 |   73.52 | ...,60-65,137,188 
+  ...onsButton.jsx |   91.48 |       85 |   86.66 |   95.12 | 42,123            
+  ...tailPanel.jsx |   82.14 |    80.95 |     100 |      95 | 25                
+  ...tyMarkers.jsx |   96.15 |    66.66 |   91.66 |     100 | 20-29             
+  MapView.jsx      |   65.62 |    39.39 |   66.66 |   64.28 | 32-33,43-44,50-64 
+  ...ewSection.jsx |   51.31 |    57.25 |   55.55 |   53.03 | ...06,274-459,535 
+  SearchPage.jsx   |   76.74 |    78.65 |   69.73 |   78.37 | ...60-474,508-511 
+  directions.js    |   96.87 |     87.5 |     100 |     100 | 16-17,21,35-41    
+  mapPins.js       |     100 |    88.23 |     100 |     100 | 34-38             
+  markerDensity.js |     100 |    94.54 |     100 |     100 | 23                
+  toiletApi.js     |   79.62 |       70 |    92.3 |   86.04 | ...0,51,76-77,130 
+ ...es/suggestions |   92.85 |    85.71 |     100 |     100 |                   
+  ...stionPage.jsx |   92.85 |    85.71 |     100 |     100 | 13-14,54-56,58-66 
+ src/shared/http   |   97.91 |    92.64 |   88.88 |   97.36 |                   
+  apiClient.js     |   97.91 |    92.64 |   88.88 |   97.36 | 38                
+ src/shared/i18n   |      95 |       75 |   93.75 |   93.93 |                   
+  I18nProvider.jsx |     100 |       75 |   88.88 |     100 | 26                
+  i18n.js          |   91.66 |       75 |     100 |      90 | 17,27             
+ ...shared/session |    87.8 |    90.47 |   83.33 |    90.9 |                   
+  ...nProvider.jsx |   77.27 |    73.33 |   73.33 |   82.35 | 43-47,53          
+ ...hared/settings |    92.7 |    84.31 |   91.66 |   97.33 |                   
+  SettingsMenu.jsx |   93.33 |       84 |    90.9 |   97.95 | 104               
+  preferences.js   |   91.66 |    84.61 |   92.85 |   96.15 | 21                
+ src/shared/theme  |   81.81 |    74.19 |      75 |   92.59 |                   
+  theme.js         |   81.81 |    74.19 |      75 |   92.59 | 13,22             
+ src/shared/ui     |   65.71 |     42.1 |      75 |   65.51 |                   
+  Dropdown.jsx     |   65.71 |     42.1 |      75 |   65.51 | 19-26,43-47       
+-------------------|---------|----------|---------|---------|-------------------
+
+=============================== Coverage summary ===============================
+Statements   : 81.35% ( 1719/2113 )
+Branches     : 77.57% ( 1373/1770 )
+Functions    : 78.99% ( 455/576 )
+Lines        : 83.31% ( 1448/1738 )
+================================================================================

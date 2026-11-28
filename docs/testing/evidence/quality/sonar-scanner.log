@@ -1,0 +1,136 @@
+18:54:39.746 WARN  Property 'sonar.working.directory' with value '/tmp/.scannerwork' is overridden with value '/tmp/.scannerwork'
+18:54:39.760 INFO  Scanner configuration file: /opt/sonar-scanner/conf/sonar-scanner.properties
+18:54:39.763 INFO  Project root configuration file: NONE
+18:54:39.800 INFO  SonarScanner CLI 8.4.0.16527
+18:54:39.819 INFO  Linux 6.18.58.1-microsoft-standard-WSL2 amd64
+18:54:41.759 INFO  Communicating with SonarQube Community Build 26.11.0.134175
+18:54:41.760 INFO  JRE provisioning: os[linux], arch[x86_64]
+18:54:50.593 INFO  Starting SonarScanner Engine...
+18:54:50.593 INFO  Java 21.0.13 Eclipse Adoptium (64-bit)
+18:54:51.617 INFO  Load global settings
+18:54:51.804 INFO  Load global settings (done) | time=188ms
+18:54:51.809 INFO  Server id: 147B411E-AaICLPhC_Cq5jBTt3d17
+18:54:52.175 INFO  Loading required plugins
+18:54:52.176 INFO  Load plugins index
+18:54:52.276 INFO  Load plugins index (done) | time=97ms
+18:54:52.277 INFO  Load/download plugins
+18:54:54.135 INFO  Load/download plugins (done) | time=1857ms
+18:54:54.563 INFO  Load project settings for component key: 'smartloo-main-6b1c5b2f'
+18:54:54.636 INFO  Load project settings for component key: 'smartloo-main-6b1c5b2f' (done) | time=73ms
+18:54:54.656 INFO  Process project properties
+18:54:54.677 INFO  Process project properties (done) | time=20ms
+18:54:54.688 INFO  Project key: smartloo-main-6b1c5b2f
+18:54:54.688 INFO  Base dir: /usr/src
+18:54:54.689 INFO  Working dir: /tmp/.scannerwork
+18:54:54.852 INFO  Load quality profiles
+18:54:55.036 INFO  Load quality profiles (done) | time=183ms
+18:54:55.064 INFO  Load active rules
+18:54:55.587 INFO  Load active rules (done) | time=523ms
+18:54:55.600 INFO  Load analysis cache
+18:54:55.731 INFO  Load analysis cache | time=131ms
+18:54:55.939 INFO  Preprocessing files...
+18:54:56.923 INFO  3 languages detected in 125 preprocessed files (done) | time=983ms
+18:54:56.924 INFO  31 files ignored because of inclusion/exclusion patterns
+18:54:56.926 INFO  Loading plugins for detected languages
+18:54:56.927 INFO  Load/download plugins
+18:55:04.492 INFO  Load/download plugins (done) | time=7565ms
+18:55:04.750 INFO  Load project repositories
+18:55:04.988 INFO  Load project repositories (done) | time=238ms
+18:55:05.041 INFO  Indexing files...
+18:55:05.041 INFO  Project configuration:
+18:55:05.042 INFO    Excluded sources: frontend/src/**/*.test.*, frontend/src/**/*.spec.*, frontend/src/**/*.live.*, frontend/src/**/testJwt.js
+18:55:06.098 INFO  125 files indexed (done) | time=1057ms
+18:55:06.099 INFO  Quality profile for css: Sonar way core
+18:55:06.100 INFO  Quality profile for js: Sonar way core
+18:55:06.100 INFO  Quality profile for py: Sonar way core
+18:55:06.100 INFO  ------------- Run sensors on module SmartLoo
+18:55:06.137 INFO  Load metrics repository
+18:55:06.180 INFO  Load metrics repository (done) | time=43ms
+18:55:07.034 INFO  Reflections took 117 ms to scan 1 urls, producing 30 keys and 313 values
+18:55:07.211 INFO  Sensor IaC YAML File Type Classification Sensor [iac]
+18:55:07.217 INFO  Sensor IaC YAML File Type Classification Sensor [iac] (done) | time=6ms
+18:55:07.218 INFO  Sensor IaC hadolint report Sensor [iac]
+18:55:07.218 INFO  Sensor IaC hadolint report Sensor [iac] (done) | time=0ms
+18:55:07.218 INFO  Sensor Java Config Sensor [iac]
+18:55:07.219 INFO  There are no files to be analyzed for the Java language
+18:55:07.220 INFO  Sensor Java Config Sensor [iac] (done) | time=1ms
+18:55:07.220 INFO  Sensor IaC Docker Sensor [iac]
+18:55:07.231 INFO  There are no files to be analyzed for the Docker language
+18:55:07.232 INFO  Sensor IaC Docker Sensor [iac] (done) | time=11ms
+18:55:07.232 INFO  Sensor Python Sensor [python]
+18:55:17.186 INFO  Starting global symbols computation
+18:55:17.188 INFO  29 source files to be analyzed
+18:55:18.600 INFO  29/29 source files have been analyzed
+18:55:18.603 INFO  Finished step global symbols computation in 1414ms
+18:55:18.693 INFO  Starting rules execution
+18:55:18.694 INFO  29 source files to be analyzed
+18:55:21.119 INFO  29/29 source files have been analyzed
+18:55:21.119 INFO  Finished step rules execution in 2425ms
+18:55:21.120 INFO  The Python analyzer was able to leverage cached data from previous analyses for 0 out of 29 files. These files were not parsed.
+18:55:21.128 INFO  Sensor Python Sensor [python] (done) | time=13896ms
+18:55:21.129 INFO  Sensor Cobertura Sensor for Python coverage [python]
+18:55:30.252 INFO  Python test coverage
+18:55:30.254 INFO  Parsing report '/usr/src/.venv/quality26/coverage.xml'
+18:55:30.484 INFO  Sensor Cobertura Sensor for Python coverage [python] (done) | time=9355ms
+18:55:30.484 INFO  Sensor PythonXUnitSensor [python]
+18:55:39.794 INFO  Sensor PythonXUnitSensor [python] (done) | time=9310ms
+18:55:39.795 INFO  Sensor Python Dependency Sensor [python]
+18:55:39.799 INFO  Sensor Python Dependency Sensor [python] (done) | time=3ms
+18:55:39.799 INFO  Sensor HTML [web]
+18:55:39.804 INFO  Sensor HTML [web] (done) | time=4ms
+18:55:39.804 INFO  Sensor JavaScript/TypeScript Coverage [javascript]
+18:55:39.808 INFO  Analysing [/usr/src/frontend/coverage/lcov.info]
+18:55:40.855 INFO  Sensor JavaScript/TypeScript Coverage [javascript] (done) | time=1050ms
+18:55:40.855 INFO  Sensor TextAndSecretsSensor [text]
+18:55:40.877 INFO  Available processors: 12
+18:55:40.877 INFO  Using 12 threads for analysis.
+18:55:41.193 INFO  The property "sonar.tests" is not set. To improve the analysis accuracy, we categorize a file as a test file if any of the following is true:
+  * The filename starts with "test"
+  * The filename contains "test." or "tests."
+  * Any directory in the file path is named: "doc", "docs", "test", "tests", "mock" or "mocks"
+  * Any directory in the file path has a name ending in "test" or "tests"
+
+18:55:41.225 INFO  Start fetching files for the text and secrets analysis
+18:55:41.236 INFO  Using Git CLI to retrieve dirty files
+18:55:41.246 WARN  Retrieving only language associated files, make sure to run the analysis inside a git repository to make use of inclusions specified via "sonar.text.inclusions"
+18:55:41.248 INFO  Starting the text and secrets analysis
+18:55:41.250 INFO  97 source files to be analyzed for the text and secrets analysis
+18:55:41.529 INFO  97/97 source files have been analyzed for the text and secrets analysis
+18:55:41.533 INFO  Sensor TextAndSecretsSensor [text] (done) | time=678ms
+18:55:41.537 INFO  ------------- Run sensors on project
+18:55:41.826 INFO  Sensor JavaScript/TypeScript/CSS analysis [javascript]
+18:55:42.135 INFO  Detected os: Linux arch: amd64 alpine: false. Platform: LINUX_X64
+18:55:42.136 INFO  Deploy location /opt/sonar-scanner/.sonar/js/node-runtime, tagetRuntime: /opt/sonar-scanner/.sonar/js/node-runtime/node,  version: /opt/sonar-scanner/.sonar/js/node-runtime/version.txt
+18:55:45.007 INFO  Using embedded Node.js runtime.
+18:55:45.008 INFO  Using Node.js executable: '/opt/sonar-scanner/.sonar/js/node-runtime/node'.
+18:55:47.383 INFO  Memory configuration: OS (15836 MB), Node.js (4288 MB).
+18:55:47.396 INFO  gRPC analyze-project server listening on 127.0.0.1:43977
+18:55:47.630 INFO  Plugin version: [14.3.0.46350]
+18:55:51.108 INFO  Found 0 tsconfig.json file(s): []
+18:56:02.569 INFO  68 source files to be analyzed
+18:56:02.569 INFO  Analyzing 60 file(s) using default options [lib: lib.esnext.d.ts, lib.dom.d.ts]
+18:56:02.570 INFO  68/68 source files have been analyzed
+18:56:02.586 INFO  Hit the cache for 0 out of 60
+18:56:02.586 INFO  Miss the cache for 60 out of 60: ANALYSIS_MODE_INELIGIBLE [60/60]
+18:56:02.587 INFO  Sensor JavaScript/TypeScript/CSS analysis [javascript] (done) | time=20759ms
+18:56:02.587 INFO  Sensor IaC Project Sensor [iac]
+18:56:02.589 INFO  Sensor IaC Project Sensor [iac] (done) | time=2ms
+18:56:02.590 INFO  Sensor Zero Coverage Sensor
+18:56:02.591 INFO  Sensor Zero Coverage Sensor (done) | time=1ms
+18:56:02.592 INFO  ------------- Gather SCA dependencies on project
+18:56:02.598 INFO  Dependency analysis skipped
+18:56:02.602 INFO  SCM Publisher is disabled
+18:56:02.621 INFO  CPD Executor 10 files had no CPD blocks
+18:56:02.621 INFO  CPD Executor Calculating CPD for 87 files
+18:56:02.701 INFO  CPD Executor CPD calculation finished (done) | time=80ms
+18:56:02.708 INFO  SCM revision ID '3033321573bb66554df53a9a834b51312a8a61c3'
+18:56:03.602 INFO  Analysis report generated in 892ms, dir size=1.6 MB
+18:56:03.724 INFO  Analysis report compressed in 122ms, zip size=935.6 kB
+18:56:03.825 INFO  Analysis report uploaded in 101ms
+18:56:03.827 INFO  ------------- Check Quality Gate status
+18:56:03.827 INFO  Waiting for the analysis report to be processed (max 240s)
+18:56:14.008 INFO  QUALITY GATE STATUS: PASSED - View details on http://host.docker.internal:9001/dashboard?id=smartloo-main-6b1c5b2f
+18:56:14.085 INFO  Analysis total time: 1:23.440 min
+18:56:14.086 INFO  SonarScanner Engine completed successfully
+18:56:14.116 INFO  EXECUTION SUCCESS
+18:56:14.117 INFO  Total time: 1:34.364s
